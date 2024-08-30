@@ -28,7 +28,7 @@ const createPurchaseInvoice = async (req, res) => {
         const createdBy = req.employee.id;
 
         // Check if required fields are missing
-        if (!invoiceNumber || !invoiceDate || !supplier || !items || !totalAmount || !netAmount || !paymentStatus || !paymentType) {
+        if (!invoiceNumber || !invoiceDate || !supplier || !items || !totalAmount || !netAmount || !paymentStatus) {
             return res.status(400).json({ message: 'Missing required fields.' });
         }
 
@@ -53,15 +53,10 @@ const createPurchaseInvoice = async (req, res) => {
             notes,
             createdBy
         });
-        // Check if the creation was successful
-        if (!newPurchaseInvoice) {
-            return res.status(500).json({ message: 'Failed to create purchase invoice.' });
-        }
-
 
         res.status(201).json(newPurchaseInvoice);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ message: error.message, error });
     }
 };
 

@@ -33,7 +33,7 @@ const Purchase = () => {
     setendpagination,
   } = useContext(detacontext);
 
-  const  purchasePermission = permissionsList?.filter(
+  const purchasePermission = permissionsList?.filter(
     (permission) => permission.resource === "Purchases"
   )[0];
 
@@ -153,9 +153,9 @@ const Purchase = () => {
       const itemId = item.itemId;
       const quantity = item.quantity;
       const salesTaxAdditionalCostDiscount =
-      Number(salesTax) + Number(additionalCost) - Number(discount);
+        Number(salesTax) + Number(additionalCost) - Number(discount);
       const addcost =
-        (item.cost / totalAmount) * salesTaxAdditionalCostDiscount; 
+        (item.cost / totalAmount) * salesTaxAdditionalCostDiscount;
       const totalCost = item.cost + addcost;
       const unitCost = Number(item.price) + addcost / quantity;
       const expirationDate = item.expirationDate;
@@ -534,7 +534,12 @@ const Purchase = () => {
       toast.error("رجاء تسجيل الدخول مره اخري");
       return;
     }
-    if (purchasePermission && purchasePermission && !purchasePermission && purchasePermission.create) {
+    if (
+      purchasePermission &&
+      purchasePermission &&
+      !purchasePermission &&
+      purchasePermission.create
+    ) {
       toast.warn("ليس لك صلاحية لانشاء فاتورة مشتريات");
       return;
     }
@@ -543,6 +548,18 @@ const Purchase = () => {
         toast.warn(
           "لم يتم خصم المبلغ المدفوع ! قم  بتاكيد الخصم ثم حاول مره اخري"
         );
+        return;
+      }
+      if (
+        !invoiceNumber ||
+        !invoiceDate ||
+        !supplier ||
+        !items ||
+        !totalAmount ||
+        !netAmount ||
+        !paymentStatus
+      ) {
+        toast.warn("بعض البيانات لم يتم ادخالها");
         return;
       }
       const newInvoice = {
@@ -573,7 +590,7 @@ const Purchase = () => {
       console.log({ response });
       if (response.status === 201) {
         items.forEach((item) => {
-          createStockAction(item, receiverId);
+          createStockAction(item);
         });
 
         await handleAddSupplierTransactionPurchase(response.data._id);
@@ -583,6 +600,7 @@ const Purchase = () => {
         toast.error("فشل اضافه المشتريات ! حاول مره اخري");
       }
     } catch (error) {
+      console.log({ error });
       toast.error("حدث خطأ اثناء اضافه المشتريات ! حاول مره اخري");
     }
   };
@@ -590,7 +608,12 @@ const Purchase = () => {
   const [invoice, setinvoice] = useState({});
 
   const getInvoice = async (id) => {
-    if (purchasePermission && purchasePermission && !purchasePermission && purchasePermission.read) {
+    if (
+      purchasePermission &&
+      purchasePermission &&
+      !purchasePermission &&
+      purchasePermission.read
+    ) {
       toast.warn("ليس لك صلاحية لعرض فاتورة مشتريات");
       return;
     }
@@ -617,7 +640,12 @@ const Purchase = () => {
 
   const [allPurchaseInvoice, setallPurchaseInvoice] = useState([]);
   const getAllPurchases = async () => {
-    if (purchasePermission && purchasePermission && !purchasePermission && purchasePermission.read) {
+    if (
+      purchasePermission &&
+      purchasePermission &&
+      !purchasePermission &&
+      purchasePermission.read
+    ) {
       toast.warn("ليس لك صلاحية لعرض فاتورة مشتريات");
       return;
     }
