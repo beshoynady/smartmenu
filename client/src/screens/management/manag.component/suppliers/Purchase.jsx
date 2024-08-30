@@ -481,7 +481,7 @@ const Purchase = () => {
   const [paidAmount, setPaidAmount] = useState(0);
   const [balanceDue, setBalanceDue] = useState(0);
   const [paymentStatus, setPaymentStatus] = useState("unpaid");
-  const [paymentType, setpaymentType] = useState("");
+  const [paymentType, setpaymentType] = useState("credit");
 
   const handlePaidAmount = (amount) => {
     setPaidAmount(amount);
@@ -1524,35 +1524,41 @@ const Purchase = () => {
                             onChange={(e) => handlePaidAmount(e.target.value)}
                           />
                         </div>
-                        <div className="input-group mb-3 d-flex align-items-center justify-content-between flex-nowrap">
-                          <span className="input-group-text" htmlFor="gstInput">
-                            طريقه الدفع
-                          </span>
-                          <select
-                            className="form-control border-primary m-0 p-2 h-auto"
-                            name="paymentMethod"
-                            id="paymentMethod"
-                            onChange={(e) =>
-                              handlePaymentMethod(
-                                e.target.value,
-                                employeeLoginInfo.id
-                              )
-                            }
-                          >
-                            <option>اختر طريقه الدفع</option>
-                            {financialInfo &&
-                              financialInfo.map((financialInfo, i) => {
-                                return (
-                                  <option
-                                    value={financialInfo.paymentMethodName}
-                                  >{`${financialInfo.paymentMethodName} ${financialInfo.accountNumber}`}</option>
-                                );
-                              })}
-                          </select>
-                        </div>
+
                         {paidAmount > 0 ? (
                           listCashRegister ? (
                             <>
+                              <div className="input-group mb-3 d-flex align-items-center justify-content-between flex-nowrap">
+                                <span
+                                  className="input-group-text"
+                                  htmlFor="gstInput"
+                                >
+                                  طريقه الدفع
+                                </span>
+                                <select
+                                  className="form-control border-primary m-0 p-2 h-auto"
+                                  name="paymentMethod"
+                                  id="paymentMethod"
+                                  onChange={(e) =>
+                                    handlePaymentMethod(
+                                      e.target.value,
+                                      employeeLoginInfo.id
+                                    )
+                                  }
+                                >
+                                  <option>اختر طريقه الدفع</option>
+                                  {financialInfo &&
+                                    financialInfo.map((financialInfo, i) => {
+                                      return (
+                                        <option
+                                          value={
+                                            financialInfo.paymentMethodName
+                                          }
+                                        >{`${financialInfo.paymentMethodName} ${financialInfo.accountNumber}`}</option>
+                                      );
+                                    })}
+                                </select>
+                              </div>
                               <div className="input-group mb-3 d-flex align-items-center justify-content-between flex-nowrap">
                                 <span
                                   className="input-group-text"
