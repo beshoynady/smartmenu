@@ -342,11 +342,11 @@ const BatchStockReport = () => {
                         <td>{batch.storeId?.storeName}</td>
                         <td>{batch.itemId?.itemName}</td>
                         <td>{batch.categoryId?.categoryName}</td>
-                        <td>{sourceAr(sourceEn.findIndex(source=> source === batch.source))}</td>
+                        <td>{sourceAr[sourceEn.findIndex(source=> source === batch.source)]}</td>
                         <td>{batch.unit}</td>
                         <td>{batch.inbound?.quantity || 0}</td>
                         <td>{batch.remainingQuantity}</td>
-                        <td>{formatDate(batch.expirationDate)}</td>
+                        <td>{batch.expirationDate&&formatDate(batch.expirationDate)}</td>
                         <td>{batch.createdBy?.fullname}</td>
                       </tr>
                     );
