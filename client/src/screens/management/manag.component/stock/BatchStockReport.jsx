@@ -108,6 +108,7 @@ const BatchStockReport = () => {
   };
 
   const [StockItems, setStockItems] = useState([]);
+  
   const getStockItems = async () => {
     if (!token) {
       // Handle case where token is not available
@@ -143,6 +144,31 @@ const BatchStockReport = () => {
   };
 
 
+
+
+  const searchByStore = (store) => {
+    if (!store) {
+      getallStockaction();
+      return;
+    }
+    const items = batches.filter(
+        (batch) => batch.storeId?._id === store
+      );
+      setbatches(items);
+  };
+
+  const searchByCategory = (category) => {
+    if (!category) {
+      getallStockaction();
+      return;
+    }
+    const items = batches.filter(
+        (batch) => batch.categoryId?._id === category
+      );
+      setbatches(items);
+  };
+
+
   const searchByitem = (item) => {
     if (!item) {
       getallStockaction();
@@ -153,16 +179,7 @@ const BatchStockReport = () => {
     );
     setbatches(items);
   };
-//   const searchByaction = (action) => {
-//     if (!action) {
-//       getallStockaction();
-//       return;
-//     }
-//     const items = AllStockactions.filter(
-//       (Stockactions) => Stockactions.source === action
-//     );
-//     setAllStockactions(items);
-//   };
+
 
   useEffect(() => {
     getallStockaction();
@@ -213,6 +230,42 @@ const BatchStockReport = () => {
                   })()}
                 </select>
               </div>
+              <div class="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
+                <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                  المخزن
+                </label>
+                <select
+                  class="form-control border-primary m-0 p-2 h-auto"
+                  onChange={(e) => searchByStore(e.target.value)}
+                >
+                  <option value={""}>الكل</option>
+                  {allStores.map((store, i) => {
+                    return (
+                      <option key={i} value={store._id}>
+                        {store.storeName}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+              <div class="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
+                <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                  التصنيف
+                </label>
+                <select
+                  class="form-control border-primary m-0 p-2 h-auto"
+                  onChange={(e) => searchByCategory(e.target.value)}
+                >
+                  <option value={""}>الكل</option>
+                  {allCategoryStock.map((category, i) => {
+                    return (
+                      <option key={i} value={category._id}>
+                        {category.categoryName}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
 
               <div class="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
                 <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
@@ -224,24 +277,7 @@ const BatchStockReport = () => {
                   onChange={(e) => searchByitem(e.target.value)}
                 />
               </div>
-              {/* <div class="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
-                <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
-                  نوع الاوردر
-                </label>
-                <select
-                  class="form-control border-primary m-0 p-2 h-auto"
-                  onChange={(e) => searchByaction(e.target.value)}
-                >
-                  <option value={""}>الكل</option>
-                  {sourceEn.map((source, i) => {
-                    return (
-                      <option key={i} value={source}>
-                        {sourceAr[i]}
-                      </option>
-                    );
-                  })}
-                </select>
-              </div> */}
+
 
               <div className="col-12 text-dark d-flex flex-wrap align-items-center justify-content-start p-0 m-0 mt-3">
                 <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
