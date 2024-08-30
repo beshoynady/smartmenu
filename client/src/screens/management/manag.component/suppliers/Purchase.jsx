@@ -5,8 +5,6 @@ import { detacontext } from "../../../../App";
 import { toast } from "react-toastify";
 import "../orders/Orders.css";
 
-
-
 const Purchase = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -38,7 +36,6 @@ const Purchase = () => {
   const purchasePermission = permissionsList?.filter(
     (permission) => permission.resource === "Purchases"
   )[0];
-  
 
   const [AllStockactions, setAllStockactions] = useState([]);
 
@@ -144,7 +141,7 @@ const Purchase = () => {
 
   const Stockmovement = ["Purchase", "ReturnPurchase"];
 
-  const createStockAction = async (item, receiverid) => {
+  const createStockAction = async (item) => {
     if (!token) {
       // Handle case where token is not available
       toast.error("رجاء تسجيل الدخول مره اخري");
@@ -153,90 +150,100 @@ const Purchase = () => {
     try {
       const itemId = item.itemId;
       const quantity = item.quantity;
-      const price = Number(item.price);
-      const cost = item.cost;
+      const salesTax_AdditionalCost_Discount = salesTax + additionalCost - discount
+      const addcost = (totalCost / totalAmount) * salesTax_AdditionalCost_Discount
+      const totalCost = item.cost +  addcost;
+      const unitCost = Number(item.price) + (addcost / quantity);
       const expirationDate = item.expirationDate;
-      const movement = "Purchase";
-      const receiver = receiverid;
+      const source = "Purchase";
       const stockItem = StockItems.filter((item) => item._id === itemId)[0];
 
       const itemName = stockItem.itemName;
-      const oldBalance = stockItem.currentBalance;
-      const parts = stockItem.parts;
-      const currentBalance = Number(quantity) + Number(oldBalance);
       const unit = stockItem.largeUnit;
-      const costOfPart =
-        Math.round((Number(price) / Number(parts)) * 100) / 100;
-      // Update the stock item's movement
-      const changeItem = await axios.put(
-        `${apiUrl}/api/stockitem/movement/${itemId}`,
-        { currentBalance, price, costOfPart },
+      const categoryId = stockItem.categoryId?._id;
+      const costMethod = stockItem.costMethod;
+     
+
+      console.log(changeItem);
+      const lastStockAction = AllStockactions.filter(
+        (stockAction) =>
+          stockAction.itemId?._id === itemId &&
+          stockAction.storeId?._id === storeId
+      ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
+
+      const inbound = {
+        quantity: 0,
+        unitCost: 0,
+        totalCost: 0,
+      };
+      const balance = {
+        quantity: lastStockAction.balance?.quantity + Number(quantity),
+        totalCost: lastStockAction.balance?.unitCost + Number(totalCost),
+        unitCost: lastStockAction.balance?.unitCost + Number(unitCost),
+      };
+      const remainingQuantity = quantity;
+      // Create a new stock action
+
+      const response = await axios.post(
+        apiUrl + "/api/stockmanag/",
+        {
+          itemId,
+          storeId,
+          categoryId,
+          costMethod,
+          source,
+          unit,
+          inbound,
+          balance,
+          remainingQuantity,
+          sourceDate: invoiceDate,
+          expirationDate,
+          notes,
+        },
         config
       );
-      console.log(changeItem);
 
-      if (changeItem.status === 200) {
-        // Create a new stock action
-        const response = await axios.post(
-          apiUrl + "/api/stockmanag/",
-          {
-            itemId,
-            movement,
-            quantity,
-            cost,
-            unit,
-            balance: currentBalance,
-            oldBalance,
-            price,
-            supplier,
-            receiver,
-            expirationDate,
-          },
+      // console.log(response);
+
+      for (const recipe of allrecipes) {
+        const recipeid = recipe._id;
+        const productname = recipe.productId?.name;
+        const arrayingredients = recipe.ingredients;
+
+        const newIngredients = arrayingredients.map((ingredient) => {
+          // console.log({ingredient, costOfPart, amount : ingredient.amount})
+          if (ingredient.itemId === itemId) {
+            const costofitem = costOfPart;
+            const unit = ingredient.unit;
+            const amount = ingredient.amount;
+            const totalcostofitem = amount * costOfPart;
+            return {
+              itemId,
+              name: itemName,
+              amount,
+              costofitem,
+              unit,
+              totalcostofitem,
+            };
+          } else {
+            return ingredient;
+          }
+        });
+        console.log({ newIngredients });
+        const totalcost = newIngredients.reduce((acc, curr) => {
+          return acc + (curr.totalcostofitem || 0);
+        }, 0);
+        // Update the product with the modified recipe and total cost
+        const updateRecipe = await axios.put(
+          `${apiUrl}/api/recipe/${recipeid}`,
+          { ingredients: newIngredients, totalcost },
           config
         );
 
-        // console.log(response);
+        console.log({ updateRecipe });
 
-        for (const recipe of allrecipes) {
-          const recipeid = recipe._id;
-          const productname = recipe.productId?.name;
-          const arrayingredients = recipe.ingredients;
-
-          const newIngredients = arrayingredients.map((ingredient) => {
-            // console.log({ingredient, costOfPart, amount : ingredient.amount})
-            if (ingredient.itemId === itemId) {
-              const costofitem = costOfPart;
-              const unit = ingredient.unit;
-              const amount = ingredient.amount;
-              const totalcostofitem = amount * costOfPart;
-              return {
-                itemId,
-                name: itemName,
-                amount,
-                costofitem,
-                unit,
-                totalcostofitem,
-              };
-            } else {
-              return ingredient;
-            }
-          });
-          console.log({ newIngredients });
-          const totalcost = newIngredients.reduce((acc, curr) => {
-            return acc + (curr.totalcostofitem || 0);
-          }, 0);
-          // Update the product with the modified recipe and total cost
-          const updateRecipe = await axios.put(
-            `${apiUrl}/api/recipe/${recipeid}`,
-            { ingredients: newIngredients, totalcost },
-            config
-          );
-
-          console.log({ updateRecipe });
-
-          // Toast for successful update based on recipe change
-          toast.success(`تم تحديث وصفة  ${productname}`);
-        }
+        // Toast for successful update based on recipe change
+        toast.success(`تم تحديث وصفة  ${productname}`);
       }
 
       // Update the stock actions list and stock items
@@ -385,6 +392,7 @@ const Purchase = () => {
     console.log({ updatedItems });
     setItems(updatedItems);
   };
+
   const handleQuantity = (quantity, index) => {
     const updatedItems = [...items];
     updatedItems[index].quantity = Number(quantity);
@@ -689,14 +697,12 @@ const Purchase = () => {
       toast.error("برجاء التحقق من صحة المدخلات!");
       return;
     }
-    if(CashRegisterBalance< paidAmount){
-      
+    if (CashRegisterBalance < paidAmount) {
       toast.error("رصيد الخزينه لا يكفي!");
       return;
     }
 
-    const updatedbalance = CashRegisterBalance - paidAmount; 
-
+    const updatedbalance = CashRegisterBalance - paidAmount;
 
     try {
       // Perform the cash movement
@@ -775,17 +781,17 @@ const Purchase = () => {
                 </h2>
               </div>
               <div className="col-12 col-md-6 p-0 m-0 d-flex flex-wrap aliegn-items-center justify-content-end print-hide">
-                {purchasePermission.create&&
-                <a
-                  href="#addPurchaseInvoiceModal"
-                  className="d-flex align-items-center justify-content-center h-100 m-0 btn btn-success"
-                  data-toggle="modal"
-                >
-                  <span className=" text-wrap text-right fw-bolder p-0 m-0">
-                    اضافه فاتورة جديدة
-                  </span>
-                </a>
-                }
+                {purchasePermission.create && (
+                  <a
+                    href="#addPurchaseInvoiceModal"
+                    className="d-flex align-items-center justify-content-center h-100 m-0 btn btn-success"
+                    data-toggle="modal"
+                  >
+                    <span className=" text-wrap text-right fw-bolder p-0 m-0">
+                      اضافه فاتورة جديدة
+                    </span>
+                  </a>
+                )}
 
                 {/* <a href="#deleteStockactionModal" className="d-flex align-items-center justify-content-center h-100 m-0 btn btn-danger" data-toggle="modal"> <label className=" text-wrap text-right fw-bolder p-0 m-0">حذف</label></a> */}
               </div>
@@ -1022,23 +1028,23 @@ const Purchase = () => {
                         </td>
                         <td>{invoice.notes}</td>
                         <td>
-                          {purchasePermission.read&&
-                          <a
-                            href="#viewPurchaseModal"
-                            data-toggle="modal"
-                            onClick={() => {
-                              getInvoice(invoice._id);
-                            }}
-                          >
-                            <i
-                              className="material-icons text-primary fs-2"
-                              data-toggle="tooltip"
-                              title="مشاهدة المشتريات"
+                          {purchasePermission.read && (
+                            <a
+                              href="#viewPurchaseModal"
+                              data-toggle="modal"
+                              onClick={() => {
+                                getInvoice(invoice._id);
+                              }}
                             >
-                              &#xE417;
-                            </i>
-                          </a>
-                          }
+                              <i
+                                className="material-icons text-primary fs-2"
+                                data-toggle="tooltip"
+                                title="مشاهدة المشتريات"
+                              >
+                                &#xE417;
+                              </i>
+                            </a>
+                          )}
                         </td>
                       </tr>
                     );
@@ -1112,8 +1118,6 @@ const Purchase = () => {
           </div>
         </div>
       </div>
-
-
 
       <div id="addPurchaseInvoiceModal" className="modal fade">
         <div className="modal-dialog modal-lg">
@@ -1587,10 +1591,6 @@ const Purchase = () => {
           </div>
         </div>
       </div>
-
-
-
-
 
       <div id="viewPurchaseModal" className="modal fade">
         <div className="modal-dialog modal-lg">
