@@ -153,7 +153,7 @@ const Purchase = () => {
       const itemId = item.itemId;
       const quantity = item.quantity;
       const salesTaxAdditionalCostDiscount =
-        salesTax + additionalCost - discount;
+      Number(salesTax) + Number(additionalCost) - Number(discount);
       const addcost =
         (item.cost / totalAmount) * salesTaxAdditionalCostDiscount; 
       const totalCost = item.cost + addcost;
@@ -173,9 +173,9 @@ const Purchase = () => {
       ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
 
       const inbound = {
-        quantity: 0,
-        unitCost: 0,
-        totalCost: 0,
+        quantity: Number(quantity),
+        unitCost: Number(unitCost),
+        totalCost: Number(totalCost),
       };
       const balance = {
         quantity: lastStockAction.balance?.quantity + Number(quantity),
@@ -273,6 +273,7 @@ const Purchase = () => {
       console.log(error);
       // Toast notification for error
       toast.error("فشل تسجيل حركه المخزن ! حاول مره اخري");
+      return
     }
   };
 
