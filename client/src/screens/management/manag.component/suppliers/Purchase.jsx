@@ -33,7 +33,7 @@ const Purchase = () => {
     setendpagination,
   } = useContext(detacontext);
 
-  const purchasePermission = permissionsList?.filter(
+  const  purchasePermission = permissionsList?.filter(
     (permission) => permission.resource === "Purchases"
   )[0];
 
@@ -273,7 +273,6 @@ const Purchase = () => {
       console.log(error);
       // Toast notification for error
       toast.error("فشل تسجيل حركه المخزن ! حاول مره اخري");
-      return
     }
   };
 
@@ -535,7 +534,7 @@ const Purchase = () => {
       toast.error("رجاء تسجيل الدخول مره اخري");
       return;
     }
-    if (purchasePermission && !purchasePermission.create) {
+    if (purchasePermission && purchasePermission && !purchasePermission && purchasePermission.create) {
       toast.warn("ليس لك صلاحية لانشاء فاتورة مشتريات");
       return;
     }
@@ -591,7 +590,7 @@ const Purchase = () => {
   const [invoice, setinvoice] = useState({});
 
   const getInvoice = async (id) => {
-    if (purchasePermission && !purchasePermission.read) {
+    if (purchasePermission && purchasePermission && !purchasePermission && purchasePermission.read) {
       toast.warn("ليس لك صلاحية لعرض فاتورة مشتريات");
       return;
     }
@@ -618,7 +617,7 @@ const Purchase = () => {
 
   const [allPurchaseInvoice, setallPurchaseInvoice] = useState([]);
   const getAllPurchases = async () => {
-    if (purchasePermission && !purchasePermission.read) {
+    if (purchasePermission && purchasePermission && !purchasePermission && purchasePermission.read) {
       toast.warn("ليس لك صلاحية لعرض فاتورة مشتريات");
       return;
     }
@@ -817,7 +816,7 @@ const Purchase = () => {
                 </h2>
               </div>
               <div className="col-12 col-md-6 p-0 m-0 d-flex flex-wrap aliegn-items-center justify-content-end print-hide">
-                {purchasePermission.create && (
+                {purchasePermission && purchasePermission.create && (
                   <a
                     href="#addPurchaseInvoiceModal"
                     className="d-flex align-items-center justify-content-center h-100 m-0 btn btn-success"
@@ -1064,7 +1063,7 @@ const Purchase = () => {
                         </td>
                         <td>{invoice.notes}</td>
                         <td>
-                          {purchasePermission.read && (
+                          {purchasePermission && purchasePermission.read && (
                             <a
                               href="#viewPurchaseModal"
                               data-toggle="modal"
