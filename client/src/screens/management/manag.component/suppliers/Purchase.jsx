@@ -141,6 +141,8 @@ const Purchase = () => {
 
   const Stockmovement = ["Purchase", "ReturnPurchase"];
 
+  const [storeId, setstoreId] = useState(0);
+
   const createStockAction = async (item) => {
     if (!token) {
       // Handle case where token is not available
@@ -164,7 +166,6 @@ const Purchase = () => {
       const costMethod = stockItem.costMethod;
      
 
-      console.log(changeItem);
       const lastStockAction = AllStockactions.filter(
         (stockAction) =>
           stockAction.itemId?._id === itemId &&
@@ -205,46 +206,46 @@ const Purchase = () => {
 
       // console.log(response);
 
-      for (const recipe of allrecipes) {
-        const recipeid = recipe._id;
-        const productname = recipe.productId?.name;
-        const arrayingredients = recipe.ingredients;
+      // for (const recipe of allrecipes) {
+      //   const recipeid = recipe._id;
+      //   const productname = recipe.productId?.name;
+      //   const arrayingredients = recipe.ingredients;
 
-        const newIngredients = arrayingredients.map((ingredient) => {
-          // console.log({ingredient, costOfPart, amount : ingredient.amount})
-          if (ingredient.itemId === itemId) {
-            const costofitem = costOfPart;
-            const unit = ingredient.unit;
-            const amount = ingredient.amount;
-            const totalcostofitem = amount * costOfPart;
-            return {
-              itemId,
-              name: itemName,
-              amount,
-              costofitem,
-              unit,
-              totalcostofitem,
-            };
-          } else {
-            return ingredient;
-          }
-        });
-        console.log({ newIngredients });
-        const totalcost = newIngredients.reduce((acc, curr) => {
-          return acc + (curr.totalcostofitem || 0);
-        }, 0);
-        // Update the product with the modified recipe and total cost
-        const updateRecipe = await axios.put(
-          `${apiUrl}/api/recipe/${recipeid}`,
-          { ingredients: newIngredients, totalcost },
-          config
-        );
+      //   const newIngredients = arrayingredients.map((ingredient) => {
+      //     // console.log({ingredient, costOfPart, amount : ingredient.amount})
+      //     if (ingredient.itemId === itemId) {
+      //       const costofitem = costOfPart;
+      //       const unit = ingredient.unit;
+      //       const amount = ingredient.amount;
+      //       const totalcostofitem = amount * costOfPart;
+      //       return {
+      //         itemId,
+      //         name: itemName,
+      //         amount,
+      //         costofitem,
+      //         unit,
+      //         totalcostofitem,
+      //       };
+      //     } else {
+      //       return ingredient;
+      //     }
+      //   });
+      //   console.log({ newIngredients });
+      //   const totalcost = newIngredients.reduce((acc, curr) => {
+      //     return acc + (curr.totalcostofitem || 0);
+      //   }, 0);
+      //   // Update the product with the modified recipe and total cost
+      //   const updateRecipe = await axios.put(
+      //     `${apiUrl}/api/recipe/${recipeid}`,
+      //     { ingredients: newIngredients, totalcost },
+      //     config
+      //   );
 
-        console.log({ updateRecipe });
+      //   console.log({ updateRecipe });
 
-        // Toast for successful update based on recipe change
-        toast.success(`تم تحديث وصفة  ${productname}`);
-      }
+      //   // Toast for successful update based on recipe change
+      //   toast.success(`تم تحديث وصفة  ${productname}`);
+      // }
 
       // Update the stock actions list and stock items
       getallStockaction();
@@ -760,6 +761,24 @@ const Purchase = () => {
     bodyClass: "printpage",
   });
 
+
+  const [allStores, setAllStores] = useState([]);
+
+  const getAllStores = async () => {
+    if (!token) {
+      toast.error("رجاء تسجيل الدخول مره اخري");
+      return;
+    }
+
+    try {
+      const response = await axios.get(apiUrl + "/api/store/", config);
+      setAllStores(response.data.reverse());
+    } catch (error) {
+      console.error("Error fetching stores:", error);
+      toast.error("حدث خطأ اثناء جلب بيانات المخزنات! اعد تحميل الصفحة");
+    }
+  };
+
   useEffect(() => {
     getAllPurchases();
     getallStockaction();
@@ -767,6 +786,7 @@ const Purchase = () => {
     getAllCashRegisters();
     getallrecipes();
     getAllSuppliers();
+    getAllStores()
   }, []);
 
   return (
@@ -1396,6 +1416,31 @@ const Purchase = () => {
                             value={netAmount}
                             readOnly
                           />
+                        </div>
+                        <div className="input-group mb-3 d-flex align-items-center justify-content-between flex-nowrap">
+                          <span className="input-group-text" htmlFor="gstInput">
+                            لاضافه المشتريات بالمخزن 
+                          </span>
+                          <select
+                            className="form-control border-primary m-0 p-2 h-auto"
+                            name="paymentMethod"
+                            id="paymentMethod"
+                            onChange={(e) =>
+                              setstoreId(
+                                e.target.value,
+                              )
+                            }
+                          >
+                            <option>اختر المخزن </option>
+                            {allStores &&
+                              allStores.map((store, i) => {
+                                return (
+                                  <option
+                                    value={store._id}
+                                  >{store.storeName}</option>
+                                );
+                              })}
+                          </select>
                         </div>
                         <div className="input-group mb-3 d-flex align-items-center justify-content-between flex-nowrap">
                           <span
