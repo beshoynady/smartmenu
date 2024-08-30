@@ -152,19 +152,19 @@ const Purchase = () => {
     try {
       const itemId = item.itemId;
       const quantity = item.quantity;
-      const salesTax_AdditionalCost_Discount = salesTax + additionalCost - discount
-      const addcost = (totalCost / totalAmount) * salesTax_AdditionalCost_Discount
-      const totalCost = item.cost +  addcost;
-      const unitCost = Number(item.price) + (addcost / quantity);
+      const salesTaxAdditionalCostDiscount =
+        salesTax + additionalCost - discount;
+      const addcost =
+        (item.cost / totalAmount) * salesTaxAdditionalCostDiscount; 
+      const totalCost = item.cost + addcost;
+      const unitCost = Number(item.price) + addcost / quantity;
       const expirationDate = item.expirationDate;
       const source = "Purchase";
       const stockItem = StockItems.filter((item) => item._id === itemId)[0];
 
-      const itemName = stockItem.itemName;
       const unit = stockItem.largeUnit;
       const categoryId = stockItem.categoryId?._id;
       const costMethod = stockItem.costMethod;
-     
 
       const lastStockAction = AllStockactions.filter(
         (stockAction) =>
@@ -185,6 +185,22 @@ const Purchase = () => {
       const remainingQuantity = quantity;
       // Create a new stock action
 
+      console.log({
+        salesTaxAdditionalCostDiscount,
+        addcost,
+        itemId,
+        storeId,
+        categoryId,
+        costMethod,
+        source,
+        unit,
+        inbound,
+        balance,
+        remainingQuantity,
+        sourceDate: invoiceDate,
+        expirationDate,
+        notes,
+      });
       const response = await axios.post(
         apiUrl + "/api/stockmanag/",
         {
@@ -204,7 +220,7 @@ const Purchase = () => {
         config
       );
 
-      // console.log(response);
+      console.log(response);
 
       // for (const recipe of allrecipes) {
       //   const recipeid = recipe._id;
@@ -761,7 +777,6 @@ const Purchase = () => {
     bodyClass: "printpage",
   });
 
-
   const [allStores, setAllStores] = useState([]);
 
   const getAllStores = async () => {
@@ -786,7 +801,7 @@ const Purchase = () => {
     getAllCashRegisters();
     getallrecipes();
     getAllSuppliers();
-    getAllStores()
+    getAllStores();
   }, []);
 
   return (
@@ -1419,25 +1434,21 @@ const Purchase = () => {
                         </div>
                         <div className="input-group mb-3 d-flex align-items-center justify-content-between flex-nowrap">
                           <span className="input-group-text" htmlFor="gstInput">
-                            لاضافه المشتريات بالمخزن 
+                            المخزن
                           </span>
                           <select
                             className="form-control border-primary m-0 p-2 h-auto"
                             name="paymentMethod"
                             id="paymentMethod"
-                            onChange={(e) =>
-                              setstoreId(
-                                e.target.value,
-                              )
-                            }
+                            onChange={(e) => setstoreId(e.target.value)}
                           >
                             <option>اختر المخزن </option>
                             {allStores &&
                               allStores.map((store, i) => {
                                 return (
-                                  <option
-                                    value={store._id}
-                                  >{store.storeName}</option>
+                                  <option value={store._id}>
+                                    {store.storeName}
+                                  </option>
                                 );
                               })}
                           </select>
@@ -1519,7 +1530,7 @@ const Purchase = () => {
                                   className="input-group-text"
                                   htmlFor="CashRegister"
                                 >
-                                  اختر حساب الاستلام
+                                  اختر حساب الدفع
                                 </span>
                                 <select
                                   className="form-select border-primary col"
