@@ -482,7 +482,7 @@ const SideBar = () => {
                       {(isProgrammer ||
                         permissionsList?.filter(
                           (permission) =>
-                            permission.resource === "Batch Stock Report"
+                            permission.resource === "stock Management"
                         )[0]?.read) && (
                         <li>
                           <Link to="batchstockreport">تقرير دفعات المخزن</Link>
