@@ -21,7 +21,7 @@ const Login = () => {
       const response = await axios.get(`${apiUrl}/api/employee/count`);
       if(response.data){
         const count = response.data ? response.data.count : 0;
-        if(count>0){
+        if(count === 0){
           setShowCreateButton(true);
         }
       }
