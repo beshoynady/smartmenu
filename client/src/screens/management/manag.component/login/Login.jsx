@@ -24,6 +24,7 @@ const Login = () => {
         if(count === 0){
           setShowCreateButton(true);
         }
+        console.log({count})
       }
     } catch (error) {
       console.error("Network Error:", error);
@@ -100,7 +101,7 @@ const Login = () => {
                 </p>
               </div>
             </div>
-            {showCreateButton ? (
+            {showCreateButton === true? (
               <div className="col-12 d-flex flex-column flex-wrap align-items-center justify-content-center mt-3">
                 <button
                   onClick={handleCreateFirstEmployee}
