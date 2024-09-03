@@ -19,6 +19,7 @@ const Login = () => {
   const checkIfEmployeesExist = async () => {
     try {
       const response = await axios.get(`${apiUrl}/api/employee/count`);
+      console.log({response})
         const count = response.data ? response.data.count : 0;
         if(count === 0){
           setShowCreateButton(true);

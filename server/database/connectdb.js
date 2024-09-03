@@ -8,6 +8,7 @@ const connectdb = () => {
     mongoose.connect(url, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
+        serverSelectionTimeoutMS: 30000,
     })
     .then(() => {
         console.log('Database connection successful');

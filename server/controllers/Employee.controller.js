@@ -392,7 +392,6 @@ const getCountEmployees = async (req, res) => {
   try {
     // Count the number of employees
     const employeeCount = await EmployeeModel.countDocuments();
-
     // Return the count in the response
     res.status(200).json({ count: employeeCount });
   } catch (err) {
