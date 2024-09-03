@@ -9,33 +9,32 @@ import menu from "../../../../image/emenu.jpg";
 import pos from "../../../../image/pos.jpg";
 
 const Login = () => {
-  const { getUserInfoFromToken , setisLoading} = useContext(detacontext);
+  const { getUserInfoFromToken, setisLoading } = useContext(detacontext);
   const apiUrl = process.env.REACT_APP_API_URL;
 
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [showCreateButton, setShowCreateButton] = useState(false);
 
-  
   const checkIfEmployeesExist = async () => {
     try {
       const response = await axios.get(`${apiUrl}/api/employee/count`);
-      console.log({response})
-        const count = response.data ? response.data.count : 0;
-        if(count === 0){
-          setShowCreateButton(true);
-        }
-        console.log({count})
+      console.log({ response });
+      const count = response.data ? response.data.count : 0;
+      if (count === 0) {
+        setShowCreateButton(true);
+      }
+      console.log({ count });
     } catch (error) {
       console.error("Network Error:", error);
       toast.error("حدث خطأ في الشبكة.");
-    }finally{
-      setisLoading(false)
+    } finally {
+      setisLoading(false);
     }
   };
 
   useEffect(() => {
-    setisLoading(true)
+    setisLoading(true);
     checkIfEmployeesExist();
   }, []);
 
@@ -101,7 +100,7 @@ const Login = () => {
                 </p>
               </div>
             </div>
-            {showCreateButton === true? (
+            {showCreateButton === true ? (
               <div className="col-12 d-flex flex-column flex-wrap align-items-center justify-content-center mt-3">
                 <button
                   onClick={handleCreateFirstEmployee}
