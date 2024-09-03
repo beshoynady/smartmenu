@@ -162,7 +162,7 @@ function App() {
   };
 
   const [isRefresh, setisRefresh] = useState(false);
-  const [isLoading, setisLoading] = useState(false);
+  const [isLoading, setisLoading] = useState(true);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {

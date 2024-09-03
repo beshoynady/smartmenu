@@ -9,7 +9,7 @@ import menu from "../../../../image/emenu.jpg";
 import pos from "../../../../image/pos.jpg";
 
 const Login = () => {
-  const { getUserInfoFromToken } = useContext(detacontext);
+  const { getUserInfoFromToken , setisLoading} = useContext(detacontext);
   const apiUrl = process.env.REACT_APP_API_URL;
 
   const [phone, setPhone] = useState("");
@@ -19,19 +19,22 @@ const Login = () => {
   const checkIfEmployeesExist = async () => {
     try {
       const response = await axios.get(`${apiUrl}/api/employee/count`);
-      const count = response.data ? response.data.count : 0;
-      if (count === 0) {
-        setShowCreateButton(true);
-      } else {
-        setShowCreateButton(false);
+      if(response.data){
+        const count = response.data ? response.data.count : 0;
+        if(count>0){
+          setShowCreateButton(true);
+        }
       }
     } catch (error) {
       console.error("Network Error:", error);
       toast.error("حدث خطأ في الشبكة.");
+    }finally{
+      setisLoading(false)
     }
   };
 
   useEffect(() => {
+    setisLoading(true)
     checkIfEmployeesExist();
   }, []);
 
