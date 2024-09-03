@@ -19,13 +19,11 @@ const Login = () => {
   const checkIfEmployeesExist = async () => {
     try {
       const response = await axios.get(`${apiUrl}/api/employee/count`);
-      if(response.data){
         const count = response.data ? response.data.count : 0;
         if(count === 0){
           setShowCreateButton(true);
         }
         console.log({count})
-      }
     } catch (error) {
       console.error("Network Error:", error);
       toast.error("حدث خطأ في الشبكة.");
