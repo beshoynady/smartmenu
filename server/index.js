@@ -59,7 +59,7 @@ app.use(cookieParser()); // Parse cookies
 
 // CORS setup
 app.use(cors({
-  origin: 'https://www.elbaronpark.sm-menu.tech',
+  origin: ['https://elbaronpark.sm-menu.tech', 'https://www.elbaronpark.sm-menu.tech'],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization']
