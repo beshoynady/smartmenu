@@ -239,21 +239,19 @@ const MenuCategory = () => {
 
   const createCategory = async (event) => {
     event.preventDefault();
+    if (!token) {
+    toast.error('رجاء تسجيل الدخول مره أخرى');
+    return;
+  }
     const categoryData = {
       name: categoryName,
       isMain,
       status,
     };
-
-    // console.log({ categoryData })
-    if (!token) {
-      // Handle case where token is not available
-      toast.error('رجاء تسجيل الدخول مره اخري');
-      return
-    }
+  
     try {
       const response = await axios.post(`${apiUrl}/api/menucategory/`, categoryData, config);
-      // console.log({ response })
+  
       if (response.status === 201) {
         await getallCategory();
         toast.success("تم إنشاء الفئة بنجاح.");
@@ -262,10 +260,20 @@ const MenuCategory = () => {
       }
     } catch (error) {
       console.error("حدث خطأ أثناء إرسال الطلب:", error);
-
-      toast.error("حدث خطأ أثناء إنشاء الفئة. الرجاء المحاولة مرة أخرى.");
+        if (error.response) {
+        if (error.response.status === 400 && error.response.data.message === 'Menu category name already exists') {
+          toast.error("اسم الفئة موجود بالفعل. الرجاء اختيار اسم آخر.");
+        } else if (error.response.status === 401) {
+          toast.error("انتهت صلاحية الجلسة، رجاء تسجيل الدخول مره أخرى.");
+        } else {
+          toast.error("حدث خطأ أثناء إنشاء الفئة. الرجاء المحاولة مرة أخرى.");
+        }
+      } else {
+        toast.error("حدث خطأ أثناء الاتصال بالخادم.");
+      }
     }
   };
+  
 
 
   useEffect(() => {

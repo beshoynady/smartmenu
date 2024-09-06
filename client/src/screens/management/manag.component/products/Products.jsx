@@ -663,7 +663,7 @@ const Products = () => {
                           <td>{product.sales ? product.sales : 0}</td>
                           <td>{product.available ? "متاح" : "غير متاح"}</td>
                           <td>
-                            {productPermission.update && (
+                            {productPermission&&productPermission.update && (
                               <a
                                 href="#editProductModal"
                                 className="edit"
@@ -681,7 +681,7 @@ const Products = () => {
                                 </i>
                               </a>
                             )}
-                            {productPermission.delete && (
+                            {productPermission&&productPermission.delete && (
                               <a
                                 href="#deleteProductModal"
                                 className="delete"

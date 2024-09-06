@@ -15,7 +15,10 @@ const createMenuCategory = async (req, res, next) => {
 
         const { name, isMain, status } = req.body;
         const createdBy = req.employee.id;
-
+        const isExist = await MenuCategoryModel.findOne({name})
+        if(isExist){
+            return res.status(400).json({ message: 'Menu category name already exists' });
+        }
         const newMenuCategory = await MenuCategoryModel.create({ name, isMain, status, order, createdBy });
         res.status(201).json(newMenuCategory);
     } catch (error) {
