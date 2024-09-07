@@ -231,11 +231,11 @@ const SideBar = () => {
                   permissionsList?.filter(
                     (permission) => permission.resource === "Tables"
                   )[0]?.read) && (
-                  <li
+                  <li className="list"
                     ref={arrowRefs.arrowtable}
                     onClick={() => openSubMenu(arrowRefs.arrowtable)}
                   >
-                    <div className="icon-link">
+                    <div className="iconlink">
                       <a href="#">
                         <span className="material-symbols-outlined icon ml-2">
                           table_restaurant
@@ -279,11 +279,11 @@ const SideBar = () => {
                   permissionsList?.filter(
                     (permission) => permission.resource === "Products"
                   )[0]?.read) && (
-                  <li
+                  <li className="list"
                     ref={arrowRefs.arrowmen}
                     onClick={() => openSubMenu(arrowRefs.arrowmen)}
                   >
-                    <div className="icon-link">
+                    <div className="iconlink">
                       <a href="#">
                         <span className="material-symbols-outlined icon ml-2">
                           restaurant_menu
@@ -330,11 +330,11 @@ const SideBar = () => {
                   permissionsList?.filter(
                     (permission) => permission.resource === "Permissions"
                   )[0]?.read) && (
-                  <li
+                  <li className="list"
                     ref={arrowRefs.arrowemp}
                     onClick={() => openSubMenu(arrowRefs.arrowemp)}
                   >
-                    <div className="icon-link">
+                    <div className="iconlink">
                       <a href="#">
                         <span className="material-symbols-outlined icon ml-2">
                           group_add
@@ -399,11 +399,11 @@ const SideBar = () => {
                   permissionsList?.filter(
                     (permission) => permission.resource === "Message"
                   )[0]?.read) && (
-                  <li
+                  <li className="list"
                     ref={arrowRefs.arrowmessage}
                     onClick={() => openSubMenu(arrowRefs.arrowmessage)}
                   >
-                    <div className="icon-link">
+                    <div className="iconlink">
                       <a href="#">
                         <span className="material-symbols-outlined icon ml-2">
                           user_attributes
@@ -443,11 +443,11 @@ const SideBar = () => {
                       permission.resource === "stock Item" ||
                       permission.resource === "Kitchen Usage"
                   )[0]?.read) && (
-                  <li
+                  <li className="list"
                     ref={arrowRefs.arrowsto}
                     onClick={() => openSubMenu(arrowRefs.arrowsto)}
                   >
-                    <div className="icon-link">
+                    <div className="iconlink">
                       <a href="#">
                         <span className="material-symbols-outlined icon ml-2">
                           receipt_long
@@ -524,11 +524,11 @@ const SideBar = () => {
                   permissionsList?.filter(
                     (permission) => permission.resource === "Supplier Data"
                   )[0]?.read) && (
-                  <li
+                  <li className="list"
                     ref={arrowRefs.arrowssupplier}
                     onClick={() => openSubMenu(arrowRefs.arrowssupplier)}
                   >
-                    <div className="icon-link">
+                    <div className="iconlink">
                       <a href="#">
                         <span className="material-symbols-outlined icon ml-2">
                           people
@@ -581,11 +581,11 @@ const SideBar = () => {
                   permissionsList?.filter(
                     (permission) => permission.resource === "Expenses"
                   )[0]?.read) && (
-                  <li
+                  <li className="list"
                     ref={arrowRefs.arrowsexp}
                     onClick={() => openSubMenu(arrowRefs.arrowsexp)}
                   >
-                    <div className="icon-link">
+                    <div className="iconlink">
                       <a href="#">
                         <span className="material-symbols-outlined icon ml-2">
                           money
@@ -620,11 +620,11 @@ const SideBar = () => {
                   permissionsList?.filter(
                     (permission) => permission.resource === "Cash Register"
                   )[0]?.read) && (
-                  <li
+                  <li className="list"
                     ref={arrowRefs.arrowsCash}
                     onClick={() => openSubMenu(arrowRefs.arrowsCash)}
                   >
-                    <div className="icon-link">
+                    <div className="iconlink">
                       <a href="#">
                         <span className="material-symbols-outlined icon ml-2">
                           monetization_on
@@ -661,7 +661,7 @@ const SideBar = () => {
                   ref={arrowRefs.arrowreports}
                   onClick={() => openSubMenu(arrowRefs.arrowreports)}
                 >
-                  <div className="icon-link">
+                  <div className="iconlink">
                     <a href="#">
                       <span className="material-symbols-outlined icon ml-2">
                         receipt_long

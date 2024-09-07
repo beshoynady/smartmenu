@@ -90,13 +90,13 @@
   background: #1c1c1c;
 }
 
-.side-bar .navlinks .list .icon-link {
+.side-bar .navlinks .list .iconlink {
   display: flex !important;
   align-items: center;
   justify-content: space-between !important;
 }
 
-.side-bar.close .navlinks .list .icon-link {
+.side-bar.close .navlinks .list .iconlink {
   display: block;
 }
 
