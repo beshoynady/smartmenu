@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { detacontext } from "../../../../App";
-import { toast } from "react-toastify";
-import jwt_decode from "jwt-decode";
 
 import { Link } from "react-router-dom";
 import "./SideBar.css";
@@ -41,7 +39,7 @@ const SideBar = () => {
   };
 
   useEffect(() => {
-    const navLinks = document.querySelectorAll(".sid-ebar.close .navlinks .list");
+    const navLinks = document.querySelectorAll(".side-bar.close .navlinks .list");
 
     navLinks.forEach((link) => {
       link.addEventListener("click", () => {
@@ -732,4 +730,4 @@ const SideBar = () => {
   );
 };
 
-export default -SideBar;
+export default SideBar;
