@@ -15,6 +15,7 @@ import { CChartLine, CChartBar } from "@coreui/react-chartjs";
 import { cilArrowTop, cilOptions } from "@coreui/icons";
 import "@coreui/coreui/dist/css/coreui.min.css";
 
+
 const ManagerDashBoard = () => {
   return (
     <section
