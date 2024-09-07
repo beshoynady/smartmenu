@@ -30,7 +30,7 @@
   width: 100%;
   display: flex;
   align-items: center;
-  background-color: #23272a; /* لون أغمق */
+  background-color: #23272a; 
 }
 
 .side-bar .logo-details i {
@@ -76,31 +76,31 @@
   border-radius: 10px;
 }
 
-.side-bar .nav-links li {
+.side-bar .nav-links .list {
   position: relative;
   list-style: none;
   transition: all 0.4s ease;
 }
 
-.side-bar .nav-links li:not(:last-child) {
+.side-bar .nav-links .list:not(:last-child) {
   border-bottom: 1px solid #444; 
 }
 
-.side-bar .nav-links li:hover {
+.side-bar .nav-links .list:hover {
   background: #1c1c1c;
 }
 
-.side-bar .nav-links li .icon-link {
+.side-bar .nav-links .list .icon-link {
   display: flex !important;
   align-items: center;
   justify-content: space-between !important;
 }
 
-.side-bar.close .nav-links li .icon-link {
+.side-bar.close .nav-links .list .icon-link {
   display: block;
 }
 
-.side-bar .nav-links li i {
+.side-bar .nav-links .list i {
   height: 50px;
   min-width: 55px;
   text-align: center;
@@ -111,7 +111,7 @@
   transition: all 0.3s ease;
 }
 
-.side-bar .nav-links li.showMenu i.arrow {
+.side-bar .nav-links .list.showMenu i.arrow {
   transform: rotate(-180deg);
 }
 
@@ -119,49 +119,49 @@
   display: none;
 }
 
-.side-bar .nav-links li a {
+.side-bar .nav-links .list a {
   display: flex;
   align-items: center;
   text-decoration: none;
 }
 
-.side-bar .nav-links li a .icon {
+.side-bar .nav-links .list a .icon {
   font-size: 40px;
   color: white;
   margin-right: 10px;
   margin-left: 10px;
 }
 
-.side-bar.close .nav-links li a .icon {
+.side-bar.close .nav-links .list a .icon {
   font-size: 30px;
   color: white;
   margin-right: 10px;
 }
 
-.side-bar .nav-links li a .link_name {
+.side-bar .nav-links .list a .link_name {
   font-size: 18px;
   font-weight: 400;
   color: #fff;
   transition: all 0.4s ease;
 }
 
-.side-bar.close .nav-links li a .link_name {
+.side-bar.close .nav-links .list a .link_name {
   opacity: 0;
   pointer-events: none;
 }
 
-.side-bar .nav-links li .sub-menu {
+.side-bar .nav-links .list .sub-menu {
   padding: 6px 6px 14px 80px;
   margin-top: -10px;
   background: #2c2f33;
   display: none;
 }
 
-.side-bar .nav-links li.showMenu .sub-menu {
+.side-bar .nav-links .list.showMenu .sub-menu {
   display: block;
 }
 
-.side-bar .nav-links li .sub-menu a {
+.side-bar .nav-links .list .sub-menu a {
   color: #fff;
   font-size: 15px;
   padding: 5px 0;
@@ -170,11 +170,11 @@
   transition: all 0.3s ease;
 }
 
-.side-bar .nav-links li .sub-menu a:hover {
+.side-bar .nav-links .list .sub-menu a:hover {
   opacity: 1;
 }
 
-.side-bar.close .nav-links li .sub-menu {
+.side-bar.close .nav-links .list .sub-menu {
   position: absolute;
   left: 100%;
   top: -10px;
@@ -187,24 +187,24 @@
   transition: 0s;
 }
 
-.side-bar.close .nav-links li:hover .sub-menu {
+.side-bar.close .nav-links .list:hover .sub-menu {
   top: 0;
   opacity: 1;
   pointer-events: auto;
   transition: all 0.4s ease;
 }
 
-.side-bar .nav-links li .sub-menu .link_name {
+.side-bar .nav-links .list .sub-menu .link_name {
   display: none;
 }
 
-.side-bar.close .nav-links li .sub-menu .link_name {
+.side-bar.close .nav-links .list .sub-menu .link_name {
   font-size: 18px;
   opacity: 1;
   display: block;
 }
 
-.side-bar .nav-links li .sub-menu.blank {
+.side-bar .nav-links .list .sub-menu.blank {
   opacity: 1;
   pointer-events: auto;
   padding: 3px 20px 6px 16px;
@@ -212,7 +212,7 @@
   pointer-events: none;
 }
 
-.side-bar .nav-links li:hover .sub-menu.blank {
+.side-bar .nav-links .list:hover .sub-menu.blank {
   top: 50%;
   transform: translateY(-50%);
 }
@@ -306,20 +306,20 @@
 }
 
 @media (max-width: 720px) {
-  .side-bar.close .nav-links li.hover .sub-menu {
+  .side-bar.close .nav-links .list.hover .sub-menu {
     top: 0;
     opacity: 1;
     pointer-events: auto;
     transition: all 0.4s ease;
   }
-  .side-bar .nav-links li.hover .sub-menu.blank {
+  .side-bar .nav-links .list.hover .sub-menu.blank {
     top: 50%;
     transform: translateY(-50%);
   }
 }
 
 /* @media (max-width: 400px) {
-  .side-bar.close .nav-links li .sub-menu {
+  .side-bar.close .nav-links .list .sub-menu {
     display: none;
   }
 
