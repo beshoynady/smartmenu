@@ -9,7 +9,7 @@ import {
   CDropdownItem,
 } from "@coreui/react";
 
-import { CIcon } from '@coreui/icons-react';
+import CIcon from '@coreui/icons-react'; 
 
 import { CChartLine, CChartBar } from "@coreui/react-chartjs";
 import { cilArrowTop, cilOptions } from "@coreui/icons";
