@@ -750,7 +750,7 @@ const ManagerDash = () => {
         </div>
       </div>
 
-      <div className="container h-auto mt-4">
+      <div className="container-lg h-auto mt-4">
         <div className="d-flex flex-wrap align-items-center justify-content-start">
           <div className="col-lg-3 col-md-6 mb-3">
             <div className="card text-white bg-primary h-100">

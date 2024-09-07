@@ -45,7 +45,7 @@ const ManagerDashBoard = () => {
           </div>
         </div>
       </div>
-      <div className="container h-auto mt-4" style={{direction:'ltr'}}>
+      <div className="container-lg h-auto mt-4">
         <CRow>
           <CCol sm={6} lg={4}>
             <CWidgetStatsA
