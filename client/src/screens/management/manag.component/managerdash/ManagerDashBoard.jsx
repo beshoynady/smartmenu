@@ -9,16 +9,39 @@ import {
   CDropdownItem,
 } from "@coreui/react";
 
-import CIcon from '@coreui/icons-react'; 
+import CIcon from "@coreui/icons-react";
 
 import { CChartLine, CChartBar } from "@coreui/react-chartjs";
 import { cilArrowTop, cilOptions } from "@coreui/icons";
 import "@coreui/coreui/dist/css/coreui.min.css";
 
-function ManagerDashBoard() {
+const ManagerDashBoard = () => {
   return (
-    <section className="w-100 h-100 d-flex align-items-center justfiy-content-start p-0 m-0">
-      <div className="container-lg">
+    <section
+      className="w-100 mw-100 p-1 m-0"
+      style={{ scrollbarWidth: "none" }}
+    >
+      <div className="w-100 p-0 m-0">
+        <div className="w-100 d-flex flex-wrap align-items-center justify-content-between">
+          <div className="w-100">
+            <div
+              className="d-flex justify-content-between align-items-center py-1 px-2 bg-primary text-light rounded"
+              style={{ minHeight: "50px" }}
+            >
+              <h1 className="h5 mb-0">الصفحة الرئيسية</h1>
+              <a
+                href={`http://${window.location.hostname}`}
+                target="_blank"
+                className="btn btn-outline-light"
+              >
+                <i className="bx bx-world"></i>
+                <span className="ms-2">زيارة الموقع</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="container h-auto mt-4">
         <CRow>
           <CCol sm={6}>
             <CWidgetStatsA

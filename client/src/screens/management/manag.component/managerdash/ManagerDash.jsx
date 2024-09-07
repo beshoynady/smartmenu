@@ -29,8 +29,6 @@ const waiterSocket = io(`${process.env.REACT_APP_API_URL}/waiter`, {
   reconnectionDelay: 1000,
 });
 
-
-
 const ManagerDash = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
   const token = localStorage.getItem("token_e");
@@ -51,7 +49,7 @@ const ManagerDash = () => {
     setstartpagination,
     setendpagination,
     isRefresh,
-    setisRefresh
+    setisRefresh,
   } = useContext(detacontext);
 
   const [showModal, setShowModal] = useState(false);
@@ -72,7 +70,7 @@ const ManagerDash = () => {
     try {
       if (!token) {
         toast.error("رجاء تسجيل الدخول مره اخري");
-        return; 
+        return;
       }
 
       // Fetch orders from API
@@ -123,11 +121,15 @@ const ManagerDash = () => {
         `${apiUrl}/api/shift/${shiftId}`,
         config
       );
-      const todayDate = new Date().toISOString().split('T')[0];
+      const todayDate = new Date().toISOString().split("T")[0];
 
-      const startTime = new Date(`${todayDate}T${shiftData.data.startTime}:00Z`).getTime();
-      const endTime = new Date(`${todayDate}T${shiftData.data.endTime}:00Z`).getTime();
-      
+      const startTime = new Date(
+        `${todayDate}T${shiftData.data.startTime}:00Z`
+      ).getTime();
+      const endTime = new Date(
+        `${todayDate}T${shiftData.data.endTime}:00Z`
+      ).getTime();
+
       const shiftOrders = dayOrders.filter((order) => {
         const orderTime = new Date(order.createdAt).getTime();
         return orderTime >= startTime && orderTime <= endTime;
@@ -141,12 +143,11 @@ const ManagerDash = () => {
   };
 
   useEffect(() => {
-    console.log({isRefresh})
-    fetchOrdersData()
-  }, [isRefresh])
-  
+    console.log({ isRefresh });
+    fetchOrdersData();
+  }, [isRefresh]);
 
-  const orderTypeEN = ['Internal', 'Delivery', 'Takeaway'];
+  const orderTypeEN = ["Internal", "Delivery", "Takeaway"];
   const orderTypeAR = ["داخلي", "ديليفري", "تيك اوي"];
 
   const statusEN = ["Pending", "Approved", "Cancelled"];
@@ -192,7 +193,7 @@ const ManagerDash = () => {
 
         if (status === "Approved") {
           setupdate(!update);
-          setisRefresh(!isRefresh)
+          setisRefresh(!isRefresh);
           cashierSocket.emit("orderkitchen", "استلام اوردر جديد");
         }
       }
@@ -337,10 +338,10 @@ const ManagerDash = () => {
       if (orderData) {
         setupdate(!update);
         if (orderData.help === "Requests assistance") {
-          setisRefresh(!isRefresh)
+          setisRefresh(!isRefresh);
           cashierSocket.emit("helprequest", `عميل يطلب مساعده-${waiter}`);
         } else if (orderData.help === "Requests bill") {
-          setisRefresh(!isRefresh)
+          setisRefresh(!isRefresh);
           cashierSocket.emit("helprequest", `عميل يطلب الحساب-${waiter}`);
         }
       }
@@ -495,12 +496,16 @@ const ManagerDash = () => {
       const isActive = false;
       const cashier = employeeLoginInfo.id;
 
-      const changePaymentstauts = await axios.put(`${apiUrl}/api/order/${id}`, {
-        payment_status,
-        paymentMethod,
-        isActive,
-        cashier,
-      }, config);
+      const changePaymentstauts = await axios.put(
+        `${apiUrl}/api/order/${id}`,
+        {
+          payment_status,
+          paymentMethod,
+          isActive,
+          cashier,
+        },
+        config
+      );
       const changePaymentstautsData = changePaymentstauts.data;
       if (changePaymentstautsData) {
         await RevenueRecording(changePaymentstautsData.total, revenueAmount);
@@ -1077,7 +1082,15 @@ const ManagerDash = () => {
                                   </select>
                                 )}
                               </td>
-                              <td>{orderTypeAR[orderTypeEN.findIndex(type=> type === recent.orderType)]}</td>
+                              <td>
+                                {
+                                  orderTypeAR[
+                                    orderTypeEN.findIndex(
+                                      (type) => type === recent.orderType
+                                    )
+                                  ]
+                                }
+                              </td>
                               <td>
                                 {recent.payment_status === "Pending" ? (
                                   <a
@@ -1282,7 +1295,10 @@ const ManagerDash = () => {
 
       {/* تاكيد الدفع */}
       <div id="paymentModal" className="modal fade">
-        <div className="modal-dialog modal-lg" style={{width:'350px', maxWidth:'95%'}}>
+        <div
+          className="modal-dialog modal-lg"
+          style={{ width: "350px", maxWidth: "95%" }}
+        >
           <div className="modal-content shadow-lg border-0 rounded ">
             <div className="modal-header d-flex flex-wrap align-items-center text-light bg-primary">
               <h4 className="modal-title">تاكيد دفع الفاتورة</h4>
@@ -1302,7 +1318,10 @@ const ManagerDash = () => {
             >
               <div className="modal-body d-flex flex-wrap align-items-center p-3 text-right">
                 <div className="form-group w-100 d-flex align-items-center justify-content-between">
-                  <label htmlFor="totalOrder" className="form-label col-6 text-dark text-right">
+                  <label
+                    htmlFor="totalOrder"
+                    className="form-label col-6 text-dark text-right"
+                  >
                     اجمالي المطلوب:
                   </label>
                   <input
@@ -1314,7 +1333,10 @@ const ManagerDash = () => {
                   />
                 </div>
                 <div className="form-group w-100 d-flex align-items-center justify-content-between">
-                  <label htmlFor="paidAmount" className="form-label col-6 text-dark text-right">
+                  <label
+                    htmlFor="paidAmount"
+                    className="form-label col-6 text-dark text-right"
+                  >
                     المدفوع:
                   </label>
                   <input
@@ -1327,7 +1349,10 @@ const ManagerDash = () => {
                   />
                 </div>
                 <div className="form-group w-100 d-flex align-items-center justify-content-between">
-                  <label htmlFor="remainingAmount" className="form-label col-6 text-dark text-right">
+                  <label
+                    htmlFor="remainingAmount"
+                    className="form-label col-6 text-dark text-right"
+                  >
                     الباقي:
                   </label>
                   <input
@@ -1339,7 +1364,10 @@ const ManagerDash = () => {
                   />
                 </div>
                 <div className="form-group w-100 d-flex align-items-center justify-content-between">
-                  <label htmlFor="cashOutAmount" className="form-label col-6 text-dark text-right">
+                  <label
+                    htmlFor="cashOutAmount"
+                    className="form-label col-6 text-dark text-right"
+                  >
                     المبلغ الخارج من الخزينة:
                   </label>
                   <input
@@ -1351,7 +1379,10 @@ const ManagerDash = () => {
                   />
                 </div>
                 <div className="form-group d-flex flex-nowrap w-100">
-                  <label htmlFor="paymentMethod" className="form-label col-6 text-dark text-right">
+                  <label
+                    htmlFor="paymentMethod"
+                    className="form-label col-6 text-dark text-right"
+                  >
                     طريقه الدفع:
                   </label>
                   <select
@@ -1370,7 +1401,10 @@ const ManagerDash = () => {
                   </select>
                 </div>
                 <div className="form-group d-flex flex-nowrap w-100">
-                  <label htmlFor="registerSelected" className="form-label col-6 text-dark text-right">
+                  <label
+                    htmlFor="registerSelected"
+                    className="form-label col-6 text-dark text-right"
+                  >
                     الخزينة:
                   </label>
                   {registers.length > 0 ? (
