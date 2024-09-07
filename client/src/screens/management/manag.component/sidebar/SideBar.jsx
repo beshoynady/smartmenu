@@ -68,7 +68,7 @@ const SideBar = () => {
           <>
             <div
               ref={sidebarRef}
-              className="sidebar close"
+              className="side-bar close"
               style={{ scrollbarWidth: "thin" }}
             >
               <div className="logo-details">
