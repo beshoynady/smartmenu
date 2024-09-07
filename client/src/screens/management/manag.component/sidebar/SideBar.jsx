@@ -80,7 +80,7 @@ const SideBar = () => {
                   role === "owner") && (
                   <li className="list">
                     <Link to="/management">
-                      <span className="material-symbols-outlined icon ml-2">
+                      <span className="material-symbols-outlined list-icon ml-2">
                         dashboard
                       </span>
                       <span className="linkname">لوحة التحكم</span>
@@ -101,7 +101,7 @@ const SideBar = () => {
                   role === "owner") && (
                   <li className="list">
                     <Link to="managerdashboard">
-                      <span className="material-symbols-outlined icon ml-2">
+                      <span className="material-symbols-outlined list-icon ml-2">
                         dashboard
                       </span>
                       <span className="linkname">داش بورد</span>
@@ -123,7 +123,7 @@ const SideBar = () => {
                   role === "owner") && (
                   <li className="list">
                     <Link to="pos">
-                      <span className="material-symbols-outlined icon ml-2">
+                      <span className="material-symbols-outlined list-icon ml-2">
                         point_of_sale
                       </span>
                       <span className="linkname">نقطة البيع</span>
@@ -145,7 +145,7 @@ const SideBar = () => {
                   role === "owner") && (
                   <li className="list">
                     <Link to="kitchen">
-                      <span className="material-symbols-outlined icon ml-2">
+                      <span className="material-symbols-outlined list-icon ml-2">
                         cooking
                       </span>
                       <span className="linkname">المطبخ</span>
@@ -167,7 +167,7 @@ const SideBar = () => {
                   role === "waiter") && (
                   <li className="list">
                     <Link to="waiter">
-                      <span className="material-symbols-outlined icon ml-2">
+                      <span className="material-symbols-outlined list-icon ml-2">
                         concierge
                       </span>
                       <span className="linkname">الويتر</span>
@@ -189,7 +189,7 @@ const SideBar = () => {
                   role === "owner") && (
                   <li className="list">
                     <Link to="deliveryman">
-                      <span className="material-symbols-outlined icon ml-2">
+                      <span className="material-symbols-outlined list-icon ml-2">
                         directions_bike
                       </span>
                       <span className="linkname">الديلفري</span>
@@ -211,7 +211,7 @@ const SideBar = () => {
                   )[0]?.read) && (
                   <li className="list">
                     <Link to="orders">
-                      <span className="material-symbols-outlined icon ml-2">
+                      <span className="material-symbols-outlined list-icon ml-2">
                         list_alt
                       </span>
                       <span className="linkname">الطلبات</span>
@@ -237,7 +237,7 @@ const SideBar = () => {
                   >
                     <div className="iconlink">
                       <a href="#">
-                        <span className="material-symbols-outlined icon ml-2">
+                        <span className="material-symbols-outlined list-icon ml-2">
                           table_restaurant
                         </span>
                         <span className="linkname">الطاولات</span>
@@ -285,7 +285,7 @@ const SideBar = () => {
                   >
                     <div className="iconlink">
                       <a href="#">
-                        <span className="material-symbols-outlined icon ml-2">
+                        <span className="material-symbols-outlined list-icon ml-2">
                           restaurant_menu
                         </span>
                         <span className="linkname">المنيو</span>
@@ -336,7 +336,7 @@ const SideBar = () => {
                   >
                     <div className="iconlink">
                       <a href="#">
-                        <span className="material-symbols-outlined icon ml-2">
+                        <span className="material-symbols-outlined list-icon ml-2">
                           group_add
                         </span>
                         <span className="linkname">الموظفون</span>
@@ -405,7 +405,7 @@ const SideBar = () => {
                   >
                     <div className="iconlink">
                       <a href="#">
-                        <span className="material-symbols-outlined icon ml-2">
+                        <span className="material-symbols-outlined list-icon ml-2">
                           user_attributes
                         </span>
                         <span className="linkname">المستخدمين</span>
@@ -449,7 +449,7 @@ const SideBar = () => {
                   >
                     <div className="iconlink">
                       <a href="#">
-                        <span className="material-symbols-outlined icon ml-2">
+                        <span className="material-symbols-outlined list-icon ml-2">
                           receipt_long
                         </span>
                         <span className="linkname">المخزون</span>
@@ -530,7 +530,7 @@ const SideBar = () => {
                   >
                     <div className="iconlink">
                       <a href="#">
-                        <span className="material-symbols-outlined icon ml-2">
+                        <span className="material-symbols-outlined list-icon ml-2">
                           people
                         </span>
                         <span className="linkname">الموردين</span>
@@ -587,7 +587,7 @@ const SideBar = () => {
                   >
                     <div className="iconlink">
                       <a href="#">
-                        <span className="material-symbols-outlined icon ml-2">
+                        <span className="material-symbols-outlined list-icon ml-2">
                           money
                         </span>
                         <span className="linkname">المصروفات</span>
@@ -626,7 +626,7 @@ const SideBar = () => {
                   >
                     <div className="iconlink">
                       <a href="#">
-                        <span className="material-symbols-outlined icon ml-2">
+                        <span className="material-symbols-outlined list-icon ml-2">
                           monetization_on
                         </span>
                         <span className="linkname">الخزينة</span>
@@ -663,7 +663,7 @@ const SideBar = () => {
                 >
                   <div className="iconlink">
                     <a href="#">
-                      <span className="material-symbols-outlined icon ml-2">
+                      <span className="material-symbols-outlined list-icon ml-2">
                         receipt_long
                       </span>
                       <span className="linkname">التقارير</span>
@@ -702,7 +702,7 @@ const SideBar = () => {
                   )[0]?.read) && (
                   <li className="list">
                     <Link to="info">
-                      <span className="material-symbols-outlined icon ml-2">
+                      <span className="material-symbols-outlined list-icon ml-2">
                         settings
                       </span>
                       <span className="linkname">الإعدادات</span>

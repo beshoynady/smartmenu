@@ -125,14 +125,14 @@
   text-decoration: none;
 }
 
-.side-bar .navlinks .list a .icon {
+.side-bar .navlinks .list a .list-icon {
   font-size: 40px;
   color: white;
   margin-right: 10px;
   margin-left: 10px;
 }
 
-.side-bar.close .navlinks .list a .icon {
+.side-bar.close .navlinks .list a .list-icon {
   font-size: 30px;
   color: white;
   margin-right: 10px;
