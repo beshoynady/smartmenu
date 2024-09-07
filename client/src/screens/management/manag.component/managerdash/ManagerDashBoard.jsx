@@ -68,7 +68,7 @@ const ManagerDashBoard = () => {
                   >
                     <CIcon icon={cilOptions} className="text-white" />
                   </CDropdownToggle>
-                  <CDropdownMenu className="d-flex flex-column">
+                  <CDropdownMenu className="flex-column">
                     <CDropdownItem>Action</CDropdownItem>
                     <CDropdownItem>Another action</CDropdownItem>
                     <CDropdownItem>Something else here...</CDropdownItem>
@@ -170,7 +170,7 @@ const ManagerDashBoard = () => {
                   >
                     <CIcon icon={cilOptions} className="text-white" />
                   </CDropdownToggle>
-                  <CDropdownMenu className="d-flex flex-column">
+                  <CDropdownMenu className="flex-column">
                     <CDropdownItem>Action</CDropdownItem>
                     <CDropdownItem>Another action</CDropdownItem>
                     <CDropdownItem>Something else here...</CDropdownItem>
@@ -271,7 +271,7 @@ const ManagerDashBoard = () => {
                   >
                     <CIcon icon={cilOptions} className="text-white" />
                   </CDropdownToggle>
-                  <CDropdownMenu className="d-flex flex-column">
+                  <CDropdownMenu className="flex-column">
                     <CDropdownItem>Action</CDropdownItem>
                     <CDropdownItem>Another action</CDropdownItem>
                     <CDropdownItem>Something else here...</CDropdownItem>
@@ -356,7 +356,7 @@ const ManagerDashBoard = () => {
                   >
                     <CIcon icon={cilOptions} className="text-white" />
                   </CDropdownToggle>
-                  <CDropdownMenu className="d-flex flex-column">
+                  <CDropdownMenu className="flex-column">
                     <CDropdownItem>Action</CDropdownItem>
                     <CDropdownItem>Another action</CDropdownItem>
                     <CDropdownItem>Something else here...</CDropdownItem>
