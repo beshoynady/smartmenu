@@ -14,6 +14,7 @@ import CIcon from "@coreui/icons-react";
 import { CChartLine, CChartBar } from "@coreui/react-chartjs";
 import { cilArrowTop, cilOptions } from "@coreui/icons";
 import "@coreui/coreui/dist/css/coreui.min.css";
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 
 const ManagerDashBoard = () => {
@@ -46,7 +47,7 @@ const ManagerDashBoard = () => {
       </div>
       <div className="container h-auto mt-4" style={{direction:'ltr'}}>
         <CRow>
-          <CCol sm={6} md={4}>
+          <CCol sm={6} lg={4}>
             <CWidgetStatsA
               className="mb-4"
               color="primary"
@@ -148,7 +149,7 @@ const ManagerDashBoard = () => {
               }
             />
           </CCol>
-          <CCol sm={6} md={4}>
+          <CCol sm={6} lg={4}>
             <CWidgetStatsA
               className="mb-4"
               color="info"
@@ -249,7 +250,7 @@ const ManagerDashBoard = () => {
               }
             />
           </CCol>
-          <CCol sm={6} md={4}>
+          <CCol sm={6} lg={4}>
             <CWidgetStatsA
               className="mb-4"
               color="warning"
@@ -334,7 +335,7 @@ const ManagerDashBoard = () => {
               }
             />
           </CCol>
-          <CCol sm={6} md={4}>
+          <CCol sm={6} lg={4}>
             <CWidgetStatsA
               className="mb-4"
               color="danger"
