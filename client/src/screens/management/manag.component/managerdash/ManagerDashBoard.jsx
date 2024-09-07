@@ -44,9 +44,9 @@ const ManagerDashBoard = () => {
           </div>
         </div>
       </div>
-      <div className="container h-auto mt-4">
+      <div className="container h-auto mt-4" style={{direction:'ltr'}}>
         <CRow>
-          <CCol sm={6}>
+          <CCol sm={6} md={4}>
             <CWidgetStatsA
               className="mb-4"
               color="primary"
@@ -68,7 +68,7 @@ const ManagerDashBoard = () => {
                   >
                     <CIcon icon={cilOptions} className="text-white" />
                   </CDropdownToggle>
-                  <CDropdownMenu>
+                  <CDropdownMenu className="d-flex flex-column">
                     <CDropdownItem>Action</CDropdownItem>
                     <CDropdownItem>Another action</CDropdownItem>
                     <CDropdownItem>Something else here...</CDropdownItem>
@@ -148,7 +148,7 @@ const ManagerDashBoard = () => {
               }
             />
           </CCol>
-          <CCol sm={6}>
+          <CCol sm={6} md={4}>
             <CWidgetStatsA
               className="mb-4"
               color="info"
@@ -170,7 +170,7 @@ const ManagerDashBoard = () => {
                   >
                     <CIcon icon={cilOptions} className="text-white" />
                   </CDropdownToggle>
-                  <CDropdownMenu>
+                  <CDropdownMenu className="d-flex flex-column">
                     <CDropdownItem>Action</CDropdownItem>
                     <CDropdownItem>Another action</CDropdownItem>
                     <CDropdownItem>Something else here...</CDropdownItem>
@@ -249,7 +249,7 @@ const ManagerDashBoard = () => {
               }
             />
           </CCol>
-          <CCol sm={6}>
+          <CCol sm={6} md={4}>
             <CWidgetStatsA
               className="mb-4"
               color="warning"
@@ -271,7 +271,7 @@ const ManagerDashBoard = () => {
                   >
                     <CIcon icon={cilOptions} className="text-white" />
                   </CDropdownToggle>
-                  <CDropdownMenu>
+                  <CDropdownMenu className="d-flex flex-column">
                     <CDropdownItem>Action</CDropdownItem>
                     <CDropdownItem>Another action</CDropdownItem>
                     <CDropdownItem>Something else here...</CDropdownItem>
@@ -334,7 +334,7 @@ const ManagerDashBoard = () => {
               }
             />
           </CCol>
-          <CCol sm={6}>
+          <CCol sm={6} md={4}>
             <CWidgetStatsA
               className="mb-4"
               color="danger"
@@ -356,7 +356,7 @@ const ManagerDashBoard = () => {
                   >
                     <CIcon icon={cilOptions} className="text-white" />
                   </CDropdownToggle>
-                  <CDropdownMenu>
+                  <CDropdownMenu className="d-flex flex-column">
                     <CDropdownItem>Action</CDropdownItem>
                     <CDropdownItem>Another action</CDropdownItem>
                     <CDropdownItem>Something else here...</CDropdownItem>
