@@ -99,6 +99,26 @@ const SideBar = () => {
 
                 {/* POS */}
                 {(isProgrammer ||
+                  role === "manager" ||
+                  role === "owner") && (
+                  <li>
+                    <Link to="managerdashboard">
+                      <span className="material-symbols-outlined icon ml-2">
+                        dashboard
+                      </span>
+                      <span className="link_name">داش بورد</span>
+                    </Link>
+                    <ul className="sub-menu blank">
+                      <li>
+                        <Link to="managerdashboard" className="link_name">
+                          داش بورد
+                        </Link>
+                      </li>
+                    </ul>
+                  </li>
+                )}
+                {/* POS */}
+                {(isProgrammer ||
                   role === "cashier" ||
                   role === "waiter" ||
                   role === "manager" ||

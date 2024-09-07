@@ -18,6 +18,9 @@ const ManagLayout = React.lazy(() =>
 const ManagerDash = React.lazy(() =>
   import("./screens/management/manag.component/managerdash/ManagerDash")
 );
+const ManagerDashBoard = React.lazy(() =>
+  import("./screens/management/manag.component/managerdash/ManagerDashBoard.jsx")
+);
 const Info = React.lazy(() =>
   import("./screens/management/manag.component/setting/info")
 );
@@ -2398,6 +2401,14 @@ function App() {
               }
             />
             {/* <Route index element={<Suspense fallback={<LoadingPage />}><ManagerDash /></Suspense>} /> */}
+            <Route
+              path="managerdashboard"
+              element={
+                <Suspense fallback={<LoadingPage />}>
+                  <ManagerDashBoard/>
+                </Suspense>
+              }
+            />
             <Route
               path="info"
               element={
