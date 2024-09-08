@@ -17,6 +17,11 @@ import "@coreui/coreui/dist/css/coreui.min.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const ManagerDashBoard = () => {
+
+  const getStyle = (variable) => {
+  return getComputedStyle(document.documentElement).getPropertyValue(variable);
+};
+
   return (
     <section
       className="w-100 mw-100 p-1 m-0"
