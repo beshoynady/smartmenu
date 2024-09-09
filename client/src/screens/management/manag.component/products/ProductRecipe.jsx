@@ -110,6 +110,205 @@ const ProductRecipe = () => {
   const [recipeOfProduct, setrecipeOfProduct] = useState(null);
   const [ingredients, setingredients] = useState([]);
   const [producttotalcost, setproducttotalcost] = useState();
+  const [serviceDetails, setserviceDetails] = useState([]);
+  const [preparationTime, setpreparationTime] = useState(0);
+  const [numberOfMeals, setnumberOfMeals] = useState(1);
+  const [itemId, setitemId] = useState("");
+  const [name, setname] = useState("");
+  const [amount, setamount] = useState();
+  const [costofitem, setcostofitem] = useState();
+  const [unit, setunit] = useState("");
+  const [totalcostofitem, settotalcostofitem] = useState();
+
+  const createRecipe = async (e) => {
+    e.preventDefault();
+    if (!token) {
+      // Handle case where token is not available
+      toast.error("رجاء تسجيل الدخول مره اخري");
+      return;
+    }
+    try {
+      if (productRecipePermission && !productRecipePermission.create) {
+        toast.warn("ليس لك صلاحية لانشاء الوصفات");
+        return;
+      }
+      if (!itemId || !name || !amount || !unit) {
+        toast.error("يرجى تعبئة جميع الحقول بشكل صحيح");
+        return;
+      }
+
+      let newIngredients;
+      let nerServiceDetails;
+
+      if (recipeOfProduct._id) {
+        // If there are existing ingredients, create a new array with the added ingredient
+        newIngredients = [
+          ...ingredients,
+          { itemId, name, amount, unit, wastePercentage },
+        ];
+        nerServiceDetails = [
+          ...serviceDetails,
+          { itemId, name, amount, unit, wastePercentage },
+        ];
+
+        // Update the recipe by sending a PUT request
+        const addRecipeToProduct = await axios.put(
+          `${apiUrl}/api/recipe/${recipeOfProduct._id}`,
+          { ingredients: newIngredients, serviceDetails: newIngredients },
+          config
+        );
+
+        if (addRecipeToProduct.status === 200) {
+          const recipedata = await addRecipeToProduct.data;
+          console.log({ sizeId: recipedata.sizeId, sizes });
+          if (size && product.hasSizes) {
+            sizes.map((si) => {
+              if (si._id === recipedata.sizeId) {
+                size.sizeRecipe = recipedata._id;
+              }
+            });
+            console.log({ productId, sizes });
+            const updateProduct = await axios.put(
+              `${apiUrl}/api/product/withoutimage/${productId}`,
+              { sizes },
+              config
+            );
+          } else if (!product.hasSizes) {
+            const productRecipe = recipedata._id;
+            const updateProduct = await axios.put(
+              `${apiUrl}/api/product/withoutimage/${productId}`,
+              { productRecipe },
+              config
+            );
+          }
+          toast.success("تم تحديث الوصفة بنجاح");
+        } else {
+          throw new Error("Failed to update recipe");
+        }
+
+        getProductRecipe(productId, sizeId); // Refresh the product recipe
+      } else {
+        const sizeName = size ? size.sizeName : "";
+        const sizeId = size ? size._id : "";
+
+        // If there are no existing ingredients, create a new array with the single ingredient
+        newIngredients = [{ itemId, name, amount, unit, wastePercentage }];
+        newIngredients = [{ itemId, name, amount, unit, wastePercentage }];
+
+        // Add the new recipe to the product by sending a POST request
+        const addRecipeToProduct = await axios.post(
+          `${apiUrl}/api/recipe`,
+          {
+            productId,
+            productName,
+            sizeName,
+            sizeId,
+            numberOfMeals,
+            preparationTime,
+            ingredients: newIngredients,
+            serviceDetails: nerServiceDetails,
+          },
+          config
+        );
+
+        if (addRecipeToProduct.status === 201) {
+          const recipedata = await addRecipeToProduct.data;
+          console.log({ sizeId: recipedata.sizeId, sizes });
+          if (size && product.hasSizes) {
+            sizes.map((si) => {
+              if (si._id === recipedata.sizeId) {
+                size.sizeRecipe = recipedata._id;
+              }
+            });
+            console.log({ productId, sizes });
+            const updateProduct = await axios.put(
+              `${apiUrl}/api/product/withoutimage/${productId}`,
+              { sizes },
+              config
+            );
+          } else if (!product.hasSizes) {
+            const productRecipe = recipedata._id;
+            const updateProduct = await axios.put(
+              `${apiUrl}/api/product/withoutimage/${productId}`,
+              { productRecipe },
+              config
+            );
+          }
+          getProductRecipe(productId, sizeId); // Refresh the product recipe
+          setitemId("");
+          setname("");
+          setamount("");
+          setunit("");
+          setingredients([]);
+          setserviceDetails([]);
+          setpreparationTime(0);
+          setnumberOfMeals(1);
+          toast.success("تم إضافة المكون بنجاح"); // Notify success in adding ingredient
+        } else {
+          throw new Error("Failed to add recipe");
+        }
+      }
+    } catch (error) {
+      console.error("Error creating/updating recipe:", error); // Log any errors that occur during the process
+      toast.error("حدث خطأ أثناء إنشاء/تحديث الوصفة"); // Notify error in creating/updating recipe
+    }
+  };
+
+  const [recipeid, setrecipeid] = useState("");
+
+  const editRecipe = async (e) => {
+    try {
+      e.preventDefault();
+      if (!token) {
+        // Handle case where token is not available
+        toast.error("رجاء تسجيل الدخول مره اخري");
+        return;
+      }
+      if (productRecipePermission && !productRecipePermission.update) {
+        toast.warn("ليس لك صلاحية لتعديل الوصفات");
+        return;
+      }
+
+      const newIngredients = ingredients.map((ingredient) => {
+        if (ingredient.itemId === itemId) {
+          return { itemId, name, amount, costofitem, unit, totalcostofitem };
+        } else {
+          return ingredient;
+        }
+      });
+
+      let total = 0;
+      for (let i = 0; i < newIngredients.length; i++) {
+        total += newIngredients[i].totalcostofitem;
+      }
+      const totalcost = Math.round(total * 100) / 100;
+
+      const editRecipeToProduct = await axios.put(
+        `${apiUrl}/api/recipe/${recipeOfProduct._id}`,
+        { ingredients: newIngredients, totalcost },
+        config
+      );
+
+      if (editRecipeToProduct) {
+        console.log({ editRecipeToProduct });
+        getProductRecipe(productId, sizeId);
+        setitemId("");
+        setname("");
+        setamount("");
+        setunit("");
+        setingredients([]);
+        setserviceDetails([]);
+        setpreparationTime(0);
+        setnumberOfMeals(1);
+        toast.success("تم تعديل المكون بنجاح");
+      } else {
+        toast.error("حدث خطأ اثناء تعديل المكون ! حاول مره اخري");
+      }
+    } catch (error) {
+      console.error("Error editing recipe:", error.message);
+      toast.error("حدث خطأ أثناء تعديل الوصفة");
+    }
+  };
 
   const getProductRecipe = async (productId, sizeId) => {
     if (!token) {
@@ -204,204 +403,6 @@ const ProductRecipe = () => {
     setsize(product.sizes.find((size) => size._id === sizeid));
     setsizeId(sizeid);
     getProductRecipe(productId, sizeid);
-  };
-
-  const [itemId, setitemId] = useState("");
-  const [name, setname] = useState("");
-  const [amount, setamount] = useState();
-  const [costofitem, setcostofitem] = useState();
-  const [unit, setunit] = useState("");
-  const [totalcostofitem, settotalcostofitem] = useState();
-
-  const createRecipe = async (e) => {
-    e.preventDefault();
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
-    try {
-      if (productRecipePermission && !productRecipePermission.create) {
-        toast.warn("ليس لك صلاحية لانشاء الوصفات");
-        return;
-      }
-      if (
-        !itemId ||
-        !name ||
-        !amount ||
-        !costofitem ||
-        !unit ||
-        !totalcostofitem
-      ) {
-        toast.error("يرجى تعبئة جميع الحقول بشكل صحيح");
-        return;
-      }
-
-      let newIngredients;
-      let totalCost;
-
-      if (recipeOfProduct._id) {
-        // If there are existing ingredients, create a new array with the added ingredient
-        newIngredients = [
-          ...ingredients,
-          { itemId, name, amount, costofitem, unit, totalcostofitem },
-        ];
-        // Calculate the total cost by adding the cost of the new ingredient
-        totalCost =
-          Math.round((producttotalcost + totalcostofitem) * 100) / 100;
-
-        // Update the recipe by sending a PUT request
-        const addRecipeToProduct = await axios.put(
-          `${apiUrl}/api/recipe/${recipeOfProduct._id}`,
-          { ingredients: newIngredients, totalcost: totalCost },
-          config
-        );
-
-        if (addRecipeToProduct.status === 200) {
-          const recipedata = await addRecipeToProduct.data;
-          console.log({ sizeId: recipedata.sizeId, sizes });
-          if (size && product.hasSizes) {
-            sizes.map((si) => {
-              if (si._id === recipedata.sizeId) {
-                size.sizeRecipe = recipedata._id;
-              }
-            });
-            console.log({ productId, sizes });
-            const updateProduct = await axios.put(
-              `${apiUrl}/api/product/withoutimage/${productId}`,
-              { sizes },
-              config
-            );
-          } else if (!product.hasSizes) {
-            const productRecipe = recipedata._id;
-            const updateProduct = await axios.put(
-              `${apiUrl}/api/product/withoutimage/${productId}`,
-              { productRecipe },
-              config
-            );
-          }
-          toast.success("تم تحديث الوصفة بنجاح");
-        } else {
-          throw new Error("Failed to update recipe");
-        }
-
-        getProductRecipe(productId, sizeId); // Refresh the product recipe
-      } else {
-        const sizeName = size ? size.sizeName : "";
-        const sizeId = size ? size._id : "";
-
-        // If there are no existing ingredients, create a new array with the single ingredient
-        newIngredients = [
-          { itemId, name, amount, costofitem, unit, totalcostofitem },
-        ];
-        totalCost = totalcostofitem; // Total cost is the cost of the single ingredient
-
-        // Add the new recipe to the product by sending a POST request
-        const addRecipeToProduct = await axios.post(
-          `${apiUrl}/api/recipe`,
-          {
-            productId,
-            productName,
-            sizeName,
-            sizeId,
-            ingredients: newIngredients,
-            totalcost: totalCost,
-          },
-          config
-        );
-
-        if (addRecipeToProduct.status === 201) {
-          const recipedata = await addRecipeToProduct.data;
-          console.log({ sizeId: recipedata.sizeId, sizes });
-          if (size && product.hasSizes) {
-            sizes.map((si) => {
-              if (si._id === recipedata.sizeId) {
-                size.sizeRecipe = recipedata._id;
-              }
-            });
-            console.log({ productId, sizes });
-            const updateProduct = await axios.put(
-              `${apiUrl}/api/product/withoutimage/${productId}`,
-              { sizes },
-              config
-            );
-          } else if (!product.hasSizes) {
-            const productRecipe = recipedata._id;
-            const updateProduct = await axios.put(
-              `${apiUrl}/api/product/withoutimage/${productId}`,
-              { productRecipe },
-              config
-            );
-          }
-          getProductRecipe(productId, sizeId); // Refresh the product recipe
-          setitemId(""); // Clear the input fields
-          setname("");
-          setamount("");
-          setunit("");
-          setcostofitem("");
-          settotalcostofitem("");
-          toast.success("تم إضافة المكون بنجاح"); // Notify success in adding ingredient
-        } else {
-          throw new Error("Failed to add recipe");
-        }
-      }
-    } catch (error) {
-      console.error("Error creating/updating recipe:", error); // Log any errors that occur during the process
-      toast.error("حدث خطأ أثناء إنشاء/تحديث الوصفة"); // Notify error in creating/updating recipe
-    }
-  };
-
-  const [recipeid, setrecipeid] = useState("");
-
-  const editRecipe = async (e) => {
-    try {
-      e.preventDefault();
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
-      if (productRecipePermission && !productRecipePermission.update) {
-        toast.warn("ليس لك صلاحية لتعديل الوصفات");
-        return;
-      }
-
-      const newIngredients = ingredients.map((ingredient) => {
-        if (ingredient.itemId === itemId) {
-          return { itemId, name, amount, costofitem, unit, totalcostofitem };
-        } else {
-          return ingredient;
-        }
-      });
-
-      let total = 0;
-      for (let i = 0; i < newIngredients.length; i++) {
-        total += newIngredients[i].totalcostofitem;
-      }
-      const totalcost = Math.round(total * 100) / 100;
-
-      const editRecipeToProduct = await axios.put(
-        `${apiUrl}/api/recipe/${recipeOfProduct._id}`,
-        { ingredients: newIngredients, totalcost },
-        config
-      );
-
-      if (editRecipeToProduct) {
-        console.log({ editRecipeToProduct });
-        getProductRecipe(productId, sizeId);
-        setitemId("");
-        setname("");
-        setamount("");
-        setunit("");
-        setcostofitem("");
-        toast.success("تم تعديل المكون بنجاح");
-      } else {
-        toast.error("حدث خطأ اثناء تعديل المكون ! حاول مره اخري");
-      }
-    } catch (error) {
-      console.error("Error editing recipe:", error.message);
-      toast.error("حدث خطأ أثناء تعديل الوصفة");
-    }
   };
 
   const deleteRecipe = async (e) => {
@@ -562,13 +563,14 @@ const ProductRecipe = () => {
                   onChange={(e) => handleSelectedProduct(e.target.value)}
                 >
                   <option value={""}>الكل</option>
-                  {productFilterd&&productFilterd.map((product, i) => {
-                    return (
-                      <option value={product._id} key={i}>
-                        {product.name}
-                      </option>
-                    );
-                  })}
+                  {productFilterd &&
+                    productFilterd.map((product, i) => {
+                      return (
+                        <option value={product._id} key={i}>
+                          {product.name}
+                        </option>
+                      );
+                    })}
                 </select>
               </div>
               {sizes.length > 0 ? (
@@ -581,13 +583,14 @@ const ProductRecipe = () => {
                     onChange={(e) => handleSelectedProductSize(e.target.value)}
                   >
                     <option value="">اختر حجم</option>
-                    {sizes&&sizes.map((size, i) => {
-                      return (
-                        <option value={size._id} key={i}>
-                          {size.sizeName}
-                        </option>
-                      );
-                    })}
+                    {sizes &&
+                      sizes.map((size, i) => {
+                        return (
+                          <option value={size._id} key={i}>
+                            {size.sizeName}
+                          </option>
+                        );
+                      })}
                   </select>
                 </div>
               ) : (
@@ -604,17 +607,7 @@ const ProductRecipe = () => {
                   defaultValue={producttotalcost}
                 />
               </div>
-              {/* <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
-                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">Status</label>
-                  <select className="form-control border-primary m-0 p-2 h-auto">
-                    <option>Any</option>
-                    <option>Delivered</option>
-                    <option>Shipped</option>
-                    <option>Pending</option>
-                    <option>Cancelled</option>
-                  </select>
-                </div>
-                <span className="filter-icon"><i className="fa fa-filter"></i></span> */}
+             
             </div>
           </div>
           <table className="table table-striped table-hover">
@@ -659,10 +652,10 @@ const ProductRecipe = () => {
                           </td>
                           <td>{i + 1}</td>
                           <td>{rec.name}</td>
-                          <td>{rec.costofitem}</td>
+                          <td>{rec.item?.costOfPart}</td>
                           <td>{rec.unit}</td>
                           <td>{rec.amount}</td>
-                          <td>{rec.totalcostofitem}</td>
+                          <td>{Number(rec.amount)* Number(rec.item?.costOfPart)}</td>
                           <td>
                             <a
                               href="#editRecipeModal"

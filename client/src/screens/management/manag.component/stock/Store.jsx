@@ -31,9 +31,9 @@ const Store = () => {
     setendpagination,
   } = useContext(detacontext);
 
-  const storePermissions = permissionsList?.find(
+  const storePermissions = permissionsList?.filter(
     (permission) => permission.resource === "store"
-  );
+  )[0];
 
   const [storeName, setStoreName] = useState("");
   const [storeCode, setStoreCode] = useState("");
