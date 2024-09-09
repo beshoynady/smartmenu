@@ -112,6 +112,7 @@ const ProductRecipe = () => {
   const [producttotalcost, setproducttotalcost] = useState();
   const [serviceDetails, setserviceDetails] = useState([]);
   const [preparationTime, setpreparationTime] = useState(0);
+  const [wastePercentage, setwastePercentage] = useState(0);
   const [numberOfMeals, setnumberOfMeals] = useState(1);
   const [itemId, setitemId] = useState("");
   const [name, setname] = useState("");
