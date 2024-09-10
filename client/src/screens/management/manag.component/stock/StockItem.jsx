@@ -116,6 +116,7 @@ const StockItem = () => {
         return;
       }
       setisLoading(true);
+      console.log({stores})
 
       const response = await axios.post(
         `${apiUrl}/api/stockitem/`,
