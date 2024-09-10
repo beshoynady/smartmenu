@@ -293,20 +293,20 @@ const StockItem = () => {
 
   const [allStores, setAllStores] = useState([]);
 
-  // const getAllStores = async () => {
-  //   if (!token) {
-  //     toast.error("رجاء تسجيل الدخول مره اخري");
-  //     return;
-  //   }
+  const getAllStores = async () => {
+    if (!token) {
+      toast.error("رجاء تسجيل الدخول مره اخري");
+      return;
+    }
 
-  //   try {
-  //     const response = await axios.get(apiUrl + "/api/store/", config);
-  //     setAllStores(response.data.reverse());
-  //   } catch (error) {
-  //     console.error("Error fetching stores:", error);
-  //     toast.error("حدث خطأ اثناء جلب بيانات المخزنات! اعد تحميل الصفحة");
-  //   }
-  // };
+    try {
+      const response = await axios.get(apiUrl + "/api/store/", config);
+      setAllStores(response.data.reverse());
+    } catch (error) {
+      console.error("Error fetching stores:", error);
+      toast.error("حدث خطأ اثناء جلب بيانات المخزنات! اعد تحميل الصفحة");
+    }
+  };
 
   const [stockitem, setstockitem] = useState({});
   const handelEditStockItemModal = (stockitem) => {
@@ -349,7 +349,7 @@ const StockItem = () => {
 
   useEffect(() => {
     getStockItems();
-    // getAllStores();
+    getAllStores();
     getAllCategoryStock();
   }, []);
 
