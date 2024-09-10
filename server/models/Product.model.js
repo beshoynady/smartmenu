@@ -90,13 +90,20 @@ const productSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    
     comboItems: [
       {
-        type: ObjectId,
-        ref: "Product",
+        product:{
+          type: ObjectId,
+          ref: "Product",
+        },
+        quantity:{
+          type: Number,
+          default:1
+        }
       },
     ],
-    
+
     productRecipe: {
       type: ObjectId,
       ref: "Recipe",
