@@ -7,7 +7,7 @@ const createStockItem = async (req, res) => {
       itemCode,
       itemName,
       categoryId,
-      // storeId,
+      stores,
       largeUnit,
       parts,
       smallUnit,
@@ -30,7 +30,7 @@ const createStockItem = async (req, res) => {
       itemCode,
       itemName,
       categoryId,
-      // storeId,
+      stores,
       largeUnit,
       parts,
       smallUnit,
@@ -53,7 +53,7 @@ const getAllStockItems = async (req, res) => {
   try {
     const allItems = await StockItemsModel.find({})
       .populate("categoryId")
-      // .populate("storeId")
+      .populate("stores.storeId")
       .populate("createdBy")
       .populate("suppliers");
     res.status(200).json(allItems);
@@ -68,7 +68,7 @@ const getOneItem = async (req, res) => {
     const itemId = req.params.itemId;
     const oneItem = await StockItemsModel.findById(itemId)
       .populate("categoryId")
-      // .populate("storeId")
+      .populate("stores.storeId")
       .populate("createdBy")
       .populate("suppliers");
     if (!oneItem) {

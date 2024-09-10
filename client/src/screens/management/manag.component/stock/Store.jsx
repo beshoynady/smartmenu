@@ -331,9 +331,11 @@ const Store = () => {
                       <td>{store.storekeeper?.fullname}</td>
                       <td>
                         {allStockItems &&
-                          allStockItems.filter(
-                            (item) => item.storeId?._id === store._id
-                          )?.length}
+                          allStockItems.filter((item) =>
+                            item.stores?.some(
+                              (store) => store.storeId?._id === store._id
+                            )
+                          ).length}
                       </td>
                       <td>{store.address}</td>
                       <td>{store.description}</td>
@@ -341,7 +343,7 @@ const Store = () => {
                       <td>{store.createdBy?.fullname}</td>
                       <td>{formatDateTime(store.createdAt)}</td>
                       <td>
-                        {storePermissions?.update && (
+                        {storePermissions&&storePermissions?.update && (
                           <a
                             href="#editstoreModal"
                             className="edit"
@@ -364,7 +366,7 @@ const Store = () => {
                             </i>
                           </a>
                         )}
-                        {storePermissions?.delete && (
+                        {storePermissions&&storePermissions?.delete && (
                           <a
                             href="#deletestoreModal"
                             className="delete"

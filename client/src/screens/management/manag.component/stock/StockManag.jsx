@@ -658,7 +658,7 @@ const StockManag = () => {
                       <span>انشاء حركه مخزن</span>
                     </a>
                   )}
-                {stockManagementPermission &&
+                {/* {stockManagementPermission &&
                   stockManagementPermission.delete && (
                     <a
                       href="#deleteStockactionModal"
@@ -667,7 +667,7 @@ const StockManag = () => {
                     >
                       <span>حذف</span>
                     </a>
-                  )}
+                  )} */}
               </div>
             </div>
           </div>
@@ -814,7 +814,7 @@ const StockManag = () => {
                 <th colspan="3">الرصيد</th>
                 <th rowspan="2">تاريخ الحركة</th>
                 <th rowspan="2">أضيف بواسطة</th>
-                <th rowspan="2">إجراءات</th>
+                {/* <th rowspan="2">إجراءات</th> */}
               </tr>
               <tr>
                 <th>الكمية</th>
@@ -852,7 +852,7 @@ const StockManag = () => {
                         <td>{action.balance?.totalCost || 0}</td>
                         <td>{formatDateTime(action.createdAt)}</td>
                         <td>{action.createdBy?.fullname}</td>
-                        <td>
+                        {/* <td>
                           {stockManagementPermission &&
                             stockManagementPermission.update && (
                               <a
@@ -889,7 +889,7 @@ const StockManag = () => {
                                 </i>
                               </a>
                             )}
-                        </td>
+                        </td> */}
                       </tr>
                     );
                   }
@@ -1030,7 +1030,7 @@ const StockManag = () => {
                     <option value="">اختر الصنف</option>
                     {StockItems.filter(
                       (item) =>
-                        // item.storeId?._id === storeId &&
+                        item.stores.some(store=> store.storeId?._id === storeId) &&
                         item.categoryId?._id === categoryId
                     )?.map((item, i) => (
                       <option key={i} value={item._id}>
@@ -1171,288 +1171,6 @@ const StockManag = () => {
         </div>
       </div>
 
-      {/* <div id="editStockactionModal" className="modal fade">
-        <div className="modal-dialog modal-lg">
-          <div className="modal-content shadow-lg border-0 rounded">
-            <form onSubmit={(e) => updateStockaction(e, employeeLoginInfo.id)}>
-              <div className="modal-header d-flex flex-wrap align-items-center text-light bg-primary">
-                <h4 className="modal-title">تعديل حركة بالمخزن</h4>
-                <button
-                  type="button"
-                  className="close m-0 p-1"
-                  data-dismiss="modal"
-                  aria-hidden="true"
-                >
-                  &times;
-                </button>
-              </div>
-              <div className="modal-body d-flex flex-wrap align-items-center p-3 text-right">
-                <div className="form-group col-12 col-md-6">
-                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
-                    المخزن
-                  </label>
-                  <select
-                    className="form-control border-primary m-0 p-2 h-auto"
-                    value={storeId}
-                    onChange={(e) => setStoreId(e.target.value)}
-                  >
-                    <option value="">اختر المخزن</option>
-                    {allStores.map((store, i) => (
-                      <option key={i} value={store._id}>
-                        {store.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="form-group col-12 col-md-6">
-                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
-                    التصنيف
-                  </label>
-                  <select
-                    className="form-control border-primary m-0 p-2 h-auto"
-                    value={categoryId}
-                    onChange={(e) => {
-                      setCategoryId(e.target.value);
-                      updateStockItems(e.target.value);
-                    }}
-                  >
-                    <option value="">اختر التصنيف</option>
-                    {Categories.map((category, i) => (
-                      <option key={i} value={category._id}>
-                        {category.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="form-group col-12 col-md-6">
-                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
-                    الصنف
-                  </label>
-                  <select
-                    className="form-control border-primary m-0 p-2 h-auto"
-                    value={itemId}
-                    onChange={(e) => {
-                      handleSelectedItem(e);
-                      const selectedItem = StockItems.find(
-                        (item) => item._id === e.target.value
-                      );
-                      setlargeUnit(selectedItem?.largeUnit || "");
-                      setsmallUnit(selectedItem?.smallUnit || "");
-                    }}
-                  >
-                    <option value="">اختر الصنف</option>
-                    {StockItems.map((item, i) => (
-                      <option key={i} value={item._id}>
-                        {item.itemName}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {["Issuance", "ReturnIssuance", "Wastage", "Damaged"].includes(
-                  source
-                ) ? (
-                  <div className="form-group col-12 col-md-6">
-                    <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
-                      الكمية
-                    </label>
-                    <div className="d-flex align-items-center">
-                      <input
-                        type="number"
-                        className="form-control border-primary flex-grow-1"
-                        value={quantity}
-                        onChange={(e) => {
-                          setquantity(e.target.value);
-                          setcost(Number(e.target.value) * costOfPart);
-                        }}
-                      />
-                      <input
-                        type="text"
-                        className="form-control border-primary ms-2"
-                        defaultValue={smallUnit}
-                        readOnly
-                      />
-                    </div>
-                  </div>
-                ) : ["Purchase", "ReturnPurchase"].includes(source) ? (
-                  <div className="form-group col-12 col-md-6">
-                    <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
-                      الكمية
-                    </label>
-                    <div className="d-flex align-items-center">
-                      <input
-                        type="number"
-                        className="form-control border-primary flex-grow-1"
-                        value={quantity}
-                        onChange={(e) => {
-                          setquantity(e.target.value);
-                        }}
-                      />
-                      <input
-                        type="text"
-                        className="form-control border-primary ms-2"
-                        defaultValue={largeUnit}
-                        readOnly
-                      />
-                    </div>
-                  </div>
-                ) : null}
-
-                {["Issuance", "ReturnIssuance", "Wastage", "Damaged"].includes(
-                  source
-                ) ? (
-                  <div className="form-group col-12 col-md-6">
-                    <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
-                      سعر {smallUnit}
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control border-primary m-0 p-2 h-auto"
-                      readOnly
-                      value={costOfPart}
-                    />
-                  </div>
-                ) : ["Purchase", "ReturnPurchase"].includes(source) ? (
-                  <div className="form-group col-12 col-md-6">
-                    <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
-                      سعر {smallUnit}
-                    </label>
-                    <input
-                      type="Number"
-                      className="form-control border-primary m-0 p-2 h-auto"
-                      value={price}
-                      onChange={(e) => {
-                        setprice(Number(e.target.value));
-                        setcost(Number(e.target.value) * quantity);
-                      }}
-                    />
-                  </div>
-                ) : null}
-
-                {["Purchase", "ReturnPurchase"].includes(source) ? (
-                  <div className="form-group col-12 col-md-6">
-                    <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
-                      التكلفة
-                    </label>
-                    <input
-                      type="Number"
-                      className="form-control border-primary m-0 p-2 h-auto"
-                      value={cost}
-                      readOnly
-                    />
-                  </div>
-                ) : null}
-
-                <div className="form-group col-12 col-md-6">
-                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
-                    الرصيد
-                  </label>
-                  <div className="d-flex align-items-center">
-                    <input
-                      type="text"
-                      className="form-control border-primary flex-grow-1"
-                      value={oldBalance}
-                      readOnly
-                    />
-                    <input
-                      type="text"
-                      className="form-control border-primary ms-2"
-                      defaultValue={largeUnit}
-                      readOnly
-                    />
-                  </div>
-                </div>
-                <div className="form-group col-12 col-md-6">
-                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
-                    الرصيد الجديد
-                  </label>
-                  <div className="d-flex align-items-center">
-                    <input
-                      type="text"
-                      className="form-control border-primary flex-grow-1"
-                      value={newBalance}
-                      readOnly
-                    />
-                    <input
-                      type="text"
-                      className="form-control border-primary ms-2"
-                      defaultValue={largeUnit}
-                      readOnly
-                    />
-                  </div>
-                </div>
-                <div className="form-group col-12 col-md-6">
-                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
-                    التاريخ
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control border-primary m-0 p-2 h-auto"
-                    value={actionAt}
-                    readOnly
-                  />
-                </div>
-              </div>
-              <div className="modal-footer d-flex flex-nowrap align-items-center justify-content-between m-0 p-1">
-                <input
-                  type="submit"
-                  className="btn btn-success col-6 h-100 px-2 py-3 m-0"
-                  value="تحديث"
-                />
-                <input
-                  type="button"
-                  className="btn btn-danger col-6 h-100 px-2 py-3 m-0"
-                  data-dismiss="modal"
-                  value="إغلاق"
-                />
-              </div>
-            </form>
-          </div>
-        </div>
-      </div> */}
-
-      <div id="deleteStockactionModal" className="modal fade">
-        <div className="modal-dialog modal-lg">
-          <div className="modal-content shadow-lg border-0 rounded ">
-            <form onSubmit={deleteStockaction}>
-              <div className="modal-header d-flex flex-wrap align-items-center text-light bg-primary">
-                <h4 className="modal-title">حذف حركه مخزن</h4>
-                <button
-                  type="button"
-                  className="close m-0 p-1"
-                  data-dismiss="modal"
-                  aria-hidden="true"
-                >
-                  &times;
-                </button>
-              </div>
-              <div className="modal-body text-center">
-                <p className="text-right text-dark fs-3 fw-800 mb-2">
-                  هل أنت متأكد من حذف هذا السجل؟
-                </p>
-                <p className="text-warning text-center mt-3">
-                  <small>لا يمكن الرجوع في هذا الإجراء.</small>
-                </p>
-              </div>
-              <div className="modal-footer d-flex flex-nowrap align-items-center justify-content-between m-0 p-1">
-                <input
-                  type="submit"
-                  className="btn btn-warning col-6 h-100 px-2 py-3 m-0"
-                  value="حذف"
-                />
-                <input
-                  type="button"
-                  className="btn btn-danger col-6 h-100 px-2 py-3 m-0"
-                  data-dismiss="modal"
-                  value="إغلاق"
-                />
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };

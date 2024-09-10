@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema;
 
 const StockItemSchema = new mongoose.Schema(
@@ -15,12 +15,20 @@ const StockItemSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    stores: [
+      {
+        storeId: {
+          type: ObjectId,
+          ref: "Store",
+          required: true,
+        },
+      },
+    ],
     categoryId: {
       type: ObjectId,
-      ref: 'CategoryStock',
+      ref: "CategoryStock",
       required: true,
     },
-   
     largeUnit: {
       type: String,
       required: true,
@@ -39,23 +47,23 @@ const StockItemSchema = new mongoose.Schema(
     },
     costMethod: {
       type: String,
-      enum: ['FIFO', 'LIFO', 'Weighted Average'],
+      enum: ["FIFO", "LIFO", "Weighted Average"],
       required: true,
     },
     suppliers: [
       {
         type: ObjectId,
-        ref: 'Supplier',
+        ref: "Supplier",
       },
     ],
     isActive: {
       type: Boolean,
-      default: 'true',
+      default: "true",
       required: true,
     },
     createdBy: {
       type: ObjectId,
-      ref: 'Employee',
+      ref: "Employee",
       required: true,
     },
     notes: {
@@ -68,5 +76,5 @@ const StockItemSchema = new mongoose.Schema(
   }
 );
 
-const StockItemModel = mongoose.model('StockItem', StockItemSchema);
+const StockItemModel = mongoose.model("StockItem", StockItemSchema);
 module.exports = StockItemModel;
