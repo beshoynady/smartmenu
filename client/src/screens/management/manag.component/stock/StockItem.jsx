@@ -42,7 +42,6 @@ const StockItem = () => {
   const [itemName, setItemName] = useState(""); // For item name
   const [categoryId, setCategoryId] = useState(""); // For category ID
   const [stores, setstores] = useState([]);
-  const [storeId, setStoreId] = useState(""); // For store ID (if necessary)
   const [largeUnit, setLargeUnit] = useState(""); // For large unit
   const [parts, setParts] = useState(""); // For parts
   const [smallUnit, setSmallUnit] = useState(""); // For small unit
@@ -65,7 +64,7 @@ const StockItem = () => {
     const isChecked = e.target.checked;
 
     if (isChecked) {
-      setstores((prevStores) => [...prevStores, selectedStoreId]);
+      setstores((prevStores) => [...prevStores, {storeId:selectedStoreId}]);
     } else {
       setstores((prevStores) =>
         prevStores.filter((storeId) => storeId !== selectedStoreId)
