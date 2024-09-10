@@ -64,9 +64,9 @@ const StockItem = () => {
     const isChecked = e.target.checked;
 
     if (isChecked) {
-      setStores((prevStores) => [...prevStores, { storeId: selectedStoreId }]);
+      setstores((prevStores) => [...prevStores, { storeId: selectedStoreId }]);
     } else {
-      setStores((prevStores) =>
+      setstores((prevStores) =>
         prevStores.filter((store) => store.storeId !== selectedStoreId)
       );
     }
