@@ -1030,7 +1030,7 @@ const StockManag = () => {
                     <option value="">اختر الصنف</option>
                     {StockItems.filter(
                       (item) =>
-                        item.stores.some(store=> store.storeId?._id === storeId) &&
+                        item.stores&& item.stores?.some(store=> store.storeId?._id === storeId) &&
                         item.categoryId?._id === categoryId
                     )?.map((item, i) => (
                       <option key={i} value={item._id}>
