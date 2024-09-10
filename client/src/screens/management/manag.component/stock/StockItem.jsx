@@ -64,10 +64,10 @@ const StockItem = () => {
     const isChecked = e.target.checked;
 
     if (isChecked) {
-      setstores((prevStores) => [...prevStores, {storeId:selectedStoreId}]);
+      setStores((prevStores) => [...prevStores, { storeId: selectedStoreId }]);
     } else {
-      setstores((prevStores) =>
-        prevStores.filter((storeId) => storeId !== selectedStoreId)
+      setStores((prevStores) =>
+        prevStores.filter((store) => store.storeId !== selectedStoreId)
       );
     }
   };
@@ -116,7 +116,7 @@ const StockItem = () => {
         return;
       }
       setisLoading(true);
-      console.log({stores})
+      console.log({ stores });
 
       const response = await axios.post(
         `${apiUrl}/api/stockitem/`,
@@ -151,6 +151,20 @@ const StockItem = () => {
       console.log(error);
       setisLoading(false);
       toast.error("فشل في إنشاء عنصر المخزون");
+    } finally {
+      setstockitem({});
+      setItemCode("");
+      setStockItemId("");
+      setstores([]);
+      setCategoryId("");
+      setItemName("");
+      setMinThreshold(0);
+      setLargeUnit("");
+      setSmallUnit("");
+      setParts(0);
+      setCostMethod("");
+      setNotes("");
+      setisActive("");
     }
   };
 
@@ -198,6 +212,20 @@ const StockItem = () => {
       setisLoading(false);
       // Notify on error
       toast.error("فشل في تحديث عنصر المخزون");
+    } finally {
+      setstockitem({});
+      setItemCode("");
+      setStockItemId("");
+      setstores([]);
+      setCategoryId("");
+      setItemName("");
+      setMinThreshold(0);
+      setLargeUnit("");
+      setSmallUnit("");
+      setParts(0);
+      setCostMethod("");
+      setNotes("");
+      setisActive("");
     }
   };
 
@@ -259,7 +287,7 @@ const StockItem = () => {
 
       const stockItems = response.data.reverse();
       setAllStockItems(stockItems);
-
+      console.log({ stockItems });
       // Notify on success
       toast.success("تم استرداد عناصر المخزون بنجاح");
       setisLoading(false);
@@ -312,6 +340,7 @@ const StockItem = () => {
   const handelEditStockItemModal = (stockitem) => {
     const item = JSON.parse(stockitem);
     setstockitem(item);
+    setItemCode(item.itemCode);
     setStockItemId(item._id);
     setstores([...item.stores]);
     setCategoryId(item.categoryId?._id);
@@ -646,9 +675,9 @@ const StockItem = () => {
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
                     المخزن
                   </label>
-                  <div className="checkbox-group border-primary p-2">
+                  <div className="checkbox-group border-primary col-6 p-2">
                     {allStores.map((store, i) => (
-                      <div key={i} className="form-check">
+                      <div key={i} className="form-check p-0 pl-0">
                         <input
                           type="checkbox"
                           id={`store-${store._id}`}
@@ -659,7 +688,7 @@ const StockItem = () => {
                         />
                         <label
                           htmlFor={`store-${store._id}`}
-                          className="form-check-label"
+                          className="form-check-label mr-4"
                         >
                           {store.storeName}
                         </label>
@@ -862,7 +891,7 @@ const StockItem = () => {
                   <input
                     type="text"
                     className="form-control border-primary m-0 p-2 h-auto"
-                    value={itemName}
+                    defaultValue={itemName}
                     onChange={(e) => setItemName(e.target.value)}
                   />
                 </div>
@@ -870,20 +899,23 @@ const StockItem = () => {
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
                     المخزن
                   </label>
-                  <div className="checkbox-group border-primary p-2">
+                  <div className="checkbox-group border-primary col-6 p-2">
                     {allStores.map((store, i) => (
-                      <div key={i} className="form-check">
+                      <div key={i} className="form-check p-0 pl-0">
                         <input
                           type="checkbox"
                           id={`store-${store._id}`}
                           name="stores"
                           value={store._id}
                           className="form-check-input"
+                          checked={stores.some(
+                            (s) => s.storeId?._id === store._id
+                          )}
                           onChange={handleStoreSelection}
                         />
                         <label
                           htmlFor={`store-${store._id}`}
-                          className="form-check-label"
+                          className="form-check-label mr-4"
                         >
                           {store.storeName}
                         </label>
@@ -899,7 +931,9 @@ const StockItem = () => {
                     className="form-control border-primary m-0 p-2 h-auto"
                     onChange={(e) => setCategoryId(e.target.value)}
                   >
-                    <option>{stockitem.categoryId?.categoryName}</option>
+                    <option value={stockitem.categoryId?._id}>
+                      {stockitem.categoryId?.categoryName}
+                    </option>
                     {AllCategoryStock.map((category, i) => {
                       return (
                         <option value={category._id} key={i}>
@@ -935,7 +969,7 @@ const StockItem = () => {
                   <input
                     type="text"
                     className="form-control border-primary m-0 p-2 h-auto"
-                    value={largeUnit}
+                    defaultValue={largeUnit}
                     onChange={(e) => setLargeUnit(e.target.value)}
                   ></input>
                 </div>
@@ -946,7 +980,7 @@ const StockItem = () => {
                   <input
                     type="text"
                     className="form-control border-primary m-0 p-2 h-auto"
-                    value={smallUnit}
+                    defaultValue={smallUnit}
                     onChange={(e) => setSmallUnit(e.target.value)}
                   ></input>
                 </div>
