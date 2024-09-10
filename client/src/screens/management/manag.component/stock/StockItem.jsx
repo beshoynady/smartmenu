@@ -476,6 +476,7 @@ const StockItem = () => {
                 <th>م</th>
                 <th>الكود</th>
                 <th>اسم الصنف</th>
+                <th>المخازن</th>
                 <th>التصنيف</th>
                 <th>الوحدة كبيرة</th>
                 <th>عدد الوحدات</th>
@@ -510,6 +511,11 @@ const StockItem = () => {
                         <td>{i + 1}</td>
                         <td>{item.itemCode}</td>
                         <td>{item.itemName}</td>
+                        <td>
+                          {item.stores
+                            ?.map((store) => store.storeName)
+                            .join(" - ")}
+                        </td>
                         <td>{item.categoryId?.categoryName}</td>
                         <td>{item.largeUnit}</td>
                         <td>{item.parts}</td>
