@@ -513,7 +513,7 @@ const StockItem = () => {
                         <td>{item.itemName}</td>
                         <td>
                           {item.stores
-                            ?.map((store) => store.storeName)
+                            ?.map((store) => store.storeId?.storeName)
                             .join(" - ")}
                         </td>
                         <td>{item.categoryId?.categoryName}</td>

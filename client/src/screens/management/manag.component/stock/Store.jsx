@@ -331,10 +331,11 @@ const Store = () => {
                       <td>{store.storeName}</td>
                       <td>{store.storekeeper?.fullname}</td>
                       <td>
-                        {allStockItems &&
+                        {
+                         allStockItems &&
                           allStockItems.filter((item) =>
                             item.stores?.some(
-                              (store) => store.storeId?._id === store._id
+                              (s) => s.storeId?._id === store._id
                             )
                           ).length}
                       </td>
