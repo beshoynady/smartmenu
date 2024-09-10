@@ -60,93 +60,87 @@ const recipeSchema = new mongoose.Schema(
       },
     ],
     serviceDetails: {
-      dineIn: {
-        additionalItems: [
-          {
-            itemId: {
-              type: ObjectId,
-              ref: "StockItem",
-              required: true,
-            },
-            name: {
-              type: String,
-              trim: true,
-              required: true,
-            },
-            amount: {
-              type: Number,
-              required: true,
-            },
-            unit: {
-              type: String,
-              trim: true,
-              required: true,
-            },
-            wastePercentage: {
-              type: Number,
-              default: 0,
-            },
+      dineIn: [
+        {
+          itemId: {
+            type: ObjectId,
+            ref: "StockItem",
+            required: true,
           },
-        ],
-      },
-      takeaway: {
-        additionalItems: [
-          {
-            itemId: {
-              type: ObjectId,
-              ref: "StockItem",
-              required: true,
-            },
-            name: {
-              type: String,
-              trim: true,
-              required: true,
-            },
-            amount: {
-              type: Number,
-              required: true,
-            },
-            unit: {
-              type: String,
-              trim: true,
-              required: true,
-            },
-            wastePercentage: {
-              type: Number,
-              default: 0,
-            },
+          name: {
+            type: String,
+            trim: true,
+            required: true,
           },
-        ],
-      },
-      delivery: {
-        additionalItems: [
-          {
-            itemId: {
-              type: ObjectId,
-              ref: "StockItem",
-              required: true,
-            },
-            name: {
-              type: String,
-              trim: true,
-              required: true,
-            },
-            amount: {
-              type: Number,
-              required: true,
-            },
-            unit: {
-              type: String,
-              trim: true,
-              required: true,
-            },
-            wastePercentage: {
-              type: Number,
-              default: 0,
-            },
+          amount: {
+            type: Number,
+            required: true,
           },
-        ],
-      },
+          unit: {
+            type: String,
+            trim: true,
+            required: true,
+          },
+          wastePercentage: {
+            type: Number,
+            default: 0,
+          },
+        },
+      ],
+      takeaway: [
+        {
+          itemId: {
+            type: ObjectId,
+            ref: "StockItem",
+            required: true,
+          },
+          name: {
+            type: String,
+            trim: true,
+            required: true,
+          },
+          amount: {
+            type: Number,
+            required: true,
+          },
+          unit: {
+            type: String,
+            trim: true,
+            required: true,
+          },
+          wastePercentage: {
+            type: Number,
+            default: 0,
+          },
+        },
+      ],
+      delivery: [
+        {
+          itemId: {
+            type: ObjectId,
+            ref: "StockItem",
+            required: true,
+          },
+          name: {
+            type: String,
+            trim: true,
+            required: true,
+          },
+          amount: {
+            type: Number,
+            required: true,
+          },
+          unit: {
+            type: String,
+            trim: true,
+            required: true,
+          },
+          wastePercentage: {
+            type: Number,
+            default: 0,
+          },
+        },
+      ],
     },
   },
   {

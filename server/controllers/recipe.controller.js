@@ -51,19 +51,20 @@ const createRecipe = async (req, res) => {
       if (details && typeof details === "object") {
         const { dineIn, takeaway, delivery } = details;
         [dineIn, takeaway, delivery].forEach((service) => {
-          if (service && service.additionalItems) {
-            service.additionalItems.forEach((item) => {
-              if (
-                !item.itemId ||
-                !item.name ||
-                !item.amount ||
-                !item.unit ||
-                typeof item.wastePercentage !== "number"
-              ) {
-                throw new Error("Invalid service details");
-              }
-            });
+          if (!Array.isArray(service)) {
+            throw new Error("Service details must be arrays");
           }
+          service.forEach((item) => {
+            if (
+              !item.itemId ||
+              !item.name ||
+              !item.amount ||
+              !item.unit ||
+              typeof item.wastePercentage !== "number"
+            ) {
+              throw new Error("Invalid service details");
+            }
+          });
         });
       }
     };
@@ -127,27 +128,6 @@ const updateRecipe = async (req, res) => {
     }
 
     // Validate serviceDetails
-    const validateServiceDetails = (details) => {
-      if (details && typeof details === "object") {
-        const { dineIn, takeaway, delivery } = details;
-        [dineIn, takeaway, delivery].forEach((service) => {
-          if (service && service.additionalItems) {
-            service.additionalItems.forEach((item) => {
-              if (
-                !item.itemId ||
-                !item.name ||
-                !item.amount ||
-                !item.unit ||
-                typeof item.wastePercentage !== "number"
-              ) {
-                throw new Error("Invalid service details");
-              }
-            });
-          }
-        });
-      }
-    };
-
     validateServiceDetails(serviceDetails);
 
     // Update the recipe by ID
