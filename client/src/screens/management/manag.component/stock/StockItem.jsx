@@ -41,6 +41,7 @@ const StockItem = () => {
   const [itemCode, setItemCode] = useState(""); // For item code
   const [itemName, setItemName] = useState(""); // For item name
   const [categoryId, setCategoryId] = useState(""); // For category ID
+  const [stores, setstores] = useState([]);
   const [storeId, setStoreId] = useState(""); // For store ID (if necessary)
   const [largeUnit, setLargeUnit] = useState(""); // For large unit
   const [parts, setParts] = useState(""); // For parts
@@ -58,6 +59,19 @@ const StockItem = () => {
     "الوارد اخيرا يصرف اولا",
     "متوسط السعر",
   ];
+
+  const handleStoreSelection = (e) => {
+    const selectedStoreId = e.target.value;
+    const isChecked = e.target.checked;
+
+    if (isChecked) {
+      setstores((prevStores) => [...prevStores, selectedStoreId]);
+    } else {
+      setstores((prevStores) =>
+        prevStores.filter((storeId) => storeId !== selectedStoreId)
+      );
+    }
+  };
 
   const generateItemCode = () => {
     if (!categoryId) {
@@ -110,7 +124,7 @@ const StockItem = () => {
           itemCode,
           itemName,
           categoryId,
-          // storeId,
+          stores,
           largeUnit,
           parts,
           smallUnit,
@@ -299,7 +313,7 @@ const StockItem = () => {
     const item = JSON.parse(stockitem);
     setstockitem(item);
     setStockItemId(item._id);
-    // setStoreId(item.storeId?._id);
+    setstores([...item.stores]);
     setCategoryId(item.categoryId?._id);
     setItemName(item.itemName);
     setMinThreshold(item.minThreshold);
@@ -628,27 +642,32 @@ const StockItem = () => {
                   />
                 </div>
 
-                {/* <div className="form-group col-12 col-md-6">
+                <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
                     المخزن
                   </label>
-                  <select
-                    className="form-control border-primary m-0 p-2 h-auto"
-                    name="category"
-                    id="category"
-                    form="carform"
-                    onChange={(e) => setStoreId(e.target.value)}
-                  >
-                    <option>اختر المخزن</option>
-                    {allStores.map((store, i) => {
-                      return (
-                        <option value={store._id} key={i}>
+                  <div className="checkbox-group border-primary p-2">
+                    {allStores.map((store, i) => (
+                      <div key={i} className="form-check">
+                        <input
+                          type="checkbox"
+                          id={`store-${store._id}`}
+                          name="stores"
+                          value={store._id}
+                          className="form-check-input"
+                          onChange={handleStoreSelection}
+                        />
+                        <label
+                          htmlFor={`store-${store._id}`}
+                          className="form-check-label"
+                        >
                           {store.storeName}
-                        </option>
-                      );
-                    })}
-                  </select>
-                </div> */}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
                     التصنيف
@@ -847,24 +866,31 @@ const StockItem = () => {
                     onChange={(e) => setItemName(e.target.value)}
                   />
                 </div>
-                {/* <div className="form-group col-12 col-md-6">
+                <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
                     المخزن
                   </label>
-                  <select
-                    className="form-control border-primary m-0 p-2 h-auto"
-                    onChange={(e) => setStoreId(e.target.value)}
-                  >
-                    <option>{stockitem.storeId?.storeName}</option>
-                    {allStores.map((store, i) => {
-                      return (
-                        <option value={store._id} key={i}>
+                  <div className="checkbox-group border-primary p-2">
+                    {allStores.map((store, i) => (
+                      <div key={i} className="form-check">
+                        <input
+                          type="checkbox"
+                          id={`store-${store._id}`}
+                          name="stores"
+                          value={store._id}
+                          className="form-check-input"
+                          onChange={handleStoreSelection}
+                        />
+                        <label
+                          htmlFor={`store-${store._id}`}
+                          className="form-check-label"
+                        >
                           {store.storeName}
-                        </option>
-                      );
-                    })}
-                  </select>
-                </div> */}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
                     التصنيف
