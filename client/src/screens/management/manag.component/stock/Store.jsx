@@ -94,6 +94,7 @@ const Store = () => {
       }
       const response = await axios.get(apiUrl + "/api/stockitem/", config);
       setAllStockItems(response.data.reverse());
+      console.log({allStockItems: response.data})
     } catch (error) {
       console.log("Error fetching stock items:", error);
     }
