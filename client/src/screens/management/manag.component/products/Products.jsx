@@ -81,7 +81,7 @@ const Products = () => {
   const [comboItems, setComboItems] = useState([]);
 
   const handleIsComboCheckboxChange = () => {
-    setIsCombo((prevState) => !prevState);
+    setIsCombo(!isCombo);
   };
 
   const addComboItem = () => {
