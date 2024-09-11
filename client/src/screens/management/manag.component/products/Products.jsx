@@ -77,8 +77,15 @@ const Products = () => {
     setsizes([...newsizes]);
   };
 
+
+  
   const [isCombo, setIsCombo] = useState(false);
-  const [comboItems, setComboItems] = useState([]);
+  const [comboItems, setComboItems] = useState([
+    {
+      product: "",
+      quantity: 0,
+    },
+  ]);
 
   const handleIsComboCheckboxChange = () => {
     setIsCombo(!isCombo);
