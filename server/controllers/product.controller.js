@@ -22,12 +22,18 @@ const createProduct = async (req, res) => {
 
     const sizes = req.body.sizes ? JSON.parse(req.body.sizes) : [];
     const extras = req.body.extras ? JSON.parse(req.body.extras) : [];
-    const comboItems = req.body.comboItems ? JSON.parse(req.body.comboItems) : [];
+    const comboItems = req.body.comboItems
+      ? JSON.parse(req.body.comboItems)
+      : [];
     const image = req.file ? req.file.filename : null;
 
     // Check if required fields are provided in the request
     if (!productname || !productcategoryid || productprice === undefined) {
-      return res.status(400).json({ error: "Please provide name, price, and category of the product" });
+      return res
+        .status(400)
+        .json({
+          error: "Please provide name, price, and category of the product",
+        });
     }
 
     // Validate 'sizes' array
@@ -68,7 +74,9 @@ const createProduct = async (req, res) => {
     res.status(201).json(newProduct); // 201 for successful creation
   } catch (error) {
     console.error({ "Error creating product:": error });
-    res.status(500).json({ error: "An error occurred while processing the request", error });
+    res
+      .status(500)
+      .json({ error: "An error occurred while processing the request", error });
   }
 };
 
@@ -138,7 +146,11 @@ const updateProduct = async (req, res) => {
       updateData.image = existingProduct.image;
     }
 
-    const updatedProduct = await ProductModel.findByIdAndUpdate(productid, updateData, { new: true });
+    const updatedProduct = await ProductModel.findByIdAndUpdate(
+      productid,
+      updateData,
+      { new: true }
+    );
 
     res.status(200).json(updatedProduct);
   } catch (error) {
@@ -155,7 +167,12 @@ const getAllProducts = async (req, res) => {
       .populate("sizes.sizeRecipe")
       .populate("productRecipe")
       .populate("extras")
-      .populate("comboItems.product");
+      .populate({
+        path: "comboItems.product",
+        populate: {
+          path: "productRecipe",
+        },
+      });
 
     if (allProducts.length === 0) {
       return res.status(404).json({ message: "No products found" });
@@ -177,7 +194,12 @@ const getProductByCategory = async (req, res) => {
       .populate("sizes.sizeRecipe")
       .populate("productRecipe")
       .populate("extras")
-      .populate("comboItems.product");
+      .populate({
+        path: "comboItems.product",
+        populate: {
+          path: "productRecipe",
+        },
+      });
 
     res.status(200).json(products);
   } catch (err) {
@@ -191,9 +213,15 @@ const getOneProduct = async (req, res) => {
     const productid = req.params.productid;
     const product = await ProductModel.findById(productid)
       .populate("category")
+      .populate("sizes.sizeRecipe")
       .populate("productRecipe")
       .populate("extras")
-      .populate("comboItems.product");
+      .populate({
+        path: "comboItems.product",
+        populate: {
+          path: "productRecipe",
+        },
+      });
 
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
@@ -205,9 +233,6 @@ const getOneProduct = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-
-
-
 
 const getProduct = async (req, res) => {
   try {
