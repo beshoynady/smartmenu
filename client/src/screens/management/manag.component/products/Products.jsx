@@ -944,7 +944,8 @@ const Products = () => {
                             onChange={(e) => handleQuantityChange(e, index)}
                           />
                         </div>
-                        <div className="col-12 d-flex justify-content-between">
+                        <div className="col-12 mt-1 d-flex justify-content-between">
+                        {index +1 === comboItems.length?(
                           <button
                             type="button"
                             className="col-6 btn btn-primary"
@@ -952,6 +953,7 @@ const Products = () => {
                           >
                             إضافة صنف جديد
                           </button>
+                        ):''}
                           <button
                             type="button"
                             className="col-6 btn btn-danger"
@@ -1043,7 +1045,7 @@ const Products = () => {
                             }
                           />
                         </div>
-                        <div className="col-12">
+                        <div className="col-12 mt-1 d-flex justify-content-between">
                           {sizes.length === index + 1 || sizes.length === 0 ? (
                             <button
                               type="button"
@@ -1057,7 +1059,7 @@ const Products = () => {
                           )}
                           <button
                             type="button"
-                            className="col-6 h-100 px-2 py-3 m-0 btn btn-danger col-12 col-md-6"
+                            className="col-6 h-100 px-2 py-3 m-0 btn btn-danger"
                             onClick={() => removeSize(index)}
                           >
                             حذف الحجم
@@ -1278,6 +1280,75 @@ const Products = () => {
                     })}
                   </select>
                 </div>
+                <div className="form-group col-12 col-md-6">
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    هل هو وجبه كومبو
+                  </label>
+                  <input
+                    type="checkbox"
+                    className="form-check-input border-primary mr-2"
+                    style={{ width: "21px", height: "21px" }}
+                    onChange={handleIsComboCheckboxChange}
+                  />
+                </div>
+                {isCombo && (
+                  <div className="container flex-column w-100 p-0 m-0">
+                    {comboItems.map((item, index) => (
+                      <div
+                        key={index}
+                        className="row d-flex align-items-center justify-content-between col-12 mb-1"
+                      >
+                        <div className="form-group col-12 col-md-6 m-0">
+                          <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                            اسم الصنف
+                          </label>
+                          <select
+                            className="form-control border-primary m-0 p-2 h-auto"
+                            value={item.product}
+                            onChange={(e) => handleProductChange(e, index)}
+                          >
+                            <option value="">اختر الصنف</option>
+                            {listofProducts.map((product) => (
+                              <option key={product._id} value={product._id}>
+                                {product.name}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        <div className="form-group col-12 col-md-6 m-0">
+                          <label className="form-label w-100 text-wrap text-right fw-bolder p-0 m-0">
+                            الكمية
+                          </label>
+                          <input
+                            type="number"
+                            min={0}
+                            className="form-control border-primary m-0 p-2 h-auto"
+                            value={item.quantity}
+                            onChange={(e) => handleQuantityChange(e, index)}
+                          />
+                        </div>
+                        <div className="col-12 mt-1 d-flex justify-content-between">
+                        {index +1 === comboItems.length?(
+                          <button
+                            type="button"
+                            className="col-6 btn btn-primary"
+                            onClick={addComboItem}
+                          >
+                            إضافة صنف جديد
+                          </button>
+                        ):''}
+                          <button
+                            type="button"
+                            className="col-6 btn btn-danger"
+                            onClick={() => removeComboItem(index)}
+                          >
+                            حذف صنف
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
                     أحجام المنتج
@@ -1518,6 +1589,7 @@ const Products = () => {
                   />
                 </div>
               </div>
+
               <div className="modal-footer flex-nowrap d-flex flex-row align-items-center justify-content-between">
                 <button
                   type="submit"
