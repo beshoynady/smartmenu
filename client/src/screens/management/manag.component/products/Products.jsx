@@ -4,8 +4,6 @@ import { toast } from "react-toastify";
 import { detacontext } from "../../../../App";
 import "../orders/Orders.css";
 
-
-
 const Products = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
   const token = localStorage.getItem("token_e");
@@ -129,7 +127,6 @@ const Products = () => {
       setExtras([...extras, extraId]);
     }
   };
-
 
   const createProduct = async (e) => {
     e.preventDefault();
@@ -325,7 +322,7 @@ const Products = () => {
         requestBody.isCombo = isCombo;
         requestBody.comboItems = comboItems;
       }
-      
+
       if (productimg) {
         requestBody.image = productimg;
       }
@@ -333,13 +330,16 @@ const Products = () => {
       console.log({ requestBody });
 
       // Perform the API request to update the product
-      const response =  await axios.put(`${apiUrl}/api/product/${productid}`, requestBody, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              ...config.headers,
-            },
-          })
-        
+      const response = await axios.put(
+        `${apiUrl}/api/product/${productid}`,
+        requestBody,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            ...config.headers,
+          },
+        }
+      );
 
       // Handle successful response
       console.log(response.data);
@@ -690,9 +690,16 @@ const Products = () => {
                             {product.description}
                           </td>
                           <td>{product.category.name}</td>
-                          <td>{product.comboItems?.map((item, i)=>{
-                            `${item.product?.name}${i<product.comboItems.length-1?'-':''}`
-                          })}</td>
+                          <td>
+                            {product.comboItems
+                              ?.map(
+                                (item, i) =>
+                                  `${item.product?.name}${
+                                    i < product.comboItems.length - 1 ? "-" : ""
+                                  }`
+                              )
+                              .join("")}
+                          </td>
                           <td>{product.sizes.length}</td>
                           <td>{product.extras.length}</td>
                           <td>
