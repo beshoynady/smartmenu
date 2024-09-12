@@ -12,10 +12,8 @@ const {
   getAllProducts,
   getProductByCategory,
   getOneProduct,
-  getProduct,
   updateProduct,
-  updateProductWithoutImage,
-  deleteProduct
+  deleteProduct,
 } = require("../controllers/product.controller");
 
 
@@ -100,8 +98,7 @@ const deleteImageProductMiddleware = async (req, res, next) => {
 
     // استدعاء getOneProduct بشكل صحيح
     const productResponse = await getProduct({ params: { productid: productId } }, res);
-    const product = productResponse.product;  // افترض أن getOneProduct تعيد product داخل response
-
+    const product = productResponse.product;  
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
@@ -132,7 +129,5 @@ router.route('/:productid')
   .put(authenticateToken, checkSubscription, upload.single("image"), deleteOldImageMiddleware, updateProduct)
   .delete(authenticateToken, checkSubscription, deleteImageProductMiddleware, deleteProduct);
 
-router.route('/withoutimage/:productid')
-  .put(authenticateToken, checkSubscription, updateProductWithoutImage);
 
 module.exports = router;

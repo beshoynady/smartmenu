@@ -170,14 +170,14 @@ const ProductRecipe = () => {
             });
             console.log({ productId, sizes });
             const updateProduct = await axios.put(
-              `${apiUrl}/api/product/withoutimage/${productId}`,
+              `${apiUrl}/api/product/${productId}`,
               { sizes },
               config
             );
           } else if (!product.hasSizes) {
             const productRecipe = recipedata._id;
             const updateProduct = await axios.put(
-              `${apiUrl}/api/product/withoutimage/${productId}`,
+              `${apiUrl}/api/product/${productId}`,
               { productRecipe },
               config
             );
@@ -223,14 +223,14 @@ const ProductRecipe = () => {
             });
             console.log({ productId, sizes });
             const updateProduct = await axios.put(
-              `${apiUrl}/api/product/withoutimage/${productId}`,
+              `${apiUrl}/api/product/${productId}`,
               { sizes },
               config
             );
           } else if (!product.hasSizes) {
             const productRecipe = recipedata._id;
             const updateProduct = await axios.put(
-              `${apiUrl}/api/product/withoutimage/${productId}`,
+              `${apiUrl}/api/product/${productId}`,
               { productRecipe },
               config
             );

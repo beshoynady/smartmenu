@@ -333,18 +333,13 @@ const Products = () => {
       console.log({ requestBody });
 
       // Perform the API request to update the product
-      const response = requestBody.image
-        ? await axios.put(`${apiUrl}/api/product/${productid}`, requestBody, {
+      const response =  await axios.put(`${apiUrl}/api/product/${productid}`, requestBody, {
             headers: {
               "Content-Type": "multipart/form-data",
               ...config.headers,
             },
           })
-        : await axios.put(
-            `${apiUrl}/api/product/withoutimage/${productid}`,
-            requestBody,
-            config
-          );
+        
 
       // Handle successful response
       console.log(response.data);
