@@ -4,6 +4,8 @@ import { toast } from "react-toastify";
 import { detacontext } from "../../../../App";
 import "../orders/Orders.css";
 
+
+
 const Products = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
   const token = localStorage.getItem("token_e");
@@ -77,8 +79,6 @@ const Products = () => {
     setsizes([...newsizes]);
   };
 
-
-  
   const [isCombo, setIsCombo] = useState(false);
   const [comboItems, setComboItems] = useState([
     {
@@ -130,6 +130,7 @@ const Products = () => {
     }
   };
 
+
   const createProduct = async (e) => {
     e.preventDefault();
 
@@ -143,8 +144,6 @@ const Products = () => {
         toast.warn("ليس لك صلاحية لاضافه الاصناف");
         return;
       }
-
-      // إعداد جسم الطلب باستخدام FormData
       const formData = new FormData();
       formData.append("productname", productname);
       formData.append("productdescription", productdescription);
@@ -945,15 +944,17 @@ const Products = () => {
                           />
                         </div>
                         <div className="col-12 mt-1 d-flex justify-content-between">
-                        {index +1 === comboItems.length?(
-                          <button
-                            type="button"
-                            className="col-6 btn btn-primary"
-                            onClick={addComboItem}
-                          >
-                            إضافة صنف جديد
-                          </button>
-                        ):''}
+                          {index + 1 === comboItems.length ? (
+                            <button
+                              type="button"
+                              className="col-6 btn btn-primary"
+                              onClick={addComboItem}
+                            >
+                              إضافة صنف جديد
+                            </button>
+                          ) : (
+                            ""
+                          )}
                           <button
                             type="button"
                             className="col-6 btn btn-danger"
@@ -1328,15 +1329,17 @@ const Products = () => {
                           />
                         </div>
                         <div className="col-12 mt-1 d-flex justify-content-between">
-                        {index +1 === comboItems.length?(
-                          <button
-                            type="button"
-                            className="col-6 btn btn-primary"
-                            onClick={addComboItem}
-                          >
-                            إضافة صنف جديد
-                          </button>
-                        ):''}
+                          {index + 1 === comboItems.length ? (
+                            <button
+                              type="button"
+                              className="col-6 btn btn-primary"
+                              onClick={addComboItem}
+                            >
+                              إضافة صنف جديد
+                            </button>
+                          ) : (
+                            ""
+                          )}
                           <button
                             type="button"
                             className="col-6 btn btn-danger"
