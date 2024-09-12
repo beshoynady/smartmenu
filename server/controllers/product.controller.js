@@ -72,65 +72,6 @@ const createProduct = async (req, res) => {
   }
 };
 
-// Retrieve all products
-const getAllProducts = async (req, res) => {
-  try {
-    const allProducts = await ProductModel.find({})
-      .populate("category")
-      .populate("sizes.sizeRecipe")
-      .populate("productRecipe")
-      .populate("extras")
-      .populate("comboItems.product");
-
-    if (allProducts.length === 0) {
-      return res.status(404).json({ message: "No products found" });
-    }
-
-    res.status(200).json(allProducts);
-  } catch (error) {
-    console.error("Error fetching all products:", error);
-    res.status(500).json({ message: "Internal server error", error });
-  }
-};
-
-// Retrieve products by category
-const getProductByCategory = async (req, res) => {
-  try {
-    const categoryid = req.params.categoryid;
-    const products = await ProductModel.find({ category: categoryid })
-      .populate("category")
-      .populate("sizes.sizeRecipe")
-      .populate("productRecipe")
-      .populate("extras")
-      .populate("comboItems.product");
-
-    res.status(200).json(products);
-  } catch (err) {
-    res.status(400).json(err);
-  }
-};
-
-// Retrieve a single product by its ID
-const getOneProduct = async (req, res) => {
-  try {
-    const productid = req.params.productid;
-    const product = await ProductModel.findById(productid)
-      .populate("category")
-      .populate("productRecipe")
-      .populate("extras")
-      .populate("comboItems.product");
-
-    if (!product) {
-      return res.status(404).json({ message: "Product not found" });
-    }
-
-    res.status(200).json(product);
-  } catch (error) {
-    console.error("Error fetching product:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
-
 // Update a product by its ID
 const updateProduct = async (req, res) => {
   try {
@@ -206,6 +147,87 @@ const updateProduct = async (req, res) => {
   }
 };
 
+// Retrieve all products
+const getAllProducts = async (req, res) => {
+  try {
+    const allProducts = await ProductModel.find({})
+      .populate("category")
+      .populate("sizes.sizeRecipe")
+      .populate("productRecipe")
+      .populate("extras")
+      .populate("comboItems.product");
+
+    if (allProducts.length === 0) {
+      return res.status(404).json({ message: "No products found" });
+    }
+
+    res.status(200).json(allProducts);
+  } catch (error) {
+    console.error("Error fetching all products:", error);
+    res.status(500).json({ message: "Internal server error", error });
+  }
+};
+
+// Retrieve products by category
+const getProductByCategory = async (req, res) => {
+  try {
+    const categoryid = req.params.categoryid;
+    const products = await ProductModel.find({ category: categoryid })
+      .populate("category")
+      .populate("sizes.sizeRecipe")
+      .populate("productRecipe")
+      .populate("extras")
+      .populate("comboItems.product");
+
+    res.status(200).json(products);
+  } catch (err) {
+    res.status(400).json(err);
+  }
+};
+
+// Retrieve a single product by its ID
+const getOneProduct = async (req, res) => {
+  try {
+    const productid = req.params.productid;
+    const product = await ProductModel.findById(productid)
+      .populate("category")
+      .populate("productRecipe")
+      .populate("extras")
+      .populate("comboItems.product");
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    res.status(200).json(product);
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+
+
+const getProduct = async (req, res) => {
+  try {
+    const productid = req.params.productid;
+    const product = await ProductModel.findById(productid);
+
+    // Check if product is found
+    if (!product) {
+      // Return an object with product and an error flag
+      return { product: null, error: "Product not found" };
+    }
+
+    // Return the product if found
+    return { product };
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    return { product: null, error: "Internal server error" };
+  }
+};
+
 // Delete a product by its ID
 const deleteProduct = async (req, res) => {
   try {
@@ -229,6 +251,7 @@ module.exports = {
   getAllProducts,
   getProductByCategory,
   getOneProduct,
+  getProduct,
   updateProduct,
   deleteProduct,
 };

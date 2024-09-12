@@ -12,6 +12,7 @@ const {
   getAllProducts,
   getProductByCategory,
   getOneProduct,
+  getProduct,
   updateProduct,
   deleteProduct,
 } = require("../controllers/product.controller");
