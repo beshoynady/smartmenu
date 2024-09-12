@@ -18,11 +18,11 @@ const createProduct = async (req, res) => {
       isAddon,
       isCombo,
       productRecipe,
-      comboItems,
     } = req.body;
 
     const sizes = req.body.sizes ? JSON.parse(req.body.sizes) : [];
     const extras = req.body.extras ? JSON.parse(req.body.extras) : [];
+    const comboItems = req.body.comboItems ? JSON.parse(req.body.comboItems) : [];
     const image = req.file ? req.file.filename : null;
 
     // Check if required fields are provided in the request

@@ -178,6 +178,14 @@ const Products = () => {
         // });
       }
 
+      if (isCombo) {
+        formData.append("isCombo", isCombo);
+        formData.append("comboItems", JSON.stringify(comboItems));
+        // extras.forEach((extra, index) => {
+        //   formData.append(`extras[${index}]`, extra);
+        // });
+      }
+
       if (productimg) {
         formData.append("image", productimg);
       } else {
@@ -313,7 +321,11 @@ const Products = () => {
         requestBody.hasExtras = hasExtras;
         requestBody.extras = extras;
       }
-
+      if (isCombo) {
+        requestBody.isCombo = isCombo;
+        requestBody.comboItems = comboItems;
+      }
+      
       if (productimg) {
         requestBody.image = productimg;
       }
