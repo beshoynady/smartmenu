@@ -656,6 +656,7 @@ const Products = () => {
                 <th>الاسم</th>
                 <th>الوصف</th>
                 <th>التصنيف</th>
+                <th>كومبو</th>
                 <th>الاحجام</th>
                 <th>الاضافات</th>
                 <th>التكلفة</th>
@@ -674,12 +675,6 @@ const Products = () => {
                     return (
                       <React.Fragment key={i}>
                         <tr>
-                          {/* <td>
-            <span className="custom-checkbox">
-              <input type="checkbox" className="form-check-input border-primary mr form-check-input border-primary mr-lg" id={`checkbox${i}`} name="options[]" value="1" />
-              <label htmlFor={`checkbox${i}`}></label>
-            </span>
-          </td> */}
                           <td>{i + 1}</td>
                           <td>
                             <img
@@ -695,6 +690,9 @@ const Products = () => {
                             {product.description}
                           </td>
                           <td>{product.category.name}</td>
+                          <td>{product.comboItems?.map((item, i)=>{
+                            `${item.product?.name}${i<product.comboItems.length-1?'-':''}`
+                          })}</td>
                           <td>{product.sizes.length}</td>
                           <td>{product.extras.length}</td>
                           <td>
@@ -747,12 +745,6 @@ const Products = () => {
                         {product.sizes.length > 0 &&
                           product.sizes.map((size, j) => (
                             <tr key={j + i}>
-                              {/* <td>
-              <span className="custom-checkbox">
-                <input type="checkbox" className="form-check-input border-primary mr form-check-input border-primary mr-lg" id={`checkbox${j + i}`} name="options[]" value="1" />
-                <label htmlFor={`checkbox${j + i}`}></label>
-              </span>
-            </td> */}
                               <td>{i + 1}</td>
                               <td></td>
                               <td>{size.sizeName}</td>
