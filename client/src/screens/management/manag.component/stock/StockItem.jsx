@@ -77,14 +77,24 @@ const StockItem = () => {
       toast.warn("اختر اولا التصنيف ");
       return;
     }
-    const categoryCode = AllCategoryStock.find(
+    const category = AllCategoryStock.find(
       (category) => category._id === categoryId
-    )?.categoryCode;
+    );
+    if (!category) {
+      toast.error("التصنيف غير موجود");
+      return;
+    }
+  
+    const categoryCode = category.categoryCode;
+  
     const filterStockItemByCategory = AllStockItems.filter(
       (item) => item.category?._id === categoryId
     ).reverse();
     const itemOrder = filterStockItemByCategory.length + 1;
+    
+    console.log({AllStockItems, filterStockItemByCategory, categoryId, itemOrder})
 
+    
     function generate(categoryCode, itemOrder) {
       return `${categoryCode}-${String(itemOrder).padStart(4, "0")}`;
     }
