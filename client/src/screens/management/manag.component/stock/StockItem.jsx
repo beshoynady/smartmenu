@@ -88,10 +88,10 @@ const StockItem = () => {
     const categoryCode = category.categoryCode;
   
     const filterStockItemByCategory = AllStockItems.filter(
-      (item) => item.category?._id === categoryId
+      (item) => item.categoryId?._id === categoryId
     ).reverse();
     const itemOrder = filterStockItemByCategory.length + 1;
-    
+
     console.log({AllStockItems, filterStockItemByCategory, categoryId, itemOrder})
 
     
