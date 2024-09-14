@@ -8,7 +8,6 @@ const supplierTransactionSchema = new mongoose.Schema({
     invoiceNumber: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'PurchaseInvoice',
-        // required: true
     },
     supplier: {
         type: mongoose.Schema.Types.ObjectId,
@@ -17,7 +16,7 @@ const supplierTransactionSchema = new mongoose.Schema({
     },
     transactionType: {
         type: String,
-        enum: ['OpeningBalance', 'Purchase', 'Payment', 'PurchaseReturn', 'Refund'],
+        enum: ['OpeningBalance', 'Purchase', 'Payment', 'PurchaseReturn', 'Refund', 'AdvancePayment'],
         required: true
     },
     previousBalance: {
@@ -34,14 +33,15 @@ const supplierTransactionSchema = new mongoose.Schema({
     },
     paymentMethod: {
         type: String,
-        required: true
     },
     recordedBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Employee',
         required: true
     },
-    notes: String
+    notes: {
+        type: String
+    }
 }, { timestamps: true });
 
 const SupplierTransactionModel = mongoose.model('SupplierTransaction', supplierTransactionSchema);
