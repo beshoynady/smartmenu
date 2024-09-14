@@ -23,7 +23,6 @@ const createSupplierTransaction = async (req, res) => {
       !transactionDate ||
       !transactionType ||
       !amount ||
-      !previousBalance ||
       !currentBalance
     ) {
       return res
