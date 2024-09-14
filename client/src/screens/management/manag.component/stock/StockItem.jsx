@@ -85,13 +85,13 @@ const StockItem = () => {
       toast.error("التصنيف غير موجود");
       return;
     }
-  
+
     const categoryCode = category.categoryCode;
-  
+
     const filterStockItemByCategory = AllStockItems.filter(
       (item) => item.categoryId?._id === categoryId
     ).reverse();
-    const itemOrder = filterStockItemByCategory.length + 1;    
+    const itemOrder = filterStockItemByCategory.length + 1;
     function generate(categoryCode, itemOrder) {
       return `${categoryCode}-${String(itemOrder).padStart(4, "0")}`;
     }
@@ -382,9 +382,44 @@ const StockItem = () => {
     setAllStockItems(filter);
   };
 
+  const [AllSuppliers, setAllSuppliers] = useState([]);
+  // Function to retrieve all suppliers
+  const getAllSuppliers = async () => {
+    if (!token) {
+      // Handle case where token is not available
+      toast.error("رجاء تسجيل الدخول مره اخري");
+      return;
+    }
+    try {
+      if (supplierDataPermission && !supplierDataPermission.read) {
+        toast.warn("ليس لك صلاحية لعرض حسابات الموردين");
+        return;
+      }
+      const response = await axios.get(apiUrl + "/api/supplier/", config);
+
+      if (!response || !response.data) {
+        // Handle unexpected response or empty data
+        throw new Error("استجابة غير متوقعة أو بيانات فارغة");
+      }
+
+      const suppliers = response.data.reverse();
+      if (suppliers.length > 0) {
+        setAllSuppliers(suppliers);
+        toast.success("تم استرداد جميع الموردين بنجاح");
+      }
+
+      // Notify on success
+    } catch (error) {
+      console.error(error);
+
+      // Notify on error
+      toast.error("فشل في استرداد الموردين");
+    }
+  };
   useEffect(() => {
     getStockItems();
     getAllStores();
+    getAllSuppliers();
     getAllCategoryStock();
   }, []);
 
@@ -531,12 +566,19 @@ const StockItem = () => {
                         <td>{item.costMethod}</td>
                         <td>{item.costOfPart}</td>
                         <td>
-                          {item.suppliers.map(
+                          {/* {item.suppliers.map(
                             (supplier, i) =>
                               `${supplier.fullname}${
                                 i < suppliers.length ? "-" : ""
                               } `
-                          )}
+                          )} */}
+                          {AllSuppliers.filter((supplier) =>
+                            supplier.itemsSupplied?.some(
+                              (itemSupplied) => itemSupplied._id === item._id
+                            )
+                          )
+                            .map((supplier) => supplier.name)
+                            .join("-")}
                         </td>
                         <td>{item.isActive ? "نشط" : "غير نشط"}</td>
                         <td>{item.createdBy?.fullname}</td>
