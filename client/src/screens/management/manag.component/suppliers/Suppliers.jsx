@@ -34,7 +34,7 @@ const Suppliers = () => {
   const [supplierId, setsupplierId] = useState("");
   const [name, setName] = useState("");
 
-  const [phone, setphone] = useState([]);
+  const [phone, setphone] = useState(["رقم الموبايل"]);
 
   const handleAddPhone = () => {
     setphone([...phone, "رقم الموبايل"]);
@@ -56,7 +56,7 @@ const Suppliers = () => {
 
   const [address, setAddress] = useState("");
 
-  const [itemsSupplied, setItemsSupplied] = useState([]);
+  const [itemsSupplied, setItemsSupplied] = useState(["اضف خامة"]);
 
   const handleAddItemsSupplied = () => {
     setItemsSupplied([...itemsSupplied, "اضف خامة"]);
@@ -129,6 +129,42 @@ const Suppliers = () => {
       );
       console.log(response.data);
       if (response) {
+        if (currentBalance > 0) {
+          const supplier = response.data?._id;
+          try {
+            if (!token) {
+              // Handle case where token is not available
+              toast.error("رجاء تسجيل الدخول مره اخري");
+              return;
+            }
+            const requestData = {
+              supplier,
+              transactionDate: '',
+              transactionType:'OpeningBalance',
+              amount: currentBalance,
+              previousBalance:0,
+              currentBalance,
+              paymentMethod:'',
+              notes,
+            };
+
+            console.log({ requestData });
+
+            const response = await axios.post(
+              `${apiUrl}/api/suppliertransaction`,
+              requestData,
+              config
+            );
+            console.log({ response });
+            if (response.status === 201) {
+              toast.success("تم انشاء العملية بنجاح");
+            } else {
+              toast.error("حدث خطأ أثناء انشاء العملية");
+            }
+          } catch (error) {
+            toast.error("حدث خطأ أثناء انشاء العملية");
+          }
+        }
         // Notify on success
         toast.success("تم إنشاء المورد بنجاح");
         getAllSuppliers();
@@ -523,41 +559,41 @@ const Suppliers = () => {
                         <td>{supplier.createdBy?.fullname}</td>
                         <td>{formatDateTime(supplier.createdAt)}</td>
                         <td>
-                          {supplierDataPermission.update&&
-                          <a
-                            href="#editSupplierModal"
-                            className="edit"
-                            data-toggle="modal"
-                            onClick={() => {
-                              getOneSuppliers(supplier._id);
-                            }}
-                          >
-                            <i
-                              className="material-icons"
-                              data-toggle="tooltip"
-                              title="Edit"
+                          {supplierDataPermission.update && (
+                            <a
+                              href="#editSupplierModal"
+                              className="edit"
+                              data-toggle="modal"
+                              onClick={() => {
+                                getOneSuppliers(supplier._id);
+                              }}
                             >
-                              &#xE254;
-                            </i>
-                          </a>
-                          }
+                              <i
+                                className="material-icons"
+                                data-toggle="tooltip"
+                                title="Edit"
+                              >
+                                &#xE254;
+                              </i>
+                            </a>
+                          )}
 
-                          {supplierDataPermission.delete&&
-                          <a
-                            href="#deleteSupplierModal"
-                            className="delete"
-                            data-toggle="modal"
-                            onClick={() => setsupplierId(supplier._id)}
-                          >
-                            <i
-                              className="material-icons"
-                              data-toggle="tooltip"
-                              title="Delete"
+                          {supplierDataPermission.delete && (
+                            <a
+                              href="#deleteSupplierModal"
+                              className="delete"
+                              data-toggle="modal"
+                              onClick={() => setsupplierId(supplier._id)}
                             >
-                              &#xE872;
-                            </i>
-                          </a>
-                          }
+                              <i
+                                className="material-icons"
+                                data-toggle="tooltip"
+                                title="Delete"
+                              >
+                                &#xE872;
+                              </i>
+                            </a>
+                          )}
                         </td>
                       </tr>
                     );
