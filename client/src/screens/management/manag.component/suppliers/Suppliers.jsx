@@ -188,7 +188,9 @@ const createOpeningBalanceTransaction = async (supplierId, currentBalance) => {
 const addSupplierToStockItem = async () => {
   if (itemsSupplied) {
     for (const item of itemsSupplied) {
-      const suppliers = item.suppliers?[...item.suppliers, supplierId]:[supplierId];
+      const oldSupplier = AllStockItems.find(i => i._id === item)?.suppliers
+      const suppliers = oldSupplier?[...oldSupplier, supplierId]:[supplierId];
+      console.log({itemsSupplied, suppliers})
       try {
         const response = await axios.put(
           `${apiUrl}/api/stockitem/${item}`,
