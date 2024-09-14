@@ -139,7 +139,6 @@ const StockManag = () => {
     if (source === "Issuance" || source === "Wastage" || source === "Damaged") {
       if (costMethod === "FIFO") {
         const batches = AllStockactionsStore.filter((stockAction) => {
-          // التحقق من أن جميع الحقول المستخدمة موجودة وصحيحة
           const isValidAction =
             stockAction && stockAction.itemId && stockAction.itemId._id;
           const isMatchingItem =
@@ -162,12 +161,11 @@ const StockManag = () => {
           if (totalQuantity > 0) {
             const availableQuantity = batch.remainingQuantity;
             const quantityToUse = Math.min(totalQuantity, availableQuantity);
-            const costForThisBatch = quantityToUse * batch.inbound.unitCost;
+            const costForThisBatch = quantityToUse * batch.inbound?.unitCost;
 
             totalQuantity -= quantityToUse;
             totalCost += costForThisBatch;
 
-            // تحديث الرصيد المتبقي في الدُفعة
             batch.remainingQuantity -= quantityToUse;
 
             // إرسال التحديث إلى قاعدة البيانات
@@ -365,29 +363,43 @@ const StockManag = () => {
         config
       );
       if (response) {
+        if(outbound.unitCost>0){
+          const addCostOfUnit = await axios.put(
+            `${apiUrl}/api/stockitem/${itemId}`,
+            {
+              costOfPart: Number(outbound.unitCost) / Number(parts)
+            },
+            config
+          );
+          if(addCostOfUnit){
+            toast.success("تم تعديل تكلفه الصرف");
+          }
+        }
         toast.success("تم تسجيل حركة المخزون بنجاح");
-        getallStockaction();
-        setquantity(0);
-        setcostUnit(0);
-        setSource(0);
-        setStoreId("");
-        setCategoryId("");
-        setCostMethod("");
-        inbound.quantity = 0;
-        inbound.unitCost = 0;
-        inbound.totalCost = 0;
 
-        outbound.quantity = 0;
-        outbound.unitCost = 0;
-        outbound.totalCost = 0;
-
-        balance.quantity = 0;
-        balance.unitCost = 0;
-        balance.totalCost = 0;
       }
     } catch (error) {
       toast.error("فشل تسجيل حركة المخزون!");
       console.error("Error creating stock source:", error);
+    } finally {
+      getallStockaction();
+      setquantity(0);
+      setcostUnit(0);
+      setSource(0);
+      setStoreId("");
+      setCategoryId("");
+      setCostMethod("");
+      inbound.quantity = 0;
+      inbound.unitCost = 0;
+      inbound.totalCost = 0;
+
+      outbound.quantity = 0;
+      outbound.unitCost = 0;
+      outbound.totalCost = 0;
+
+      balance.quantity = 0;
+      balance.unitCost = 0;
+      balance.totalCost = 0;
     }
   };
 

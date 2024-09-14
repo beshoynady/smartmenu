@@ -45,6 +45,7 @@ const StockItem = () => {
   const [largeUnit, setLargeUnit] = useState(""); // For large unit
   const [parts, setParts] = useState(""); // For parts
   const [smallUnit, setSmallUnit] = useState(""); // For small unit
+  const [costOfPart, setcostOfPart] = useState(0); // For small unit
   const [minThreshold, setMinThreshold] = useState(""); // For minimum threshold
   const [costMethod, setCostMethod] = useState(""); // For cost method (if necessary)
   const [suppliers, setSuppliers] = useState([]); // For suppliers (if necessary)
@@ -90,17 +91,12 @@ const StockItem = () => {
     const filterStockItemByCategory = AllStockItems.filter(
       (item) => item.categoryId?._id === categoryId
     ).reverse();
-    const itemOrder = filterStockItemByCategory.length + 1;
-
-    console.log({AllStockItems, filterStockItemByCategory, categoryId, itemOrder})
-
-    
+    const itemOrder = filterStockItemByCategory.length + 1;    
     function generate(categoryCode, itemOrder) {
       return `${categoryCode}-${String(itemOrder).padStart(4, "0")}`;
     }
 
     const itemCodeGenerated = generate(categoryCode, itemOrder);
-    console.log({ itemCodeGenerated });
     setItemCode(itemCodeGenerated);
   };
 
@@ -199,7 +195,7 @@ const StockItem = () => {
           itemCode,
           itemName,
           categoryId,
-          // storeId,
+          stores,
           largeUnit,
           parts,
           smallUnit,
@@ -493,6 +489,7 @@ const StockItem = () => {
                 <th>الوحدة صغيرة</th>
                 <th>الحد الادني</th>
                 <th>طريقة التكلفة</th>
+                <th>تكلفه الوحده</th>
                 <th>الموردون</th>
                 <th>الحالة</th>
                 <th>اضيف بواسطه</th>
@@ -532,6 +529,7 @@ const StockItem = () => {
                         <td>{item.smallUnit}</td>
                         <td>{item.minThreshold}</td>
                         <td>{item.costMethod}</td>
+                        <td>{item.costOfPart}</td>
                         <td>
                           {item.suppliers.map(
                             (supplier, i) =>

@@ -50,6 +50,10 @@ const StockItemSchema = new mongoose.Schema(
       enum: ["FIFO", "LIFO", "Weighted Average"],
       required: true,
     },
+    costOfPart:{
+      type: Number,
+      default:0,
+    },
     suppliers: [
       {
         type: ObjectId,

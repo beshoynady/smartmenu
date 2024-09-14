@@ -85,22 +85,26 @@ const updateStockItem = async (req, res) => {
   try {
     const itemId = req.params.itemId;
     const updatedData = req.body;
+    if (!mongoose.Types.ObjectId.isValid(itemId)) {
+      return res.status(400).json({ error: "Invalid item ID format" });
+    }
 
+    // تحديث العنصر
     const updatedStockItem = await StockItemsModel.findByIdAndUpdate(
       itemId,
       updatedData,
-      { new: true }
+      { new: true, runValidators: true } 
     );
 
     if (!updatedStockItem) {
       return res.status(404).json({ error: "Item not found" });
     }
-
     res.status(200).json(updatedStockItem);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(500).json({ error: `Failed to update item: ${err.message}`, err});
   }
 };
+
 
 // Delete a stock item by ID
 const deleteItem = async (req, res) => {
