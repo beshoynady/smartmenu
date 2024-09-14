@@ -101,17 +101,18 @@ const Suppliers = () => {
   const createSupplier = async (e) => {
     e.preventDefault();
     if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
-    try {
-      if (supplierDataPermission && !supplierDataPermission.create) {
-        toast.warn("ليس لك صلاحية لانشاء حساب الموردين");
+        toast.error("رجاء تسجيل الدخول مره أخرى");
         return;
-      }
-      // console.log({ phone, whatsapp, email })
-      const supplierData = {
+    }
+
+    // تحقق من الصلاحيات قبل المتابعة
+    if (supplierDataPermission && !supplierDataPermission.create) {
+        toast.warn("ليس لديك صلاحية لإنشاء حساب الموردين");
+        return;
+    }
+
+    // إعداد بيانات المورد
+    const supplierData = {
         name,
         contact: { phone, whatsapp, email },
         address,
@@ -120,62 +121,64 @@ const Suppliers = () => {
         currentBalance,
         financialInfo,
         notes,
-      };
+    };
 
-      const response = await axios.post(
-        apiUrl + "/api/supplier/",
-        supplierData,
-        config
-      );
-      console.log(response.data);
-      if (response) {
-        if (currentBalance > 0) {
-          const supplier = response.data?._id;
-          try {
-            if (!token) {
-              // Handle case where token is not available
-              toast.error("رجاء تسجيل الدخول مره اخري");
-              return;
+    try {
+        // إرسال طلب إنشاء المورد
+        const response = await axios.post(`${apiUrl}/api/supplier/`, supplierData, config);
+
+        if (response && response.status === 201) {
+            const supplierId = response.data?._id;
+
+            // إذا كان هناك رصيد ابتدائي، يتم تسجيل معاملة الرصيد
+            if (currentBalance > 0) {
+                await createOpeningBalanceTransaction(supplierId, currentBalance);
             }
-            const requestData = {
-              supplier,
-              transactionDate: '',
-              transactionType:'OpeningBalance',
-              amount: currentBalance,
-              previousBalance:0,
-              currentBalance,
-              paymentMethod:'',
-              notes,
-            };
 
-            console.log({ requestData });
-
-            const response = await axios.post(
-              `${apiUrl}/api/suppliertransaction`,
-              requestData,
-              config
-            );
-            console.log({ response });
-            if (response.status === 201) {
-              toast.success("تم انشاء العملية بنجاح");
-            } else {
-              toast.error("حدث خطأ أثناء انشاء العملية");
-            }
-          } catch (error) {
-            toast.error("حدث خطأ أثناء انشاء العملية");
-          }
+            // إخطار بنجاح العملية
+            toast.success("تم إنشاء المورد بنجاح");
+            getAllSuppliers();
+        } else {
+            throw new Error("فشل في إنشاء المورد");
         }
-        // Notify on success
-        toast.success("تم إنشاء المورد بنجاح");
-        getAllSuppliers();
-      }
     } catch (error) {
-      console.log(error);
-
-      // Notify on error
-      toast.error("فشل في إنشاء المورد");
+        console.error(error);
+        toast.error("فشل في إنشاء المورد");
     }
-  };
+};
+
+// دالة فرعية لإنشاء معاملة رصيد افتتاحي
+const createOpeningBalanceTransaction = async (supplierId, currentBalance) => {
+    if (!token) {
+        toast.error("رجاء تسجيل الدخول مره أخرى");
+        return;
+    }
+
+    const transactionData = {
+        supplier: supplierId,
+        transactionDate: new Date(),
+        transactionType: 'OpeningBalance',
+        amount: currentBalance,
+        previousBalance: 0,
+        currentBalance,
+        paymentMethod: '',
+        notes,
+    };
+
+    try {
+        const response = await axios.post(`${apiUrl}/api/suppliertransaction`, transactionData, config);
+
+        if (response && response.status === 201) {
+            toast.success("تم تسجيل معاملة الرصيد الافتتاحي بنجاح");
+        } else {
+            throw new Error("فشل في تسجيل معاملة الرصيد الافتتاحي");
+        }
+    } catch (error) {
+        console.error(error);
+        toast.error("حدث خطأ أثناء تسجيل معاملة الرصيد الافتتاحي");
+    }
+};
+
 
   //Function to edit a Supplier item
 
