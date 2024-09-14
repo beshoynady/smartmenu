@@ -191,7 +191,7 @@ const addSupplierToStockItem = async () => {
       const suppliers = item.suppliers?[...item.suppliers, supplierId]:[supplierId];
       try {
         const response = await axios.put(
-          `${apiUrl}/api/stockitem/${item._id}`,
+          `${apiUrl}/api/stockitem/${item}`,
           { suppliers },
           config
         );
