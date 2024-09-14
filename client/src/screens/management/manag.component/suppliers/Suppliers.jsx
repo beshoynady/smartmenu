@@ -168,6 +168,7 @@ const createOpeningBalanceTransaction = async (supplierId, currentBalance) => {
     try {
         const response = await axios.post(`${apiUrl}/api/suppliertransaction`, transactionData, config);
 
+        console.error({response});
         if (response && response.status === 201) {
             toast.success("تم تسجيل معاملة الرصيد الافتتاحي بنجاح");
         } else {
@@ -178,6 +179,8 @@ const createOpeningBalanceTransaction = async (supplierId, currentBalance) => {
         toast.error("حدث خطأ أثناء تسجيل معاملة الرصيد الافتتاحي");
     }
 };
+
+
 
 
   //Function to edit a Supplier item
@@ -222,6 +225,8 @@ const createOpeningBalanceTransaction = async (supplierId, currentBalance) => {
       toast.error("فشل في تحديث المورد");
     }
   };
+
+  
 
   // Function to delete a supplier
   const deleteSupplier = async (e) => {
@@ -755,7 +760,7 @@ const createOpeningBalanceTransaction = async (supplierId, currentBalance) => {
                     ))}
                   <button
                     type="button"
-                    className="btn w-100 btn-success"
+                    className="mt-1 btn w-100 btn-success"
                     onClick={handleAddPhone}
                   >
                     إضافة موبايل
@@ -791,7 +796,7 @@ const createOpeningBalanceTransaction = async (supplierId, currentBalance) => {
                   ))}
                   <button
                     type="button"
-                    className="btn w-100 btn-success"
+                    className="mt-1 btn w-100 btn-success"
                     onClick={handleAddItemsSupplied}
                   >
                     إضافة صنف مورد
@@ -865,7 +870,7 @@ const createOpeningBalanceTransaction = async (supplierId, currentBalance) => {
                   ))}
                   <button
                     type="button"
-                    className="btn w-100 btn-success"
+                    className="mt-1 btn w-100 btn-success"
                     onClick={handleAddfinancialInfo}
                   >
                     إضافة معلومات مالية
@@ -1001,7 +1006,7 @@ const createOpeningBalanceTransaction = async (supplierId, currentBalance) => {
                     ))}
                   <button
                     type="button"
-                    className="btn w-100 btn-success"
+                    className="mt-1 btn w-100 btn-success"
                     onClick={handleAddPhone}
                   >
                     إضافة موبايل
@@ -1037,7 +1042,7 @@ const createOpeningBalanceTransaction = async (supplierId, currentBalance) => {
                   ))}
                   <button
                     type="button"
-                    className="btn w-100 btn-success"
+                    className="mt-1 btn w-100 btn-success"
                     onClick={handleAddItemsSupplied}
                   >
                     إضافة صنف مورد
@@ -1086,7 +1091,7 @@ const createOpeningBalanceTransaction = async (supplierId, currentBalance) => {
                   ))}
                   <button
                     type="button"
-                    className="btn w-100 btn-success"
+                    className="mt-1 btn w-100 btn-success"
                     onClick={handleAddfinancialInfo}
                   >
                     إضافة معلومات مالية
