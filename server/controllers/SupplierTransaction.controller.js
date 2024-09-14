@@ -22,8 +22,9 @@ const createSupplierTransaction = async (req, res) => {
       !supplier ||
       !transactionDate ||
       !transactionType ||
-      !amount ||
-      !currentBalance
+      amount === undefined ||
+      previousBalance === undefined ||
+      currentBalance === undefined
     ) {
       return res
         .status(400)
@@ -46,12 +47,10 @@ const createSupplierTransaction = async (req, res) => {
     res.status(201).json(newTransaction);
   } catch (error) {
     // Provide a more specific error message
-    res
-      .status(500)
-      .json({
-        message: "An error occurred while creating the transaction.",
-        error,
-      });
+    res.status(500).json({
+      message: "An error occurred while creating the transaction.",
+      error,
+    });
   }
 };
 

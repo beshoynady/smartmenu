@@ -55,9 +55,12 @@ const Suppliers = () => {
   const [email, setemail] = useState("");
 
   const [address, setAddress] = useState("");
+  
+
+
 
   const [itemsSupplied, setItemsSupplied] = useState(["اضف خامة"]);
-
+    
   const handleAddItemsSupplied = () => {
     setItemsSupplied([...itemsSupplied, "اضف خامة"]);
   };
@@ -129,7 +132,9 @@ const Suppliers = () => {
 
         if (response && response.status === 201) {
             const supplierId = response.data?._id;
-
+            if(itemsSupplied.length>0){
+              await addSupplierToStockItem()
+            }
             // إذا كان هناك رصيد ابتدائي، يتم تسجيل معاملة الرصيد
             if (currentBalance > 0) {
                 await createOpeningBalanceTransaction(supplierId, currentBalance);
@@ -180,6 +185,28 @@ const createOpeningBalanceTransaction = async (supplierId, currentBalance) => {
     }
 };
 
+const addSupplierToStockItem = async () => {
+  if (itemsSupplied) {
+    for (const item of itemsSupplied) {
+      const suppliers = [...item.suppliers, supplierId];
+      
+      try {
+        const response = await axios.put(
+          `${apiUrl}/api/stockitem/${item._id}`,
+          { suppliers },
+          config
+        );
+
+        // Notify on success
+        toast.success("تم تحديث عنصر المخزون بنجاح");
+      } catch (error) {
+        // Notify on error
+        toast.error("فشل في تحديث عنصر المخزون");
+      }
+    }
+  }
+};
+
 
 
 
@@ -226,7 +253,7 @@ const createOpeningBalanceTransaction = async (supplierId, currentBalance) => {
     }
   };
 
-  
+
 
   // Function to delete a supplier
   const deleteSupplier = async (e) => {
