@@ -195,7 +195,7 @@ const addSupplierToStockItem = async () => {
           { suppliers },
           config
         );
-
+        console.log({itemsSupplied, suppliers,response})
         // Notify on success
         toast.success("تم تحديث عنصر المخزون بنجاح");
       } catch (error) {
