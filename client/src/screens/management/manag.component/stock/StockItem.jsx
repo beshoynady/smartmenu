@@ -385,16 +385,8 @@ const StockItem = () => {
   const [AllSuppliers, setAllSuppliers] = useState([]);
   // Function to retrieve all suppliers
   const getAllSuppliers = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
     try {
-      if (supplierDataPermission && !supplierDataPermission.read) {
-        toast.warn("ليس لك صلاحية لعرض حسابات الموردين");
-        return;
-      }
+
       const response = await axios.get(apiUrl + "/api/supplier/", config);
 
       if (!response || !response.data) {
