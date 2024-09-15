@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const StockItemsModel = require("../models/StockItems.model");
 
 // Create a new stock item
@@ -22,7 +23,7 @@ const createStockItem = async (req, res) => {
     // Check for unique itemCode
     const existingItem = await StockItemsModel.findOne({ itemCode });
     if (existingItem) {
-      return res.status(400).json({ error: "Item itemCode already exists" });
+      return res.status(400).json({ error: "Item code already exists" });
     }
 
     // Create new stock item
@@ -44,7 +45,7 @@ const createStockItem = async (req, res) => {
 
     res.status(201).json(newStockItem);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(500).json({ error: `Failed to create item: ${err.message}` });
   }
 };
 
@@ -58,7 +59,7 @@ const getAllStockItems = async (req, res) => {
       .populate("suppliers");
     res.status(200).json(allItems);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(500).json({ error: `Failed to retrieve items: ${err.message}` });
   }
 };
 
@@ -76,7 +77,7 @@ const getOneItem = async (req, res) => {
     }
     res.status(200).json(oneItem);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(500).json({ error: `Failed to retrieve item: ${err.message}` });
   }
 };
 
@@ -85,40 +86,53 @@ const updateStockItem = async (req, res) => {
   try {
     const itemId = req.params.itemId;
     const updatedData = req.body;
+    
+    // Check if ID is valid
     if (!mongoose.Types.ObjectId.isValid(itemId)) {
       return res.status(400).json({ error: "Invalid item ID format" });
     }
 
-    // تحديث العنصر
+    const existingItem = await StockItemsModel.findOne({ itemCode: updatedData.itemCode });
+    if (existingItem && existingItem._id.toString() !== itemId) {
+      return res.status(400).json({ error: "Item code already exists" });
+    }
+
+    // Update the stock item
     const updatedStockItem = await StockItemsModel.findByIdAndUpdate(
       itemId,
       updatedData,
-      { new: true, runValidators: true } 
+      { new: true, runValidators: true }
     );
 
     if (!updatedStockItem) {
       return res.status(404).json({ error: "Item not found" });
     }
+
     res.status(200).json(updatedStockItem);
   } catch (err) {
-    res.status(500).json({ error: `Failed to update item: ${err.message}`, err});
+    res.status(500).json({ error: `Failed to update item: ${err.message}` });
   }
 };
-
 
 // Delete a stock item by ID
 const deleteItem = async (req, res) => {
   try {
     const itemId = req.params.itemId;
+
+    // Check if ID is valid
+    if (!mongoose.Types.ObjectId.isValid(itemId)) {
+      return res.status(400).json({ error: "Invalid item ID format" });
+    }
+
     const itemDelete = await StockItemsModel.findByIdAndDelete(itemId);
 
     if (!itemDelete) {
       return res.status(404).json({ error: "Item not found" });
     }
 
-    res.status(200).json(itemDelete);
+    res.status(200).json({ message: "Item deleted successfully", itemDelete });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: `Failed to delete item: ${err.message}` });
   }
 };
 

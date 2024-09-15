@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const { ObjectId } = mongoose.Schema;
 
 const StockItemSchema = new mongoose.Schema(
@@ -44,15 +44,16 @@ const StockItemSchema = new mongoose.Schema(
     minThreshold: {
       type: Number,
       default: 0,
+      min: 0,
     },
     costMethod: {
       type: String,
       enum: ["FIFO", "LIFO", "Weighted Average"],
       required: true,
     },
-    costOfPart:{
+    costOfPart: {
       type: Number,
-      default:0,
+      default: 0,
     },
     suppliers: [
       {
@@ -62,8 +63,7 @@ const StockItemSchema = new mongoose.Schema(
     ],
     isActive: {
       type: Boolean,
-      default: "true",
-      required: true,
+      default: true,
     },
     createdBy: {
       type: ObjectId,
