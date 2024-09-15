@@ -132,9 +132,11 @@ const Suppliers = () => {
 
         if (response && response.status === 201) {
             const supplierId = response.data?._id;
-            if(itemsSupplied.length>0){
-              await addSupplierToStockItem()
-            }
+            if(itemsSupplied.length > 0){
+              await addSupplierToStockItem(supplierId);
+           } else {
+              toast.warn("انت لم تضيف لهذا المورد مواد المخزن");
+           }
             // إذا كان هناك رصيد ابتدائي، يتم تسجيل معاملة الرصيد
             if (currentBalance > 0) {
                 await createOpeningBalanceTransaction(supplierId, currentBalance);
@@ -185,12 +187,12 @@ const createOpeningBalanceTransaction = async (supplierId, currentBalance) => {
     }
 };
 
-const addSupplierToStockItem = async () => {
+const addSupplierToStockItem = async (supplierId) => {
   if (itemsSupplied) {
     for (const item of itemsSupplied) {
       const oldSupplier = AllStockItems.find(i => i._id === item)?.suppliers
       const suppliers = oldSupplier?[...oldSupplier, supplierId]:[supplierId];
-      console.log({itemsSupplied, suppliers})
+      console.log({itemsSupplied,oldSupplier, suppliers})
       try {
         const response = await axios.put(
           `${apiUrl}/api/stockitem/${item}`,
@@ -198,10 +200,13 @@ const addSupplierToStockItem = async () => {
           config
         );
         console.log({itemsSupplied, suppliers,response})
+        if(response){
+          toast.success("تم تحديث عنصر المخزون بنجاح");
+        }
         // Notify on success
-        toast.success("تم تحديث عنصر المخزون بنجاح");
       } catch (error) {
         // Notify on error
+        console.log({error})
         toast.error("فشل في تحديث عنصر المخزون");
       }
     }
