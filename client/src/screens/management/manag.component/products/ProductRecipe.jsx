@@ -141,7 +141,7 @@ const ProductRecipe = () => {
       let newIngredients;
       let nerServiceDetails;
 
-      if (recipeOfProduct._id) {
+      if (recipeOfProduct) {
         // If there are existing ingredients, create a new array with the added ingredient
         newIngredients = [
           ...ingredients,
@@ -355,12 +355,6 @@ const ProductRecipe = () => {
         if (ingredients) {
           setingredients([...ingredients].reverse());
           toast.success("تم جلب مكونات الوصفة بنجاح");
-        }
-
-        const totalrecipeOfProduct = selectedRecipe.totalcost;
-        // console.log("التكلفة الكلية للوصفة:", totalrecipeOfProduct);
-        if (totalrecipeOfProduct) {
-          setproducttotalcost(totalrecipeOfProduct);
         }
       } else {
         console.warn(
