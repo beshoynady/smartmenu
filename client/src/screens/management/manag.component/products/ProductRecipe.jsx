@@ -141,7 +141,7 @@ const ProductRecipe = () => {
       let newIngredients;
       // let newServiceDetails;
 
-      if (recipeOfProduct) {
+      if (recipeOfProduct&&recipeOfProduct._id) {
         // If there are existing ingredients, create a new array with the added ingredient
         newIngredients = [
           ...ingredients,
