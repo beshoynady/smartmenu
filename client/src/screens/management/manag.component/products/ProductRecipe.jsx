@@ -342,7 +342,6 @@ const ProductRecipe = () => {
       console.log({recipeOfProduct})
       
       if (recipeOfProduct) {
-        if(d)
         setrecipeOfProduct(recipeOfProduct);
 
         const ingredients = recipeOfProduct.ingredients;
