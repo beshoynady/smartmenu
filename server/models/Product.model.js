@@ -42,6 +42,7 @@ const productSchema = new mongoose.Schema(
         sizeRecipe: {
           type: ObjectId,
           ref: "Recipe",
+          
         },
         sizeQuantity: {
           type: Number,

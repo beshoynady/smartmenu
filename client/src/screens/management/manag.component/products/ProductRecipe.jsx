@@ -197,7 +197,7 @@ const ProductRecipe = () => {
         // If there are no existing ingredients, create a new array with the single ingredient
         newIngredients = [{ itemId, name, amount, unit, wastePercentage }];
         // newIngredients = [{ itemId, name, amount, unit, wastePercentage }];
-
+        console.log({newIngredients})
         // Add the new recipe to the product by sending a POST request
         const addRecipeToProduct = await axios.post(
           `${apiUrl}/api/recipe`,
