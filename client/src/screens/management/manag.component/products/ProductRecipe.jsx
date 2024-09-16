@@ -107,7 +107,7 @@ const ProductRecipe = () => {
   const [productId, setproductId] = useState("");
   const [productName, setproductName] = useState("");
 
-  const [recipeOfProduct, setrecipeOfProduct] = useState(null);
+  const [recipeOfProduct, setrecipeOfProduct] = useState({});
   const [ingredients, setingredients] = useState([]);
   const [producttotalcost, setproducttotalcost] = useState();
   const [serviceDetails, setserviceDetails] = useState([]);
@@ -339,9 +339,9 @@ const ProductRecipe = () => {
         recipeOfProduct = product.productRecipe?._id
       }
       
-      console.log({recipeOfProduct})
+      console.log({product , recipeOfProduct})
       
-      if (recipeOfProduct) {
+      if (recipeOfProduct&&recipeOfProduct.ingredients?.length>0) {
         setrecipeOfProduct(recipeOfProduct);
 
         const ingredients = recipeOfProduct.ingredients;
