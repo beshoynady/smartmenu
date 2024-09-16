@@ -817,75 +817,6 @@ const ProductRecipe = () => {
                       ))}
                   </select>
                 </div>
-
-                {/* تكلفة العنصر */}
-                <div className="form-group col-12 col-md-6">
-                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
-                    التكلفة
-                  </label>
-                  <input
-                    type="number"
-                    className="form-control border-primary m-0 p-2 h-auto"
-                    value={costofitem || ""}
-                    readOnly
-                  />
-                </div>
-
-                {/* كمية العنصر */}
-                <div className="form-group col-12 col-md-6">
-                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
-                    الكمية
-                  </label>
-                  <div className="w-100 d-flex flex-nowrap">
-                    <input
-                      type="number"
-                      className="form-control border-primary col-4"
-                      required
-                      onChange={(e) => {
-                        setamount(e.target.value);
-                        settotalcostofitem(e.target.value * costofitem);
-                      }}
-                    />
-                    <input
-                      type="text"
-                      className="form-control border-primary col-4"
-                      value={unit || ""}
-                      readOnly
-                      required
-                    />
-                  </div>
-                </div>
-
-                {/* تكلفة الكمية الإجمالية */}
-                <div className="form-group col-12 col-md-6">
-                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
-                    التكلفة الاجمالية
-                  </label>
-                  <input
-                    type="number"
-                    className="form-control border-primary m-0 p-2 h-auto"
-                    value={totalcostofitem || ""}
-                    readOnly
-                    required
-                  />
-                </div>
-
-                {/* نسبة الفاقد */}
-                <div className="form-group col-12 col-md-6">
-                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
-                    نسبة الفاقد (%)
-                  </label>
-                  <input
-                    type="number"
-                    className="form-control border-primary m-0 p-2 h-auto"
-                    onChange={(e) => setwastePercentage(e.target.value)}
-                    value={wastePercentage || ""}
-                    required
-                    min="0"
-                    max="100"
-                  />
-                </div>
-
                 {/* عدد الوجبات */}
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
@@ -913,6 +844,73 @@ const ProductRecipe = () => {
                     onChange={(e) => setpreparationTime(e.target.value)}
                     required
                     min="0"
+                  />
+                </div>
+                {/* تكلفة العنصر */}
+                {/* <div className="form-group col-12 col-md-6">
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    التكلفة
+                  </label>
+                  <input
+                    type="number"
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    value={costofitem || ""}
+                    readOnly
+                  />
+                </div> */}
+
+                {/* كمية العنصر */}
+                <div className="form-group col-12 col-md-6">
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    الكمية
+                  </label>
+                  <div className="w-100 d-flex flex-nowrap">
+                    <input
+                      type="number"
+                      className="form-control border-primary col-4"
+                      required
+                      onChange={(e) => {
+                        setamount(e.target.value);
+                        settotalcostofitem(e.target.value * costofitem);
+                      }}
+                    />
+                    <input
+                      type="text"
+                      className="form-control border-primary col-4"
+                      value={unit || ""}
+                      readOnly
+                      required
+                    />
+                  </div>
+                </div>
+
+                {/* تكلفة الكمية الإجمالية */}
+                {/* <div className="form-group col-12 col-md-6">
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    التكلفة الاجمالية
+                  </label>
+                  <input
+                    type="number"
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    value={totalcostofitem || ""}
+                    readOnly
+                    required
+                  />
+                </div> */}
+
+                {/* نسبة الفاقد */}
+                <div className="form-group col-12 col-md-6">
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    نسبة الفاقد (%)
+                  </label>
+                  <input
+                    type="number"
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    onChange={(e) => setwastePercentage(e.target.value)}
+                    value={wastePercentage || ""}
+                    required
+                    min="0"
+                    max="100"
                   />
                 </div>
               </div>
