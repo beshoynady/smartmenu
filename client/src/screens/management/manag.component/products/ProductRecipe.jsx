@@ -141,7 +141,7 @@ const ProductRecipe = () => {
       let newIngredients;
       // let newServiceDetails;
 
-      if (recipeOfProduct.length>0) {
+      if (recipeOfProduct) {
         // If there are existing ingredients, create a new array with the added ingredient
         newIngredients = [
           ...ingredients,
@@ -328,31 +328,17 @@ const ProductRecipe = () => {
         toast.error("اختر الصنف اولا.");
       }
 
-      const allRecipeResponse = await axios.get(`${apiUrl}/api/recipe`, config);
-      const allRecipe = allRecipeResponse.data;
-      console.log({ allRecipe });
+      const getProduct = await axios.get(`${apiUrl}/api/product${productId}`, config);
+      const data = getProduct.data;
 
-      let recipeOfProduct;
+      let recipeOfProduct = data.recipeOfProduct
 
-      if (productId && sizeId) {
-        console.log({ sizeId });
-        recipeOfProduct = allRecipe.filter(
-          (recipe) =>
-            recipe.productId._id === productId && recipe.sizeId === sizeId
-        );
-      } else if (productId && !sizeId) {
-        console.log({ sizeId, productId });
-        recipeOfProduct = allRecipe.filter(
-          (recipe) =>
-            recipe.productId._id === productId && recipe.sizeId === null
-        );
-      }
+     console.log({recipeOfProduct})
 
-      if (recipeOfProduct && recipeOfProduct.length > 0) {
-        const selectedRecipe = recipeOfProduct[0];
-        setrecipeOfProduct(selectedRecipe);
+      if (recipeOfProduct) {
+        setrecipeOfProduct(recipeOfProduct);
 
-        const ingredients = selectedRecipe.ingredients;
+        const ingredients = recipeOfProduct.ingredients;
         // console.log("المكونات:", ingredients);
         if (ingredients) {
           setingredients([...ingredients].reverse());
