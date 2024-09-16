@@ -141,7 +141,7 @@ const ProductRecipe = () => {
       let newIngredients;
       // let newServiceDetails;
 
-      if (recipeOfProduct&&recipeOfProduct._id) {
+      if (recipeOfProduct && recipeOfProduct._id) {
         // If there are existing ingredients, create a new array with the added ingredient
         newIngredients = [
           ...ingredients,
@@ -155,9 +155,10 @@ const ProductRecipe = () => {
         // Update the recipe by sending a PUT request
         const addRecipeToProduct = await axios.put(
           `${apiUrl}/api/recipe/${recipeOfProduct._id}`,
-          { ingredients: newIngredients
+          {
+            ingredients: newIngredients,
             // , serviceDetails: newIngredients
-             },
+          },
           config
         );
 
@@ -197,7 +198,7 @@ const ProductRecipe = () => {
         // If there are no existing ingredients, create a new array with the single ingredient
         newIngredients = [{ itemId, name, amount, unit, wastePercentage }];
         // newIngredients = [{ itemId, name, amount, unit, wastePercentage }];
-        console.log({newIngredients})
+        console.log({ newIngredients });
         // Add the new recipe to the product by sending a POST request
         const addRecipeToProduct = await axios.post(
           `${apiUrl}/api/recipe`,
@@ -328,20 +329,25 @@ const ProductRecipe = () => {
         toast.error("اختر الصنف اولا.");
       }
 
-      const getProduct = await axios.get(`${apiUrl}/api/product/${productId}`, config);
+      const getProduct = await axios.get(
+        `${apiUrl}/api/product/${productId}`,
+        config
+      );
       const product = getProduct.data;
 
-      let recipeOfProduct
-      if(product.hasSizes){
-        const findSize = product.sizes?.find(size=> size.sizeId?._id === sizeId)
-        recipeOfProduct = findSize.sizeRecipe?._id
-      }else{
-        recipeOfProduct = product.productRecipe?._id
+      let recipeOfProduct;
+      if (product.hasSizes) {
+        const findSize = product.sizes?.find(
+          (size) => size.sizeId?._id === sizeId
+        );
+        recipeOfProduct = findSize.sizeRecipe?._id;
+      } else {
+        recipeOfProduct = product.productRecipe?._id;
       }
-      
-      console.log({product , recipeOfProduct})
-      
-      if (recipeOfProduct&&recipeOfProduct.ingredients?.length>0) {
+
+      console.log({ product, recipeOfProduct });
+
+      if (recipeOfProduct && recipeOfProduct.ingredients?.length > 0) {
         setrecipeOfProduct(recipeOfProduct);
 
         const ingredients = recipeOfProduct.ingredients;

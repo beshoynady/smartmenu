@@ -39,7 +39,7 @@ const createRecipe = async (req, res) => {
         !item.name ||
         !item.amount ||
         !item.unit ||
-        typeof item.wastePercentage !== "number"
+        !item.wastePercentage
       ) {
         return res.status(400).json({ message: "Invalid ingredient fields" });
       }
@@ -111,11 +111,11 @@ const updateRecipe = async (req, res) => {
     const updateFields = {};
 
     // Conditionally add fields to update object
-    if (typeof numberOfMeals === "number") {
+    if (numberOfMeals) {
       updateFields.numberOfMeals = numberOfMeals;
     }
 
-    if (typeof preparationTime === "number") {
+    if (preparationTime) {
       updateFields.preparationTime = preparationTime;
     }
 
@@ -127,7 +127,7 @@ const updateRecipe = async (req, res) => {
           item.name ||
           item.amount ||
           item.unit ||
-          typeof item.wastePercentage === "number"
+          item.wastePercentage
         ) {
           updateFields.ingredients = ingredients;
         }

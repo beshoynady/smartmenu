@@ -42,7 +42,6 @@ const productSchema = new mongoose.Schema(
         sizeRecipe: {
           type: ObjectId,
           ref: "Recipe",
-          
         },
         sizeQuantity: {
           type: Number,
@@ -91,17 +90,17 @@ const productSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    
+
     comboItems: [
       {
-        product:{
+        product: {
           type: ObjectId,
           ref: "Product",
         },
-        quantity:{
+        quantity: {
           type: Number,
-          default:1
-        }
+          default: 1,
+        },
       },
     ],
 
