@@ -608,7 +608,6 @@ const ProductRecipe = () => {
                   defaultValue={producttotalcost}
                 />
               </div>
-             
             </div>
           </div>
           <table className="table table-striped table-hover">
@@ -656,7 +655,9 @@ const ProductRecipe = () => {
                           <td>{rec.item?.costOfPart}</td>
                           <td>{rec.unit}</td>
                           <td>{rec.amount}</td>
-                          <td>{Number(rec.amount)* Number(rec.item?.costOfPart)}</td>
+                          <td>
+                            {Number(rec.amount) * Number(rec.item?.costOfPart)}
+                          </td>
                           <td>
                             <a
                               href="#editRecipeModal"
@@ -774,7 +775,7 @@ const ProductRecipe = () => {
 
       <div id="addRecipeModal" className="modal fade">
         <div className="modal-dialog modal-lg">
-          <div className="modal-content shadow-lg border-0 rounded ">
+          <div className="modal-content shadow-lg border-0 rounded">
             <form onSubmit={createRecipe}>
               <div className="modal-header d-flex flex-wrap align-items-center text-light bg-primary">
                 <h4 className="modal-title">اضافه مكون</h4>
@@ -788,59 +789,56 @@ const ProductRecipe = () => {
                 </button>
               </div>
               <div className="modal-body d-flex flex-wrap align-items-center p-3 text-right">
+                {/* اختيار المكون */}
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
                     الاسم
                   </label>
                   <select
                     className="form-control border-primary m-0 p-2 h-auto"
-                    form="carform"
                     onChange={(e) => {
                       setitemId(e.target.value);
-                      setname(
-                        AllStockItems.find((s) => s._id === e.target.value)
-                          .itemName
+                      const selectedItem = AllStockItems.find(
+                        (s) => s._id === e.target.value
                       );
-                      setunit(
-                        AllStockItems.find((s) => s._id === e.target.value)
-                          .smallUnit
-                      );
-                      setcostofitem(
-                        AllStockItems.find((s) => s._id === e.target.value)
-                          .costOfPart
-                      );
+                      if (selectedItem) {
+                        setname(selectedItem.itemName);
+                        setunit(selectedItem.smallUnit);
+                        setcostofitem(selectedItem.costOfPart);
+                      }
                     }}
                   >
                     <option value="">اختر</option>
                     {AllStockItems &&
-                      AllStockItems.map((item, i) => {
-                        return (
-                          <option value={item._id} key={i}>
-                            {item.itemName}
-                          </option>
-                        );
-                      })}
+                      AllStockItems.map((item, i) => (
+                        <option value={item._id} key={i}>
+                          {item.itemName}
+                        </option>
+                      ))}
                   </select>
                 </div>
+
+                {/* تكلفة العنصر */}
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
                     التكلفة
                   </label>
                   <input
-                    type="Number"
+                    type="number"
                     className="form-control border-primary m-0 p-2 h-auto"
-                    required
-                    defaultValue={costofitem}
+                    value={costofitem || ""}
                     readOnly
                   />
                 </div>
+
+                {/* كمية العنصر */}
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
                     الكمية
                   </label>
                   <div className="w-100 d-flex flex-nowrap">
                     <input
-                      type="Number"
+                      type="number"
                       className="form-control border-primary col-4"
                       required
                       onChange={(e) => {
@@ -851,27 +849,72 @@ const ProductRecipe = () => {
                     <input
                       type="text"
                       className="form-control border-primary col-4"
-                      defaultValue={unit}
+                      value={unit || ""}
                       readOnly
                       required
                     />
                   </div>
                 </div>
+
+                {/* تكلفة الكمية الإجمالية */}
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
                     التكلفة الاجمالية
                   </label>
                   <input
-                    type="Number"
+                    type="number"
                     className="form-control border-primary m-0 p-2 h-auto"
-                    defaultValue={totalcostofitem}
-                    required
+                    value={totalcostofitem || ""}
                     readOnly
+                    required
                   />
                 </div>
-                {/* <div className="form-group col-12 col-md-6">
-                          <button onClick={add}>اضافه جديدة</button>
-                        </div> */}
+
+                {/* نسبة الفاقد */}
+                <div className="form-group col-12 col-md-6">
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    نسبة الفاقد (%)
+                  </label>
+                  <input
+                    type="number"
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    onChange={(e) => setwastePercentage(e.target.value)}
+                    value={wastePercentage || ""}
+                    required
+                    min="0"
+                    max="100"
+                  />
+                </div>
+
+                {/* عدد الوجبات */}
+                <div className="form-group col-12 col-md-6">
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    عدد الوجبات
+                  </label>
+                  <input
+                    type="number"
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    value={numberOfMeals}
+                    onChange={(e) => setnumberOfMeals(e.target.value)}
+                    required
+                    min="1"
+                  />
+                </div>
+
+                {/* زمن التحضير */}
+                <div className="form-group col-12 col-md-6">
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    زمن التحضير (دقائق)
+                  </label>
+                  <input
+                    type="number"
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    value={preparationTime}
+                    onChange={(e) => setpreparationTime(e.target.value)}
+                    required
+                    min="0"
+                  />
+                </div>
               </div>
               <div className="modal-footer d-flex flex-nowrap align-items-center justify-content-between m-0 p-1">
                 <input
