@@ -123,16 +123,15 @@ const updateRecipe = async (req, res) => {
       // Validate ingredients
       for (const item of ingredients) {
         if (
-          !item.itemId ||
-          !item.name ||
-          !item.amount ||
-          !item.unit ||
-          typeof item.wastePercentage !== "number"
+          item.itemId ||
+          item.name ||
+          item.amount ||
+          item.unit ||
+          typeof item.wastePercentage === "number"
         ) {
-          return res.status(400).json({ message: "Invalid ingredient fields" });
+          updateFields.ingredients = ingredients;
         }
       }
-      updateFields.ingredients = ingredients;
     }
 
     if (typeof serviceDetails === "object") {

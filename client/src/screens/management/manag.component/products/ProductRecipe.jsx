@@ -139,23 +139,25 @@ const ProductRecipe = () => {
       }
 
       let newIngredients;
-      let nerServiceDetails;
+      // let newServiceDetails;
 
-      if (recipeOfProduct) {
+      if (recipeOfProduct.length>0) {
         // If there are existing ingredients, create a new array with the added ingredient
         newIngredients = [
           ...ingredients,
           { itemId, name, amount, unit, wastePercentage },
         ];
-        nerServiceDetails = [
-          ...serviceDetails,
-          { itemId, name, amount, unit, wastePercentage },
-        ];
+        // newServiceDetails = [
+        //   ...serviceDetails,
+        //   { itemId, name, amount, unit, wastePercentage },
+        // ];
 
         // Update the recipe by sending a PUT request
         const addRecipeToProduct = await axios.put(
           `${apiUrl}/api/recipe/${recipeOfProduct._id}`,
-          { ingredients: newIngredients, serviceDetails: newIngredients },
+          { ingredients: newIngredients
+            // , serviceDetails: newIngredients
+             },
           config
         );
 
@@ -194,7 +196,7 @@ const ProductRecipe = () => {
 
         // If there are no existing ingredients, create a new array with the single ingredient
         newIngredients = [{ itemId, name, amount, unit, wastePercentage }];
-        newIngredients = [{ itemId, name, amount, unit, wastePercentage }];
+        // newIngredients = [{ itemId, name, amount, unit, wastePercentage }];
 
         // Add the new recipe to the product by sending a POST request
         const addRecipeToProduct = await axios.post(
@@ -207,7 +209,7 @@ const ProductRecipe = () => {
             numberOfMeals,
             preparationTime,
             ingredients: newIngredients,
-            serviceDetails: nerServiceDetails,
+            // serviceDetails: newIngredients,
           },
           config
         );
