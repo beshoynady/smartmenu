@@ -328,14 +328,21 @@ const ProductRecipe = () => {
         toast.error("اختر الصنف اولا.");
       }
 
-      const getProduct = await axios.get(`${apiUrl}/api/product${productId}`, config);
-      const data = getProduct.data;
+      const getProduct = await axios.get(`${apiUrl}/api/product/${productId}`, config);
+      const product = getProduct.data;
 
-      let recipeOfProduct = data.recipeOfProduct
-
-     console.log({recipeOfProduct})
-
+      let recipeOfProduct
+      if(product.hasSizes){
+        const findSize = product.sizes?.find(size=> size.sizeId?._id === sizeId)
+        recipeOfProduct = findSize.sizeRecipe?._id
+      }else{
+        recipeOfProduct = product.productRecipe?._id
+      }
+      
+      console.log({recipeOfProduct})
+      
       if (recipeOfProduct) {
+        if(d)
         setrecipeOfProduct(recipeOfProduct);
 
         const ingredients = recipeOfProduct.ingredients;
