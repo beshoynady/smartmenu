@@ -20,8 +20,7 @@ const createRecipe = async (req, res) => {
       !productName ||
       !numberOfMeals ||
       !preparationTime ||
-      !ingredients ||
-      !serviceDetails
+      !ingredients
     ) {
       return res.status(400).json({ message: "All fields are required" });
     }
@@ -97,43 +96,55 @@ const createRecipe = async (req, res) => {
 const updateRecipe = async (req, res) => {
   try {
     const { id } = req.params;
-    const { numberOfMeals, preparationTime, ingredients, serviceDetails } =
-      req.body;
+    const {
+      numberOfMeals,
+      preparationTime,
+      ingredients,
+      serviceDetails
+    } = req.body;
 
     if (!id) {
       return res.status(400).json({ message: "Recipe ID is required" });
     }
 
-    // Validate fields
-    if (
-      typeof numberOfMeals !== "number" ||
-      typeof preparationTime !== "number" ||
-      !Array.isArray(ingredients) ||
-      typeof serviceDetails !== "object"
-    ) {
-      return res.status(400).json({ message: "Invalid fields" });
+    // Initialize the update object
+    const updateFields = {};
+
+    // Conditionally add fields to update object
+    if (typeof numberOfMeals === "number") {
+      updateFields.numberOfMeals = numberOfMeals;
     }
 
-    // Validate ingredients
-    for (const item of ingredients) {
-      if (
-        !item.itemId ||
-        !item.name ||
-        !item.amount ||
-        !item.unit ||
-        typeof item.wastePercentage !== "number"
-      ) {
-        return res.status(400).json({ message: "Invalid ingredient fields" });
+    if (typeof preparationTime === "number") {
+      updateFields.preparationTime = preparationTime;
+    }
+
+    if (Array.isArray(ingredients)) {
+      // Validate ingredients
+      for (const item of ingredients) {
+        if (
+          !item.itemId ||
+          !item.name ||
+          !item.amount ||
+          !item.unit ||
+          typeof item.wastePercentage !== "number"
+        ) {
+          return res.status(400).json({ message: "Invalid ingredient fields" });
+        }
       }
+      updateFields.ingredients = ingredients;
     }
 
-    // Validate serviceDetails
-    validateServiceDetails(serviceDetails);
+    if (typeof serviceDetails === "object") {
+      // Validate serviceDetails
+      validateServiceDetails(serviceDetails);
+      updateFields.serviceDetails = serviceDetails;
+    }
 
     // Update the recipe by ID
     const updatedRecipe = await RecipeModel.findByIdAndUpdate(
       id,
-      { numberOfMeals, preparationTime, ingredients, serviceDetails },
+      updateFields,
       { new: true }
     );
 
@@ -146,6 +157,7 @@ const updateRecipe = async (req, res) => {
     res.status(400).json({ message: error.message, error });
   }
 };
+
 
 // Get a single recipe by ID
 const getOneRecipe = async (req, res) => {
