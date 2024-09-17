@@ -416,7 +416,7 @@ const ProductRecipe = () => {
         total += newingredients[i].totalcostofitem;
       }
       console.log({ totalcost: total });
-      // productRecipe.map(rec=>totalcost = totalcost + rec.totalcostofitem)
+      // productRecipe.map(rec=>totalcost = totalcost + ingredient.totalcostofitem)
       const deleteRecipetoProduct = await axios.put(
         `${apiUrl}/api/recipe/${recipeOfProduct._id}`,
         { ingredients: newingredients, totalcost: total },
@@ -683,7 +683,7 @@ const ProductRecipe = () => {
                               className="delete"
                               data-toggle="modal"
                               onClick={() => {
-                                setitemId(rec.itemId);
+                                setitemId(ingredient.itemId);
                               }}
                             >
                               <i
