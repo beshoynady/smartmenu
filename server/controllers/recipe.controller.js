@@ -163,10 +163,10 @@ const getOneRecipe = async (req, res) => {
   try {
     const { id } = req.params;
     const recipe = await RecipeModel.findById(id)
-      .populate("productId", "_id name price")
+      .populate("productId", "_id name")
       .populate(
         "ingredients.itemId",
-        "_id itemName price costOfPart minThreshold"
+        "_id itemName costOfPart minThreshold"
       );
 
     if (!recipe) {

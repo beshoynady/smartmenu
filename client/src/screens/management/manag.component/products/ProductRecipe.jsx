@@ -340,9 +340,9 @@ const ProductRecipe = () => {
         const findSize = product.sizes?.find(
           (size) => size.sizeId?._id === sizeId
         );
-        recipeOfProduct = findSize.sizeRecipe?._id;
+        recipeOfProduct = findSize.sizeRecipe;
       } else {
-        recipeOfProduct = product.productRecipe?._id;
+        recipeOfProduct = product.productRecipe;
       }
 
       console.log({ product, recipeOfProduct });
@@ -351,7 +351,7 @@ const ProductRecipe = () => {
         setrecipeOfProduct(recipeOfProduct);
 
         const ingredients = recipeOfProduct.ingredients;
-        // console.log("المكونات:", ingredients);
+        console.log("المكونات:", ingredients);
         if (ingredients) {
           setingredients([...ingredients].reverse());
           toast.success("تم جلب مكونات الوصفة بنجاح");
@@ -505,6 +505,7 @@ const ProductRecipe = () => {
               </div>
             </div>
           </div>
+
           <div className="table-filter print-hide">
             <div className="col-12 text-dark d-flex flex-wrap align-items-center justify-content-start p-0 m-0">
               <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
@@ -604,6 +605,7 @@ const ProductRecipe = () => {
               </div>
             </div>
           </div>
+
           <table className="table table-striped table-hover">
             <thead>
               <tr>
@@ -628,7 +630,7 @@ const ProductRecipe = () => {
             </thead>
             <tbody>
               {ingredients.length > 0
-                ? ingredients.map((rec, i) => {
+                ? ingredients.map((ingredient, i) => {
                     if ((i >= startpagination) & (i < endpagination)) {
                       return (
                         <tr key={i}>
@@ -645,12 +647,13 @@ const ProductRecipe = () => {
                             </span>
                           </td>
                           <td>{i + 1}</td>
-                          <td>{rec.name}</td>
-                          <td>{rec.item?.costOfPart}</td>
-                          <td>{rec.unit}</td>
-                          <td>{rec.amount}</td>
+                          <td>{ingredient.name}</td>
+                          <td>{ingredient.item?.costOfPart}</td>
+                          <td>{ingredient.unit}</td>
+                          <td>{ingredient.amount}</td>
                           <td>
-                            {Number(rec.amount) * Number(rec.item?.costOfPart)}
+                            {Number(ingredient.amount) *
+                              Number(ingredient.item?.costOfPart)}
                           </td>
                           <td>
                             <a
@@ -658,13 +661,12 @@ const ProductRecipe = () => {
                               className="edit"
                               data-toggle="modal"
                               onClick={() => {
-                                setrecipeid(rec._id);
-                                setitemId(rec.itemId);
-                                setname(rec.name);
-                                setamount(rec.amount);
-                                setunit(rec.unit);
-                                setcostofitem(rec.costofitem);
-                                settotalcostofitem(rec.settotalcostofitem);
+                                setrecipeid(ingredient._id);
+                                setitemId(ingredient.itemId);
+                                setname(ingredient.name);
+                                setamount(ingredient.amount);
+                                setunit(ingredient.unit);
+                                setwastePercentage(ingredient.wastePercentage);
                               }}
                             >
                               <i
@@ -700,6 +702,7 @@ const ProductRecipe = () => {
                 : ""}
             </tbody>
           </table>
+
           <div className="clearfix">
             <div className="hint-text text-dark">
               عرض{" "}
