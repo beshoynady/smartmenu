@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, { useState, useEffect, useRef, useContext, isValidElement } from "react";
 import axios from "axios";
 import { detacontext } from "../../../../App";
 import { toast } from "react-toastify";
@@ -109,7 +109,7 @@ const ProductRecipe = () => {
 
   const [recipeOfProduct, setrecipeOfProduct] = useState({});
   const [ingredients, setingredients] = useState([]);
-  const [producttotalcost, setproducttotalcost] = useState();
+  const [producttotalcost, setproducttotalcost] = useState(0);
   const [serviceDetails, setserviceDetails] = useState([]);
   const [preparationTime, setpreparationTime] = useState(0);
   const [wastePercentage, setwastePercentage] = useState(0);
@@ -313,6 +313,21 @@ const ProductRecipe = () => {
       toast.error("حدث خطأ أثناء تعديل الوصفة");
     }
   };
+
+  const calculateTotalCost = ()=>{
+    let total = 0
+    
+    ingredients&&ingredients.map(ingredient=>{
+      const costPart = AllStockItems.find(stockItem=>stockItem._id === ingredient.itemId)?.costOfPart
+      const costOfIngerdient = Number(ingredient.amount) * Number(costPart)
+      total += costOfIngerdient
+    })
+    setproducttotalcost(total)
+  }
+  useEffect(() => {
+   calculateTotalCost()
+  }, [ingredients, productId])
+  
 
   const getProductRecipe = async (productId, sizeId) => {
     if (!token) {
@@ -621,9 +636,9 @@ const ProductRecipe = () => {
                 </th>
                 <th>م</th>
                 <th>الاسم</th>
-                <th>التكلفة</th>
                 <th>الوحدة</th>
                 <th>الكمية</th>
+                <th>التكلفة</th>
                 <th>تكلفة المكون</th>
                 <th>اجراءات</th>
               </tr>
@@ -648,12 +663,12 @@ const ProductRecipe = () => {
                           </td>
                           <td>{i + 1}</td>
                           <td>{ingredient.name}</td>
-                          <td>{ingredient.item?.costOfPart}</td>
                           <td>{ingredient.unit}</td>
                           <td>{ingredient.amount}</td>
+                          <td>{AllStockItems.find(stockItem=>stockItem._id === ingredient.itemId)?.costOfPart}</td>
                           <td>
                             {Number(ingredient.amount) *
-                              Number(ingredient.item?.costOfPart)}
+                              Number(AllStockItems.find(stockItem=>stockItem._id === ingredient.itemId)?.costOfPart)}
                           </td>
                           <td>
                             <a

@@ -183,10 +183,10 @@ const getOneRecipe = async (req, res) => {
 const getAllRecipe = async (req, res) => {
   try {
     const recipes = await RecipeModel.find()
-      .populate("productId", "_id name price")
+      .populate("productId", "_id name")
       .populate(
         "ingredients.itemId",
-        "_id itemName price costOfPart minThreshold"
+        "_id itemName costOfPart minThreshold"
       );
 
     res.status(200).json(recipes);
