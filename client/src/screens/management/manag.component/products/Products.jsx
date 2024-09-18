@@ -487,8 +487,23 @@ const Products = () => {
     }
   };
 
+
+
+  const calculateTotalCost = (ingredients)=>{
+    let total = 0
+    
+    ingredients&&ingredients.map(ingredient=>{
+      const costPart = AllStockItems.find(stockItem=>stockItem._id === ingredient.itemId)?.costOfPart
+      const costOfIngerdient = Number(ingredient.amount) * Number(costPart)
+      total += costOfIngerdient
+    })
+    return total
+  }
+
+  
   useEffect(() => {
     getallproducts();
+    calculateTotalCost()
     getallCategories();
     getAllOrders();
     // getallStockItem()
@@ -703,8 +718,7 @@ const Products = () => {
                           <td>{product.sizes.length}</td>
                           <td>{product.extras.length}</td>
                           <td>
-                            {product.productRecipe
-                              ? product.productRecipe.totalcost
+                            {product.productRecipe? calculateTotalCost(product.productRecipe?.ingredients)
                               : "اضف تكلفه"}
                           </td>
                           <td>{product.price}</td>
@@ -760,9 +774,8 @@ const Products = () => {
                               <td></td>
                               <td></td>
                               <td>
-                                {size.sizeRecipe
-                                  ? size.sizeRecipe.totalcost
-                                  : "اضف تكلفه"}
+                               {size.sizeRecipe? calculateTotalCost(size.sizeRecipe?.ingredients)
+                              : "اضف تكلفه"}
                               </td>
                               <td>{size.sizePrice}</td>
                               <td>{size.sizeDiscount}</td>
