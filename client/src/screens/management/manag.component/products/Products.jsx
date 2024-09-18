@@ -493,7 +493,7 @@ const Products = () => {
     let total = 0
     
     ingredients&&ingredients.map(ingredient=>{
-      const costPart = AllStockItems.find(stockItem=>stockItem._id === ingredient.itemId)?.costOfPart
+      const costPart = ingredient.itemId?.costOfPart
       const costOfIngerdient = Number(ingredient.amount) * Number(costPart)
       total += costOfIngerdient
     })
@@ -505,7 +505,7 @@ const Products = () => {
     getallproducts();
     getallCategories();
     getAllOrders();
-    getallStockItem()
+    // getallStockItem()
   }, []);
 
   return (
