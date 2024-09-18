@@ -318,7 +318,7 @@ const ProductRecipe = () => {
     let total = 0
     
     ingredients&&ingredients.map(ingredient=>{
-      const costPart = AllStockItems.find(stockItem=>stockItem._id === ingredient.itemId)?.costOfPart
+      const costPart = ingredient.itemId?.costOfPart
       const costOfIngerdient = Number(ingredient.amount) * Number(costPart)
       total += costOfIngerdient
     })
@@ -665,10 +665,10 @@ const ProductRecipe = () => {
                           <td>{ingredient.name}</td>
                           <td>{ingredient.unit}</td>
                           <td>{ingredient.amount}</td>
-                          <td>{AllStockItems.find(stockItem=>stockItem._id === ingredient.itemId)?.costOfPart}</td>
+                          <td>{ingredient.itemId?.costOfPart}</td>
                           <td>
                             {Number(ingredient.amount) *
-                              Number(AllStockItems.find(stockItem=>stockItem._id === ingredient.itemId)?.costOfPart)}
+                              Number(ingredient.itemId?.costOfPart)}
                           </td>
                           <td>
                             <a
