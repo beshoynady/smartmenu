@@ -503,10 +503,9 @@ const Products = () => {
   
   useEffect(() => {
     getallproducts();
-    calculateTotalCost()
     getallCategories();
     getAllOrders();
-    // getallStockItem()
+    getallStockItem()
   }, []);
 
   return (

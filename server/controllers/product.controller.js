@@ -29,11 +29,9 @@ const createProduct = async (req, res) => {
 
     // Check if required fields are provided in the request
     if (!productname || !productcategoryid || productprice === undefined) {
-      return res
-        .status(400)
-        .json({
-          error: "Please provide name, price, and category of the product",
-        });
+      return res.status(400).json({
+        error: "Please provide name, price, and category of the product",
+      });
     }
 
     // Validate 'sizes' array
@@ -165,12 +163,20 @@ const getAllProducts = async (req, res) => {
     const allProducts = await ProductModel.find({})
       .populate("category")
       .populate("sizes.sizeRecipe")
-      .populate("productRecipe")
+      .populate({
+        path: "productRecipe",
+        populate: {
+          path: "ingredients.itemId",
+        },
+      })
       .populate("extras")
       .populate({
         path: "comboItems.product",
         populate: {
           path: "productRecipe",
+          populate: {
+            path: "ingredients.itemId",
+          },
         },
       });
 
@@ -192,12 +198,20 @@ const getProductByCategory = async (req, res) => {
     const products = await ProductModel.find({ category: categoryid })
       .populate("category")
       .populate("sizes.sizeRecipe")
-      .populate("productRecipe")
+      .populate({
+        path: "productRecipe",
+        populate: {
+          path: "ingredients.itemId",
+        },
+      })
       .populate("extras")
       .populate({
         path: "comboItems.product",
         populate: {
           path: "productRecipe",
+          populate: {
+            path: "ingredients.itemId",
+          },
         },
       });
 
@@ -214,15 +228,22 @@ const getOneProduct = async (req, res) => {
     const product = await ProductModel.findById(productid)
       .populate("category")
       .populate("sizes.sizeRecipe")
-      .populate("productRecipe")
+      .populate({
+        path: "productRecipe",
+        populate: {
+          path: "ingredients.itemId",
+        },
+      })
       .populate("extras")
       .populate({
         path: "comboItems.product",
         populate: {
           path: "productRecipe",
+          populate: {
+            path: "ingredients.itemId",
+          },
         },
       });
-
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
