@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef, useContext, isValidElement } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useContext,
+  isValidElement,
+} from "react";
 import axios from "axios";
 import { detacontext } from "../../../../App";
 import { toast } from "react-toastify";
@@ -113,13 +119,13 @@ const ProductRecipe = () => {
   const [serviceDetails, setserviceDetails] = useState([]);
   const [preparationTime, setpreparationTime] = useState(0);
   const [wastePercentage, setwastePercentage] = useState(0);
-  const [numberOfMeals, setnumberOfMeals] = useState(1);
+  const [numberOfMeals, setnumberOfMeals] = useState(0);
   const [itemId, setitemId] = useState("");
   const [name, setname] = useState("");
-  const [amount, setamount] = useState();
-  const [costofitem, setcostofitem] = useState();
+  const [amount, setamount] = useState(0);
+  const [costofitem, setcostofitem] = useState(0);
   const [unit, setunit] = useState("");
-  const [totalcostofitem, settotalcostofitem] = useState();
+  const [totalcostofitem, settotalcostofitem] = useState(0);
 
   const createRecipe = async (e) => {
     e.preventDefault();
@@ -314,20 +320,20 @@ const ProductRecipe = () => {
     }
   };
 
-  const calculateTotalCost = ()=>{
-    let total = 0
-    
-    ingredients&&ingredients.map(ingredient=>{
-      const costPart = ingredient.itemId?.costOfPart
-      const costOfIngerdient = Number(ingredient.amount) * Number(costPart)
-      total += costOfIngerdient
-    })
-    setproducttotalcost(total)
-  }
+  const calculateTotalCost = () => {
+    let total = 0;
+
+    ingredients &&
+      ingredients.map((ingredient) => {
+        const costPart = ingredient.itemId?.costOfPart;
+        const costOfIngerdient = Number(ingredient.amount) * Number(costPart);
+        total += costOfIngerdient;
+      });
+    setproducttotalcost(total);
+  };
   useEffect(() => {
-   calculateTotalCost()
-  }, [ingredients, productId])
-  
+    calculateTotalCost();
+  }, [ingredients, productId]);
 
   const getProductRecipe = async (productId, sizeId) => {
     if (!token) {
@@ -555,7 +561,7 @@ const ProductRecipe = () => {
                   className="form-control border-primary m-0 p-2 h-auto"
                   onChange={(e) => getproductByCategory(e.target.value)}
                 >
-                  <option value={""}>الكل</option>
+                  <option value={""}>اختر التصنيف</option>
                   {listofcategories.map((category, i) => {
                     return (
                       <option value={category._id} key={i}>
@@ -573,7 +579,7 @@ const ProductRecipe = () => {
                   className="form-control border-primary m-0 p-2 h-auto"
                   onChange={(e) => handleSelectedProduct(e.target.value)}
                 >
-                  <option value={""}>الكل</option>
+                  <option value={""}>اختر الصنف</option>
                   {productFilterd &&
                     productFilterd.map((product, i) => {
                       return (
@@ -607,6 +613,30 @@ const ProductRecipe = () => {
               ) : (
                 ""
               )}
+            </div>
+            <div className="col-12 text-dark d-flex flex-wrap align-items-center justify-content-start p-0 m-0">
+              <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
+                <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                  وقت التحضير
+                </label>
+                <input
+                  type="Number"
+                  className="form-control border-primary m-0 p-2 h-auto"
+                  readOnly
+                  defaultValue={preparationTime}
+                />
+              </div>
+              <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
+                <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                  عدد الوجبات
+                </label>
+                <input
+                  type="Number"
+                  className="form-control border-primary m-0 p-2 h-auto"
+                  readOnly
+                  defaultValue={numberOfMeals}
+                />
+              </div>
               <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
                 <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
                   اجمالي التكاليف
@@ -616,6 +646,19 @@ const ProductRecipe = () => {
                   className="form-control border-primary m-0 p-2 h-auto"
                   readOnly
                   defaultValue={producttotalcost}
+                />
+              </div>
+              <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
+                <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                  تكلفه الوجبه
+                </label>
+                <input
+                  type="Number"
+                  className="form-control border-primary m-0 p-2 h-auto"
+                  readOnly
+                  defaultValue={
+                    Number(producttotalcost) / Number(numberOfMeals)
+                  }
                 />
               </div>
             </div>
@@ -801,6 +844,38 @@ const ProductRecipe = () => {
                 </button>
               </div>
               <div className="modal-body d-flex flex-wrap align-items-center p-3 text-right">
+                {/* عدد الوجبات */}
+                <div className="form-group col-12 col-md-6">
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    عدد الوجبات
+                  </label>
+                  <input
+                    type="number"
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    value={numberOfMeals}
+                    readOnly={numberOfMeals > 0 ? true : false}
+                    onChange={(e) => setnumberOfMeals(e.target.value)}
+                    required
+                    min="1"
+                  />
+                </div>
+
+                {/* زمن التحضير */}
+                <div className="form-group col-12 col-md-6">
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    زمن التحضير (دقائق)
+                  </label>
+                  <input
+                    type="number"
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    value={preparationTime}
+                    readOnly={preparationTime > 0 ? true : false}
+                    onChange={(e) => setpreparationTime(e.target.value)}
+                    required
+                    min="0"
+                  />
+                </div>
+
                 {/* اختيار المكون */}
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
@@ -829,48 +904,6 @@ const ProductRecipe = () => {
                       ))}
                   </select>
                 </div>
-                {/* عدد الوجبات */}
-                <div className="form-group col-12 col-md-6">
-                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
-                    عدد الوجبات
-                  </label>
-                  <input
-                    type="number"
-                    className="form-control border-primary m-0 p-2 h-auto"
-                    value={numberOfMeals}
-                    onChange={(e) => setnumberOfMeals(e.target.value)}
-                    required
-                    min="1"
-                  />
-                </div>
-
-                {/* زمن التحضير */}
-                <div className="form-group col-12 col-md-6">
-                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
-                    زمن التحضير (دقائق)
-                  </label>
-                  <input
-                    type="number"
-                    className="form-control border-primary m-0 p-2 h-auto"
-                    value={preparationTime}
-                    onChange={(e) => setpreparationTime(e.target.value)}
-                    required
-                    min="0"
-                  />
-                </div>
-                {/* تكلفة العنصر */}
-                {/* <div className="form-group col-12 col-md-6">
-                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
-                    التكلفة
-                  </label>
-                  <input
-                    type="number"
-                    className="form-control border-primary m-0 p-2 h-auto"
-                    value={costofitem || ""}
-                    readOnly
-                  />
-                </div> */}
-
                 {/* كمية العنصر */}
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
@@ -896,8 +929,21 @@ const ProductRecipe = () => {
                   </div>
                 </div>
 
+                {/* تكلفة العنصر */}
+                <div className="form-group col-12 col-md-6">
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    التكلفة
+                  </label>
+                  <input
+                    type="number"
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    value={costofitem || ""}
+                    readOnly
+                  />
+                </div>
+
                 {/* تكلفة الكمية الإجمالية */}
-                {/* <div className="form-group col-12 col-md-6">
+                <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
                     التكلفة الاجمالية
                   </label>
@@ -908,7 +954,7 @@ const ProductRecipe = () => {
                     readOnly
                     required
                   />
-                </div> */}
+                </div>
 
                 {/* نسبة الفاقد */}
                 <div className="form-group col-12 col-md-6">
