@@ -623,7 +623,7 @@ const ProductRecipe = () => {
                   type="Number"
                   className="form-control border-primary m-0 p-2 h-auto"
                   readOnly
-                  defaultValue={product.preparationTime}
+                  defaultValue={product.productRecipe?.preparationTime}
                 />
               </div>
               <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
@@ -634,7 +634,7 @@ const ProductRecipe = () => {
                   type="Number"
                   className="form-control border-primary m-0 p-2 h-auto"
                   readOnly
-                  defaultValue={product.numberOfMeals}
+                  defaultValue={product.productRecipe?.numberOfMeals}
                 />
               </div>
               <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
@@ -657,7 +657,7 @@ const ProductRecipe = () => {
                   className="form-control border-primary m-0 p-2 h-auto"
                   readOnly
                   defaultValue={
-                    Number(producttotalcost) / Number(numberOfMeals)
+                    Number(producttotalcost) / Number(product.productRecipe?.numberOfMeals)
                   }
                 />
               </div>
@@ -852,7 +852,7 @@ const ProductRecipe = () => {
                   <input
                     type="number"
                     className="form-control border-primary m-0 p-2 h-auto"
-                    value={product.numberOfMeals}
+                    value={product.productRecipe?.numberOfMeals}
                     readOnly={product.numberOfMeals > 0 ? true : false}
                     onChange={(e) => setnumberOfMeals(e.target.value)}
                     required
@@ -868,8 +868,8 @@ const ProductRecipe = () => {
                   <input
                     type="number"
                     className="form-control border-primary m-0 p-2 h-auto"
-                    value={product.preparationTime}
-                    readOnly={product.preparationTime > 0 ? true : false}
+                    value={product.productRecipe?.preparationTime}
+                    readOnly={product.productRecipe?.preparationTime > 0 ? true : false}
                     onChange={(e) => setpreparationTime(e.target.value)}
                     required
                     min="0"
