@@ -18,16 +18,19 @@ const productSchema = new mongoose.Schema(
       minlength: [3, "Description must have at least 3 characters"],
       default: "",
     },
+
     category: {
       type: ObjectId,
       ref: "MenuCategory",
       required: [true, "Category is required"],
     },
+
     quantity: {
       type: Number,
       default: 0,
       required: [true, "Quantity is required"],
     },
+    
     hasSizes: {
       type: Boolean,
       required: true,

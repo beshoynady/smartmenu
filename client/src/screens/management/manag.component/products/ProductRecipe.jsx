@@ -623,7 +623,7 @@ const ProductRecipe = () => {
                   type="Number"
                   className="form-control border-primary m-0 p-2 h-auto"
                   readOnly
-                  defaultValue={preparationTime}
+                  defaultValue={product.preparationTime}
                 />
               </div>
               <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
@@ -634,7 +634,7 @@ const ProductRecipe = () => {
                   type="Number"
                   className="form-control border-primary m-0 p-2 h-auto"
                   readOnly
-                  defaultValue={numberOfMeals}
+                  defaultValue={product.numberOfMeals}
                 />
               </div>
               <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
@@ -852,8 +852,8 @@ const ProductRecipe = () => {
                   <input
                     type="number"
                     className="form-control border-primary m-0 p-2 h-auto"
-                    value={numberOfMeals}
-                    readOnly={numberOfMeals > 0 ? true : false}
+                    value={product.numberOfMeals}
+                    readOnly={product.numberOfMeals > 0 ? true : false}
                     onChange={(e) => setnumberOfMeals(e.target.value)}
                     required
                     min="1"
@@ -868,8 +868,8 @@ const ProductRecipe = () => {
                   <input
                     type="number"
                     className="form-control border-primary m-0 p-2 h-auto"
-                    value={preparationTime}
-                    readOnly={preparationTime > 0 ? true : false}
+                    value={product.preparationTime}
+                    readOnly={product.preparationTime > 0 ? true : false}
                     onChange={(e) => setpreparationTime(e.target.value)}
                     required
                     min="0"
