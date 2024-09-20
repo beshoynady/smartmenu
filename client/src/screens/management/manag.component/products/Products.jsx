@@ -717,7 +717,7 @@ const Products = () => {
                           <td>{product.sizes.length}</td>
                           <td>{product.extras.length}</td>
                           <td>
-                            {product.productRecipe? calculateTotalCost(product.productRecipe?.ingredients)
+                            {product.productRecipe? calculateTotalCost(product.productRecipe?.ingredients) / product.productRecipe?.numberOfMeals
                               : "اضف تكلفه"}
                           </td>
                           <td>{product.price}</td>
@@ -773,7 +773,7 @@ const Products = () => {
                               <td></td>
                               <td></td>
                               <td>
-                               {size.sizeRecipe? calculateTotalCost(size.sizeRecipe?.ingredients)
+                               {size.sizeRecipe? calculateTotalCost(size.sizeRecipe?.ingredients) / Number(size.sizeRecipe?.numberOfMeals)
                               : "اضف تكلفه"}
                               </td>
                               <td>{size.sizePrice}</td>
