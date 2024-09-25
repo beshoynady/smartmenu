@@ -115,7 +115,7 @@ const ProductRecipe = () => {
 
   const [recipeOfProduct, setrecipeOfProduct] = useState({});
   const [ingredients, setingredients] = useState([]);
-  const [producttotalcost, setproducttotalcost] = useState(0);
+  const [productTotalCost, setproductTotalCost] = useState(0);
   const [serviceDetails, setserviceDetails] = useState([]);
   const [preparationTime, setpreparationTime] = useState(0);
   const [wastePercentage, setwastePercentage] = useState(0);
@@ -320,20 +320,22 @@ const ProductRecipe = () => {
     }
   };
 
+
   const calculateTotalCost = (ingredients) => {
     let total = 0;
-
-    ingredients &&
-      ingredients.map((ingredient) => {
-        const costPart = ingredient.itemId?.costOfPart;
-        const costOfIngerdient = Number(ingredient.amount) * Number(costPart);
-        total += costOfIngerdient;
-      });
-    setproducttotalcost(total);
+  
+    ingredients?.forEach((ingredient) => {
+      const costPart = Number(ingredient.itemId?.costOfPart) || 0; 
+      const amount = Number(ingredient.amount) || 0;
+      const costOfIngredient = amount * costPart;
+      total += costOfIngredient;
+    });
+  
+    setproductTotalCost(total);
   };
-  useEffect(() => {
-    calculateTotalCost();
-  }, [ingredients, productId]);
+  // useEffect(() => {
+  //   calculateTotalCost();
+  // }, [ingredients, productId]);
 
   const getProductRecipe = async (productId, sizeId) => {
     if (!token) {
@@ -384,7 +386,7 @@ const ProductRecipe = () => {
         );
         setrecipeOfProduct({});
         setingredients([]);
-        setproducttotalcost(null); // Reset the total cost if no recipe is found
+        setproductTotalCost(null); // Reset the total cost if no recipe is found
         toast.warn("لم يتم العثور على وصفة مطابقة.");
       }
     } catch (error) {
@@ -644,7 +646,7 @@ const ProductRecipe = () => {
                   type="Number"
                   className="form-control border-primary m-0 p-2 h-auto"
                   readOnly
-                  defaultValue={producttotalcost}
+                  value={productTotalCost}
                 />
               </div>
               <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
@@ -655,8 +657,8 @@ const ProductRecipe = () => {
                   type="Number"
                   className="form-control border-primary m-0 p-2 h-auto"
                   readOnly
-                  defaultValue={
-                    producttotalcost?Number(producttotalcost) / Number(product.productRecipe?.numberOfMeals):0
+                  value={
+                    productTotalCost?Number(productTotalCost) / Number(product.productRecipe?.numberOfMeals):0
                   }
                 />
               </div>
