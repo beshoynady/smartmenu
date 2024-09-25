@@ -643,7 +643,7 @@ const ProductRecipe = () => {
                   اجمالي التكاليف
                 </label>
                 <input
-                  type="Number"
+                  type="text"
                   className="form-control border-primary m-0 p-2 h-auto"
                   readOnly
                   value={productTotalCost}
@@ -654,7 +654,7 @@ const ProductRecipe = () => {
                   تكلفه الوجبه
                 </label>
                 <input
-                  type="Number"
+                  type="text"
                   className="form-control border-primary m-0 p-2 h-auto"
                   readOnly
                   value={
