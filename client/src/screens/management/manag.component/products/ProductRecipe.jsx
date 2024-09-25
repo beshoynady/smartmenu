@@ -657,7 +657,7 @@ const ProductRecipe = () => {
                   className="form-control border-primary m-0 p-2 h-auto"
                   readOnly
                   defaultValue={
-                    Number(producttotalcost) / Number(product.productRecipe?.numberOfMeals)
+                    producttotalcost?Number(producttotalcost) / Number(product.productRecipe?.numberOfMeals):0
                   }
                 />
               </div>

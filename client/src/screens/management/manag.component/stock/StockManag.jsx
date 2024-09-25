@@ -127,7 +127,6 @@ const StockManag = () => {
       toast.warn("ليس لك صلاحية لانشاء حركه المخزن");
       return;
     }
-    
 
     const lastStockAction = AllStockactionsStore.filter(
       (stockAction) =>
@@ -298,6 +297,23 @@ const StockManag = () => {
           );
         }
       }
+     
+     if(source === "Issuance"){
+      const costOfPart = outbound.unitCost
+      console.log({costOfPart})
+       const setcostUnit = await axios.put(
+        `${apiUrl}/api/stockitem/${itemId}`,
+        {
+          costOfPart
+        },
+        config
+      );
+      if(setcostUnit){
+        toast.info('تم تعديل تكلفه الوحده')
+      }
+
+     } 
+
     } else if (source === "ReturnIssuance") {
       inbound.quantity = quantity;
       inbound.unitCost = lastStockAction ? lastStockAction.unitCost : 0;
@@ -363,20 +379,19 @@ const StockManag = () => {
         config
       );
       if (response) {
-        if(outbound.unitCost>0){
+        if (outbound.unitCost > 0) {
           const addCostOfUnit = await axios.put(
             `${apiUrl}/api/stockitem/${itemId}`,
             {
-              costOfPart: Number(outbound.unitCost) / Number(parts)
+              costOfPart: Number(outbound.unitCost) / Number(parts),
             },
             config
           );
-          if(addCostOfUnit){
+          if (addCostOfUnit) {
             toast.success("تم تعديل تكلفه الصرف");
           }
         }
         toast.success("تم تسجيل حركة المخزون بنجاح");
-
       }
     } catch (error) {
       toast.error("فشل تسجيل حركة المخزون!");
@@ -402,7 +417,6 @@ const StockManag = () => {
       balance.totalCost = 0;
     }
   };
-
 
   const updateStockaction = async (e, employeeId) => {
     e.preventDefault();
@@ -600,6 +614,16 @@ const StockManag = () => {
     );
     setAllStockactions(items);
   };
+  const searchByStore = (storeId) => {
+    if (!storeId) {
+      getallStockaction();
+      return;
+    }
+    const items = AllStockactions.filter(
+      (Stockactions) => Stockactions.store?._id === storeId
+    );
+    setAllStockactions(items);
+  };
   const searchByaction = (action) => {
     if (!action) {
       getallStockaction();
@@ -644,8 +668,6 @@ const StockManag = () => {
         ? Number(lastStockAction.balance?.totalCost)
         : 0,
     });
-
-
   }, [quantity, source, itemId, AllStockactions, costUnit]);
 
   return (
@@ -709,17 +731,25 @@ const StockManag = () => {
                   })()}
                 </select>
               </div>
-
               <div class="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
                 <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
-                  اسم الصنف
+                  المخزن
                 </label>
-                <input
-                  type="text"
+                <select
                   class="form-control border-primary m-0 p-2 h-auto"
-                  onChange={(e) => searchByitem(e.target.value)}
-                />
+                  onChange={(e) => searchByStore(e.target.value)}
+                >
+                  <option value={""}>الكل</option>
+                  {allStores.map((store, i) => {
+                    return (
+                      <option key={i} value={store._id}>
+                        {store.name}
+                      </option>
+                    );
+                  })}
+                </select>
               </div>
+
               <div class="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
                 <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
                   نوع الاوردر
@@ -737,6 +767,17 @@ const StockManag = () => {
                     );
                   })}
                 </select>
+              </div>
+
+              <div class="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
+                <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                  اسم الصنف
+                </label>
+                <input
+                  type="text"
+                  class="form-control border-primary m-0 p-2 h-auto"
+                  onChange={(e) => searchByitem(e.target.value)}
+                />
               </div>
 
               <div className="col-12 text-dark d-flex flex-wrap align-items-center justify-content-start p-0 m-0 mt-3">
@@ -811,6 +852,7 @@ const StockManag = () => {
               </div>
             </div>
           </div>
+
           <table className="table table-striped table-hover">
             <thead>
               <tr>
@@ -860,7 +902,9 @@ const StockManag = () => {
                         <td>{action.inbound?.unitCost || 0}</td>
                         <td>{action.inbound?.totalCost || 0}</td>
                         <td>{action.balance?.quantity || 0}</td>
-                        <td>{action.balance?.unitCost?.toFixed(2) || '0.00'}</td>
+                        <td>
+                          {action.balance?.unitCost?.toFixed(2) || "0.00"}
+                        </td>
                         <td>{action.balance?.totalCost || 0}</td>
                         <td>{formatDateTime(action.createdAt)}</td>
                         <td>{action.createdBy?.fullname}</td>
@@ -1042,7 +1086,10 @@ const StockManag = () => {
                     <option value="">اختر الصنف</option>
                     {StockItems.filter(
                       (item) =>
-                        item.stores&& item.stores?.some(store=> store.storeId?._id === storeId) &&
+                        item.stores &&
+                        item.stores?.some(
+                          (store) => store.storeId?._id === storeId
+                        ) &&
                         item.categoryId?._id === categoryId
                     )?.map((item, i) => (
                       <option key={i} value={item._id}>
@@ -1182,7 +1229,6 @@ const StockManag = () => {
           </div>
         </div>
       </div>
-
     </div>
   );
 };
