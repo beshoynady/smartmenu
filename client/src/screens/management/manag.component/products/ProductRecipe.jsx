@@ -320,7 +320,7 @@ const ProductRecipe = () => {
     }
   };
 
-  const calculateTotalCost = () => {
+  const calculateTotalCost = (ingredients) => {
     let total = 0;
 
     ingredients &&
@@ -372,6 +372,7 @@ const ProductRecipe = () => {
         setrecipeOfProduct(recipeOfProduct);
 
         const ingredients = recipeOfProduct.ingredients;
+        calculateTotalCost(ingredients)
         console.log("المكونات:", ingredients);
         if (ingredients) {
           setingredients([...ingredients].reverse());
@@ -389,8 +390,6 @@ const ProductRecipe = () => {
     } catch (error) {
       console.error("خطأ في جلب وصفة المنتج:", error);
       toast.error("حدث خطأ أثناء جلب وصفة المنتج. يرجى المحاولة لاحقًا.");
-      // Optional: Display a user-friendly message
-      // alert("حدث خطأ أثناء جلب وصفة المنتج. يرجى المحاولة لاحقًا.");
     }
   };
 
