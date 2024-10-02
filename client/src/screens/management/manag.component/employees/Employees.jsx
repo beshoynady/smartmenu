@@ -1282,7 +1282,7 @@ const Employees = () => {
                       required
                       onChange={(e) => setshift(e.target.value)}
                     >
-                      <option value={shift}>{employeeShift.name}</option>
+                      <option value={shift}>{employeeShift.shiftType}</option>
                       {shifts ? (
                         shifts.map((shift, i) => (
                           <option value={shift._id} key={i}>
