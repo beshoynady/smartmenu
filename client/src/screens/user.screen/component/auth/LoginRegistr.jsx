@@ -3,7 +3,7 @@ import axios from "axios";
 import { detacontext } from "../../../../App";
 import { toast } from "react-toastify";
 
-// import jwt_decode from "jwt-decode";
+// import { decode as jwt_decode } from 'jwt-decode';
 import "./LoginRegistr.css";
 
 const LoginRegistr = (props) => {

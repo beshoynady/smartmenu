@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import axios from "axios";
 import { detacontext } from "../../../../App";
-import jwt_decode from "jwt-decode";
+import { decode as jwt_decode } from 'jwt-decode';
 import { toast } from "react-toastify";
 import "../orders/Orders.css";
 
