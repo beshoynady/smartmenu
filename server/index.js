@@ -1,11 +1,11 @@
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-const dotenv = require('dotenv');
-const helmet = require('helmet'); // Security middleware
-const cookieParser = require('cookie-parser');
-const http = require('http');
+const morgan = require('morgan');
 const socketIo = require('socket.io');
+const http = require('http');
+const dotenv = require('dotenv');
 
 // Import database connection and route files
 const connectdb = require('./database/connectdb.js');
@@ -76,13 +76,14 @@ app.get('/', (req, res) => {
 
 // Rate limiting middleware
 const limiter = rateLimit({
-  windowMs: 5 * 60 * 1000, // 1 minute
+  windowMs: 1 * 60 * 1000, // 1 minute
   limit: 100, // Limit each IP to 100 requests per window (1 minute)
   standardHeaders: 'draft-7', // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
   trustProxy: false // Disable trusting proxy headers
 });
 app.use("/api", limiter); // Apply rate limiting to all API routes
+app.use(morgan('combined'));
 
 // Route requests to appropriate routers
 app.use('/api/restaurant', routerestaurant);
