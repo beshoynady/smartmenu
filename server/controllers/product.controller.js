@@ -8,6 +8,7 @@ const createProduct = async (req, res) => {
     const {
       productname,
       productprice,
+      preparationSection,
       discount,
       priceAfterDiscount,
       productdescription,
@@ -33,6 +34,12 @@ const createProduct = async (req, res) => {
         error: "Please provide name, price, and category of the product",
       });
     }
+    // Check if required fields are provided in the request
+    if (!preparationSection) {
+      return res.status(400).json({
+        error: "Please provide preparationSection of the product",
+      });
+    }
 
     // Validate 'sizes' array
     if (hasSizes && (!Array.isArray(sizes) || sizes.length === 0)) {
@@ -54,6 +61,7 @@ const createProduct = async (req, res) => {
       name: productname,
       description: productdescription,
       price: productprice,
+      preparationSection,
       discount,
       priceAfterDiscount,
       category: productcategoryid,
@@ -87,6 +95,7 @@ const updateProduct = async (req, res) => {
       productdescription,
       productcategoryid,
       productprice,
+      preparationSection,
       productdiscount,
       priceAfterDiscount,
       available,
@@ -124,6 +133,7 @@ const updateProduct = async (req, res) => {
       name: productname,
       description: productdescription,
       price: productprice,
+      preparationSection,
       discount: productdiscount,
       priceAfterDiscount,
       category: productcategoryid,
