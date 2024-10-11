@@ -11,12 +11,12 @@ const connectdb = () => {
         serverSelectionTimeoutMS: 30000,
         connectTimeoutMS: 10000,
     })
-    
     .then(() => {
         console.log('Database connection successful');
     })
-    .catch((error) => {
+    .catch(async (error) => {
         console.error(`Error connecting to MongoDB: ${error.message}`);
+        await mongoose.disconnect();
     });
 };
 
