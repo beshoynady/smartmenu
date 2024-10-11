@@ -1,11 +1,11 @@
 const express = require('express');
 const cors = require('cors');
-const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-const morgan = require('morgan');
-const socketIo = require('socket.io');
-const http = require('http');
 const dotenv = require('dotenv');
+const helmet = require('helmet'); // Security middleware
+const cookieParser = require('cookie-parser');
+const http = require('http');
+const socketIo = require('socket.io');
 
 // Import database connection and route files
 const connectdb = require('./database/connectdb.js');
@@ -83,7 +83,6 @@ const limiter = rateLimit({
   trustProxy: false // Disable trusting proxy headers
 });
 app.use("/api", limiter); // Apply rate limiting to all API routes
-app.use(morgan('combined'));
 
 // Route requests to appropriate routers
 app.use('/api/restaurant', routerestaurant);
