@@ -74,7 +74,8 @@ const Login = () => {
 
   const handleCreateFirstEmployee = async () => {
     try {
-      await axios.post(`${apiUrl}/api/employee/create-first`);
+      const fristEmployee = await axios.post(`${apiUrl}/api/employee/create-first`);
+      console.log({fristEmployee})
       toast.success("تم إنشاء أول موظف بنجاح");
       checkIfEmployeesExist();
     } catch (error) {
