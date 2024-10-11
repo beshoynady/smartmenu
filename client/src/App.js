@@ -63,6 +63,12 @@ const MenuCategory = React.lazy(() =>
 const Kitchen = React.lazy(() =>
   import("./screens/management/manag.component/kitchen/Kitchen")
 );
+const Bar = React.lazy(() =>
+  import("./screens/management/manag.component/kitchen/Bar")
+);
+const Grill = React.lazy(() =>
+  import("./screens/management/manag.component/kitchen/Grill")
+);
 const Waiter = React.lazy(() =>
   import("./screens/management/manag.component/waiter/Waiter")
 );
@@ -2518,6 +2524,22 @@ function App() {
               element={
                 <Suspense fallback={<LoadingPage />}>
                   <Kitchen />
+                </Suspense>
+              }
+            />
+            <Route
+              path="grill"
+              element={
+                <Suspense fallback={<LoadingPage />}>
+                  <Grill />
+                </Suspense>
+              }
+            />
+            <Route
+              path="bar"
+              element={
+                <Suspense fallback={<LoadingPage />}>
+                  <Bar/>
                 </Suspense>
               }
             />

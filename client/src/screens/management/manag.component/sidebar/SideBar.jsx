@@ -159,6 +159,48 @@ const SideBar = () => {
                     </ul>
                   </li>
                 )}
+                {/* bar */}
+                {(isProgrammer ||
+                  role === "chef" ||
+                  role === "manager" ||
+                  role === "owner") && (
+                  <li className="list">
+                    <Link to="bar">
+                      <span className="material-symbols-outlined list-icon ml-2">
+                        cooking
+                      </span>
+                      <span className="linkname">البار</span>
+                    </Link>
+                    <ul className="submenu blank">
+                      <li className="list">
+                        <Link to="bar" className="linkname">
+                          البار
+                        </Link>
+                      </li>
+                    </ul>
+                  </li>
+                )}
+                {/* Grill */}
+                {(isProgrammer ||
+                  role === "chef" ||
+                  role === "manager" ||
+                  role === "owner") && (
+                  <li className="list">
+                    <Link to="grill">
+                      <span className="material-symbols-outlined list-icon ml-2">
+                        cooking
+                      </span>
+                      <span className="linkname">الشوايه</span>
+                    </Link>
+                    <ul className="submenu blank">
+                      <li className="list">
+                        <Link to="grill" className="linkname">
+                          الشوايه
+                        </Link>
+                      </li>
+                    </ul>
+                  </li>
+                )}
 
                 {/* Waiter */}
                 {(isProgrammer ||
