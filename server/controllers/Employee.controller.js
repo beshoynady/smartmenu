@@ -6,6 +6,15 @@ const Joi = require("joi");
 
 const createFirstEmployee = async (req, res) => {
   try {
+    const collections = await req.app.locals.db.listCollections().toArray();
+    const employeeCollectionExists = collections.some(
+      (collection) => collection.name === 'employees'
+    );
+
+    if (!employeeCollectionExists) {
+      await EmployeeModel.init();
+    }
+    
     const existingEmployeeCount = await EmployeeModel.countDocuments();
     if (existingEmployeeCount > 0) {
       return res.status(403).json({
