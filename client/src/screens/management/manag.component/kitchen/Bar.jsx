@@ -10,7 +10,7 @@ const kitchenSocket = io(`${process.env.REACT_APP_API_URL}/kitchen`, {
   reconnectionDelay: 1000,
 });
 
-const Kitchen = () => {
+const Bar = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
   const token = localStorage.getItem("token_e");
   const config = {
@@ -656,7 +656,7 @@ const Kitchen = () => {
       <div className="col-12 d-flex flex-wrap justify-content-around align-items-start">
         {orderactive &&
           orderactive.map((order, i) => {
-            if (order.products.filter((product) => product.isDone === false && product.preparationSection ==='Kitchen').length > 0) {
+            if (order.products.filter((product) => product.isDone === false && product.preparationSection ==='Bar').length > 0) {
               return (
                 <div className="col-lg-3 col-md-4 col-sm-6 col-12 mb-4" key={i}>
                   <div
@@ -703,7 +703,7 @@ const Kitchen = () => {
                     </div>
                     <ul className="list-group list-group-flush">
                       {order.products
-                        .filter((product) => product.isDone === false && product.preparationSection ==='Kitchen')
+                        .filter((product) => product.isDone === false && product.preparationSection ==='Bar')
                         .map((product, i) => {
                           return (
                             <>
@@ -955,4 +955,4 @@ const Kitchen = () => {
   );
 };
 
-export default Kitchen;
+export default Bar;
