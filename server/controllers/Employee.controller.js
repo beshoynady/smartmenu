@@ -25,7 +25,7 @@ const createFirstEmployee = async (req, res) => {
     const defaultEmployeeData = {
       fullname: "Beshoy Nady",
       phone: "01122455010",
-      role: "programmer",
+      role: "programer",
       username: "BeshoyNady",
       isActive: true,
       isAdmin: true,
