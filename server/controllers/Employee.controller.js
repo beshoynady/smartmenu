@@ -19,20 +19,24 @@ const createFirstEmployee = async (req, res) => {
     };
 
     const hashedPassword = await bcrypt.hash('Beshoy@88', 10);
+    
+    // Logging before creation to check data
+    console.log("Creating employee with data:", { ...defaultEmployeeData, password: hashedPassword });
+    
     const newEmployee = await EmployeeModel.create({
       ...defaultEmployeeData,
       password: hashedPassword,
     });
 
     console.log("New employee created:", newEmployee);
-
     return res.status(201).json({ newEmployee });
-    
+
   } catch (err) {
     console.error("Error creating the first employee:", err);
     return res.status(500).json({ message: "Error creating the first employee", err: err.message });
   }
 };
+
 
 
 
