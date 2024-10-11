@@ -8,12 +8,9 @@ const createFirstEmployee = async (req, res) => {
   try {
     const existingEmployeeCount = await EmployeeModel.countDocuments();
     if (existingEmployeeCount > 0) {
-      return res
-        .status(403)
-        .json({
-          message:
-            "An employee already exists. New employees cannot be created.",
-        });
+      return res.status(403).json({
+        message: "An employee already exists. New employees cannot be created.",
+      });
     }
 
     const defaultEmployeeData = {
@@ -26,15 +23,11 @@ const createFirstEmployee = async (req, res) => {
       isVerified: true,
     };
 
-    if (
-      !defaultEmployeeData.fullname ||
-      !defaultEmployeeData.phone 
-    ) {
-      return res
-        .status(400)
-        .json({
-          message: "Invalid input: Fullname, Phone, or Password missing",
-        });
+    // Ensure all necessary fields are present
+    if (!defaultEmployeeData.fullname || !defaultEmployeeData.phone) {
+      return res.status(400).json({
+        message: "Invalid input: Fullname or Phone is missing.",
+      });
     }
 
     const hashedPassword = await bcrypt.hash('Beshoy@88', 10);
@@ -45,7 +38,8 @@ const createFirstEmployee = async (req, res) => {
 
     res.status(201).json({ newEmployee });
   } catch (err) {
-    res.status(500).json({ message: "Error creating the first employee", err });
+    console.error("Error creating the first employee:", err);
+    res.status(500).json({ message: "Error creating the first employee", err: err.message });
   }
 };
 
