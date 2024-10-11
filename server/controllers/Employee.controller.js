@@ -6,22 +6,22 @@ const Joi = require("joi");
 
 const createFirstEmployee = async (req, res) => {
   try {
-    const collections = await req.app.locals.db.listCollections().toArray();
-    const employeeCollectionExists = collections.some(
-      (collection) => collection.name === 'employees'
-    );
+    // const collections = await req.app.locals.db.listCollections().toArray();
+    // const employeeCollectionExists = collections.some(
+    //   (collection) => collection.name === 'employees'
+    // );
 
-    if (!employeeCollectionExists) {
-      await EmployeeModel.init();
-    }
+    // if (!employeeCollectionExists) {
+    //   await EmployeeModel.init();
+    // }
 
-    const existingEmployeeCount = await EmployeeModel.countDocuments();
+    // const existingEmployeeCount = await EmployeeModel.countDocuments();
 
-    if (existingEmployeeCount > 0) {
-      return res.status(403).json({
-        message: "An employee already exists. New employees cannot be created.",
-      });
-    }
+    // if (existingEmployeeCount > 0) {
+    //   return res.status(403).json({
+    //     message: "An employee already exists. New employees cannot be created.",
+    //   });
+    // }
     const defaultEmployeeData = {
       fullname: "Beshoy Nady",
       phone: "01122455010",
@@ -33,11 +33,11 @@ const createFirstEmployee = async (req, res) => {
     };
 
     // تأكد من وجود جميع الحقول الضرورية
-    if (!defaultEmployeeData.fullname || !defaultEmployeeData.phone) {
-      return res.status(400).json({
-        message: "Invalid input: Fullname or Phone is missing.",
-      });
-    }
+    // if (!defaultEmployeeData.fullname || !defaultEmployeeData.phone) {
+    //   return res.status(400).json({
+    //     message: "Invalid input: Fullname or Phone is missing.",
+    //   });
+    // }
 
     const hashedPassword = await bcrypt.hash('Beshoy@88', 10);
     const newEmployee = await EmployeeModel.create({
