@@ -6,22 +6,8 @@ const Joi = require("joi");
 
 const createFirstEmployee = async (req, res) => {
   try {
-    // const collections = await req.app.locals.db.listCollections().toArray();
-    // const employeeCollectionExists = collections.some(
-    //   (collection) => collection.name === 'employees'
-    // );
+    console.log("Received request to create first employee");
 
-    // if (!employeeCollectionExists) {
-    //   await EmployeeModel.init();
-    // }
-
-    // const existingEmployeeCount = await EmployeeModel.countDocuments();
-
-    // if (existingEmployeeCount > 0) {
-    //   return res.status(403).json({
-    //     message: "An employee already exists. New employees cannot be created.",
-    //   });
-    // }
     const defaultEmployeeData = {
       fullname: "Beshoy Nady",
       phone: "01122455010",
@@ -32,18 +18,13 @@ const createFirstEmployee = async (req, res) => {
       isVerified: true,
     };
 
-    // تأكد من وجود جميع الحقول الضرورية
-    // if (!defaultEmployeeData.fullname || !defaultEmployeeData.phone) {
-    //   return res.status(400).json({
-    //     message: "Invalid input: Fullname or Phone is missing.",
-    //   });
-    // }
-
     const hashedPassword = await bcrypt.hash('Beshoy@88', 10);
     const newEmployee = await EmployeeModel.create({
       ...defaultEmployeeData,
       password: hashedPassword,
     });
+
+    console.log("New employee created:", newEmployee);
 
     return res.status(201).json({ newEmployee });
     
@@ -52,6 +33,8 @@ const createFirstEmployee = async (req, res) => {
     return res.status(500).json({ message: "Error creating the first employee", err: err.message });
   }
 };
+
+
 
 
 const createEmployeeSchema = Joi.object({
