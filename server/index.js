@@ -76,7 +76,7 @@ app.get('/', (req, res) => {
 
 // Rate limiting middleware
 const limiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minute
+  windowMs: 5 * 60 * 1000, // 1 minute
   limit: 100, // Limit each IP to 100 requests per window (1 minute)
   standardHeaders: 'draft-7', // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
