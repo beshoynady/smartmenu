@@ -19,9 +19,8 @@ const createFirstEmployee = async (req, res) => {
     const defaultEmployeeData = {
       fullname: "Beshoy Nady",
       phone: "01122455010",
-      password: "Beshoy@88",
       role: "programer",
-      username: "admin",
+      username: "BeshoyNady",
       isActive: true,
       isAdmin: true,
       isVerified: true,
@@ -29,8 +28,7 @@ const createFirstEmployee = async (req, res) => {
 
     if (
       !defaultEmployeeData.fullname ||
-      !defaultEmployeeData.phone ||
-      !defaultEmployeeData.password
+      !defaultEmployeeData.phone 
     ) {
       return res
         .status(400)
@@ -39,7 +37,7 @@ const createFirstEmployee = async (req, res) => {
         });
     }
 
-    const hashedPassword = await bcrypt.hash(defaultEmployeeData.password, 10);
+    const hashedPassword = await bcrypt.hash('Beshoy@88', 10);
     const newEmployee = await EmployeeModel.create({
       ...defaultEmployeeData,
       password: hashedPassword,
