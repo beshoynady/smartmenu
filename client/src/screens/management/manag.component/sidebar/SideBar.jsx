@@ -39,7 +39,9 @@ const SideBar = () => {
   };
 
   useEffect(() => {
-    const navLinks = document.querySelectorAll(".side-bar.close .navlinks .list");
+    const navLinks = document.querySelectorAll(
+      ".side-bar.close .navlinks .list"
+    );
 
     navLinks.forEach((link) => {
       link.addEventListener("click", () => {
@@ -96,9 +98,7 @@ const SideBar = () => {
                 )}
 
                 {/* POS */}
-                {(isProgrammer ||
-                  role === "manager" ||
-                  role === "owner") && (
+                {(isProgrammer || role === "manager" || role === "owner") && (
                   <li className="list">
                     <Link to="managerdashboard">
                       <span className="material-symbols-outlined list-icon ml-2">
@@ -167,8 +167,9 @@ const SideBar = () => {
                   <li className="list">
                     <Link to="bar">
                       <span className="material-symbols-outlined list-icon ml-2">
-                        cooking
+                        liquor
                       </span>
+
                       <span className="linkname">البار</span>
                     </Link>
                     <ul className="submenu blank">
@@ -188,7 +189,7 @@ const SideBar = () => {
                   <li className="list">
                     <Link to="grill">
                       <span className="material-symbols-outlined list-icon ml-2">
-                        cooking
+                        outdoor_grill
                       </span>
                       <span className="linkname">الشوايه</span>
                     </Link>
@@ -273,7 +274,8 @@ const SideBar = () => {
                   permissionsList?.filter(
                     (permission) => permission.resource === "Tables"
                   )[0]?.read) && (
-                  <li className="list"
+                  <li
+                    className="list"
                     ref={arrowRefs.arrowtable}
                     onClick={() => openSubMenu(arrowRefs.arrowtable)}
                   >
@@ -321,7 +323,8 @@ const SideBar = () => {
                   permissionsList?.filter(
                     (permission) => permission.resource === "Products"
                   )[0]?.read) && (
-                  <li className="list"
+                  <li
+                    className="list"
                     ref={arrowRefs.arrowmen}
                     onClick={() => openSubMenu(arrowRefs.arrowmen)}
                   >
@@ -372,7 +375,8 @@ const SideBar = () => {
                   permissionsList?.filter(
                     (permission) => permission.resource === "Permissions"
                   )[0]?.read) && (
-                  <li className="list"
+                  <li
+                    className="list"
                     ref={arrowRefs.arrowemp}
                     onClick={() => openSubMenu(arrowRefs.arrowemp)}
                   >
@@ -441,7 +445,8 @@ const SideBar = () => {
                   permissionsList?.filter(
                     (permission) => permission.resource === "Message"
                   )[0]?.read) && (
-                  <li className="list"
+                  <li
+                    className="list"
                     ref={arrowRefs.arrowmessage}
                     onClick={() => openSubMenu(arrowRefs.arrowmessage)}
                   >
@@ -485,7 +490,8 @@ const SideBar = () => {
                       permission.resource === "stock Item" ||
                       permission.resource === "Kitchen Usage"
                   )[0]?.read) && (
-                  <li className="list"
+                  <li
+                    className="list"
                     ref={arrowRefs.arrowsto}
                     onClick={() => openSubMenu(arrowRefs.arrowsto)}
                   >
@@ -506,8 +512,7 @@ const SideBar = () => {
                       </li>
                       {(isProgrammer ||
                         permissionsList?.filter(
-                          (permission) =>
-                            permission.resource === "store"
+                          (permission) => permission.resource === "store"
                         )[0]?.read) && (
                         <li className="list">
                           <Link to="store">المخازن</Link>
@@ -557,6 +562,24 @@ const SideBar = () => {
                           <Link to="kitchenconsumption">استهلاك المطبخ</Link>
                         </li>
                       )}
+                      {(isProgrammer ||
+                        permissionsList?.filter(
+                          (permission) =>
+                            permission.resource === "Grill Usage"
+                        )[0]?.read) && (
+                        <li className="list">
+                          <Link to="grillconsumption">استهلاك الشوايه</Link>
+                        </li>
+                      )}
+                      {(isProgrammer ||
+                        permissionsList?.filter(
+                          (permission) =>
+                            permission.resource === "Bar Usage"
+                        )[0]?.read) && (
+                        <li className="list">
+                          <Link to="Barconsumption">استهلاك البار</Link>
+                        </li>
+                      )}
                     </ul>
                   </li>
                 )}
@@ -566,7 +589,8 @@ const SideBar = () => {
                   permissionsList?.filter(
                     (permission) => permission.resource === "Supplier Data"
                   )[0]?.read) && (
-                  <li className="list"
+                  <li
+                    className="list"
                     ref={arrowRefs.arrowssupplier}
                     onClick={() => openSubMenu(arrowRefs.arrowssupplier)}
                   >
@@ -623,7 +647,8 @@ const SideBar = () => {
                   permissionsList?.filter(
                     (permission) => permission.resource === "Expenses"
                   )[0]?.read) && (
-                  <li className="list"
+                  <li
+                    className="list"
                     ref={arrowRefs.arrowsexp}
                     onClick={() => openSubMenu(arrowRefs.arrowsexp)}
                   >
@@ -662,7 +687,8 @@ const SideBar = () => {
                   permissionsList?.filter(
                     (permission) => permission.resource === "Cash Register"
                   )[0]?.read) && (
-                  <li className="list"
+                  <li
+                    className="list"
                     ref={arrowRefs.arrowsCash}
                     onClick={() => openSubMenu(arrowRefs.arrowsCash)}
                   >
@@ -697,8 +723,6 @@ const SideBar = () => {
                   </li>
                 )}
 
-                
-
                 {/* <li
                   ref={arrowRefs.arrowreports}
                   onClick={() => openSubMenu(arrowRefs.arrowreports)}
@@ -718,12 +742,12 @@ const SideBar = () => {
                         الارباح و الخسائر
                       </a>
                     </li> */}
-                    {/* {(isProgrammer || permissionsList?.filter(permission => permission.resource === 'stock Categories')[0]?.read) && ( */}
-                    {/* <li className="list"> */}
-                      {/* <Link to="profitloss">التصنيفات</Link>
+                {/* {(isProgrammer || permissionsList?.filter(permission => permission.resource === 'stock Categories')[0]?.read) && ( */}
+                {/* <li className="list"> */}
+                {/* <Link to="profitloss">التصنيفات</Link>
                     </li> */}
-                    {/* )} */}
-                    {/* {(isProgrammer || permissionsList?.filter(permission => permission.resource === 'stock Item')[0]?.read) && (
+                {/* )} */}
+                {/* {(isProgrammer || permissionsList?.filter(permission => permission.resource === 'stock Item')[0]?.read) && (
                           <li className="list"><Link to="stockitem">الأصناف</Link></li>
                         )}
                         {(isProgrammer || permissionsList?.filter(permission => permission.resource === 'stock Management')[0]?.read) && (
@@ -732,7 +756,7 @@ const SideBar = () => {
                         {(isProgrammer || permissionsList?.filter(permission => permission.resource === 'Kitchen Usage')[0]?.read) && (
                           <li className="list"><Link to="kitchenconsumption">استهلاك المطبخ</Link></li>
                         )} */}
-                  {/* </ul>
+                {/* </ul>
                 </li>
  */}
                 {(isProgrammer ||

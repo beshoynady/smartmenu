@@ -108,6 +108,12 @@ const BatchStockReport = React.lazy(() =>
 const KitchenConsumption = React.lazy(() =>
   import("./screens/management/manag.component/stock/KitchenConsumption")
 );
+const BarConsumption = React.lazy(() =>
+  import("./screens/management/manag.component/stock/BarConsumption.jsx")
+);
+const GrillConsumption = React.lazy(() =>
+  import("./screens/management/manag.component/stock/GrillConsumption.jsx")
+);
 const ExpenseItem = React.lazy(() =>
   import("./screens/management/manag.component/expenses/Expense")
 );
@@ -2644,6 +2650,22 @@ function App() {
               element={
                 <Suspense fallback={<LoadingPage />}>
                   <KitchenConsumption />
+                </Suspense>
+              }
+            />
+            <Route
+              path="barconsumption"
+              element={
+                <Suspense fallback={<LoadingPage />}>
+                  <BarConsumption />
+                </Suspense>
+              }
+            />
+            <Route
+              path="grillconsumption"
+              element={
+                <Suspense fallback={<LoadingPage />}>
+                  <GrillConsumption />
                 </Suspense>
               }
             />

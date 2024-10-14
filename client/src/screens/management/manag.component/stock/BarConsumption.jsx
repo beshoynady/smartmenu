@@ -6,7 +6,7 @@ import '../orders/Orders.css'
 
 
 
-const KitchenConsumption = () => {
+const BarConsumption = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
   const token = localStorage.getItem('token_e');
   const config = {
@@ -321,7 +321,7 @@ const KitchenConsumption = () => {
           <div className="table-title">
             <div className="w-100 d-flex flex-wrap align-items-center justify-content-between">
               <div className="text-right">
-                <h2>ادارة <b>استهلاك قسم المطبخ</b></h2>
+                <h2>ادارة <b>استهلاك قسم البار</b></h2>
               </div>
               <div className="col-12 col-md-6 p-0 m-0 d-flex flex-wrap aliegn-items-center justify-content-end print-hide">
                 <a href="#addItemModal" className="d-flex align-items-center justify-content-center h-100 m-0 btn btn-success" data-toggle="modal"> <span>اضافه صنف جديد</span></a>
@@ -595,4 +595,4 @@ const KitchenConsumption = () => {
   )
 }
 
-export default KitchenConsumption
+export default BarConsumption
