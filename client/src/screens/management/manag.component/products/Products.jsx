@@ -118,7 +118,7 @@ const Products = () => {
   const [hasExtras, setHasExtras] = useState(false);
   const [isAddon, setIsAddon] = useState(false);
   const [extras, setExtras] = useState([]);
-
+  
   const addExtra = (extraId) => {
     console.log({ extraId });
     if (extras.includes(extraId)) {
@@ -127,7 +127,11 @@ const Products = () => {
       setExtras([...extras, extraId]);
     }
   };
+  const preparationSectionEN= ["Bar", "Kitchen", "Grill"]
+  const preparationSectionAR= ["بار", "مطبخ", "شوايه"]
 
+  const [preparationSection, setpreparationSection] = useState('');
+  
   const createProduct = async (e) => {
     e.preventDefault();
 
@@ -147,6 +151,7 @@ const Products = () => {
       formData.append("productcategoryid", productcategoryid);
       formData.append("available", available);
       formData.append("isAddon", isAddon);
+      formData.append("preparationSection", preparationSection);
 
       if (hasSizes) {
         formData.append("hasSizes", hasSizes);
@@ -256,6 +261,7 @@ const Products = () => {
     setproductdiscount(product.discount);
     setproductcategoryid(product.category._id);
     setavailable(product.available);
+    setpreparationSection(product.preparationSection);
     setsizes(
       product.sizes
         ? product.sizes
@@ -298,6 +304,7 @@ const Products = () => {
         productname: productname,
         productdescription: productdescription,
         productcategoryid: productcategoryid,
+        preparationSection: preparationSection,
         available: available,
         isAddon: isAddon,
       };
@@ -916,6 +923,27 @@ const Products = () => {
                 </div>
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    قسم الاعداد
+                  </label>
+                  <select
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    name="preparationSection"
+                    id="preparationSection"
+                    form="carform"
+                    onChange={(e) => setpreparationSection(e.target.value)}
+                  >
+                    <option value="">اختر القسم</option>
+                    {preparationSectionEN.map((section, i) => {
+                      return (
+                        <option value={section} key={i}>
+                          {preparationSectionAR[i]}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
+                <div className="form-group col-12 col-md-6">
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
                     هل هو وجبه كومبو
                   </label>
                   <input
@@ -1294,6 +1322,27 @@ const Products = () => {
                       return (
                         <option value={category._id} key={i}>
                           {category.name}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
+                <div className="form-group col-12 col-md-6">
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    قسم الاعداد
+                  </label>
+                  <select
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    name="preparationSection"
+                    id="preparationSection"
+                    form="carform"
+                    onChange={(e) => setpreparationSection(e.target.value)}
+                  >
+                    <option value={preparationSection}>{preparationSection}</option>
+                    {preparationSectionEN.map((section, i) => {
+                      return (
+                        <option value={section} key={i}>
+                          {preparationSectionAR[i]}
                         </option>
                       );
                     })}
