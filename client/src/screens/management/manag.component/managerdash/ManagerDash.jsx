@@ -629,7 +629,7 @@ const ManagerDash = () => {
       //   if (!product.isDone) {
       //     // Fetch kitchen consumption data
       //     // await getKitchenConsumption();
-      //     const getKitchenConsumption = await axios.get(apiUrl+'/api/kitchenconsumption');
+      //     const getKitchenConsumption = await axios.get(apiUrl+'/api/consumption');
       //     const Allkitchenconsumption = await getKitchenConsumption.data.data
       //     const quantity = product.quantity;
       //     const productId = product.productid;
@@ -675,7 +675,7 @@ const ManagerDash = () => {
       // toast.error('رجاء تسجيل الدخول مره اخري');
       // }
       //           // Update kitchen consumption data
-      //           const update = await axios.put(`${apiUrl}/api/kitchenconsumption/${kitconsumption._id}`, {
+      //           const update = await axios.put(`${apiUrl}/api/consumption/${kitconsumption._id}`, {
       //             consumptionQuantity,
       //             bookBalance,
       //             productsProduced: kitconsumption.productsProduced

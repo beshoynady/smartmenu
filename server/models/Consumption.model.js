@@ -17,7 +17,7 @@ const ConsumptionSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    quantityTransferredToKitchen: {
+    quantityTransferred: {
       type: Number,
       required: true,
     },

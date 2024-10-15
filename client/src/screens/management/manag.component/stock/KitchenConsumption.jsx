@@ -20,8 +20,8 @@ const KitchenConsumption = () => {
 
   const [stockItemId, setstockItemId] = useState('');
   const [stockItemName, setstockItemName] = useState('');
-  const [quantityTransferredToKitchen, setquantityTransferredToKitchen] = useState();
-  const [createdBy, setcreatedBy] = useState('');
+  const [quantityTransferred, setquantityTransferred] = useState();
+  const [receivedBy, setreceivedBy] = useState('');
   const [consumptionQuantity, setconsumptionQuantity] = useState('');
   const [unit, setunit] = useState('');
 
@@ -34,26 +34,26 @@ const KitchenConsumption = () => {
   const addKitchenItem = async (e) => {
     e.preventDefault()
     const today = new Date().toISOString().split('T')[0]; // Today's date in the format YYYY-MM-DD
-    const kitconsumptionToday = allKitchenConsumption.filter((kitItem) => {
-      const itemDate = new Date(kitItem.createdAt).toISOString().split('T')[0];
+    const consumptionToday = allKitchenConsumption.filter((consumption) => {
+      const itemDate = new Date(consumption.createdAt).toISOString().split('T')[0];
       return itemDate === today;
     });
-    let kitconsumption = null;
-    if (kitconsumptionToday.length > 0) {
-      kitconsumption = kitconsumptionToday.find((item) => item.stockItemId === stockItemId);
+    let consumption = null;
+    if (consumptionToday.length > 0) {
+      consumption = consumptionToday.find((item) => item.stockItemId === stockItemId);
     }
-    if (kitconsumption) {
+    if (consumption) {
       try {
         if (!token) {
           // Handle case where token is not available
           toast.error('رجاء تسجيل الدخول مره اخري');
         }
         // Make a PUT request to update an item
-        const newquantityTransferredToKitchen = kitconsumption.quantityTransferredToKitchen + quantityTransferredToKitchen
-        const newBalance = kitconsumption.bookBalance + quantityTransferredToKitchen
-        const response = await axios.put(`${apiUrl}/api/kitchenconsumption/${kitconsumption._id}`, {
-          quantityTransferredToKitchen: newquantityTransferredToKitchen,
-          createdBy,
+        const newquantityTransferred = consumption.quantityTransferred + quantityTransferred
+        const newBalance = consumption.bookBalance + quantityTransferred
+        const response = await axios.put(`${apiUrl}/api/consumption/${consumption._id}`, {
+          quantityTransferred: newquantityTransferred,
+          receivedBy,
           bookBalance: newBalance
         }, config);
 
@@ -61,7 +61,7 @@ const KitchenConsumption = () => {
         if (response.status === 200) {
           setstockItemId('')
           setstockItemName('')
-          setquantityTransferredToKitchen(0)
+          setquantityTransferred(0)
           getKitchenConsumption()
           // Show a success toast if the quantity is added
           toast.success('تمت إضافة الكمية بنجاح');
@@ -83,20 +83,21 @@ const KitchenConsumption = () => {
         }
 
         // Make a POST request to add an item
-        const response = await axios.post(apiUrl + '/api/kitchenconsumption', {
+        const response = await axios.post(apiUrl + '/api/consumption', {
           stockItemId,
           stockItemName,
-          quantityTransferredToKitchen,
-          bookBalance: quantityTransferredToKitchen,
+          quantityTransferred,
+          bookBalance: quantityTransferred,
           unit,
-          createdBy
+          consumptionSource:'kitchen',
+          receivedBy
         }, config);
 
         // Check if the item was added successfully
         if (response.status === 201) {
           setstockItemId('')
           setstockItemName('')
-          setquantityTransferredToKitchen(0)
+          setquantityTransferred(0)
           getKitchenConsumption()
           // Show a success toast if the item is added
           toast.success('تمت إضافة العنصر بنجاح');
@@ -123,44 +124,45 @@ const KitchenConsumption = () => {
     }
     try {
 
-      const update = await axios.put(`${apiUrl}/api/kitchenconsumption/${KitchenItemId}`, {
+      const update = await axios.put(`${apiUrl}/api/consumption/${KitchenItemId}`, {
         adjustment,
-        actualBalance
+        actualBalance,
+        isActive:false,
       }, config);
       if (update.status === 200) {
-        try {
-          if (!token) {
-            // Handle case where token is not available
-            toast.error('رجاء تسجيل الدخول مره اخري');
-          }
-          // Make a POST request to add an item
-          const response = await axios.post(apiUrl + '/api/kitchenconsumption', {
-            stockItemId,
-            stockItemName,
-            quantityTransferredToKitchen: actualBalance,
-            bookBalance: actualBalance,
-            unit,
-            createdBy
-          }, config);
+        // try {
+        //   if (!token) {
+        //     // Handle case where token is not available
+        //     toast.error('رجاء تسجيل الدخول مره اخري');
+        //   }
+        //   // Make a POST request to add an item
+        //   const response = await axios.post(apiUrl + '/api/consumption', {
+        //     stockItemId,
+        //     stockItemName,
+        //     quantityTransferred: actualBalance,
+        //     bookBalance: actualBalance,
+        //     unit,
+        //     receivedBy
+        //   }, config);
 
-          // Check if the item was added successfully
-          if (response.status === 201) {
-            setstockItemId('')
-            setstockItemName('')
-            setquantityTransferredToKitchen(0)
-            getKitchenConsumption()
+        //   // Check if the item was added successfully
+        //   if (response.status === 201) {
+        //     setstockItemId('')
+        //     setstockItemName('')
+        //     setquantityTransferred(0)
+        //     getKitchenConsumption()
             // Show a success toast if the item is added
             toast.success('تمت تعديل العنصر بنجاح');
           } else {
             // Show an error toast if adding the item failed
             toast.error('فشلت عملية تعديل العنصر');
           }
-        } catch (error) {
-          // Show an error toast if an error occurs during the request
-          toast.error('فشلت عملية تعديل العنصر');
-          console.error(error);
-        }
-      }
+        // } catch (error) {
+        //   // Show an error toast if an error occurs during the request
+        //   toast.error('فشلت عملية تعديل العنصر');
+        //   console.error(error);
+        // }
+      // }
     } catch (error) {
       console.error('Error occurred:', error);
       // Add toast for error
@@ -207,7 +209,7 @@ const KitchenConsumption = () => {
       return
     }
     try {
-      const response = await axios.delete(apiUrl + '/api/kitchenconsumption/' + KitchenItemId, config);
+      const response = await axios.delete(apiUrl + '/api/consumption/' + KitchenItemId, config);
       if (response.status === 200) {
         getKitchenConsumption()
       } else {
@@ -255,9 +257,11 @@ const KitchenConsumption = () => {
     try {
 
       console.log('Fetching kitchen consumption...');
-      const response = await axios.get(apiUrl + '/api/kitchenconsumption', config);
+      const response = await axios.get(apiUrl + '/api/consumption', config);
       if (response && response.data) {
-        const kitchenConsumptions = response.data.data;
+        const Consumptions = response.data.data;
+        const kitchenConsumptions = Consumptions.filter(consumption => consumption.consumptionSource === 'kitchen');
+        
         setAllKitchenConsumption(kitchenConsumptions.reverse());
         setKitchenConsumptionForView(filterByTime(today, kitchenConsumptions));
       } else {
@@ -291,9 +295,9 @@ const KitchenConsumption = () => {
   // const [KitchenConsumptionForView, setKitchenConsumptionForView] = useState([]);
 
   // // Function to filter kitchen consumption based on creation date
-  // const filterByKitConsumCreatedAt = () => {
+  // const filterByConsumCreatedAt = () => {
   //   console.log({datett:date})
-  //   const filtered = allKitchenConsumption.filter((kitItem) => {
+  //   const filtered = allKitchenConsumption.filter((consumption) => {
   //     new Date(kitItem.createdAt).toISOString().split('T')[0] === date;
   //     console.log({createdAt:kitItem.createdAt})
   //     return itemDate === date;
@@ -310,7 +314,7 @@ const KitchenConsumption = () => {
   useEffect(() => {
     getStockItems()
     getKitchenConsumption()
-    // filterByKitConsumCreatedAt()
+    // filterByConsumCreatedAt()
   }, [date])
 
   return (
@@ -431,7 +435,7 @@ const KitchenConsumption = () => {
 
                       <td>{i + 1}</td>
                       <td>{item.stockItemName}</td>
-                      <td>{item.quantityTransferredToKitchen}</td>
+                      <td>{item.quantityTransferred}</td>
                       <td>{item.consumptionQuantity}</td>
                       <td>{item.unit}</td>
                       <td>{item.bookBalance}</td>
@@ -441,12 +445,12 @@ const KitchenConsumption = () => {
                           <span key={j}>{`[${product.productionCount} * ${product.productName} ${product.sizeName ? product.sizeName : ''}]`}</span>
                         )) : 'لا يوجد'}
                       </td>
-                      <td>{item.createdBy?.username}</td>
+                      <td>{item.receivedBy?.username}</td>
                       <td>{formatDateTime(item.createdAt)}</td>
                       <td>
                         <a href="#updateKitchenItemModal" className="edit" data-toggle="modal" onClick={() => {
-                          setcreatedBy(employeeLoginInfo.id); setKitchenItemId(item._id);
-                          setstockItemId(item.stockItemId?._id); setstockItemName(item.stockItemName); setquantityTransferredToKitchen(item.quantityTransferredToKitchen); setbookBalance(item.bookBalance); setunit(item.unit);
+                          setreceivedBy(employeeLoginInfo.id); setKitchenItemId(item._id);
+                          setstockItemId(item.stockItemId?._id); setstockItemName(item.stockItemName); setquantityTransferred(item.quantityTransferred); setbookBalance(item.bookBalance); setunit(item.unit);
                           setconsumptionQuantity(item.consumptionQuantity);
                         }}><i className="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
                         <a href="#deleteStockItemModal" className="delete" data-toggle="modal" onChange={() => setKitchenItemId(item._id)}><i className="material-icons" data-toggle="tooltip" title="Delete" >&#xE872;</i></a>
@@ -487,7 +491,7 @@ const KitchenConsumption = () => {
 
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">الصنف</label>
-                  <select className="form-control border-primary m-0 p-2 h-auto"  name="category" id="category" form="carform" onChange={(e) => { setstockItemId(e.target.value); setunit(AllStockItems.filter(stock => stock._id === e.target.value)[0].smallUnit); setcreatedBy(employeeLoginInfo.id); setstockItemName(AllStockItems.filter(it => it._id === e.target.value)[0].itemName) }}>
+                  <select className="form-control border-primary m-0 p-2 h-auto"  name="category" id="category" form="carform" onChange={(e) => { setstockItemId(e.target.value); setunit(AllStockItems.filter(stock => stock._id === e.target.value)[0].smallUnit); setreceivedBy(employeeLoginInfo.id); setstockItemName(AllStockItems.filter(it => it._id === e.target.value)[0].itemName) }}>
                     <option>اختر الصنف</option>
                     {AllStockItems.map((StockItems, i) => {
                       return <option value={StockItems._id} key={i} >{StockItems.itemName}</option>
@@ -497,7 +501,7 @@ const KitchenConsumption = () => {
                 </div>
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">رصيد محول</label>
-                  <input type='Number' className="form-control border-primary m-0 p-2 h-auto" required onChange={(e) => setquantityTransferredToKitchen(Number(e.target.value))} />
+                  <input type='Number' className="form-control border-primary m-0 p-2 h-auto" required onChange={(e) => setquantityTransferred(Number(e.target.value))} />
                 </div>
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">الوحدة </label>
@@ -531,7 +535,7 @@ const KitchenConsumption = () => {
                 </div>
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">الكمية المستلمة</label>
-                  <input type="text" className="form-control border-primary m-0 p-2 h-auto" defaultValue={quantityTransferredToKitchen} required readOnly />
+                  <input type="text" className="form-control border-primary m-0 p-2 h-auto" defaultValue={quantityTransferred} required readOnly />
                 </div>
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">الكمية المستهلكه</label>

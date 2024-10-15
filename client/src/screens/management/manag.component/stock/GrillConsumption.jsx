@@ -20,40 +20,40 @@ const GrillConsumption = () => {
 
   const [stockItemId, setstockItemId] = useState('');
   const [stockItemName, setstockItemName] = useState('');
-  const [quantityTransferredToKitchen, setquantityTransferredToKitchen] = useState();
-  const [createdBy, setcreatedBy] = useState('');
+  const [quantityTransferred, setquantityTransferred] = useState();
+  const [receivedBy, setreceivedBy] = useState('');
   const [consumptionQuantity, setconsumptionQuantity] = useState('');
   const [unit, setunit] = useState('');
 
   const [bookBalance, setbookBalance] = useState();
   const [actualBalance, setactualBalance] = useState();
-  const [KitchenItemId, setKitchenItemId] = useState();
+  const [grillItemId, setgrillItemId] = useState();
   const [adjustment, setadjustment] = useState();
 
-  // Function to add an item to kitchen consumption
-  const addKitchenItem = async (e) => {
+  // Function to add an item to grill consumption
+  const addGrillItem = async (e) => {
     e.preventDefault()
     const today = new Date().toISOString().split('T')[0]; // Today's date in the format YYYY-MM-DD
-    const kitconsumptionToday = allKitchenConsumption.filter((kitItem) => {
-      const itemDate = new Date(kitItem.createdAt).toISOString().split('T')[0];
+    const consumptionToday = allGrillConsumption.filter((Consumption) => {
+      const itemDate = new Date(Consumption.createdAt).toISOString().split('T')[0];
       return itemDate === today;
     });
-    let kitconsumption = null;
-    if (kitconsumptionToday.length > 0) {
-      kitconsumption = kitconsumptionToday.find((item) => item.stockItemId === stockItemId);
+    let consumption = null;
+    if (consumptionToday.length > 0) {
+      consumption = consumptionToday.find((item) => item.stockItemId === stockItemId);
     }
-    if (kitconsumption) {
+    if (consumption) {
       try {
         if (!token) {
           // Handle case where token is not available
           toast.error('رجاء تسجيل الدخول مره اخري');
         }
         // Make a PUT request to update an item
-        const newquantityTransferredToKitchen = kitconsumption.quantityTransferredToKitchen + quantityTransferredToKitchen
-        const newBalance = kitconsumption.bookBalance + quantityTransferredToKitchen
-        const response = await axios.put(`${apiUrl}/api/kitchenconsumption/${kitconsumption._id}`, {
-          quantityTransferredToKitchen: newquantityTransferredToKitchen,
-          createdBy,
+        const newquantityTransferred = consumption.quantityTransferred + quantityTransferred
+        const newBalance = consumption.bookBalance + quantityTransferred
+        const response = await axios.put(`${apiUrl}/api/consumption/${consumption._id}`, {
+          quantityTransferred: newquantityTransferred,
+          receivedBy,
           bookBalance: newBalance
         }, config);
 
@@ -61,8 +61,8 @@ const GrillConsumption = () => {
         if (response.status === 200) {
           setstockItemId('')
           setstockItemName('')
-          setquantityTransferredToKitchen(0)
-          getKitchenConsumption()
+          setquantityTransferred(0)
+          getGrillConsumption()
           // Show a success toast if the quantity is added
           toast.success('تمت إضافة الكمية بنجاح');
         } else {
@@ -83,21 +83,22 @@ const GrillConsumption = () => {
         }
 
         // Make a POST request to add an item
-        const response = await axios.post(apiUrl + '/api/kitchenconsumption', {
+        const response = await axios.post(apiUrl + '/api/consumption', {
           stockItemId,
           stockItemName,
-          quantityTransferredToKitchen,
-          bookBalance: quantityTransferredToKitchen,
+          quantityTransferred,
+          bookBalance: quantityTransferred,
+          consumptionSource:'grill',
           unit,
-          createdBy
+          receivedBy
         }, config);
 
         // Check if the item was added successfully
         if (response.status === 201) {
           setstockItemId('')
           setstockItemName('')
-          setquantityTransferredToKitchen(0)
-          getKitchenConsumption()
+          setquantityTransferred(0)
+          getGrillConsumption()
           // Show a success toast if the item is added
           toast.success('تمت إضافة العنصر بنجاح');
         } else {
@@ -113,9 +114,9 @@ const GrillConsumption = () => {
     }
   };
 
-  const updateKitchenItem = async (e) => {
+  const updategrillItem = async (e) => {
     e.preventDefault()
-    console.log('updateKitchenItem')
+    console.log('updategrillItem')
     if (!token) {
       // Handle case where token is not available
       toast.error('رجاء تسجيل الدخول مره اخري');
@@ -123,7 +124,7 @@ const GrillConsumption = () => {
     }
     try {
 
-      const update = await axios.put(`${apiUrl}/api/kitchenconsumption/${KitchenItemId}`, {
+      const update = await axios.put(`${apiUrl}/api/consumption/${grillItemId}`, {
         adjustment,
         actualBalance
       }, config);
@@ -134,21 +135,21 @@ const GrillConsumption = () => {
             toast.error('رجاء تسجيل الدخول مره اخري');
           }
           // Make a POST request to add an item
-          const response = await axios.post(apiUrl + '/api/kitchenconsumption', {
+          const response = await axios.post(apiUrl + '/api/consumption', {
             stockItemId,
             stockItemName,
-            quantityTransferredToKitchen: actualBalance,
+            quantityTransferred: actualBalance,
             bookBalance: actualBalance,
             unit,
-            createdBy
+            receivedBy
           }, config);
 
           // Check if the item was added successfully
           if (response.status === 201) {
             setstockItemId('')
             setstockItemName('')
-            setquantityTransferredToKitchen(0)
-            getKitchenConsumption()
+            setquantityTransferred(0)
+            getGrillConsumption()
             // Show a success toast if the item is added
             toast.success('تمت تعديل العنصر بنجاح');
           } else {
@@ -200,22 +201,22 @@ const GrillConsumption = () => {
 
 
 
-  const deleteKitchenItem = async () => {
+  const deletegrillItem = async () => {
     if (!token) {
       // Handle case where token is not available
       toast.error('رجاء تسجيل الدخول مره اخري');
       return
     }
     try {
-      const response = await axios.delete(apiUrl + '/api/kitchenconsumption/' + KitchenItemId, config);
+      const response = await axios.delete(apiUrl + '/api/consumption/' + grillItemId, config);
       if (response.status === 200) {
-        getKitchenConsumption()
+        getGrillConsumption()
       } else {
-        toast.error('Failed to deltet kitchenconsumption items');
+        toast.error('Failed to deltet grillconsumption items');
       }
     } catch (error) {
       console.log(error);
-      toast.error('Failed to retrieve kitchenconsumption items');
+      toast.error('Failed to retrieve grillconsumption items');
     }
   };
 
@@ -243,10 +244,10 @@ const GrillConsumption = () => {
 
   const today = new Date().toISOString().split('T')[0];
   const [date, setDate] = useState(today);
-  const [allKitchenConsumption, setAllKitchenConsumption] = useState([]);
-  const [KitchenConsumptionForView, setKitchenConsumptionForView] = useState([]);
+  const [allGrillConsumption, setAllGrillConsumption] = useState([]);
+  const [grillConsumptionForView, setgrillConsumptionForView] = useState([]);
 
-  const getKitchenConsumption = async () => {
+  const getGrillConsumption = async () => {
     if (!token) {
       // Handle case where token is not available
       toast.error('رجاء تسجيل الدخول مره اخري');
@@ -254,17 +255,18 @@ const GrillConsumption = () => {
     }
     try {
 
-      console.log('Fetching kitchen consumption...');
-      const response = await axios.get(apiUrl + '/api/kitchenconsumption', config);
+      console.log('Fetching grill consumption...');
+      const response = await axios.get(apiUrl + '/api/consumption', config);
       if (response && response.data) {
-        const kitchenConsumptions = response.data.data;
-        setAllKitchenConsumption(kitchenConsumptions.reverse());
-        setKitchenConsumptionForView(filterByTime(today, kitchenConsumptions));
+        const Consumptions = response.data.data;
+        const grillConsumptions = Consumptions.filter(consumption => consumption.consumptionSource === 'grill');
+        setAllGrillConsumption(grillConsumptions.reverse());
+        setgrillConsumptionForView(filterByTime(today, grillConsumptions));
       } else {
         console.log('Unexpected response or empty data');
       }
     } catch (error) {
-      console.error('Error fetching kitchen consumption:', error);
+      console.error('Error fetching grill consumption:', error);
       // Handle error: Notify user, log error, etc.
     }
   };
@@ -276,30 +278,30 @@ const GrillConsumption = () => {
   };
 
 
-  const searchByKitchenConsumption = (name) => {
+  const searchBygrillConsumption = (name) => {
     if (!name) {
-      getKitchenConsumption()
+      getGrillConsumption()
       return
     }
-    const filter = KitchenConsumptionForView.filter((item) => item.stockItemName.startsWith(name) === true);
-    setKitchenConsumptionForView(filter);
+    const filter = grillConsumptionForView.filter((item) => item.stockItemName.startsWith(name) === true);
+    setgrillConsumptionForView(filter);
   };
 
 
-  // Initialize state variables for date and filtered kitchen consumption
+  // Initialize state variables for date and filtered grill consumption
   // const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
-  // const [KitchenConsumptionForView, setKitchenConsumptionForView] = useState([]);
+  // const [grillConsumptionForView, setgrillConsumptionForView] = useState([]);
 
-  // // Function to filter kitchen consumption based on creation date
-  // const filterByKitConsumCreatedAt = () => {
+  // // Function to filter grill consumption based on creation date
+  // const filterByConsumCreatedAt = () => {
   //   console.log({datett:date})
-  //   const filtered = allKitchenConsumption.filter((kitItem) => {
+  //   const filtered = allGrillConsumption.filter((kitItem) => {
   //     new Date(kitItem.createdAt).toISOString().split('T')[0] === date;
   //     console.log({createdAt:kitItem.createdAt})
   //     return itemDate === date;
   //   });
   //   console.log({filtered})
-  //   setKitchenConsumptionForView(filtered);
+  //   setgrillConsumptionForView(filtered);
   // };
 
 
@@ -309,8 +311,8 @@ const GrillConsumption = () => {
 
   useEffect(() => {
     getStockItems()
-    getKitchenConsumption()
-    // filterByKitConsumCreatedAt()
+    getGrillConsumption()
+    // filterByConsumCreatedAt()
   }, [date])
 
   return (
@@ -357,14 +359,14 @@ const GrillConsumption = () => {
 
               <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
                 <label className="form-label text-wrap text-right fw-bolder p-0 m-0">اسم الصنف</label>
-                <input type="text" class="form-control border-primary m-0 p-2 h-auto" onChange={(e) => searchByKitchenConsumption(e.target.value)} />
+                <input type="text" class="form-control border-primary m-0 p-2 h-auto" onChange={(e) => searchBygrillConsumption(e.target.value)} />
               </div>
 
               <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
                 <label className="form-label text-wrap text-right fw-bolder p-0 m-0">اختر الصنف</label>
-                <select class="form-control border-primary m-0 p-2 h-auto" onChange={(e) => searchByKitchenConsumption(e.target.value)} >
+                <select class="form-control border-primary m-0 p-2 h-auto" onChange={(e) => searchBygrillConsumption(e.target.value)} >
                   <option value={""}>الكل</option>
-                  {KitchenConsumptionForView.map((consumption) => {
+                  {grillConsumptionForView.map((consumption) => {
                     return (<option value={consumption.stockItemName}>{consumption.stockItemName}</option>)
                   })}
                 </select>
@@ -372,7 +374,7 @@ const GrillConsumption = () => {
               <div className='col-12 text-dark d-flex flex-wrap align-items-center justify-content-start p-0 m-0 mt-3'>
                 <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">فلتر حسب الوقت</label>
-                  <select className="form-control border-primary m-0 p-2 h-auto"  onChange={(e) => setAllKitchenConsumption(filterByTime(e.target.value, allKitchenConsumption))}>
+                  <select className="form-control border-primary m-0 p-2 h-auto"  onChange={(e) => setAllGrillConsumption(filterByTime(e.target.value, allGrillConsumption))}>
                     <option value="">اختر</option>
                     <option value="today">اليوم</option>
                     <option value="week">هذا الأسبوع</option>
@@ -395,10 +397,10 @@ const GrillConsumption = () => {
                   </div>
 
                   <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
-                    <button type="button" className="btn btn-primary h-100 p-2 " onClick={() => setAllKitchenConsumption(filterByDateRange(allKitchenConsumption))}>
+                    <button type="button" className="btn btn-primary h-100 p-2 " onClick={() => setAllGrillConsumption(filterByDateRange(allGrillConsumption))}>
                       <i className="fa fa-search"></i>
                     </button>
-                    <button type="button" className="btn btn-warning h-100 p-2" onClick={getKitchenConsumption}>استعادة
+                    <button type="button" className="btn btn-warning h-100 p-2" onClick={getGrillConsumption}>استعادة
                     </button>
                   </div>
                 </div>
@@ -424,14 +426,14 @@ const GrillConsumption = () => {
               </tr>
             </thead>
             <tbody>
-              {KitchenConsumptionForView && KitchenConsumptionForView.map((item, i) => {
+              {grillConsumptionForView && grillConsumptionForView.map((item, i) => {
                 if (i >= startpagination & i < endpagination) {
                   return (
                     <tr key={i}>
 
                       <td>{i + 1}</td>
                       <td>{item.stockItemName}</td>
-                      <td>{item.quantityTransferredToKitchen}</td>
+                      <td>{item.quantityTransferred}</td>
                       <td>{item.consumptionQuantity}</td>
                       <td>{item.unit}</td>
                       <td>{item.bookBalance}</td>
@@ -441,15 +443,15 @@ const GrillConsumption = () => {
                           <span key={j}>{`[${product.productionCount} * ${product.productName} ${product.sizeName ? product.sizeName : ''}]`}</span>
                         )) : 'لا يوجد'}
                       </td>
-                      <td>{item.createdBy?.username}</td>
+                      <td>{item.receivedBy?.username}</td>
                       <td>{formatDateTime(item.createdAt)}</td>
                       <td>
-                        <a href="#updateKitchenItemModal" className="edit" data-toggle="modal" onClick={() => {
-                          setcreatedBy(employeeLoginInfo.id); setKitchenItemId(item._id);
-                          setstockItemId(item.stockItemId?._id); setstockItemName(item.stockItemName); setquantityTransferredToKitchen(item.quantityTransferredToKitchen); setbookBalance(item.bookBalance); setunit(item.unit);
+                        <a href="#updategrillItemModal" className="edit" data-toggle="modal" onClick={() => {
+                          setreceivedBy(employeeLoginInfo.id); setgrillItemId(item._id);
+                          setstockItemId(item.stockItemId?._id); setstockItemName(item.stockItemName); setquantityTransferred(item.quantityTransferred); setbookBalance(item.bookBalance); setunit(item.unit);
                           setconsumptionQuantity(item.consumptionQuantity);
                         }}><i className="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-                        <a href="#deleteStockItemModal" className="delete" data-toggle="modal" onChange={() => setKitchenItemId(item._id)}><i className="material-icons" data-toggle="tooltip" title="Delete" >&#xE872;</i></a>
+                        <a href="#deleteStockItemModal" className="delete" data-toggle="modal" onChange={() => setgrillItemId(item._id)}><i className="material-icons" data-toggle="tooltip" title="Delete" >&#xE872;</i></a>
                       </td>
                     </tr>
                   );
@@ -460,7 +462,7 @@ const GrillConsumption = () => {
           </table>
           <div className="clearfix">
 
-            <div className="hint-text text-dark">عرض <b>{KitchenConsumptionForView.length > endpagination ? endpagination : KitchenConsumptionForView.length}</b> من <b>{KitchenConsumptionForView.length}</b> عنصر</div>
+            <div className="hint-text text-dark">عرض <b>{grillConsumptionForView.length > endpagination ? endpagination : grillConsumptionForView.length}</b> من <b>{grillConsumptionForView.length}</b> عنصر</div>
             <ul className="pagination">
               <li onClick={EditPagination} className="page-item disabled"><a href="#">السابق</a></li>
               <li onClick={EditPagination} className={`page-item ${endpagination === 5 ? 'active' : ''}`}><a href="#" className="page-link">1</a></li>
@@ -478,7 +480,7 @@ const GrillConsumption = () => {
       <div id="addItemModal" className="modal fade">
         <div className="modal-dialog modal-lg">
           <div className="modal-content shadow-lg border-0 rounded ">
-            <form onSubmit={(e) => addKitchenItem(e)}>
+            <form onSubmit={(e) => addGrillItem(e)}>
               <div className="modal-header d-flex flex-wrap align-items-center text-light bg-primary">
                 <h4 className="modal-title">اضافه صنف </h4>
                 <button type="button" className="close m-0 p-1" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -487,7 +489,7 @@ const GrillConsumption = () => {
 
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">الصنف</label>
-                  <select className="form-control border-primary m-0 p-2 h-auto"  name="category" id="category" form="carform" onChange={(e) => { setstockItemId(e.target.value); setunit(AllStockItems.filter(stock => stock._id === e.target.value)[0].smallUnit); setcreatedBy(employeeLoginInfo.id); setstockItemName(AllStockItems.filter(it => it._id === e.target.value)[0].itemName) }}>
+                  <select className="form-control border-primary m-0 p-2 h-auto"  name="category" id="category" form="carform" onChange={(e) => { setstockItemId(e.target.value); setunit(AllStockItems.filter(stock => stock._id === e.target.value)[0].smallUnit); setreceivedBy(employeeLoginInfo.id); setstockItemName(AllStockItems.filter(it => it._id === e.target.value)[0].itemName) }}>
                     <option>اختر الصنف</option>
                     {AllStockItems.map((StockItems, i) => {
                       return <option value={StockItems._id} key={i} >{StockItems.itemName}</option>
@@ -497,7 +499,7 @@ const GrillConsumption = () => {
                 </div>
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">رصيد محول</label>
-                  <input type='Number' className="form-control border-primary m-0 p-2 h-auto" required onChange={(e) => setquantityTransferredToKitchen(Number(e.target.value))} />
+                  <input type='Number' className="form-control border-primary m-0 p-2 h-auto" required onChange={(e) => setquantityTransferred(Number(e.target.value))} />
                 </div>
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">الوحدة </label>
@@ -516,10 +518,10 @@ const GrillConsumption = () => {
           </div>
         </div>
       </div>
-      <div id="updateKitchenItemModal" className="modal fade">
+      <div id="updategrillItemModal" className="modal fade">
         <div className="modal-dialog modal-lg">
           <div className="modal-content shadow-lg border-0 rounded ">
-            <form onSubmit={(e) => updateKitchenItem(e)}>
+            <form onSubmit={(e) => updategrillItem(e)}>
               <div className="modal-header d-flex flex-wrap align-items-center text-light bg-primary">
                 <h4 className="modal-title">تسويه الرصيد</h4>
                 <button type="button" className="close m-0 p-1" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -531,7 +533,7 @@ const GrillConsumption = () => {
                 </div>
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">الكمية المستلمة</label>
-                  <input type="text" className="form-control border-primary m-0 p-2 h-auto" defaultValue={quantityTransferredToKitchen} required readOnly />
+                  <input type="text" className="form-control border-primary m-0 p-2 h-auto" defaultValue={quantityTransferred} required readOnly />
                 </div>
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">الكمية المستهلكه</label>
@@ -573,7 +575,7 @@ const GrillConsumption = () => {
       <div id="deleteStockItemModal" className="modal fade">
         <div className="modal-dialog modal-lg">
           <div className="modal-content shadow-lg border-0 rounded ">
-            <form onSubmit={deleteKitchenItem}>
+            <form onSubmit={deletegrillItem}>
               <div className="modal-header d-flex flex-wrap align-items-center text-light bg-primary">
                 <h4 className="modal-title">حذف منتج</h4>
                 <button type="button" className="close m-0 p-1" data-dismiss="modal" aria-hidden="true">&times;</button>

@@ -20,40 +20,40 @@ const BarConsumption = () => {
 
   const [stockItemId, setstockItemId] = useState('');
   const [stockItemName, setstockItemName] = useState('');
-  const [quantityTransferredToKitchen, setquantityTransferredToKitchen] = useState();
-  const [createdBy, setcreatedBy] = useState('');
+  const [quantityTransferred, setquantityTransferred] = useState();
+  const [receivedBy, setreceivedBy] = useState('');
   const [consumptionQuantity, setconsumptionQuantity] = useState('');
   const [unit, setunit] = useState('');
 
   const [bookBalance, setbookBalance] = useState();
   const [actualBalance, setactualBalance] = useState();
-  const [KitchenItemId, setKitchenItemId] = useState();
+  const [BarItemId, setBarItemId] = useState();
   const [adjustment, setadjustment] = useState();
 
-  // Function to add an item to kitchen consumption
-  const addKitchenItem = async (e) => {
+  // Function to add an item to Bar consumption
+  const addBarItem = async (e) => {
     e.preventDefault()
     const today = new Date().toISOString().split('T')[0]; // Today's date in the format YYYY-MM-DD
-    const kitconsumptionToday = allKitchenConsumption.filter((kitItem) => {
-      const itemDate = new Date(kitItem.createdAt).toISOString().split('T')[0];
+    const consumptionToday = allBarConsumption.filter((consumption) => {
+      const itemDate = new Date(consumption.createdAt).toISOString().split('T')[0];
       return itemDate === today;
     });
-    let kitconsumption = null;
-    if (kitconsumptionToday.length > 0) {
-      kitconsumption = kitconsumptionToday.find((item) => item.stockItemId === stockItemId);
+    let consumption = null;
+    if (consumptionToday.length > 0) {
+      consumption = consumptionToday.find((item) => item.stockItemId === stockItemId);
     }
-    if (kitconsumption) {
+    if (consumption) {
       try {
         if (!token) {
           // Handle case where token is not available
           toast.error('رجاء تسجيل الدخول مره اخري');
         }
         // Make a PUT request to update an item
-        const newquantityTransferredToKitchen = kitconsumption.quantityTransferredToKitchen + quantityTransferredToKitchen
-        const newBalance = kitconsumption.bookBalance + quantityTransferredToKitchen
-        const response = await axios.put(`${apiUrl}/api/kitchenconsumption/${kitconsumption._id}`, {
-          quantityTransferredToKitchen: newquantityTransferredToKitchen,
-          createdBy,
+        const newquantityTransferred = consumption.quantityTransferred + quantityTransferred
+        const newBalance = consumption.bookBalance + quantityTransferred
+        const response = await axios.put(`${apiUrl}/api/consumption/${consumption._id}`, {
+          quantityTransferred: newquantityTransferred,
+          receivedBy,
           bookBalance: newBalance
         }, config);
 
@@ -61,8 +61,8 @@ const BarConsumption = () => {
         if (response.status === 200) {
           setstockItemId('')
           setstockItemName('')
-          setquantityTransferredToKitchen(0)
-          getKitchenConsumption()
+          setquantityTransferred(0)
+          getBarConsumption()
           // Show a success toast if the quantity is added
           toast.success('تمت إضافة الكمية بنجاح');
         } else {
@@ -83,21 +83,22 @@ const BarConsumption = () => {
         }
 
         // Make a POST request to add an item
-        const response = await axios.post(apiUrl + '/api/kitchenconsumption', {
+        const response = await axios.post(apiUrl + '/api/consumption', {
           stockItemId,
           stockItemName,
-          quantityTransferredToKitchen,
-          bookBalance: quantityTransferredToKitchen,
+          quantityTransferred,
+          bookBalance: quantityTransferred,
           unit,
-          createdBy
+          consumptionSource:'bar',
+          receivedBy
         }, config);
 
         // Check if the item was added successfully
         if (response.status === 201) {
           setstockItemId('')
           setstockItemName('')
-          setquantityTransferredToKitchen(0)
-          getKitchenConsumption()
+          setquantityTransferred(0)
+          getBarConsumption()
           // Show a success toast if the item is added
           toast.success('تمت إضافة العنصر بنجاح');
         } else {
@@ -113,9 +114,9 @@ const BarConsumption = () => {
     }
   };
 
-  const updateKitchenItem = async (e) => {
+  const updateBarItem = async (e) => {
     e.preventDefault()
-    console.log('updateKitchenItem')
+    console.log('updateBarItem')
     if (!token) {
       // Handle case where token is not available
       toast.error('رجاء تسجيل الدخول مره اخري');
@@ -123,44 +124,45 @@ const BarConsumption = () => {
     }
     try {
 
-      const update = await axios.put(`${apiUrl}/api/kitchenconsumption/${KitchenItemId}`, {
+      const update = await axios.put(`${apiUrl}/api/consumption/${BarItemId}`, {
         adjustment,
-        actualBalance
+        actualBalance,
+        isActive:false,
       }, config);
       if (update.status === 200) {
-        try {
-          if (!token) {
-            // Handle case where token is not available
-            toast.error('رجاء تسجيل الدخول مره اخري');
-          }
-          // Make a POST request to add an item
-          const response = await axios.post(apiUrl + '/api/kitchenconsumption', {
-            stockItemId,
-            stockItemName,
-            quantityTransferredToKitchen: actualBalance,
-            bookBalance: actualBalance,
-            unit,
-            createdBy
-          }, config);
+      //   try {
+      //     if (!token) {
+      //       // Handle case where token is not available
+      //       toast.error('رجاء تسجيل الدخول مره اخري');
+      //     }
+      //     // Make a POST request to add an item
+      //     const response = await axios.post(apiUrl + '/api/consumption', {
+      //       stockItemId,
+      //       stockItemName,
+      //       quantityTransferred: actualBalance,
+      //       bookBalance: actualBalance,
+      //       unit,
+      //       receivedBy
+      //     }, config);
 
-          // Check if the item was added successfully
-          if (response.status === 201) {
-            setstockItemId('')
-            setstockItemName('')
-            setquantityTransferredToKitchen(0)
-            getKitchenConsumption()
-            // Show a success toast if the item is added
+      //     // Check if the item was added successfully
+      //     if (response.status === 201) {
+      //       setstockItemId('')
+      //       setstockItemName('')
+      //       setquantityTransferred(0)
+      //       getBarConsumption()
+      //       // Show a success toast if the item is added
             toast.success('تمت تعديل العنصر بنجاح');
           } else {
             // Show an error toast if adding the item failed
             toast.error('فشلت عملية تعديل العنصر');
           }
-        } catch (error) {
-          // Show an error toast if an error occurs during the request
-          toast.error('فشلت عملية تعديل العنصر');
-          console.error(error);
-        }
-      }
+      //   } catch (error) {
+      //     // Show an error toast if an error occurs during the request
+      //     toast.error('فشلت عملية تعديل العنصر');
+      //     console.error(error);
+      //   }
+      // }
     } catch (error) {
       console.error('Error occurred:', error);
       // Add toast for error
@@ -200,22 +202,22 @@ const BarConsumption = () => {
 
 
 
-  const deleteKitchenItem = async () => {
+  const deleteBarItem = async () => {
     if (!token) {
       // Handle case where token is not available
       toast.error('رجاء تسجيل الدخول مره اخري');
       return
     }
     try {
-      const response = await axios.delete(apiUrl + '/api/kitchenconsumption/' + KitchenItemId, config);
+      const response = await axios.delete(apiUrl + '/api/consumption/' + BarItemId, config);
       if (response.status === 200) {
-        getKitchenConsumption()
+        getBarConsumption()
       } else {
-        toast.error('Failed to deltet kitchenconsumption items');
+        toast.error('Failed to deltet Barconsumption items');
       }
     } catch (error) {
       console.log(error);
-      toast.error('Failed to retrieve kitchenconsumption items');
+      toast.error('Failed to retrieve Barconsumption items');
     }
   };
 
@@ -243,10 +245,10 @@ const BarConsumption = () => {
 
   const today = new Date().toISOString().split('T')[0];
   const [date, setDate] = useState(today);
-  const [allKitchenConsumption, setAllKitchenConsumption] = useState([]);
-  const [KitchenConsumptionForView, setKitchenConsumptionForView] = useState([]);
+  const [allBarConsumption, setAllBarConsumption] = useState([]);
+  const [BarConsumptionForView, setBarConsumptionForView] = useState([]);
 
-  const getKitchenConsumption = async () => {
+  const getBarConsumption = async () => {
     if (!token) {
       // Handle case where token is not available
       toast.error('رجاء تسجيل الدخول مره اخري');
@@ -254,17 +256,18 @@ const BarConsumption = () => {
     }
     try {
 
-      console.log('Fetching kitchen consumption...');
-      const response = await axios.get(apiUrl + '/api/kitchenconsumption', config);
+      console.log('Fetching Bar consumption...');
+      const response = await axios.get(apiUrl + '/api/consumption', config);
       if (response && response.data) {
-        const kitchenConsumptions = response.data.data;
-        setAllKitchenConsumption(kitchenConsumptions.reverse());
-        setKitchenConsumptionForView(filterByTime(today, kitchenConsumptions));
+        const Consumptions = response.data.data;
+        const barConsumptions = Consumptions.filter(consumption => consumption.consumptionSource === 'bar');
+        setAllBarConsumption(barConsumptions.reverse());
+        setBarConsumptionForView(filterByTime(today, barConsumptions));
       } else {
         console.log('Unexpected response or empty data');
       }
     } catch (error) {
-      console.error('Error fetching kitchen consumption:', error);
+      console.error('Error fetching Bar consumption:', error);
       // Handle error: Notify user, log error, etc.
     }
   };
@@ -276,30 +279,30 @@ const BarConsumption = () => {
   };
 
 
-  const searchByKitchenConsumption = (name) => {
+  const searchByBarConsumption = (name) => {
     if (!name) {
-      getKitchenConsumption()
+      getBarConsumption()
       return
     }
-    const filter = KitchenConsumptionForView.filter((item) => item.stockItemName.startsWith(name) === true);
-    setKitchenConsumptionForView(filter);
+    const filter = BarConsumptionForView.filter((item) => item.stockItemName.startsWith(name) === true);
+    setBarConsumptionForView(filter);
   };
 
 
-  // Initialize state variables for date and filtered kitchen consumption
+  // Initialize state variables for date and filtered Bar consumption
   // const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
-  // const [KitchenConsumptionForView, setKitchenConsumptionForView] = useState([]);
+  // const [BarConsumptionForView, setBarConsumptionForView] = useState([]);
 
-  // // Function to filter kitchen consumption based on creation date
-  // const filterByKitConsumCreatedAt = () => {
+  // // Function to filter Bar consumption based on creation date
+  // const filterByConsumCreatedAt = () => {
   //   console.log({datett:date})
-  //   const filtered = allKitchenConsumption.filter((kitItem) => {
+  //   const filtered = allBarConsumption.filter((kitItem) => {
   //     new Date(kitItem.createdAt).toISOString().split('T')[0] === date;
   //     console.log({createdAt:kitItem.createdAt})
   //     return itemDate === date;
   //   });
   //   console.log({filtered})
-  //   setKitchenConsumptionForView(filtered);
+  //   setBarConsumptionForView(filtered);
   // };
 
 
@@ -309,8 +312,8 @@ const BarConsumption = () => {
 
   useEffect(() => {
     getStockItems()
-    getKitchenConsumption()
-    // filterByKitConsumCreatedAt()
+    getBarConsumption()
+    // filterByConsumCreatedAt()
   }, [date])
 
   return (
@@ -357,14 +360,14 @@ const BarConsumption = () => {
 
               <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
                 <label className="form-label text-wrap text-right fw-bolder p-0 m-0">اسم الصنف</label>
-                <input type="text" class="form-control border-primary m-0 p-2 h-auto" onChange={(e) => searchByKitchenConsumption(e.target.value)} />
+                <input type="text" class="form-control border-primary m-0 p-2 h-auto" onChange={(e) => searchByBarConsumption(e.target.value)} />
               </div>
 
               <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
                 <label className="form-label text-wrap text-right fw-bolder p-0 m-0">اختر الصنف</label>
-                <select class="form-control border-primary m-0 p-2 h-auto" onChange={(e) => searchByKitchenConsumption(e.target.value)} >
+                <select class="form-control border-primary m-0 p-2 h-auto" onChange={(e) => searchByBarConsumption(e.target.value)} >
                   <option value={""}>الكل</option>
-                  {KitchenConsumptionForView.map((consumption) => {
+                  {BarConsumptionForView.map((consumption) => {
                     return (<option value={consumption.stockItemName}>{consumption.stockItemName}</option>)
                   })}
                 </select>
@@ -372,7 +375,7 @@ const BarConsumption = () => {
               <div className='col-12 text-dark d-flex flex-wrap align-items-center justify-content-start p-0 m-0 mt-3'>
                 <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">فلتر حسب الوقت</label>
-                  <select className="form-control border-primary m-0 p-2 h-auto"  onChange={(e) => setAllKitchenConsumption(filterByTime(e.target.value, allKitchenConsumption))}>
+                  <select className="form-control border-primary m-0 p-2 h-auto"  onChange={(e) => setAllBarConsumption(filterByTime(e.target.value, allBarConsumption))}>
                     <option value="">اختر</option>
                     <option value="today">اليوم</option>
                     <option value="week">هذا الأسبوع</option>
@@ -395,10 +398,10 @@ const BarConsumption = () => {
                   </div>
 
                   <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
-                    <button type="button" className="btn btn-primary h-100 p-2 " onClick={() => setAllKitchenConsumption(filterByDateRange(allKitchenConsumption))}>
+                    <button type="button" className="btn btn-primary h-100 p-2 " onClick={() => setAllBarConsumption(filterByDateRange(allBarConsumption))}>
                       <i className="fa fa-search"></i>
                     </button>
-                    <button type="button" className="btn btn-warning h-100 p-2" onClick={getKitchenConsumption}>استعادة
+                    <button type="button" className="btn btn-warning h-100 p-2" onClick={getBarConsumption}>استعادة
                     </button>
                   </div>
                 </div>
@@ -424,14 +427,14 @@ const BarConsumption = () => {
               </tr>
             </thead>
             <tbody>
-              {KitchenConsumptionForView && KitchenConsumptionForView.map((item, i) => {
+              {BarConsumptionForView && BarConsumptionForView.map((item, i) => {
                 if (i >= startpagination & i < endpagination) {
                   return (
                     <tr key={i}>
 
                       <td>{i + 1}</td>
                       <td>{item.stockItemName}</td>
-                      <td>{item.quantityTransferredToKitchen}</td>
+                      <td>{item.quantityTransferred}</td>
                       <td>{item.consumptionQuantity}</td>
                       <td>{item.unit}</td>
                       <td>{item.bookBalance}</td>
@@ -441,15 +444,15 @@ const BarConsumption = () => {
                           <span key={j}>{`[${product.productionCount} * ${product.productName} ${product.sizeName ? product.sizeName : ''}]`}</span>
                         )) : 'لا يوجد'}
                       </td>
-                      <td>{item.createdBy?.username}</td>
+                      <td>{item.receivedBy?.username}</td>
                       <td>{formatDateTime(item.createdAt)}</td>
                       <td>
-                        <a href="#updateKitchenItemModal" className="edit" data-toggle="modal" onClick={() => {
-                          setcreatedBy(employeeLoginInfo.id); setKitchenItemId(item._id);
-                          setstockItemId(item.stockItemId?._id); setstockItemName(item.stockItemName); setquantityTransferredToKitchen(item.quantityTransferredToKitchen); setbookBalance(item.bookBalance); setunit(item.unit);
+                        <a href="#updateBarItemModal" className="edit" data-toggle="modal" onClick={() => {
+                          setreceivedBy(employeeLoginInfo.id); setBarItemId(item._id);
+                          setstockItemId(item.stockItemId?._id); setstockItemName(item.stockItemName); setquantityTransferred(item.quantityTransferred); setbookBalance(item.bookBalance); setunit(item.unit);
                           setconsumptionQuantity(item.consumptionQuantity);
                         }}><i className="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-                        <a href="#deleteStockItemModal" className="delete" data-toggle="modal" onChange={() => setKitchenItemId(item._id)}><i className="material-icons" data-toggle="tooltip" title="Delete" >&#xE872;</i></a>
+                        <a href="#deleteStockItemModal" className="delete" data-toggle="modal" onChange={() => setBarItemId(item._id)}><i className="material-icons" data-toggle="tooltip" title="Delete" >&#xE872;</i></a>
                       </td>
                     </tr>
                   );
@@ -460,7 +463,7 @@ const BarConsumption = () => {
           </table>
           <div className="clearfix">
 
-            <div className="hint-text text-dark">عرض <b>{KitchenConsumptionForView.length > endpagination ? endpagination : KitchenConsumptionForView.length}</b> من <b>{KitchenConsumptionForView.length}</b> عنصر</div>
+            <div className="hint-text text-dark">عرض <b>{BarConsumptionForView.length > endpagination ? endpagination : BarConsumptionForView.length}</b> من <b>{BarConsumptionForView.length}</b> عنصر</div>
             <ul className="pagination">
               <li onClick={EditPagination} className="page-item disabled"><a href="#">السابق</a></li>
               <li onClick={EditPagination} className={`page-item ${endpagination === 5 ? 'active' : ''}`}><a href="#" className="page-link">1</a></li>
@@ -478,7 +481,7 @@ const BarConsumption = () => {
       <div id="addItemModal" className="modal fade">
         <div className="modal-dialog modal-lg">
           <div className="modal-content shadow-lg border-0 rounded ">
-            <form onSubmit={(e) => addKitchenItem(e)}>
+            <form onSubmit={(e) => addBarItem(e)}>
               <div className="modal-header d-flex flex-wrap align-items-center text-light bg-primary">
                 <h4 className="modal-title">اضافه صنف </h4>
                 <button type="button" className="close m-0 p-1" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -487,7 +490,7 @@ const BarConsumption = () => {
 
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">الصنف</label>
-                  <select className="form-control border-primary m-0 p-2 h-auto"  name="category" id="category" form="carform" onChange={(e) => { setstockItemId(e.target.value); setunit(AllStockItems.filter(stock => stock._id === e.target.value)[0].smallUnit); setcreatedBy(employeeLoginInfo.id); setstockItemName(AllStockItems.filter(it => it._id === e.target.value)[0].itemName) }}>
+                  <select className="form-control border-primary m-0 p-2 h-auto"  name="category" id="category" form="carform" onChange={(e) => { setstockItemId(e.target.value); setunit(AllStockItems.filter(stock => stock._id === e.target.value)[0].smallUnit); setreceivedBy(employeeLoginInfo.id); setstockItemName(AllStockItems.filter(it => it._id === e.target.value)[0].itemName) }}>
                     <option>اختر الصنف</option>
                     {AllStockItems.map((StockItems, i) => {
                       return <option value={StockItems._id} key={i} >{StockItems.itemName}</option>
@@ -497,7 +500,7 @@ const BarConsumption = () => {
                 </div>
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">رصيد محول</label>
-                  <input type='Number' className="form-control border-primary m-0 p-2 h-auto" required onChange={(e) => setquantityTransferredToKitchen(Number(e.target.value))} />
+                  <input type='Number' className="form-control border-primary m-0 p-2 h-auto" required onChange={(e) => setquantityTransferred(Number(e.target.value))} />
                 </div>
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">الوحدة </label>
@@ -516,10 +519,10 @@ const BarConsumption = () => {
           </div>
         </div>
       </div>
-      <div id="updateKitchenItemModal" className="modal fade">
+      <div id="updateBarItemModal" className="modal fade">
         <div className="modal-dialog modal-lg">
           <div className="modal-content shadow-lg border-0 rounded ">
-            <form onSubmit={(e) => updateKitchenItem(e)}>
+            <form onSubmit={(e) => updateBarItem(e)}>
               <div className="modal-header d-flex flex-wrap align-items-center text-light bg-primary">
                 <h4 className="modal-title">تسويه الرصيد</h4>
                 <button type="button" className="close m-0 p-1" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -531,7 +534,7 @@ const BarConsumption = () => {
                 </div>
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">الكمية المستلمة</label>
-                  <input type="text" className="form-control border-primary m-0 p-2 h-auto" defaultValue={quantityTransferredToKitchen} required readOnly />
+                  <input type="text" className="form-control border-primary m-0 p-2 h-auto" defaultValue={quantityTransferred} required readOnly />
                 </div>
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">الكمية المستهلكه</label>
@@ -573,7 +576,7 @@ const BarConsumption = () => {
       <div id="deleteStockItemModal" className="modal fade">
         <div className="modal-dialog modal-lg">
           <div className="modal-content shadow-lg border-0 rounded ">
-            <form onSubmit={deleteKitchenItem}>
+            <form onSubmit={deleteBarItem}>
               <div className="modal-header d-flex flex-wrap align-items-center text-light bg-primary">
                 <h4 className="modal-title">حذف منتج</h4>
                 <button type="button" className="close m-0 p-1" data-dismiss="modal" aria-hidden="true">&times;</button>

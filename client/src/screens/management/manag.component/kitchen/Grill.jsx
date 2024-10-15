@@ -192,7 +192,7 @@ const Grill = () => {
       console.log("Fetching kitchen consumption...");
 
       const response = await axios.get(
-        `${apiUrl}/api/kitchenconsumption`,
+        `${apiUrl}/api/consumption`,
         config
       );
 
@@ -259,7 +259,7 @@ const Grill = () => {
       const products = await orderData.data.products;
 
       const fetchKitchenConsumption = await axios.get(
-        apiUrl + "/api/kitchenconsumption",
+        apiUrl + "/api/consumption",
         config
       );
       const Allkitchenconsumption = await fetchKitchenConsumption.data.data;
@@ -422,7 +422,7 @@ const Grill = () => {
           console.log({ productsProduced: item.productsProduced });
           // Update kitchen consumption data
           const update = await axios.put(
-            `${apiUrl}/api/kitchenconsumption/${kitconsumption._id}`,
+            `${apiUrl}/api/consumption/${kitconsumption._id}`,
             {
               consumptionQuantity,
               bookBalance,
