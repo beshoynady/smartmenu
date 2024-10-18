@@ -208,6 +208,36 @@ const PermissionsComponent = () => {
     setPermissions([...updatePermissions]);
   };
 
+
+  const addAllPermissions = (action)=>{
+    let updatePermissions = [...Permissions];
+
+      permissionsListEn.map((permission, ind) => {
+        const findPermission = updatePermissions.filter(pe=> pe.resource === permission);
+        if(findPermission.length > 0) {
+          if(findPermission[0].create === action){
+            findPermission[0].create = true;
+            findPermission[0].read = true;
+          }
+          if(findPermission[0].update === action){
+            findPermission[0].update = true;
+            findPermission[0].read = true;
+          }
+          if(findPermission[0].delete == action){
+            findPermission[0].delete = true;
+            findPermission[0].read = true;
+          }
+        } else{
+          updatePermissions.push({
+            resource : permission,
+            action : true,
+            read : true
+        })
+      }
+    })
+    setPermissions([...updatePermissions]);
+  }
+
   const addPermissions = async (e) => {
     e.preventDefault();
     // console.log({ permissionEmployee });
@@ -474,7 +504,7 @@ const PermissionsComponent = () => {
                       <th scope="col" style={{ width: "30%" }}>
                         اسم
                       </th>
-                      <th scope="col">
+                      <th scope="col" onClick={()=>addAllPermissions(create)}>
                         إنشاء{" "}
                         <i
                           className="fas fa-plus-circle"
@@ -483,7 +513,7 @@ const PermissionsComponent = () => {
                           title="Permission to create"
                         ></i>
                       </th>
-                      <th scope="col">
+                      <th scope="col" onClick={()=>addAllPermissions(update)}>
                         تعديل{" "}
                         <i
                           className="fas fa-edit"
@@ -492,7 +522,7 @@ const PermissionsComponent = () => {
                           title="Permission to edit"
                         ></i>
                       </th>
-                      <th scope="col">
+                      <th scope="col" onClick={()=>addAllPermissions(read)}>
                         عرض{" "}
                         <i
                           className="fas fa-eye"
@@ -501,7 +531,7 @@ const PermissionsComponent = () => {
                           title="Permission to view"
                         ></i>
                       </th>
-                      <th scope="col">
+                      <th scope="col" onClick={()=>addAllPermissions("delete")}>
                         حذف{" "}
                         <i
                           className="fas fa-trash-alt"
