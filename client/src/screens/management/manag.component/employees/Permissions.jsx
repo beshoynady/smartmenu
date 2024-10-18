@@ -214,18 +214,20 @@ const PermissionsComponent = () => {
   
     permissionsListEn.map((permission) => {
       const findPermission = updatePermissions.find((pe) => pe.resource === permission);
-  
       if (findPermission) {
         if (action === "create") {
-          findPermission.create = true;
+          findPermission.create = findPermission.create? false: true;
+          findPermission.read = true; 
+        }
+        if (action === "read") {
           findPermission.read = true; 
         }
         if (action === "update") {
-          findPermission.update = true;
+          findPermission.update = findPermission.update? false: true;
           findPermission.read = true; 
         }
         if (action === "delete") {
-          findPermission.delete = true;
+          findPermission.delete = findPermission.delete? false: true;
           findPermission.read = true; 
         }
       } else {
