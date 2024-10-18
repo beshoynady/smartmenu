@@ -220,7 +220,7 @@ const PermissionsComponent = () => {
           findPermission.read = true; 
         }
         if (action === "read") {
-          findPermission.read = true; 
+          findPermission.read = findPermission.read? false: true; 
         }
         if (action === "update") {
           findPermission.update = findPermission.update? false: true;
