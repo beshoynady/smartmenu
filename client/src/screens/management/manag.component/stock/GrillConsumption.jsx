@@ -31,6 +31,14 @@ const GrillConsumption = () => {
     setendpagination,
   } = useContext(detacontext);
 
+
+  const GrillUsegePermission =
+    permissionsList &&
+    permissionsList.filter(
+      (permission) => permission.resource === "Grill Usage"
+    )[0];
+
+
   const [stockItemId, setstockItemId] = useState("");
   const [stockItemName, setstockItemName] = useState("");
   const [quantityTransferred, setquantityTransferred] = useState();
@@ -64,6 +72,10 @@ const GrillConsumption = () => {
         if (!token) {
           // Handle case where token is not available
           toast.error("رجاء تسجيل الدخول مره اخري");
+        }
+        if (GrillUsegePermission && !GrillUsegePermission.update) {
+          toast.warn("ليس لك صلاحية لتعديل عنصر بمخزن الاستهلاك");
+          return;
         }
         // Make a PUT request to update an item
         const newquantityTransferred =
@@ -102,7 +114,10 @@ const GrillConsumption = () => {
           // Handle case where token is not available
           toast.error("رجاء تسجيل الدخول مره اخري");
         }
-
+        if (GrillUsegePermission && !GrillUsegePermission.create) {
+          toast.warn("ليس لك صلاحيه لاضافه عنصر بمخزن الاستهلاك");
+          return;
+        }
         // Make a POST request to add an item
         const response = await axios.post(
           apiUrl + "/api/consumption",
@@ -144,6 +159,10 @@ const GrillConsumption = () => {
     if (!token) {
       // Handle case where token is not available
       toast.error("رجاء تسجيل الدخول مره اخري");
+      return;
+    }
+    if (GrillUsegePermission && !GrillUsegePermission.update) {
+      toast.warn("ليس لك صلاحية لتعديل عنصر بمخزن الاستهلاك");
       return;
     }
     try {
@@ -230,6 +249,10 @@ const GrillConsumption = () => {
     if (!token) {
       // Handle case where token is not available
       toast.error("رجاء تسجيل الدخول مره اخري");
+      return;
+    }
+    if (GrillUsegePermission && !GrillUsegePermission.delete) {
+      toast.warn("ليس لك صلاحية لحذف عنصر بمخزن الاستهلاك");
       return;
     }
     try {

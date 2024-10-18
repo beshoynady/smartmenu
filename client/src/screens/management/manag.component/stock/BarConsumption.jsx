@@ -1,29 +1,49 @@
-import React, { useState, useEffect, useRef, useContext } from 'react'
-import axios from 'axios'
-import { detacontext } from '../../../../App'
-import { toast, ToastContainer } from 'react-toastify';
-import '../orders/Orders.css'
-
-
+import React, { useState, useEffect, useRef, useContext } from "react";
+import axios from "axios";
+import { detacontext } from "../../../../App";
+import { toast, ToastContainer } from "react-toastify";
+import "../orders/Orders.css";
 
 const BarConsumption = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
-  const token = localStorage.getItem('token_e');
+  const token = localStorage.getItem("token_e");
   const config = {
     headers: {
-      'Authorization': `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
   };
 
-  const { restaurantData, permissionsList, setStartDate, setEndDate, filterByDateRange, filterByTime, employeeLoginInfo,  formatDate, formatDateTime, setisLoading, EditPagination, startpagination, endpagination, setstartpagination, setendpagination } = useContext(detacontext)
+  const {
+    restaurantData,
+    permissionsList,
+    setStartDate,
+    setEndDate,
+    filterByDateRange,
+    filterByTime,
+    employeeLoginInfo,
+    formatDate,
+    formatDateTime,
+    setisLoading,
+    EditPagination,
+    startpagination,
+    endpagination,
+    setstartpagination,
+    setendpagination,
+  } = useContext(detacontext);
+
+  const BarUsegePermission =
+    permissionsList &&
+    permissionsList.filter(
+      (permission) => permission.resource === "Bar Usage"
+    )[0];
 
 
-  const [stockItemId, setstockItemId] = useState('');
-  const [stockItemName, setstockItemName] = useState('');
+  const [stockItemId, setstockItemId] = useState("");
+  const [stockItemName, setstockItemName] = useState("");
   const [quantityTransferred, setquantityTransferred] = useState();
-  const [receivedBy, setreceivedBy] = useState('');
-  const [consumptionQuantity, setconsumptionQuantity] = useState('');
-  const [unit, setunit] = useState('');
+  const [receivedBy, setreceivedBy] = useState("");
+  const [consumptionQuantity, setconsumptionQuantity] = useState("");
+  const [unit, setunit] = useState("");
 
   const [bookBalance, setbookBalance] = useState();
   const [actualBalance, setactualBalance] = useState();
@@ -32,131 +52,158 @@ const BarConsumption = () => {
 
   // Function to add an item to Bar consumption
   const addBarItem = async (e) => {
-    e.preventDefault()
-    const today = new Date().toISOString().split('T')[0]; // Today's date in the format YYYY-MM-DD
+    e.preventDefault();
+    const today = new Date().toISOString().split("T")[0]; // Today's date in the format YYYY-MM-DD
     const consumptionToday = allBarConsumption.filter((consumption) => {
-      const itemDate = new Date(consumption.createdAt).toISOString().split('T')[0];
+      const itemDate = new Date(consumption.createdAt)
+        .toISOString()
+        .split("T")[0];
       return itemDate === today;
     });
     let consumption = null;
     if (consumptionToday.length > 0) {
-      consumption = consumptionToday.find((item) => item.stockItemId === stockItemId);
+      consumption = consumptionToday.find(
+        (item) => item.stockItemId === stockItemId
+      );
     }
     if (consumption) {
       try {
         if (!token) {
           // Handle case where token is not available
-          toast.error('رجاء تسجيل الدخول مره اخري');
+          toast.error("رجاء تسجيل الدخول مره اخري");
+        }
+        if (BarUsegePermission && !BarUsegePermission.update) {
+          toast.warn("ليس لك صلاحية لتعديل عنصر لمخزن الاستهلاك");
+          return;
         }
         // Make a PUT request to update an item
-        const newquantityTransferred = consumption.quantityTransferred + quantityTransferred
-        const newBalance = consumption.bookBalance + quantityTransferred
-        const response = await axios.put(`${apiUrl}/api/consumption/${consumption._id}`, {
-          quantityTransferred: newquantityTransferred,
-          receivedBy,
-          bookBalance: newBalance
-        }, config);
+        const newquantityTransferred =
+          consumption.quantityTransferred + quantityTransferred;
+        const newBalance = consumption.bookBalance + quantityTransferred;
+        const response = await axios.put(
+          `${apiUrl}/api/consumption/${consumption._id}`,
+          {
+            quantityTransferred: newquantityTransferred,
+            receivedBy,
+            bookBalance: newBalance,
+          },
+          config
+        );
 
         // Check if the item was updated successfully
         if (response.status === 200) {
-          setstockItemId('')
-          setstockItemName('')
-          setquantityTransferred(0)
-          getBarConsumption()
+          setstockItemId("");
+          setstockItemName("");
+          setquantityTransferred(0);
+          getBarConsumption();
           // Show a success toast if the quantity is added
-          toast.success('تمت إضافة الكمية بنجاح');
+          toast.success("تمت إضافة الكمية بنجاح");
         } else {
           // Show an error toast if adding the quantity failed
-          toast.error('فشلت عملية إضافة الكمية');
+          toast.error("فشلت عملية إضافة الكمية");
         }
       } catch (error) {
         // Show an error toast if an error occurs during the request
-        toast.error('فشلت عملية إضافة الكمية');
+        toast.error("فشلت عملية إضافة الكمية");
         console.error(error);
       }
-
     } else {
       try {
         if (!token) {
           // Handle case where token is not available
-          toast.error('رجاء تسجيل الدخول مره اخري');
+          toast.error("رجاء تسجيل الدخول مره اخري");
         }
-
+        if (BarUsegePermission && !BarUsegePermission.create) {
+          toast.warn("ليس لك صلاحية لاضافه عنصر لمخزن الاستهلاك");
+          return;
+        }
         // Make a POST request to add an item
-        const response = await axios.post(apiUrl + '/api/consumption', {
-          stockItemId,
-          stockItemName,
-          quantityTransferred,
-          bookBalance: quantityTransferred,
-          unit,
-          consumptionSource:'bar',
-          receivedBy
-        }, config);
+        const response = await axios.post(
+          apiUrl + "/api/consumption",
+          {
+            stockItemId,
+            stockItemName,
+            quantityTransferred,
+            bookBalance: quantityTransferred,
+            unit,
+            consumptionSource: "bar",
+            receivedBy,
+          },
+          config
+        );
 
         // Check if the item was added successfully
         if (response.status === 201) {
-          setstockItemId('')
-          setstockItemName('')
-          setquantityTransferred(0)
-          getBarConsumption()
+          setstockItemId("");
+          setstockItemName("");
+          setquantityTransferred(0);
+          getBarConsumption();
           // Show a success toast if the item is added
-          toast.success('تمت إضافة العنصر بنجاح');
+          toast.success("تمت إضافة العنصر بنجاح");
         } else {
           // Show an error toast if adding the item failed
-          toast.error('فشلت عملية إضافة العنصر');
+          toast.error("فشلت عملية إضافة العنصر");
         }
       } catch (error) {
         // Show an error toast if an error occurs during the request
-        toast.error('فشلت عملية إضافة العنصر');
+        toast.error("فشلت عملية إضافة العنصر");
         console.error(error);
       }
-
     }
   };
 
   const updateBarItem = async (e) => {
-    e.preventDefault()
-    console.log('updateBarItem')
+    e.preventDefault();
+    console.log("updateBarItem");
     if (!token) {
       // Handle case where token is not available
-      toast.error('رجاء تسجيل الدخول مره اخري');
-      return
+      toast.error("رجاء تسجيل الدخول مره اخري");
+      return;
     }
+
+    if (BarUsegePermission && !BarUsegePermission.update) {
+      toast.warn("ليس لك صلاحية لتعديل عنصر لمخزن الاستهلاك");
+      return;
+    }
+
     try {
-
-      const update = await axios.put(`${apiUrl}/api/consumption/${BarItemId}`, {
-        adjustment,
-        actualBalance,
-        isActive:false,
-      }, config);
+      const update = await axios.put(
+        `${apiUrl}/api/consumption/${BarItemId}`,
+        {
+          adjustment,
+          actualBalance,
+          isActive: false,
+        },
+        config
+      );
       if (update.status === 200) {
-      //   try {
-      //     if (!token) {
-      //       // Handle case where token is not available
-      //       toast.error('رجاء تسجيل الدخول مره اخري');
-      //     }
-      //     // Make a POST request to add an item
-      //     const response = await axios.post(apiUrl + '/api/consumption', {
-      //       stockItemId,
-      //       stockItemName,
-      //       quantityTransferred: actualBalance,
-      //       bookBalance: actualBalance,
-      //       unit,
-      //       receivedBy
-      //     }, config);
+        //   try {
+        //     if (!token) {
+        //       // Handle case where token is not available
+        //       toast.error('رجاء تسجيل الدخول مره اخري');
+        //     }
+        //     // Make a POST request to add an item
+        //     const response = await axios.post(apiUrl + '/api/consumption', {
+        //       stockItemId,
+        //       stockItemName,
+        //       quantityTransferred: actualBalance,
+        //       bookBalance: actualBalance,
+        //       unit,
+        //       receivedBy
+        //     }, config);
 
-      //     // Check if the item was added successfully
-      //     if (response.status === 201) {
-      //       setstockItemId('')
-      //       setstockItemName('')
-      //       setquantityTransferred(0)
-      //       getBarConsumption()
-      //       // Show a success toast if the item is added
-            toast.success('تمت تعديل العنصر بنجاح');
-          } else {
-            // Show an error toast if adding the item failed
-            toast.error('فشلت عملية تعديل العنصر');
-          }
+        //     // Check if the item was added successfully
+        //     if (response.status === 201) {
+        //       setstockItemId('')
+        //       setstockItemName('')
+        //       setquantityTransferred(0)
+        //       getBarConsumption()
+        //       // Show a success toast if the item is added
+        toast.success("تمت تعديل العنصر بنجاح");
+      } else {
+        // Show an error toast if adding the item failed
+        toast.error("فشلت عملية تعديل العنصر");
+      }
       //   } catch (error) {
       //     // Show an error toast if an error occurs during the request
       //     toast.error('فشلت عملية تعديل العنصر');
@@ -164,26 +211,22 @@ const BarConsumption = () => {
       //   }
       // }
     } catch (error) {
-      console.error('Error occurred:', error);
+      console.error("Error occurred:", error);
       // Add toast for error
-      toast.error('حدث خطأ');
+      toast.error("حدث خطأ");
     }
   };
 
-
-
-
-  const [AllStockItems, setAllStockItems] = useState([])
+  const [AllStockItems, setAllStockItems] = useState([]);
   // Function to retrieve all stock items
   const getStockItems = async () => {
     if (!token) {
       // Handle case where token is not available
-      toast.error('رجاء تسجيل الدخول مره اخري');
-      return
+      toast.error("رجاء تسجيل الدخول مره اخري");
+      return;
     }
     try {
-
-      const response = await axios.get(apiUrl + '/api/stockitem/', config);
+      const response = await axios.get(apiUrl + "/api/stockitem/", config);
 
       if (response.status === 200) {
         const stockItems = response.data.reverse();
@@ -192,35 +235,39 @@ const BarConsumption = () => {
       } else {
         // Handle other statuses if needed
         console.log(`Unexpected status code: ${response.status}`);
-        toast.error('Failed to retrieve stock items');
+        toast.error("Failed to retrieve stock items");
       }
     } catch (error) {
       console.log(error);
-      toast.error('Failed to retrieve stock items');
+      toast.error("Failed to retrieve stock items");
     }
   };
-
-
 
   const deleteBarItem = async () => {
     if (!token) {
       // Handle case where token is not available
-      toast.error('رجاء تسجيل الدخول مره اخري');
-      return
+      toast.error("رجاء تسجيل الدخول مره اخري");
+      return;
+    }
+    if (BarUsegePermission && !BarUsegePermission.delete) {
+      toast.warn("ليس لك صلاحية لحذف عنصر من مخزن الاستهلاك");
+      return;
     }
     try {
-      const response = await axios.delete(apiUrl + '/api/consumption/' + BarItemId, config);
+      const response = await axios.delete(
+        apiUrl + "/api/consumption/" + BarItemId,
+        config
+      );
       if (response.status === 200) {
-        getBarConsumption()
+        getBarConsumption();
       } else {
-        toast.error('Failed to deltet Barconsumption items');
+        toast.error("Failed to deltet Barconsumption items");
       }
     } catch (error) {
       console.log(error);
-      toast.error('Failed to retrieve Barconsumption items');
+      toast.error("Failed to retrieve Barconsumption items");
     }
   };
-
 
   // const [AllCategoryStock, setAllCategoryStock] = useState([])
   // // Function to retrieve all category stock
@@ -240,10 +287,7 @@ const BarConsumption = () => {
   //   }
   // };
 
-
-
-
-  const today = new Date().toISOString().split('T')[0];
+  const today = new Date().toISOString().split("T")[0];
   const [date, setDate] = useState(today);
   const [allBarConsumption, setAllBarConsumption] = useState([]);
   const [BarConsumptionForView, setBarConsumptionForView] = useState([]);
@@ -251,43 +295,48 @@ const BarConsumption = () => {
   const getBarConsumption = async () => {
     if (!token) {
       // Handle case where token is not available
-      toast.error('رجاء تسجيل الدخول مره اخري');
-      return
+      toast.error("رجاء تسجيل الدخول مره اخري");
+      return;
+    }
+    if (BarUsegePermission && !BarUsegePermission.read) {
+      toast.warn("ليس لك صلاحية لعرض عناصر لمخزن الاستهلاك");
+      return;
     }
     try {
-
-      console.log('Fetching Bar consumption...');
-      const response = await axios.get(apiUrl + '/api/consumption', config);
+      console.log("Fetching Bar consumption...");
+      const response = await axios.get(apiUrl + "/api/consumption", config);
       if (response && response.data) {
         const Consumptions = response.data.data;
-        const barConsumptions = Consumptions.filter(consumption => consumption.consumptionSource === 'bar');
+        const barConsumptions = Consumptions.filter(
+          (consumption) => consumption.consumptionSource === "bar"
+        );
         setAllBarConsumption(barConsumptions.reverse());
         setBarConsumptionForView(filterByTime(today, barConsumptions));
       } else {
-        console.log('Unexpected response or empty data');
+        console.log("Unexpected response or empty data");
       }
     } catch (error) {
-      console.error('Error fetching Bar consumption:', error);
+      console.error("Error fetching Bar consumption:", error);
       // Handle error: Notify user, log error, etc.
     }
   };
 
   const handleDateChange = (e) => {
     const selectedDate = e.target.value;
-    console.log('Selected Date:', selectedDate);
+    console.log("Selected Date:", selectedDate);
     setDate(selectedDate);
   };
 
-
   const searchByBarConsumption = (name) => {
     if (!name) {
-      getBarConsumption()
-      return
+      getBarConsumption();
+      return;
     }
-    const filter = BarConsumptionForView.filter((item) => item.stockItemName.startsWith(name) === true);
+    const filter = BarConsumptionForView.filter(
+      (item) => item.stockItemName.startsWith(name) === true
+    );
     setBarConsumptionForView(filter);
   };
-
 
   // Initialize state variables for date and filtered Bar consumption
   // const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
@@ -305,29 +354,32 @@ const BarConsumption = () => {
   //   setBarConsumptionForView(filtered);
   // };
 
-
-
-
-
-
   useEffect(() => {
-    getStockItems()
-    getBarConsumption()
+    getStockItems();
+    getBarConsumption();
     // filterByConsumCreatedAt()
-  }, [date])
+  }, [date]);
 
   return (
-
     <div className="w-100 px-3 d-flex align-itmes-center justify-content-start">
       <div className="table-responsive mt-1">
         <div className="table-wrapper p-3 mw-100">
           <div className="table-title">
             <div className="w-100 d-flex flex-wrap align-items-center justify-content-between">
               <div className="text-right">
-                <h2>ادارة <b>استهلاك قسم البار</b></h2>
+                <h2>
+                  ادارة <b>استهلاك قسم البار</b>
+                </h2>
               </div>
               <div className="col-12 col-md-6 p-0 m-0 d-flex flex-wrap aliegn-items-center justify-content-end print-hide">
-                <a href="#addItemModal" className="d-flex align-items-center justify-content-center h-100 m-0 btn btn-success" data-toggle="modal"> <span>اضافه صنف جديد</span></a>
+                <a
+                  href="#addItemModal"
+                  className="d-flex align-items-center justify-content-center h-100 m-0 btn btn-success"
+                  data-toggle="modal"
+                >
+                  {" "}
+                  <span>اضافه صنف جديد</span>
+                </a>
 
                 {/* <a href="#updateItemModal" className="d-flex align-items-center justify-content-center h-100 m-0 btn btn-danger" data-toggle="modal" > <span>حذف</span></a> */}
               </div>
@@ -337,45 +389,84 @@ const BarConsumption = () => {
           <div class="table-filter w-100 p-0 print-hide">
             <div className="col-12 d-flex flex-row flex-wrap align-items-center justify-content-start text-dark">
               <div class="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
-                <label className="form-label text-wrap text-right fw-bolder p-0 m-0">عرض</label>
-                <select className="form-control border-primary m-0 p-2 h-auto" onChange={(e) => { setstartpagination(0); setendpagination(e.target.value) }}>
-                  {
-                    (() => {
-                      const options = [];
-                      for (let i = 5; i < 100; i += 5) {
-                        options.push(<option key={i} value={i}>{i}</option>);
-                      }
-                      return options;
-                    })()
-                  }
+                <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                  عرض
+                </label>
+                <select
+                  className="form-control border-primary m-0 p-2 h-auto"
+                  onChange={(e) => {
+                    setstartpagination(0);
+                    setendpagination(e.target.value);
+                  }}
+                >
+                  {(() => {
+                    const options = [];
+                    for (let i = 5; i < 100; i += 5) {
+                      options.push(
+                        <option key={i} value={i}>
+                          {i}
+                        </option>
+                      );
+                    }
+                    return options;
+                  })()}
                 </select>
-
               </div>
               <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
-                <label className="form-label text-wrap text-right fw-bolder p-0 m-0">التاريخ</label>
-                <input id="dateInput"
+                <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                  التاريخ
+                </label>
+                <input
+                  id="dateInput"
                   type="date"
-                  value={date} class="form-control border-primary m-0 p-2 h-auto" onChange={handleDateChange} />
+                  value={date}
+                  class="form-control border-primary m-0 p-2 h-auto"
+                  onChange={handleDateChange}
+                />
               </div>
 
               <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
-                <label className="form-label text-wrap text-right fw-bolder p-0 m-0">اسم الصنف</label>
-                <input type="text" class="form-control border-primary m-0 p-2 h-auto" onChange={(e) => searchByBarConsumption(e.target.value)} />
+                <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                  اسم الصنف
+                </label>
+                <input
+                  type="text"
+                  class="form-control border-primary m-0 p-2 h-auto"
+                  onChange={(e) => searchByBarConsumption(e.target.value)}
+                />
               </div>
 
               <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
-                <label className="form-label text-wrap text-right fw-bolder p-0 m-0">اختر الصنف</label>
-                <select class="form-control border-primary m-0 p-2 h-auto" onChange={(e) => searchByBarConsumption(e.target.value)} >
+                <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                  اختر الصنف
+                </label>
+                <select
+                  class="form-control border-primary m-0 p-2 h-auto"
+                  onChange={(e) => searchByBarConsumption(e.target.value)}
+                >
                   <option value={""}>الكل</option>
                   {BarConsumptionForView.map((consumption) => {
-                    return (<option value={consumption.stockItemName}>{consumption.stockItemName}</option>)
+                    return (
+                      <option value={consumption.stockItemName}>
+                        {consumption.stockItemName}
+                      </option>
+                    );
                   })}
                 </select>
               </div>
-              <div className='col-12 text-dark d-flex flex-wrap align-items-center justify-content-start p-0 m-0 mt-3'>
+              <div className="col-12 text-dark d-flex flex-wrap align-items-center justify-content-start p-0 m-0 mt-3">
                 <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
-                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">فلتر حسب الوقت</label>
-                  <select className="form-control border-primary m-0 p-2 h-auto"  onChange={(e) => setAllBarConsumption(filterByTime(e.target.value, allBarConsumption))}>
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    فلتر حسب الوقت
+                  </label>
+                  <select
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    onChange={(e) =>
+                      setAllBarConsumption(
+                        filterByTime(e.target.value, allBarConsumption)
+                      )
+                    }
+                  >
                     <option value="">اختر</option>
                     <option value="today">اليوم</option>
                     <option value="week">هذا الأسبوع</option>
@@ -385,30 +476,58 @@ const BarConsumption = () => {
                 </div>
 
                 <div className="d-flex align-items-stretch justify-content-between flex-nowrap p-0 m-0 px-1">
-                  <label className="form-label text-nowrap d-flex align-items-center justify-content-center p-0 m-0 ml-1"><strong>مدة محددة:</strong></label>
+                  <label className="form-label text-nowrap d-flex align-items-center justify-content-center p-0 m-0 ml-1">
+                    <strong>مدة محددة:</strong>
+                  </label>
 
                   <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
-                    <label className="form-label text-wrap text-right fw-bolder p-0 m-0">من</label>
-                    <input type="date" className="form-control border-primary m-0 p-2 h-auto" onChange={(e) => setStartDate(e.target.value)} placeholder="اختر التاريخ" />
+                    <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                      من
+                    </label>
+                    <input
+                      type="date"
+                      className="form-control border-primary m-0 p-2 h-auto"
+                      onChange={(e) => setStartDate(e.target.value)}
+                      placeholder="اختر التاريخ"
+                    />
                   </div>
 
                   <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
-                    <label className="form-label text-wrap text-right fw-bolder p-0 m-0">إلى</label>
-                    <input type="date" className="form-control border-primary m-0 p-2 h-auto" onChange={(e) => setEndDate(e.target.value)} placeholder="اختر التاريخ" />
+                    <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                      إلى
+                    </label>
+                    <input
+                      type="date"
+                      className="form-control border-primary m-0 p-2 h-auto"
+                      onChange={(e) => setEndDate(e.target.value)}
+                      placeholder="اختر التاريخ"
+                    />
                   </div>
 
                   <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
-                    <button type="button" className="btn btn-primary h-100 p-2 " onClick={() => setAllBarConsumption(filterByDateRange(allBarConsumption))}>
+                    <button
+                      type="button"
+                      className="btn btn-primary h-100 p-2 "
+                      onClick={() =>
+                        setAllBarConsumption(
+                          filterByDateRange(allBarConsumption)
+                        )
+                      }
+                    >
                       <i className="fa fa-search"></i>
                     </button>
-                    <button type="button" className="btn btn-warning h-100 p-2" onClick={getBarConsumption}>استعادة
+                    <button
+                      type="button"
+                      className="btn btn-warning h-100 p-2"
+                      onClick={getBarConsumption}
+                    >
+                      استعادة
                     </button>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
 
           <table className="table table-striped table-hover">
             <thead>
@@ -427,56 +546,142 @@ const BarConsumption = () => {
               </tr>
             </thead>
             <tbody>
-              {BarConsumptionForView && BarConsumptionForView.map((item, i) => {
-                if (i >= startpagination & i < endpagination) {
-                  return (
-                    <tr key={i}>
-
-                      <td>{i + 1}</td>
-                      <td>{item.stockItemName}</td>
-                      <td>{item.quantityTransferred}</td>
-                      <td>{item.consumptionQuantity}</td>
-                      <td>{item.unit}</td>
-                      <td>{item.bookBalance}</td>
-                      <td>{item.adjustment}</td>
-                      <td>
-                        {item.productsProduced.length > 0 ? item.productsProduced.map((product, j) => (
-                          <span key={j}>{`[${product.productionCount} * ${product.productName} ${product.sizeName ? product.sizeName : ''}]`}</span>
-                        )) : 'لا يوجد'}
-                      </td>
-                      <td>{item.receivedBy?.username}</td>
-                      <td>{formatDateTime(item.createdAt)}</td>
-                      <td>
-                        <a href="#updateBarItemModal" className="edit" data-toggle="modal" onClick={() => {
-                          setreceivedBy(employeeLoginInfo.id); setBarItemId(item._id);
-                          setstockItemId(item.stockItemId?._id); setstockItemName(item.stockItemName); setquantityTransferred(item.quantityTransferred); setbookBalance(item.bookBalance); setunit(item.unit);
-                          setconsumptionQuantity(item.consumptionQuantity);
-                        }}><i className="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-                        <a href="#deleteStockItemModal" className="delete" data-toggle="modal" onChange={() => setBarItemId(item._id)}><i className="material-icons" data-toggle="tooltip" title="Delete" >&#xE872;</i></a>
-                      </td>
-                    </tr>
-                  );
-                }
-              })
-              }
+              {BarConsumptionForView &&
+                BarConsumptionForView.map((item, i) => {
+                  if ((i >= startpagination) & (i < endpagination)) {
+                    return (
+                      <tr key={i}>
+                        <td>{i + 1}</td>
+                        <td>{item.stockItemName}</td>
+                        <td>{item.quantityTransferred}</td>
+                        <td>{item.consumptionQuantity}</td>
+                        <td>{item.unit}</td>
+                        <td>{item.bookBalance}</td>
+                        <td>{item.adjustment}</td>
+                        <td>
+                          {item.productsProduced.length > 0
+                            ? item.productsProduced.map((product, j) => (
+                                <span key={j}>{`[${product.productionCount} * ${
+                                  product.productName
+                                } ${
+                                  product.sizeName ? product.sizeName : ""
+                                }]`}</span>
+                              ))
+                            : "لا يوجد"}
+                        </td>
+                        <td>{item.receivedBy?.username}</td>
+                        <td>{formatDateTime(item.createdAt)}</td>
+                        <td>
+                          <a
+                            href="#updateBarItemModal"
+                            className="edit"
+                            data-toggle="modal"
+                            onClick={() => {
+                              setreceivedBy(employeeLoginInfo.id);
+                              setBarItemId(item._id);
+                              setstockItemId(item.stockItemId?._id);
+                              setstockItemName(item.stockItemName);
+                              setquantityTransferred(item.quantityTransferred);
+                              setbookBalance(item.bookBalance);
+                              setunit(item.unit);
+                              setconsumptionQuantity(item.consumptionQuantity);
+                            }}
+                          >
+                            <i
+                              className="material-icons"
+                              data-toggle="tooltip"
+                              title="Edit"
+                            >
+                              &#xE254;
+                            </i>
+                          </a>
+                          <a
+                            href="#deleteStockItemModal"
+                            className="delete"
+                            data-toggle="modal"
+                            onChange={() => setBarItemId(item._id)}
+                          >
+                            <i
+                              className="material-icons"
+                              data-toggle="tooltip"
+                              title="Delete"
+                            >
+                              &#xE872;
+                            </i>
+                          </a>
+                        </td>
+                      </tr>
+                    );
+                  }
+                })}
             </tbody>
           </table>
           <div className="clearfix">
-
-            <div className="hint-text text-dark">عرض <b>{BarConsumptionForView.length > endpagination ? endpagination : BarConsumptionForView.length}</b> من <b>{BarConsumptionForView.length}</b> عنصر</div>
+            <div className="hint-text text-dark">
+              عرض{" "}
+              <b>
+                {BarConsumptionForView.length > endpagination
+                  ? endpagination
+                  : BarConsumptionForView.length}
+              </b>{" "}
+              من <b>{BarConsumptionForView.length}</b> عنصر
+            </div>
             <ul className="pagination">
-              <li onClick={EditPagination} className="page-item disabled"><a href="#">السابق</a></li>
-              <li onClick={EditPagination} className={`page-item ${endpagination === 5 ? 'active' : ''}`}><a href="#" className="page-link">1</a></li>
-              <li onClick={EditPagination} className={`page-item ${endpagination === 10 ? 'active' : ''}`}><a href="#" className="page-link">2</a></li>
-              <li onClick={EditPagination} className={`page-item ${endpagination === 15 ? 'active' : ''}`}><a href="#" className="page-link">3</a></li>
-              <li onClick={EditPagination} className={`page-item ${endpagination === 20 ? 'active' : ''}`}><a href="#" className="page-link">4</a></li>
-              <li onClick={EditPagination} className={`page-item ${endpagination === 25 ? 'active' : ''}`}><a href="#" className="page-link">5</a></li>
-              <li onClick={EditPagination} className={`page-item ${endpagination === 30 ? 'active' : ''}`}><a href="#" className="page-link">التالي</a></li>
+              <li onClick={EditPagination} className="page-item disabled">
+                <a href="#">السابق</a>
+              </li>
+              <li
+                onClick={EditPagination}
+                className={`page-item ${endpagination === 5 ? "active" : ""}`}
+              >
+                <a href="#" className="page-link">
+                  1
+                </a>
+              </li>
+              <li
+                onClick={EditPagination}
+                className={`page-item ${endpagination === 10 ? "active" : ""}`}
+              >
+                <a href="#" className="page-link">
+                  2
+                </a>
+              </li>
+              <li
+                onClick={EditPagination}
+                className={`page-item ${endpagination === 15 ? "active" : ""}`}
+              >
+                <a href="#" className="page-link">
+                  3
+                </a>
+              </li>
+              <li
+                onClick={EditPagination}
+                className={`page-item ${endpagination === 20 ? "active" : ""}`}
+              >
+                <a href="#" className="page-link">
+                  4
+                </a>
+              </li>
+              <li
+                onClick={EditPagination}
+                className={`page-item ${endpagination === 25 ? "active" : ""}`}
+              >
+                <a href="#" className="page-link">
+                  5
+                </a>
+              </li>
+              <li
+                onClick={EditPagination}
+                className={`page-item ${endpagination === 30 ? "active" : ""}`}
+              >
+                <a href="#" className="page-link">
+                  التالي
+                </a>
+              </li>
             </ul>
           </div>
         </div>
       </div>
-
 
       <div id="addItemModal" className="modal fade">
         <div className="modal-dialog modal-lg">
@@ -484,36 +689,99 @@ const BarConsumption = () => {
             <form onSubmit={(e) => addBarItem(e)}>
               <div className="modal-header d-flex flex-wrap align-items-center text-light bg-primary">
                 <h4 className="modal-title">اضافه صنف </h4>
-                <button type="button" className="close m-0 p-1" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <button
+                  type="button"
+                  className="close m-0 p-1"
+                  data-dismiss="modal"
+                  aria-hidden="true"
+                >
+                  &times;
+                </button>
               </div>
               <div className="modal-body d-flex flex-wrap align-items-center p-3 text-right">
-
                 <div className="form-group col-12 col-md-6">
-                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">الصنف</label>
-                  <select className="form-control border-primary m-0 p-2 h-auto"  name="category" id="category" form="carform" onChange={(e) => { setstockItemId(e.target.value); setunit(AllStockItems.filter(stock => stock._id === e.target.value)[0].smallUnit); setreceivedBy(employeeLoginInfo.id); setstockItemName(AllStockItems.filter(it => it._id === e.target.value)[0].itemName) }}>
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    الصنف
+                  </label>
+                  <select
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    name="category"
+                    id="category"
+                    form="carform"
+                    onChange={(e) => {
+                      setstockItemId(e.target.value);
+                      setunit(
+                        AllStockItems.filter(
+                          (stock) => stock._id === e.target.value
+                        )[0].smallUnit
+                      );
+                      setreceivedBy(employeeLoginInfo.id);
+                      setstockItemName(
+                        AllStockItems.filter(
+                          (it) => it._id === e.target.value
+                        )[0].itemName
+                      );
+                    }}
+                  >
                     <option>اختر الصنف</option>
                     {AllStockItems.map((StockItems, i) => {
-                      return <option value={StockItems._id} key={i} >{StockItems.itemName}</option>
-                    })
-                    }
+                      return (
+                        <option value={StockItems._id} key={i}>
+                          {StockItems.itemName}
+                        </option>
+                      );
+                    })}
                   </select>
                 </div>
                 <div className="form-group col-12 col-md-6">
-                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">رصيد محول</label>
-                  <input type='Number' className="form-control border-primary m-0 p-2 h-auto" required onChange={(e) => setquantityTransferred(Number(e.target.value))} />
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    رصيد محول
+                  </label>
+                  <input
+                    type="Number"
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    required
+                    onChange={(e) =>
+                      setquantityTransferred(Number(e.target.value))
+                    }
+                  />
                 </div>
                 <div className="form-group col-12 col-md-6">
-                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">الوحدة </label>
-                  <input type='text' className="form-control border-primary m-0 p-2 h-auto" required defaultValue={unit}></input>
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    الوحدة{" "}
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    required
+                    defaultValue={unit}
+                  ></input>
                 </div>
                 <div className="form-group col-12 col-md-6">
-                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">التاريخ</label>
-                  <input type='text' className="form-control border-primary m-0 p-2 h-auto" Value={formatDateTime(new Date())} required readOnly />
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    التاريخ
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    Value={formatDateTime(new Date())}
+                    required
+                    readOnly
+                  />
                 </div>
               </div>
               <div className="modal-footer d-flex flex-nowrap align-items-center justify-content-between m-0 p-1">
-                <input type="submit" className="btn btn-success col-6 h-100 px-2 py-3 m-0" value="اضافه" />
-                <input type="button" className="btn btn-danger col-6 h-100 px-2 py-3 m-0" data-dismiss="modal" value="إغلاق" />
+                <input
+                  type="submit"
+                  className="btn btn-success col-6 h-100 px-2 py-3 m-0"
+                  value="اضافه"
+                />
+                <input
+                  type="button"
+                  className="btn btn-danger col-6 h-100 px-2 py-3 m-0"
+                  data-dismiss="modal"
+                  value="إغلاق"
+                />
               </div>
             </form>
           </div>
@@ -525,53 +793,130 @@ const BarConsumption = () => {
             <form onSubmit={(e) => updateBarItem(e)}>
               <div className="modal-header d-flex flex-wrap align-items-center text-light bg-primary">
                 <h4 className="modal-title">تسويه الرصيد</h4>
-                <button type="button" className="close m-0 p-1" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <button
+                  type="button"
+                  className="close m-0 p-1"
+                  data-dismiss="modal"
+                  aria-hidden="true"
+                >
+                  &times;
+                </button>
               </div>
               <div className="modal-body d-flex flex-wrap align-items-center p-3 text-right">
                 <div className="form-group col-12 col-md-6">
-                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">اسم الصنف</label>
-                  <input type="text" className="form-control border-primary m-0 p-2 h-auto" defaultValue={stockItemName} required />
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    اسم الصنف
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    defaultValue={stockItemName}
+                    required
+                  />
                 </div>
                 <div className="form-group col-12 col-md-6">
-                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">الكمية المستلمة</label>
-                  <input type="text" className="form-control border-primary m-0 p-2 h-auto" defaultValue={quantityTransferred} required readOnly />
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    الكمية المستلمة
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    defaultValue={quantityTransferred}
+                    required
+                    readOnly
+                  />
                 </div>
                 <div className="form-group col-12 col-md-6">
-                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">الكمية المستهلكه</label>
-                  <input type="text" className="form-control border-primary m-0 p-2 h-auto" defaultValue={consumptionQuantity} required readOnly />
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    الكمية المستهلكه
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    defaultValue={consumptionQuantity}
+                    required
+                    readOnly
+                  />
                 </div>
                 <div className="form-group col-12 col-md-6">
-                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">الرصيد الدفتري</label>
-                  <input type="text" className="form-control border-primary m-0 p-2 h-auto" defaultValue={bookBalance} required readOnly />
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    الرصيد الدفتري
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    defaultValue={bookBalance}
+                    required
+                    readOnly
+                  />
                 </div>
                 <div className="form-group col-12 col-md-6">
-                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">الرصيد الفعلي</label>
-                  <input type="Number" className="form-control border-primary m-0 p-2 h-auto" required onChange={(e) => {
-                    setadjustment(Number(e.target.value) - bookBalance); setactualBalance(e.target.value)
-                  }} />
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    الرصيد الفعلي
+                  </label>
+                  <input
+                    type="Number"
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    required
+                    onChange={(e) => {
+                      setadjustment(Number(e.target.value) - bookBalance);
+                      setactualBalance(e.target.value);
+                    }}
+                  />
                 </div>
                 <div className="form-group col-12 col-md-6">
-                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">التسويه</label>
-                  <input type="text" className="form-control border-primary m-0 p-2 h-auto" defaultValue={adjustment} required readOnly />
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    التسويه
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    defaultValue={adjustment}
+                    required
+                    readOnly
+                  />
                 </div>
                 <div className="form-group col-12 col-md-6">
-                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">الوحدة </label>
-                  <input type='text' className="form-control border-primary m-0 p-2 h-auto" defaultValue={unit} required></input>
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    الوحدة{" "}
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    defaultValue={unit}
+                    required
+                  ></input>
                 </div>
                 <div className="form-group col-12 col-md-6">
-                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">التاريخ</label>
-                  <input type='text' className="form-control border-primary m-0 p-2 h-auto" defaultValue={formatDateTime(new Date())} required readOnly />
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    التاريخ
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    defaultValue={formatDateTime(new Date())}
+                    required
+                    readOnly
+                  />
                 </div>
               </div>
               <div className="modal-footer d-flex flex-nowrap align-items-center justify-content-between m-0 p-1">
-                <input type="submit" className="btn btn-success col-6 h-100 px-2 py-3 m-0" value="حفظ" />
-                <input type="button" className="btn btn-danger col-6 h-100 px-2 py-3 m-0" data-dismiss="modal" value="إغلاق" />
+                <input
+                  type="submit"
+                  className="btn btn-success col-6 h-100 px-2 py-3 m-0"
+                  value="حفظ"
+                />
+                <input
+                  type="button"
+                  className="btn btn-danger col-6 h-100 px-2 py-3 m-0"
+                  data-dismiss="modal"
+                  value="إغلاق"
+                />
               </div>
             </form>
           </div>
         </div>
       </div>
-
 
       <div id="deleteStockItemModal" className="modal fade">
         <div className="modal-dialog modal-lg">
@@ -579,23 +924,42 @@ const BarConsumption = () => {
             <form onSubmit={deleteBarItem}>
               <div className="modal-header d-flex flex-wrap align-items-center text-light bg-primary">
                 <h4 className="modal-title">حذف منتج</h4>
-                <button type="button" className="close m-0 p-1" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <button
+                  type="button"
+                  className="close m-0 p-1"
+                  data-dismiss="modal"
+                  aria-hidden="true"
+                >
+                  &times;
+                </button>
               </div>
-               <div className="modal-body text-center">
-          <p className="text-right text-dark fs-3 fw-800 mb-2">هل أنت متأكد من حذف هذا السجل؟</p>
-          <p className="text-warning text-center mt-3"><small>لا يمكن الرجوع في هذا الإجراء.</small></p>
-        </div>
+              <div className="modal-body text-center">
+                <p className="text-right text-dark fs-3 fw-800 mb-2">
+                  هل أنت متأكد من حذف هذا السجل؟
+                </p>
+                <p className="text-warning text-center mt-3">
+                  <small>لا يمكن الرجوع في هذا الإجراء.</small>
+                </p>
+              </div>
               <div className="modal-footer d-flex flex-nowrap align-items-center justify-content-between m-0 p-1">
-                <input type="button" className="btn btn-danger col-6 h-100 px-2 py-3 m-0" data-dismiss="modal" value="إغلاق" />
-                <input type="submit" className="btn btn-danger col-6 h-100 px-2 py-3 m-0" value="تحديث" />
+                <input
+                  type="button"
+                  className="btn btn-danger col-6 h-100 px-2 py-3 m-0"
+                  data-dismiss="modal"
+                  value="إغلاق"
+                />
+                <input
+                  type="submit"
+                  className="btn btn-danger col-6 h-100 px-2 py-3 m-0"
+                  value="تحديث"
+                />
               </div>
             </form>
           </div>
         </div>
       </div>
-
     </div>
-  )
-}
+  );
+};
 
-export default BarConsumption
+export default BarConsumption;
