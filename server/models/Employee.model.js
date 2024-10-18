@@ -81,6 +81,8 @@ const employeeSchema = new mongoose.Schema(
         "waiter",
         "deliveryman",
         "chef",
+        "Bartender",
+        "Grill Chef",
       ],
       required: [true, "Role is required"],
     },

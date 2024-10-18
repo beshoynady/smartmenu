@@ -7,7 +7,6 @@ const createPermission = async (req, res) => {
       const { employee, Permissions } = req.body;
       const createdBy = req.employee.id;
   
-      // التحقق من صحة المدخلات
       if (!mongoose.Types.ObjectId.isValid(employee)) {
         return res.status(400).json({ message: 'معرف الموظف غير صالح.' });
       }

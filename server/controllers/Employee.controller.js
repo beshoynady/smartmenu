@@ -77,7 +77,9 @@ const createEmployeeSchema = Joi.object({
       "cashier",
       "waiter",
       "deliveryman",
-      "chef"
+      "chef",
+      "Bartender",
+      "Grill Chef",
     )
     .required(),
   isActive: Joi.boolean().default(true),
@@ -213,7 +215,9 @@ const updateEmployeeSchema = Joi.object({
       "cashier",
       "waiter",
       "deliveryman",
-      "chef"
+      "chef",
+      "Bartender",
+      "Grill Chef",
     )
     .required(),
   isActive: Joi.boolean().optional(),

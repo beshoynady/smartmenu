@@ -24,7 +24,7 @@ const PermissionsComponent = () => {
         return;
       }
       const response = await axios.get(`${apiUrl}/api/employee`, config);
-      console.log({employee: response})
+      console.log({ employee: response });
       if (response.status === 200) {
         const data = response.data;
         setListOfEmployees(data);
@@ -89,6 +89,8 @@ const PermissionsComponent = () => {
     "Products",
     "Recipes",
     "Kitchen Usage",
+    "Grill Usage",
+    "Bar Usage",
     "Purchases",
     "Purchase Returns",
     "Supplier Data",
@@ -121,6 +123,8 @@ const PermissionsComponent = () => {
     "المنتجات",
     "الوصفات",
     "استهلاك المطبخ",
+    "استهلاك الشوايه",
+    "استهلاك البار",
     "المشتريات",
     "مرتجع المشتريات",
     "بيانات الموردين",

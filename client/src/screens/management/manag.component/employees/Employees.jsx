@@ -44,9 +44,11 @@ const Employees = () => {
     "waiter",
     "deliveryman",
     "chef",
+    "Grill Chef",
+    "Bartender",
   ];
 
-  const roleAr = ["مالك", "مدير", "كاشير", "ويتر", "ديليفري مان", "شيف"];
+  const roleAr = ["مالك", "مدير", "كاشير", "ويتر", "ديليفري مان", "شيف", "شيف شوايه", "البار مان"];
 
   const [listOfEmployees, setListOfEmployees] = useState([]);
 
