@@ -24,6 +24,7 @@ const PermissionsComponent = () => {
         return;
       }
       const response = await axios.get(`${apiUrl}/api/employee`, config);
+      console.log({employee: response})
       if (response.status === 200) {
         const data = response.data;
         setListOfEmployees(data);
