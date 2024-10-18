@@ -209,34 +209,37 @@ const PermissionsComponent = () => {
   };
 
 
-  const addAllPermissions = (action)=>{
+  const addAllPermissions = (action) => {
     let updatePermissions = [...Permissions];
-
-      permissionsListEn.map((permission, ind) => {
-        const findPermission = updatePermissions.filter(pe=> pe.resource === permission);
-        if(findPermission.length > 0) {
-          if(findPermission[0].create == action){
-            findPermission[0].create = true;
-            findPermission[0].read = true;
-          }
-          if(findPermission[0].update == action){
-            findPermission[0].update = true;
-            findPermission[0].read = true;
-          }
-          if(findPermission[0].delete == action){
-            findPermission[0].delete = true;
-            findPermission[0].read = true;
-          }
-        } else{
-          updatePermissions.push({
-            resource : permission,
-            action : true,
-            read : true
-        })
+  
+    permissionsListEn.map((permission) => {
+      const findPermission = updatePermissions.find((pe) => pe.resource === permission);
+  
+      if (findPermission) {
+        if (action === "create") {
+          findPermission.create = true;
+          findPermission.read = true; 
+        }
+        if (action === "update") {
+          findPermission.update = true;
+          findPermission.read = true; 
+        }
+        if (action === "delete") {
+          findPermission.delete = true;
+          findPermission.read = true; 
+        }
+      } else {
+        let newPermission ={}
+        newPermission.resource= permission
+        newPermission[action] = true;
+        newPermission.read = true;
+        updatePermissions.push(newPermission);
       }
-    })
+    });
+  
     setPermissions([...updatePermissions]);
-  }
+  };
+  
 
   const addPermissions = async (e) => {
     e.preventDefault();
