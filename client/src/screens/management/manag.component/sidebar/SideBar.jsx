@@ -289,11 +289,7 @@ const SideBar = () => {
                       <i className="bx bxs-chevron-down arrow"></i>
                     </div>
                     <ul className="submenu">
-                      <li className="list">
-                        <a className="linkname" href="#">
-                          الطاولات
-                        </a>
-                      </li>
+                      
                       <li className="list">
                         <Link to="tables">ادارة الطاولات</Link>
                       </li>
@@ -338,11 +334,6 @@ const SideBar = () => {
                       <i className="bx bxs-chevron-down arrow"></i>
                     </div>
                     <ul className="submenu">
-                      <li className="list">
-                        <a className="linkname" href="#">
-                          المنيو
-                        </a>
-                      </li>
                       {(isProgrammer ||
                         permissionsList?.filter(
                           (permission) =>
@@ -390,11 +381,6 @@ const SideBar = () => {
                       <i className="bx bxs-chevron-down arrow"></i>
                     </div>
                     <ul className="submenu">
-                      <li className="list">
-                        <a className="linkname" href="#">
-                          الموظفون
-                        </a>
-                      </li>
                       <li className="list">
                         <Link to="employees">البيانات</Link>
                       </li>
@@ -461,11 +447,6 @@ const SideBar = () => {
                     </div>
                     <ul className="submenu">
                       <li className="list">
-                        <a className="linkname" href="#">
-                          العملاء
-                        </a>
-                      </li>
-                      <li className="list">
                         <Link to="users">إدارة المستخدمين</Link>
                       </li>
                       <li className="list">
@@ -505,11 +486,6 @@ const SideBar = () => {
                       <i className="bx bxs-chevron-down arrow"></i>
                     </div>
                     <ul className="submenu">
-                      <li className="list">
-                        <a className="linkname" href="#">
-                          المخزون
-                        </a>
-                      </li>
                       {(isProgrammer ||
                         permissionsList?.filter(
                           (permission) => permission.resource === "store"
@@ -605,11 +581,6 @@ const SideBar = () => {
                     </div>
                     <ul className="submenu">
                       <li className="list">
-                        <a className="linkname" href="#">
-                          الموردين
-                        </a>
-                      </li>
-                      <li className="list">
                         <Link to="supplier">الموردين</Link>
                       </li>
                       {(isProgrammer ||
@@ -663,11 +634,6 @@ const SideBar = () => {
                     </div>
                     <ul className="submenu">
                       <li className="list">
-                        <a className="linkname" href="#">
-                          المصروفات
-                        </a>
-                      </li>
-                      <li className="list">
                         <Link to="expense">المصروفات</Link>
                       </li>
                       {(isProgrammer ||
@@ -702,11 +668,6 @@ const SideBar = () => {
                       <i className="bx bxs-chevron-down arrow"></i>
                     </div>
                     <ul className="submenu">
-                      <li className="list">
-                        <a className="linkname" href="#">
-                          الخزينة
-                        </a>
-                      </li>
                       <li className="list">
                         <Link to="cashregister">الرصيد</Link>
                       </li>
