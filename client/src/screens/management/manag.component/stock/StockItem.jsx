@@ -357,11 +357,13 @@ const StockItem = () => {
     setCostMethod(item.costMethod);
     setNotes(item.notes);
     setisActive(item.isActive);
+    console.log({stores:item.stores})
     if(item.stores.length>0){
       let listOfStores =[]
       item.stores.map(store=>{
         listOfStores.push({storeId:store._id})
       })
+      console.log({listOfStores})
       setstores([...listOfStores]);
     }
   };
