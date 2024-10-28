@@ -348,7 +348,6 @@ const StockItem = () => {
     setstockitem(item);
     setItemCode(item.itemCode);
     setStockItemId(item._id);
-    setstores([...item.stores]);
     setCategoryId(item.categoryId?._id);
     setItemName(item.itemName);
     setMinThreshold(item.minThreshold);
@@ -358,6 +357,13 @@ const StockItem = () => {
     setCostMethod(item.costMethod);
     setNotes(item.notes);
     setisActive(item.isActive);
+    if(item.stores.length>0){
+      let listOfStores =[]
+      item.stores.map(store=>{
+        listOfStores.push({storeId:store._id})
+      })
+      setstores([...listOfStores]);
+    }
   };
 
   const searchByitem = (name) => {
