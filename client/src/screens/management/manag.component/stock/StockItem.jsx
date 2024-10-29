@@ -63,15 +63,14 @@ const StockItem = () => {
   const handleStoreSelection = (e) => {
     const selectedStoreId = e.target.value;
     const isChecked = e.target.checked;
-
-    if (isChecked) {
-      setstores((prevStores) => [...prevStores, { storeId: selectedStoreId }]);
-    } else {
-      setstores((prevStores) =>
-        prevStores.filter((store) => store.storeId !== selectedStoreId)
-      );
-    }
+  
+    setstores((prevStores) => 
+      isChecked
+        ? [...prevStores, { storeId: selectedStoreId }]
+        : prevStores.filter((store) => store.storeId !== selectedStoreId)
+    );
   };
+  
 
   const generateItemCode = () => {
     if (!categoryId) {
@@ -358,13 +357,10 @@ const StockItem = () => {
     setNotes(item.notes);
     setisActive(item.isActive);
     console.log({stores:item.stores})
-    if(item.stores.length>0){
-      let listOfStores =[]
-      item.stores.map(store=>{
-        listOfStores.push({storeId:store._id})
-      })
+    if (item.stores && item.stores.length > 0) {
+      const listOfStores = item.stores.map((store) => ({ storeId: store._id }));
       console.log({listOfStores})
-      setstores([...listOfStores]);
+      setstores(listOfStores);
     }
   };
 
