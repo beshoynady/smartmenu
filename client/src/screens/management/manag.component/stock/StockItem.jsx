@@ -359,7 +359,7 @@ const StockItem = () => {
     setisActive(item.isActive);
     console.log({stores:item.stores})
     if (item.stores && item.stores.length > 0) {
-      const listOfStores = item.stores.map((store) => ({ storeId: store._id }));
+      const listOfStores = item.stores.map((store) => ({ storeId: store.storeId._id }));
       console.log({listOfStores})
       setstores(listOfStores);
     }
