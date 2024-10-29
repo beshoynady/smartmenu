@@ -63,12 +63,13 @@ const StockItem = () => {
   const handleStoreSelection = (e) => {
     const selectedStoreId = e.target.value;
     const isChecked = e.target.checked;
-  
-    setstores((prevStores) => 
-      isChecked
-        ? [...prevStores, { storeId: selectedStoreId }]
-        : prevStores.filter((store) => store.storeId !== selectedStoreId)
-    );
+
+    if (isChecked) {
+      setstores((prevStores) => [...prevStores, { storeId: selectedStoreId }]);
+    } else {
+      const removeStoreId= stores.filter((store) => store.storeId !== selectedStoreId)
+      setstores(removeStoreId);
+    }
   };
   
 
@@ -960,7 +961,7 @@ const StockItem = () => {
                           name="stores"
                           value={store._id}
                           className="form-check-input"
-                          checked={stores.some(
+                          defaultChecked={stores.some(
                             (s) => s.storeId === store._id
                           )}
                           onChange={handleStoreSelection}
