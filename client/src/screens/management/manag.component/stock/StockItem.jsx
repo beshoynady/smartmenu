@@ -961,7 +961,7 @@ const StockItem = () => {
                           name="stores"
                           value={store._id}
                           className="form-check-input"
-                          defaultChecked={stores.some(
+                          checked={stores.filter(
                             (s) => s.storeId === store._id
                           )}
                           onChange={handleStoreSelection}
