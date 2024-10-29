@@ -961,9 +961,7 @@ const StockItem = () => {
                           name="stores"
                           value={store._id}
                           className="form-check-input"
-                          checked={stores.filter(
-                            (s) => s.storeId === store._id
-                          )}
+                          checked={stores.find((s) => s.storeId === store._id) !== undefined}
                           onChange={handleStoreSelection}
                         />
                         <label
