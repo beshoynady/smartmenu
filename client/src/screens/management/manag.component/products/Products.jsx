@@ -779,6 +779,7 @@ const Products = () => {
                               <td></td>
                               <td></td>
                               <td></td>
+                              <td></td>
                               <td>
                                {size.sizeRecipe? calculateTotalCost(size.sizeRecipe?.ingredients) / Number(size.sizeRecipe?.numberOfMeals)
                               : "اضف تكلفه"}
