@@ -309,8 +309,8 @@ const MenuCategory = () => {
                             ))}
                           </select>
                         </div>
-                        <div className="col-12 col-sm-3 d-flex align-items-center m-0  p-0">
-                          <a href="#addCategoryModal" className="btn btn-success w-100 d-flex align-items-center justify-content-center text-nowrap p-2" data-toggle="modal">
+                        <div className="col-12 col-sm-3 d-flex align-items-center m-0 p-0">
+                          <a href="#addCategoryModal" className="btn btn-success w-100 d-flex align-items-center justify-content-center text-nowrap" data-toggle="modal">
                             <span>اضافه تصنيف</span>
                           </a>
                         </div>

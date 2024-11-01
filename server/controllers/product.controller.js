@@ -29,9 +29,9 @@ const createProduct = async (req, res) => {
     const image = req.file ? req.file.filename : null;
 
     // Check if required fields are provided in the request
-    if (!productname || !productcategoryid || productprice === undefined) {
+    if (!productname || !productcategoryid) {
       return res.status(400).json({
-        error: "Please provide name, price, and category of the product",
+        error: "Please provide name, and category of the product",
       });
     }
     // Check if required fields are provided in the request
