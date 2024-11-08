@@ -234,10 +234,10 @@ const MenuCard = () => {
                                                   }
                                                 />
                                                 <label
-                                                  className="form-check-label mr-4"
+                                                  className="form-check-label mr-3"
                                                   style={{
-                                                    fontSize: "14px",
-                                                    fontWeight: "900",
+                                                    fontSize: "13px",
+                                                    fontWeight: "800",
                                                   }}
                                                   onClick={(e) =>
                                                     handleAddProductExtras(
@@ -387,7 +387,7 @@ const MenuCard = () => {
                                   className="card-text text-center p-0 m-0"
                                   style={{
                                     fontSize: "12px",
-                                    fontWeight: "700",
+                                    fontWeight: "900",
                                   }}
                                 >
                                   {product.description}
@@ -474,7 +474,7 @@ const MenuCard = () => {
                                                 </sup>
                                                 <span
                                                   className="text-danger fw-bold"
-                                                  style={{ fontWeight: "700" }}
+                                                  style={{ fontWeight: "900" }}
                                                 >
                                                   {size.sizePriceAfterDescount}ج
                                                 </span>
@@ -482,7 +482,7 @@ const MenuCard = () => {
                                             ) : (
                                               <span
                                                 className="text-danger fw-bold"
-                                                style={{ fontWeight: "700" }}
+                                                style={{ fontWeight: "900" }}
                                               >
                                                 {size.sizePrice}ج
                                               </span>
@@ -682,7 +682,7 @@ const MenuCard = () => {
                                                   style={{
                                                     width: "47%",
                                                     height: "20px",
-                                                    paddingLeft: "5px",
+                                                    paddingLeft: "2px",
                                                   }}
                                                 >
                                                   <input
@@ -719,10 +719,10 @@ const MenuCard = () => {
                                                     }
                                                   />
                                                   <label
-                                                    className="form-check-label mr-4"
+                                                    className="form-check-label mr-3"
                                                     style={{
-                                                      fontSize: "14px",
-                                                      fontWeight: "900",
+                                                      fontSize: "13px",
+                                                      fontWeight: "800",
                                                     }}
                                                     onClick={(e) =>
                                                       handleAddProductExtras(
@@ -864,7 +864,7 @@ const MenuCard = () => {
                                   className="card-text text-center mb-1 p-0"
                                   style={{
                                     fontSize: "12px",
-                                    fontWeight: "700",
+                                    fontWeight: "900",
                                   }}
                                 >
                                   {product.description}
@@ -899,14 +899,14 @@ const MenuCard = () => {
                                       <sup>
                                         <small
                                           className="text-muted"
-                                          style={{ fontWeight: "700" }}
+                                          style={{ fontWeight: "900" }}
                                         >
                                           <s>{product.price}ج</s>
                                         </small>
                                       </sup>
                                       <span
                                         className="text-danger fw-700"
-                                        style={{ fontWeight: "700" }}
+                                        style={{ fontWeight: "900" }}
                                       >
                                         {product.priceAfterDiscount}ج
                                       </span>
@@ -914,7 +914,7 @@ const MenuCard = () => {
                                   ) : (
                                     <span
                                       className="text-danger fw-700"
-                                      style={{ fontWeight: "700" }}
+                                      style={{ fontWeight: "900" }}
                                     >
                                       {product.price}ج
                                     </span>
