@@ -364,7 +364,7 @@ const MenuCard = () => {
                             </div>
                             <div className="col-7 d-flex flex-column justify-content-between align-items-stretch p-1">
                               <div className="d-flex justify-content-between align-items-center m-0 pb-2">
-                                <h5 className="card-title m-0">
+                                <h5 className="card-title text-center m-0">
                                   {product.name}
                                 </h5>
                                 <span
@@ -841,7 +841,7 @@ const MenuCard = () => {
 
                             <div className="col-7 d-flex flex-column justify-content-between align-items-stretch p-1">
                               <div className="d-flex justify-content-between align-items-center m-0 pb-2">
-                                <h5 className="card-title m-0">
+                                <h5 className="card-title text-center m-0">
                                   {product.name}
                                 </h5>
                                 <span

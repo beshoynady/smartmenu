@@ -36,7 +36,7 @@ const POSCard = () => {
                         >
                           <div
                             className="d-flex flex-column justify-content-between"
-                            style={{ width: "100%", height: "50%" }}
+                            style={{ width: "100%", height: "35%" }}
                             onClick={() => {
                               if (sizeId && product.sizes?.find(size =>size._id === sizeId) ) {
                                 addItemToCart(product._id, sizeId);
