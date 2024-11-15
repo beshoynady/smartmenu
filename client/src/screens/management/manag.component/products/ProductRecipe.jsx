@@ -123,9 +123,9 @@ const ProductRecipe = () => {
   const [numberOfMeals, setnumberOfMeals] = useState(0);
   const [orderType, setorderType] = useState("");
   const [orderTypeList, setorderTypeList] = useState([
-    dineIn,
-    takeaway,
-    delivery,
+    'dineIn',
+    'takeaway',
+    'delivery',
   ]);
   const [name, setname] = useState("");
   const [amount, setamount] = useState(0);
