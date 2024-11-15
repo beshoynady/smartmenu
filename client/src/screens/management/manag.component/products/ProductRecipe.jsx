@@ -123,9 +123,9 @@ const ProductRecipe = () => {
   const [numberOfMeals, setnumberOfMeals] = useState(0);
   const [orderType, setorderType] = useState("");
   const [orderTypeList, setorderTypeList] = useState([
-    'dineIn',
-    'takeaway',
-    'delivery',
+    "dineIn",
+    "takeaway",
+    "delivery",
   ]);
   const [name, setname] = useState("");
   const [amount, setamount] = useState(0);
@@ -443,9 +443,45 @@ const ProductRecipe = () => {
 
     setproductTotalCost(total);
   };
-  // useEffect(() => {
-  //   calculateTotalCost();
-  // }, [ingredients, productId]);
+  const [dineInCost, setdineInCost] = useState(0)
+  const calculateTotalDineInCost = (serviceDetails) => {
+    let total = 0;
+
+    serviceDetails.dineIn?.forEach((dineIn) => {
+      const costPart = Number(dineIn.itemId?.costOfPart) || 0;
+      const amount = Number(dineIn.amount) || 0;
+      const costOfDineIn = amount * costPart;
+      total += costOfDineIn;
+    });
+
+    setdineInCost(total);
+  };
+  const [deliveryCost, setdeliveryCost] = useState(0)
+  const calculateTotaldeliveryCost = (serviceDetails) => {
+    let total = 0;
+
+    serviceDetails.delivery?.forEach((delivery) => {
+      const costPart = Number(delivery.itemId?.costOfPart) || 0;
+      const amount = Number(delivery.amount) || 0;
+      const costOfdelivery = amount * costPart;
+      total += costOfdelivery;
+    });
+
+    setdeliveryCost(total);
+  };
+  const [takeawayCost, settakeawayCost] = useState(0)
+  const calculateTotaltakeawayCost = (serviceDetails) => {
+    let total = 0;
+
+    serviceDetails.takeaway?.forEach((takeaway) => {
+      const costPart = Number(takeaway.itemId?.costOfPart) || 0;
+      const amount = Number(takeaway.amount) || 0;
+      const costOftakeaway = amount * costPart;
+      total += costOftakeaway;
+    });
+
+    settakeawayCost(total);
+  };
 
   const getProductRecipe = async (productId, sizeId) => {
     if (!token) {
@@ -486,6 +522,9 @@ const ProductRecipe = () => {
         const ingredients = recipeOfProduct.ingredients;
         const serviceDetails = recipeOfProduct.serviceDetails;
         calculateTotalCost(ingredients);
+        calculateTotalDineInCost(serviceDetails);
+        calculateTotaldeliveryCost(serviceDetails);
+        calculateTotaltakeawayCost(serviceDetails);
         console.log("المكونات:", ingredients);
         if (ingredients) {
           setingredients([...ingredients].reverse());
@@ -790,6 +829,44 @@ const ProductRecipe = () => {
                 />
               </div>
             </div>
+            <div className="col-12 text-dark d-flex flex-wrap align-items-center justify-content-start p-0 m-0">
+              <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
+                <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                  تكاليف الصاله
+                </label>
+                <input
+                  type="Number"
+                  className="form-control border-primary m-0 p-2 h-auto"
+                  readOnly
+                  defaultValue={dineInCost}
+                />
+              </div>
+              <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
+                <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                  تكاليف التيك اوي
+                </label>
+                <input
+                  type="Number"
+                  className="form-control border-primary m-0 p-2 h-auto"
+                  readOnly
+                  defaultValue={takeawayCost}
+                />
+              </div>
+              <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
+                <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                  تكاليف الدليفري
+                </label>
+                <input
+                  type="text"
+                  className="form-control border-primary m-0 p-2 h-auto"
+                  readOnly
+                  value={deliveryCost}
+                />
+              </div>
+              <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
+                
+              </div>
+            </div>
           </div>
 
           <table className="table table-striped table-hover">
@@ -886,9 +963,11 @@ const ProductRecipe = () => {
                     }
                   })
                 : ""}
-
-                {serviceDetails.dineIn?.length>0 &&
-                 serviceDetails.dineIn.map((dineIn, i) => {
+              <td colSpan="8" style={{ textAlign: "center" }}>
+                اضافات خاصه بطلبات الصاله
+              </td>
+              {serviceDetails.dineIn?.length > 0 &&
+                serviceDetails.dineIn.map((dineIn, i) => {
                   return (
                     <tr key={i}>
                       <td>
@@ -954,10 +1033,12 @@ const ProductRecipe = () => {
                       </td>
                     </tr>
                   );
-                })
-                }
-                {serviceDetails.takeaway?.length>0 &&
-                 serviceDetails.takeaway.map((takeaway, i) => {
+                })}
+              <td colSpan="8" style={{ textAlign: "center" }}>
+                اضافات خاصه بطلبات التيك اوي
+              </td>
+              {serviceDetails.takeaway?.length > 0 &&
+                serviceDetails.takeaway.map((takeaway, i) => {
                   return (
                     <tr key={i}>
                       <td>
@@ -1023,10 +1104,12 @@ const ProductRecipe = () => {
                       </td>
                     </tr>
                   );
-                })
-                }
-                {serviceDetails.delivery?.length>0 &&
-                 serviceDetails.delivery.map((delivery, i) => {
+                })}
+              <td colSpan="8" style={{ textAlign: "center" }}>
+                اضافات خاصه بطلبات الديليفري
+              </td>
+              {serviceDetails.delivery?.length > 0 &&
+                serviceDetails.delivery.map((delivery, i) => {
                   return (
                     <tr key={i}>
                       <td>
@@ -1092,8 +1175,7 @@ const ProductRecipe = () => {
                       </td>
                     </tr>
                   );
-                })
-                }
+                })}
             </tbody>
           </table>
 

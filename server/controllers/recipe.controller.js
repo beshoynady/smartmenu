@@ -167,6 +167,18 @@ const getOneRecipe = async (req, res) => {
       .populate(
         "ingredients.itemId",
         "_id itemName costOfPart minThreshold"
+      )
+      .populate(
+        "serviceDetails.dineIn.itemId",
+        "_id itemName costOfPart minThreshold"
+      )
+      .populate(
+        "serviceDetails.teakawy.itemId",
+        "_id itemName costOfPart minThreshold"
+      )
+      .populate(
+        "serviceDetails.delivery.itemId",
+        "_id itemName costOfPart minThreshold"
       );
 
     if (!recipe) {
@@ -186,6 +198,18 @@ const getAllRecipe = async (req, res) => {
       .populate("productId", "_id name")
       .populate(
         "ingredients.itemId",
+        "_id itemName costOfPart minThreshold"
+      )
+      .populate(
+        "serviceDetails.dineIn.itemId",
+        "_id itemName costOfPart minThreshold"
+      )
+      .populate(
+        "serviceDetails.teakawy.itemId",
+        "_id itemName costOfPart minThreshold"
+      )
+      .populate(
+        "serviceDetails.delivery.itemId",
         "_id itemName costOfPart minThreshold"
       );
 
