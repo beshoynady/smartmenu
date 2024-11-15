@@ -173,7 +173,7 @@ const getOneRecipe = async (req, res) => {
         "_id itemName costOfPart minThreshold"
       )
       .populate(
-        "serviceDetails.teakawy.itemId",
+        "serviceDetails.takeaway.itemId",
         "_id itemName costOfPart minThreshold"
       )
       .populate(
@@ -205,7 +205,7 @@ const getAllRecipe = async (req, res) => {
         "_id itemName costOfPart minThreshold"
       )
       .populate(
-        "serviceDetails.teakawy.itemId",
+        "serviceDetails.takeaway.itemId",
         "_id itemName costOfPart minThreshold"
       )
       .populate(
@@ -218,6 +218,7 @@ const getAllRecipe = async (req, res) => {
     res.status(400).json({ message: error.message, error });
   }
 };
+
 
 // Delete a recipe by ID
 const deleteRecipe = async (req, res) => {
