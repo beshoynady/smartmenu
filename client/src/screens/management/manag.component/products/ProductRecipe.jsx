@@ -443,7 +443,7 @@ const ProductRecipe = () => {
 
     setproductTotalCost(total);
   };
-  const [dineInCost, setdineInCost] = useState(0)
+  const [dineInCost, setdineInCost] = useState(0);
   const calculateTotalDineInCost = (serviceDetails) => {
     let total = 0;
 
@@ -456,7 +456,7 @@ const ProductRecipe = () => {
 
     setdineInCost(total);
   };
-  const [deliveryCost, setdeliveryCost] = useState(0)
+  const [deliveryCost, setdeliveryCost] = useState(0);
   const calculateTotaldeliveryCost = (serviceDetails) => {
     let total = 0;
 
@@ -469,7 +469,7 @@ const ProductRecipe = () => {
 
     setdeliveryCost(total);
   };
-  const [takeawayCost, settakeawayCost] = useState(0)
+  const [takeawayCost, settakeawayCost] = useState(0);
   const calculateTotaltakeawayCost = (serviceDetails) => {
     let total = 0;
 
@@ -526,13 +526,14 @@ const ProductRecipe = () => {
         calculateTotaldeliveryCost(serviceDetails);
         calculateTotaltakeawayCost(serviceDetails);
         console.log("المكونات:", ingredients);
+        console.log("serviceDetails:", serviceDetails);
         if (ingredients) {
           setingredients([...ingredients].reverse());
           toast.success("تم جلب مكونات الوصفة بنجاح");
         }
         if (serviceDetails) {
           setserviceDetails(serviceDetails);
-          toast.success("تم جلب مكونات الوصفة بنجاح");
+          toast.success("تم جلب الاضافات الخاصه بنوع الطلب بنجاح");
         }
       } else {
         console.warn(
@@ -549,6 +550,7 @@ const ProductRecipe = () => {
       toast.error("حدث خطأ أثناء جلب وصفة المنتج. يرجى المحاولة لاحقًا.");
     }
   };
+
 
   const [sizes, setsizes] = useState([]);
 
@@ -672,7 +674,7 @@ const ProductRecipe = () => {
                 </a>
                 <a
                   href="#addServiceDetailsModal"
-                  className="d-flex align-items-center justify-content-center h-100 m-0 btn btn-success"
+                  className="d-flex align-items-center justify-content-center h-100 m-0 btn btn-primary"
                   data-toggle="modal"
                 >
                   {" "}
@@ -863,9 +865,7 @@ const ProductRecipe = () => {
                   value={deliveryCost}
                 />
               </div>
-              <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
-                
-              </div>
+              <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1"></div>
             </div>
           </div>
 
