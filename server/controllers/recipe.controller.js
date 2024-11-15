@@ -134,12 +134,12 @@ const updateRecipe = async (req, res) => {
       }
     }
 
-    if (typeof serviceDetails === "object") {
-      // Validate serviceDetails
-      validateServiceDetails(serviceDetails);
+    // if (typeof serviceDetails === "object") {
+    //   // Validate serviceDetails
+    //   validateServiceDetails(serviceDetails);
+    // }
       updateFields.serviceDetails = serviceDetails;
-    }
-
+    
     // Update the recipe by ID
     const updatedRecipe = await RecipeModel.findByIdAndUpdate(
       id,
