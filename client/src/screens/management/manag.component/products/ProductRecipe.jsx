@@ -117,17 +117,23 @@ const ProductRecipe = () => {
   const [ingredients, setingredients] = useState([]);
   const [productTotalCost, setproductTotalCost] = useState(0);
   const [serviceDetails, setserviceDetails] = useState([]);
+  const [itemId, setitemId] = useState("");
   const [preparationTime, setpreparationTime] = useState(0);
   const [wastePercentage, setwastePercentage] = useState(0);
   const [numberOfMeals, setnumberOfMeals] = useState(0);
-  const [itemId, setitemId] = useState("");
+  const [orderType, setorderType] = useState("");
+  const [orderTypeList, setorderTypeList] = useState([
+    dineIn,
+    takeaway,
+    delivery,
+  ]);
   const [name, setname] = useState("");
   const [amount, setamount] = useState(0);
   const [costofitem, setcostofitem] = useState(0);
   const [unit, setunit] = useState("");
   const [totalcostofitem, settotalcostofitem] = useState(0);
 
-  const createRecipe = async (e) => {
+  const addRecipeItem = async (e) => {
     e.preventDefault();
     if (!token) {
       // Handle case where token is not available
@@ -260,9 +266,114 @@ const ProductRecipe = () => {
       }
     } catch (error) {
       console.error("Error creating/updating recipe:", error); // Log any errors that occur during the process
-      toast.error("حدث خطأ أثناء إنشاء/تحديث الوصفة"); // Notify error in creating/updating recipe
+      toast.error("حدث خطأ أثناء إنشاء او تحديث الوصفة"); // Notify error in creating/updating recipe
     }
   };
+  const addServiceItem = async (e) => {
+    e.preventDefault();
+    if (!token) {
+      toast.error("رجاء تسجيل الدخول مره اخري");
+      return;
+    }
+
+    try {
+      if (productRecipePermission && !productRecipePermission.create) {
+        toast.warn("ليس لك صلاحية لانشاء الوصفات");
+        return;
+      }
+
+      if (!orderType || !itemId || !name || !amount || !unit) {
+        toast.error("يرجى تعبئة جميع الحقول بشكل صحيح");
+        return;
+      }
+
+      let newServiceDetails = { ...serviceDetails }; // نسخة من التفاصيل الحالية
+
+      if (!newServiceDetails[orderType]) {
+        newServiceDetails[orderType] = []; // إذا لم يكن النوع موجود، يتم تهيئته
+      }
+
+      newServiceDetails[orderType].push({
+        itemId,
+        name,
+        amount,
+        unit,
+        wastePercentage,
+      });
+
+      if (recipeOfProduct && recipeOfProduct._id) {
+        const addRecipeToProduct = await axios.put(
+          `${apiUrl}/api/recipe/${recipeOfProduct._id}`,
+          { serviceDetails: newServiceDetails },
+          config
+        );
+
+        if (addRecipeToProduct.status === 200) {
+          toast.success("تم تحديث الوصفة بنجاح");
+          setserviceDetails(newServiceDetails); // تحديث الحالة في الواجهة
+        } else {
+          throw new Error("Failed to update recipe");
+        }
+
+        getProductRecipe(productId, sizeId); // تحديث بيانات الوصفة
+      }
+    } catch (error) {
+      console.error("Error creating/updating recipe:", error);
+      toast.error("حدث خطأ أثناء إنشاء أو تحديث الوصفة");
+    }
+  };
+
+  // const addServiceItem = async (e) => {
+  //   e.preventDefault();
+  //   if (!token) {
+  //     // Handle case where token is not available
+  //     toast.error("رجاء تسجيل الدخول مره اخري");
+  //     return;
+  //   }
+  //   try {
+  //     if (productRecipePermission && !productRecipePermission.create) {
+  //       toast.warn("ليس لك صلاحية لانشاء الوصفات");
+  //       return;
+  //     }
+  //     if (!orderType ||!itemId || !name || !amount || !unit) {
+  //       toast.error("يرجى تعبئة جميع الحقول بشكل صحيح");
+  //       return;
+  //     }
+
+  //     let newServiceDetails;
+
+  //     if (recipeOfProduct && recipeOfProduct._id) {
+  //       // If there are existing ingredients, create a new array with the added ingredient
+
+  //       newServiceDetails = [
+  //         ...serviceDetails,
+  //         { itemId, name, amount, unit, wastePercentage },
+  //       ];
+
+  //       // Update the recipe by sending a PUT request
+  //       const addRecipeToProduct = await axios.put(
+  //         `${apiUrl}/api/recipe/${recipeOfProduct._id}`,
+  //         {
+  //           serviceDetails: {orderType:[...serviceDetails]}
+  //         },
+  //         config
+  //       );
+
+  //       if (addRecipeToProduct.status === 200) {
+  //         const recipedata = await addRecipeToProduct.data;
+  //         console.log({ sizeId: recipedata.sizeId, sizes });
+  //         toast.success("تم تحديث الوصفة بنجاح");
+  //       } else {
+  //         throw new Error("Failed to update recipe");
+  //       }
+
+  //       getProductRecipe(productId, sizeId); // Refresh the product recipe
+  //     }
+  //   } catch (error) {
+  //     console.error("Error creating/updating recipe:", error); // Log any errors that occur during the process
+  //     toast.error("حدث خطأ أثناء إنشاء او تحديث الوصفة"); // Notify error in creating/updating recipe
+  //   }
+  // };
 
   const [recipeid, setrecipeid] = useState("");
 
@@ -320,17 +431,16 @@ const ProductRecipe = () => {
     }
   };
 
-
   const calculateTotalCost = (ingredients) => {
     let total = 0;
-  
+
     ingredients?.forEach((ingredient) => {
-      const costPart = Number(ingredient.itemId?.costOfPart) || 0; 
+      const costPart = Number(ingredient.itemId?.costOfPart) || 0;
       const amount = Number(ingredient.amount) || 0;
       const costOfIngredient = amount * costPart;
       total += costOfIngredient;
     });
-  
+
     setproductTotalCost(total);
   };
   // useEffect(() => {
@@ -374,10 +484,15 @@ const ProductRecipe = () => {
         setrecipeOfProduct(recipeOfProduct);
 
         const ingredients = recipeOfProduct.ingredients;
-        calculateTotalCost(ingredients)
+        const serviceDetails = recipeOfProduct.serviceDetails;
+        calculateTotalCost(ingredients);
         console.log("المكونات:", ingredients);
         if (ingredients) {
           setingredients([...ingredients].reverse());
+          toast.success("تم جلب مكونات الوصفة بنجاح");
+        }
+        if (serviceDetails) {
+          setserviceDetails(serviceDetails);
           toast.success("تم جلب مكونات الوصفة بنجاح");
         }
       } else {
@@ -386,6 +501,7 @@ const ProductRecipe = () => {
         );
         setrecipeOfProduct({});
         setingredients([]);
+        setserviceDetails({});
         setproductTotalCost(null); // Reset the total cost if no recipe is found
         toast.warn("لم يتم العثور على وصفة مطابقة.");
       }
@@ -513,7 +629,15 @@ const ProductRecipe = () => {
                   data-toggle="modal"
                 >
                   {" "}
-                  <span>اضافه منتج جديد</span>
+                  <span>اضافه مكون جديد</span>
+                </a>
+                <a
+                  href="#addServiceDetailsModal"
+                  className="d-flex align-items-center justify-content-center h-100 m-0 btn btn-success"
+                  data-toggle="modal"
+                >
+                  {" "}
+                  <span>اضافه مكون خاص بنوع الطلب</span>
                 </a>
 
                 <a
@@ -658,7 +782,10 @@ const ProductRecipe = () => {
                   className="form-control border-primary m-0 p-2 h-auto"
                   readOnly
                   value={
-                    productTotalCost?Number(productTotalCost) / Number(product.productRecipe?.numberOfMeals):0
+                    productTotalCost
+                      ? Number(productTotalCost) /
+                        Number(product.productRecipe?.numberOfMeals)
+                      : 0
                   }
                 />
               </div>
@@ -759,6 +886,214 @@ const ProductRecipe = () => {
                     }
                   })
                 : ""}
+
+                {serviceDetails.dineIn?.length>0 &&
+                 serviceDetails.dineIn.map((dineIn, i) => {
+                  return (
+                    <tr key={i}>
+                      <td>
+                        <span className="custom-checkbox">
+                          <input
+                            type="checkbox"
+                            className="form-check-input form-check-input-lg"
+                            id="checkbox1"
+                            name="options[]"
+                            value="1"
+                          />
+                          <label htmlFor="checkbox1"></label>
+                        </span>
+                      </td>
+                      <td>{i + 1}</td>
+                      <td>{dineIn.name}</td>
+                      <td>{dineIn.unit}</td>
+                      <td>{dineIn.amount}</td>
+                      <td>{dineIn.itemId?.costOfPart}</td>
+                      <td>
+                        {Number(dineIn.amount) *
+                          Number(dineIn.itemId?.costOfPart)}
+                      </td>
+                      <td>
+                        <a
+                          href="#editRecipeModal"
+                          className="edit"
+                          data-toggle="modal"
+                          onClick={() => {
+                            setrecipeid(dineIn._id);
+                            setitemId(dineIn.itemId);
+                            setname(dineIn.name);
+                            setamount(dineIn.amount);
+                            setunit(dineIn.unit);
+                            setwastePercentage(dineIn.wastePercentage);
+                          }}
+                        >
+                          <i
+                            className="material-icons"
+                            data-toggle="tooltip"
+                            title="Edit"
+                          >
+                            &#xE254;
+                          </i>
+                        </a>
+
+                        <a
+                          href="#deleteProductModal"
+                          className="delete"
+                          data-toggle="modal"
+                          onClick={() => {
+                            setitemId(dineIn.itemId);
+                          }}
+                        >
+                          <i
+                            className="material-icons"
+                            data-toggle="tooltip"
+                            title="Delete"
+                          >
+                            &#xE872;
+                          </i>
+                        </a>
+                      </td>
+                    </tr>
+                  );
+                })
+                }
+                {serviceDetails.takeaway?.length>0 &&
+                 serviceDetails.takeaway.map((takeaway, i) => {
+                  return (
+                    <tr key={i}>
+                      <td>
+                        <span className="custom-checkbox">
+                          <input
+                            type="checkbox"
+                            className="form-check-input form-check-input-lg"
+                            id="checkbox1"
+                            name="options[]"
+                            value="1"
+                          />
+                          <label htmlFor="checkbox1"></label>
+                        </span>
+                      </td>
+                      <td>{i + 1}</td>
+                      <td>{takeaway.name}</td>
+                      <td>{takeaway.unit}</td>
+                      <td>{takeaway.amount}</td>
+                      <td>{takeaway.itemId?.costOfPart}</td>
+                      <td>
+                        {Number(takeaway.amount) *
+                          Number(takeaway.itemId?.costOfPart)}
+                      </td>
+                      <td>
+                        <a
+                          href="#editRecipeModal"
+                          className="edit"
+                          data-toggle="modal"
+                          onClick={() => {
+                            setrecipeid(takeaway._id);
+                            setitemId(takeaway.itemId);
+                            setname(takeaway.name);
+                            setamount(takeaway.amount);
+                            setunit(takeaway.unit);
+                            setwastePercentage(takeaway.wastePercentage);
+                          }}
+                        >
+                          <i
+                            className="material-icons"
+                            data-toggle="tooltip"
+                            title="Edit"
+                          >
+                            &#xE254;
+                          </i>
+                        </a>
+
+                        <a
+                          href="#deleteProductModal"
+                          className="delete"
+                          data-toggle="modal"
+                          onClick={() => {
+                            setitemId(takeaway.itemId);
+                          }}
+                        >
+                          <i
+                            className="material-icons"
+                            data-toggle="tooltip"
+                            title="Delete"
+                          >
+                            &#xE872;
+                          </i>
+                        </a>
+                      </td>
+                    </tr>
+                  );
+                })
+                }
+                {serviceDetails.delivery?.length>0 &&
+                 serviceDetails.delivery.map((delivery, i) => {
+                  return (
+                    <tr key={i}>
+                      <td>
+                        <span className="custom-checkbox">
+                          <input
+                            type="checkbox"
+                            className="form-check-input form-check-input-lg"
+                            id="checkbox1"
+                            name="options[]"
+                            value="1"
+                          />
+                          <label htmlFor="checkbox1"></label>
+                        </span>
+                      </td>
+                      <td>{i + 1}</td>
+                      <td>{delivery.name}</td>
+                      <td>{delivery.unit}</td>
+                      <td>{delivery.amount}</td>
+                      <td>{delivery.itemId?.costOfPart}</td>
+                      <td>
+                        {Number(delivery.amount) *
+                          Number(delivery.itemId?.costOfPart)}
+                      </td>
+                      <td>
+                        <a
+                          href="#editRecipeModal"
+                          className="edit"
+                          data-toggle="modal"
+                          onClick={() => {
+                            setrecipeid(delivery._id);
+                            setitemId(delivery.itemId);
+                            setname(delivery.name);
+                            setamount(delivery.amount);
+                            setunit(delivery.unit);
+                            setwastePercentage(delivery.wastePercentage);
+                          }}
+                        >
+                          <i
+                            className="material-icons"
+                            data-toggle="tooltip"
+                            title="Edit"
+                          >
+                            &#xE254;
+                          </i>
+                        </a>
+
+                        <a
+                          href="#deleteProductModal"
+                          className="delete"
+                          data-toggle="modal"
+                          onClick={() => {
+                            setitemId(delivery.itemId);
+                          }}
+                        >
+                          <i
+                            className="material-icons"
+                            data-toggle="tooltip"
+                            title="Delete"
+                          >
+                            &#xE872;
+                          </i>
+                        </a>
+                      </td>
+                    </tr>
+                  );
+                })
+                }
             </tbody>
           </table>
 
@@ -832,7 +1167,7 @@ const ProductRecipe = () => {
       <div id="addRecipeModal" className="modal fade">
         <div className="modal-dialog modal-lg">
           <div className="modal-content shadow-lg border-0 rounded">
-            <form onSubmit={createRecipe}>
+            <form onSubmit={addRecipeItem}>
               <div className="modal-header d-flex flex-wrap align-items-center text-light bg-primary">
                 <h4 className="modal-title">اضافه مكون</h4>
                 <button
@@ -870,13 +1205,199 @@ const ProductRecipe = () => {
                     type="number"
                     className="form-control border-primary m-0 p-2 h-auto"
                     value={product.productRecipe?.preparationTime}
-                    readOnly={product.productRecipe?.preparationTime > 0 ? true : false}
+                    readOnly={
+                      product.productRecipe?.preparationTime > 0 ? true : false
+                    }
                     onChange={(e) => setpreparationTime(e.target.value)}
                     required
                     min="0"
                   />
                 </div>
 
+                {/* اختيار المكون */}
+                <div className="form-group col-12 col-md-6">
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    الاسم
+                  </label>
+                  <select
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    onChange={(e) => {
+                      setitemId(e.target.value);
+                      const selectedItem = AllStockItems.find(
+                        (s) => s._id === e.target.value
+                      );
+                      if (selectedItem) {
+                        setname(selectedItem.itemName);
+                        setunit(selectedItem.smallUnit);
+                        setcostofitem(selectedItem.costOfPart);
+                      }
+                    }}
+                  >
+                    <option value="">اختر</option>
+                    {AllStockItems &&
+                      AllStockItems.map((item, i) => (
+                        <option value={item._id} key={i}>
+                          {item.itemName}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+                {/* كمية العنصر */}
+                <div className="form-group col-12 col-md-6">
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    الكمية
+                  </label>
+                  <div className="w-100 d-flex flex-nowrap">
+                    <input
+                      type="number"
+                      className="form-control border-primary col-4"
+                      required
+                      onChange={(e) => {
+                        setamount(e.target.value);
+                        settotalcostofitem(e.target.value * costofitem);
+                      }}
+                    />
+                    <input
+                      type="text"
+                      className="form-control border-primary col-4"
+                      value={unit || ""}
+                      readOnly
+                      required
+                    />
+                  </div>
+                </div>
+
+                {/* تكلفة العنصر */}
+                <div className="form-group col-12 col-md-6">
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    التكلفة
+                  </label>
+                  <input
+                    type="number"
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    value={costofitem || ""}
+                    readOnly
+                  />
+                </div>
+
+                {/* تكلفة الكمية الإجمالية */}
+                <div className="form-group col-12 col-md-6">
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    التكلفة الاجمالية
+                  </label>
+                  <input
+                    type="number"
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    value={totalcostofitem || ""}
+                    readOnly
+                    required
+                  />
+                </div>
+
+                {/* نسبة الفاقد */}
+                <div className="form-group col-12 col-md-6">
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    نسبة الفاقد (%)
+                  </label>
+                  <input
+                    type="number"
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    onChange={(e) => setwastePercentage(e.target.value)}
+                    value={wastePercentage || ""}
+                    required
+                    min="0"
+                    max="100"
+                  />
+                </div>
+              </div>
+              <div className="modal-footer d-flex flex-nowrap align-items-center justify-content-between m-0 p-1">
+                <input
+                  type="button"
+                  className="btn btn-danger col-6 h-100 px-2 py-3 m-0"
+                  data-dismiss="modal"
+                  value="إغلاق"
+                />
+                <input
+                  type="submit"
+                  className="btn btn-success col-6 h-100 px-2 py-3 m-0"
+                  value="اضافه"
+                />
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div id="addServiceDetailsModal" className="modal fade">
+        <div className="modal-dialog modal-lg">
+          <div className="modal-content shadow-lg border-0 rounded">
+            <form onSubmit={addServiceItem}>
+              <div className="modal-header d-flex flex-wrap align-items-center text-light bg-primary">
+                <h4 className="modal-title">اضافه مكون</h4>
+                <button
+                  type="button"
+                  className="close m-0 p-1"
+                  data-dismiss="modal"
+                  aria-hidden="true"
+                >
+                  &times;
+                </button>
+              </div>
+              <div className="modal-body d-flex flex-wrap align-items-center p-3 text-right">
+                {/* عدد الوجبات */}
+                <div className="form-group col-12 col-md-6">
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    عدد الوجبات
+                  </label>
+                  <input
+                    type="number"
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    value={product.productRecipe?.numberOfMeals}
+                    readOnly={product.numberOfMeals > 0 ? true : false}
+                    onChange={(e) => setnumberOfMeals(e.target.value)}
+                    required
+                    min="1"
+                  />
+                </div>
+
+                {/* زمن التحضير
+                <div className="form-group col-12 col-md-6">
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    زمن التحضير (دقائق)
+                  </label>
+                  <input
+                    type="number"
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    value={product.productRecipe?.preparationTime}
+                    readOnly={product.productRecipe?.preparationTime > 0 ? true : false}
+                    onChange={(e) => setpreparationTime(e.target.value)}
+                    required
+                    min="0"
+                  />
+                </div> */}
+
+                {/* اختيار نوع الطلب */}
+                <div className="form-group col-12 col-md-6">
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    نوع الطلب
+                  </label>
+                  <select
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    onChange={(e) => {
+                      setorderType(e.target.value);
+                    }}
+                  >
+                    <option value="">اختر</option>
+                    {orderTypeList.map((type, i) => (
+                      <option value={type} key={i}>
+                        {type === "dineIn"
+                          ? "داخل المطعم"
+                          : type === "takeaway"
+                          ? "طلبات خارجية"
+                          : "توصيل"}
+                      </option>
+                    ))}
+                  </select>
+                </div>
                 {/* اختيار المكون */}
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
