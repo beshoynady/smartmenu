@@ -10,6 +10,7 @@ import { detacontext } from "../../../../App";
 import { toast } from "react-toastify";
 import "../orders/Orders.css";
 
+
 const ProductRecipe = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -840,7 +841,7 @@ const ProductRecipe = () => {
                   type="Number"
                   className="form-control border-primary m-0 p-2 h-auto"
                   readOnly
-                  defaultValue={dineInCost}
+                  value={dineInCost}
                 />
               </div>
               <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
@@ -851,7 +852,7 @@ const ProductRecipe = () => {
                   type="Number"
                   className="form-control border-primary m-0 p-2 h-auto"
                   readOnly
-                  defaultValue={takeawayCost}
+                  value={takeawayCost}
                 />
               </div>
               <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
@@ -963,9 +964,9 @@ const ProductRecipe = () => {
                     }
                   })
                 : ""}
-              <tr colSpan="8" style={{ textAlign: "center" }}>
+              <tr><td colSpan="8" style={{ textAlign: "center" }}>
                 اضافات خاصه بطلبات الصاله
-              </tr>
+              </td></tr>
               {serviceDetails.dineIn?.length > 0 &&
                 serviceDetails.dineIn.map((dineIn, i) => {
                   return (
@@ -1034,9 +1035,9 @@ const ProductRecipe = () => {
                     </tr>
                   );
                 })}
-              <tr colSpan="8" style={{ textAlign: "center" }}>
+              <tr><td colSpan="8" style={{ textAlign: "center" }}>
                 اضافات خاصه بطلبات التيك اوي
-              </tr>
+              </td></tr>
               {serviceDetails.takeaway?.length > 0 &&
                 serviceDetails.takeaway.map((takeaway, i) => {
                   return (
@@ -1105,9 +1106,9 @@ const ProductRecipe = () => {
                     </tr>
                   );
                 })}
-              <td colSpan="8" style={{ textAlign: "center" }}>
+              <tr><td colSpan="8" style={{ textAlign: "center" }}>
                 اضافات خاصه بطلبات الديليفري
-              </td>
+              </td></tr>
               {serviceDetails.delivery?.length > 0 &&
                 serviceDetails.delivery.map((delivery, i) => {
                   return (
