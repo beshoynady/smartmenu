@@ -986,10 +986,10 @@ const ProductRecipe = () => {
                       <td>{dineIn.name}</td>
                       <td>{dineIn.unit}</td>
                       <td>{dineIn.amount}</td>
-                      <td>{dineIn.itemId?.costOfPart}</td>
+                      <td>{AllStockItems.find(stock=>stock._id===dineIn.itemId)?.costOfPart}</td>
                       <td>
                         {Number(dineIn.amount) *
-                          Number(dineIn.itemId?.costOfPart)}
+                          Number(AllStockItems.find(stock=>stock._id===dineIn.itemId)?.costOfPart)}
                       </td>
                       <td>
                         <a
@@ -1057,10 +1057,10 @@ const ProductRecipe = () => {
                       <td>{takeaway.name}</td>
                       <td>{takeaway.unit}</td>
                       <td>{takeaway.amount}</td>
-                      <td>{takeaway.itemId?.costOfPart}</td>
+                      <td>{AllStockItems.find(stock=>stock._id===takeaway.itemId)?.costOfPart}</td>
                       <td>
                         {Number(takeaway.amount) *
-                          Number(takeaway.itemId?.costOfPart)}
+                          Number(AllStockItems.find(stock=>stock._id===takeaway.itemId)?.costOfPart)}
                       </td>
                       <td>
                         <a
@@ -1128,10 +1128,10 @@ const ProductRecipe = () => {
                       <td>{delivery.name}</td>
                       <td>{delivery.unit}</td>
                       <td>{delivery.amount}</td>
-                      <td>{delivery.itemId?.costOfPart}</td>
+                      <td>{AllStockItems.find(stock=>stock._id===delivery.itemId)?.costOfPart}</td>
                       <td>
                         {Number(delivery.amount) *
-                          Number(delivery.itemId?.costOfPart)}
+                          Number(AllStockItems.find(stock=>stock._id===delivery.itemId)?.costOfPart)}
                       </td>
                       <td>
                         <a
