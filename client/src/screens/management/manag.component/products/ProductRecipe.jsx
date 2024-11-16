@@ -448,7 +448,7 @@ const ProductRecipe = () => {
     let total = 0;
 
     serviceDetails.dineIn?.forEach((dineIn) => {
-      const costPart = Number(dineIn.itemId?.costOfPart) || 0;
+      const costPart = Number(AllStockItems.find(stock=>stock._id===dineIn.itemId)?.costOfPart) || 0;
       const amount = Number(dineIn.amount) || 0;
       const costOfDineIn = amount * costPart;
       total += costOfDineIn;
@@ -461,7 +461,7 @@ const ProductRecipe = () => {
     let total = 0;
 
     serviceDetails.delivery?.forEach((delivery) => {
-      const costPart = Number(delivery.itemId?.costOfPart) || 0;
+      const costPart = Number(AllStockItems.find(stock=>stock._id===delivery.itemId)?.costOfPart) || 0;
       const amount = Number(delivery.amount) || 0;
       const costOfdelivery = amount * costPart;
       total += costOfdelivery;
@@ -474,7 +474,7 @@ const ProductRecipe = () => {
     let total = 0;
 
     serviceDetails.takeaway?.forEach((takeaway) => {
-      const costPart = Number(takeaway.itemId?.costOfPart) || 0;
+      const costPart = Number(AllStockItems.find(stock=>stock._id===takeaway.itemId)?.costOfPart) || 0;
       const amount = Number(takeaway.amount) || 0;
       const costOftakeaway = amount * costPart;
       total += costOftakeaway;
@@ -963,9 +963,9 @@ const ProductRecipe = () => {
                     }
                   })
                 : ""}
-              <td colSpan="8" style={{ textAlign: "center" }}>
+              <tr colSpan="8" style={{ textAlign: "center" }}>
                 اضافات خاصه بطلبات الصاله
-              </td>
+              </tr>
               {serviceDetails.dineIn?.length > 0 &&
                 serviceDetails.dineIn.map((dineIn, i) => {
                   return (
@@ -1034,9 +1034,9 @@ const ProductRecipe = () => {
                     </tr>
                   );
                 })}
-              <td colSpan="8" style={{ textAlign: "center" }}>
+              <tr colSpan="8" style={{ textAlign: "center" }}>
                 اضافات خاصه بطلبات التيك اوي
-              </td>
+              </tr>
               {serviceDetails.takeaway?.length > 0 &&
                 serviceDetails.takeaway.map((takeaway, i) => {
                   return (
