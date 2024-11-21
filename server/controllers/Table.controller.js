@@ -64,7 +64,7 @@ const showAllTables = async (_req, res) => {
       .populate("createdBy", "fullname username") // Include creator details
       .populate("updatedBy", "fullname username"); // Include updater details
 
-    return res.status(200).json({allTables});
+    return res.status(200).json(allTables);
   } catch (error) {
     console.error("Error fetching all tables:", error.message);
     return res.status(500).json({
@@ -87,10 +87,7 @@ const showOneTable = async (req, res) => {
       return res.status(404).json({ message: "Table not found" });
     }
 
-    return res.status(200).json({
-      message: "Table retrieved successfully",
-      data: oneTable,
-    });
+    return res.status(200).json(oneTable);
   } catch (err) {
     console.error("Error fetching table:", err.message);
     return res.status(500).json({
