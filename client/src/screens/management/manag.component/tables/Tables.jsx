@@ -446,6 +446,7 @@ const Tables = () => {
                 <th>الحاله</th>
                 <th>متاح</th>
                 <th>تغير الكود</th>
+                <th>الكود</th>
                 <th>QR</th>
                 <th>اجراءات</th>
               </tr>
