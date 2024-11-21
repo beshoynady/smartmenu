@@ -30,9 +30,11 @@ const Home = () => {
 
   const tableInfo = async () => {
     try {
-      const response = await axios.get(`${apiUrl}/api/table/${id}`, config);
+      const response = await axios.get(`${apiUrl}/api/table`, config);
       if (response.data) {
-        setTable(response.data);
+        const allTable = response.data
+        const table = allTable.find(tab=> tab.tableCode === id)
+        setTable(table);
       } else {
         // If table data is not found, navigate to home
         navigate("/");

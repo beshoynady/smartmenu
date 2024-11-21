@@ -230,7 +230,7 @@ const Tables = () => {
     try {
       const response = await axios.get(apiUrl + "/api/table");
       if(response.status === 200) {
-        const tables = response.data.data;
+        const tables = response.data;
         setlistoftable(tables);
         console.log({tables})
       }
