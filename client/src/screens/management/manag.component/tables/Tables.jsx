@@ -458,7 +458,7 @@ const Tables = () => {
               </tr>
             </thead>
             <tbody>
-              {listoftable.map((table, i) => {
+              {listoftable&&listoftable.map((table, i) => {
                 if ((i >= startpagination) & (i < endpagination)) {
                   return (
                     <tr key={i}>
