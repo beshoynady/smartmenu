@@ -31,31 +31,40 @@ const Tables = () => {
     setendpagination,
   } = useContext(detacontext);
 
-  const [tableid, settableid] = useState("");
   const [qrimage, setqrimage] = useState("");
+  const [tableid, settableid] = useState("");
+  const [tableCode, settableCode] = useState("");
+  const [location, setlocation] = useState("");
   const [listoftable, setlistoftable] = useState([]);
-  const [listoftabledescription, setlistoftabledescription] = useState([]);
   const [tableNumber, settableNumber] = useState(0);
   const [chairs, setchairs] = useState(0);
   const [sectionNumber, setsectionNumber] = useState();
-  const [tabledesc, settabledesc] = useState("");
   const [isValid, setisValid] = useState();
 
   // Function to create a new table
   const createTable = async (e) => {
     e.preventDefault();
-    try {
-      if (!token) {
-        // Handle case where token is not available
+    if (!token) {
+      // Handle case where token is not available
         toast.error("رجاء تسجيل الدخول مره اخري");
         throw new Error("must login");
       }
-      // Prepare table data
+      const generateTableCode = () => {
+        return [...Array(20)]
+          .map(() =>
+            Math.random().toString(36).charAt(2)
+          )
+          .join(''); 
+      };
+    
+      try {
+      const tableCode = generateTableCode();
       const tableData = {
-        description: tabledesc,
         tableNumber,
         chairs,
         sectionNumber,
+        location,
+        tableCode,
         isValid,
       };
 
@@ -97,7 +106,13 @@ const Tables = () => {
       }
       const response = await axios.put(
         `${apiUrl}/api/table/${tableid}`,
-        { description: tabledesc, tableNumber, chairs, sectionNumber, isValid },
+        {         
+          tableNumber,
+          chairs,
+          sectionNumber,
+          location,
+          isValid,
+   },
         config
       );
       console.log(response.data);
@@ -107,7 +122,7 @@ const Tables = () => {
     }
   };
   // Function to create QR code for the table URL
-  const createQR = async (e) => {
+  const createQR = async (e, tableCode) => {
     e.preventDefault();
     if (!token) {
       // Handle case where token is not available
@@ -115,7 +130,7 @@ const Tables = () => {
       return;
     }
     try {
-      const URL = `https://${window.location.hostname}/${tableid}`;
+      const URL = `https://${window.location.hostname}/${tableCode}`;
       const response = await axios.post(
         apiUrl + "/api/table/qr",
         { URL },
@@ -132,6 +147,42 @@ const Tables = () => {
   };
 
   // Function to create web QR code
+  const changeCode = async (e, tableid) => {
+    e.preventDefault();
+    if (!token) {
+      // Handle case where token is not available
+      toast.error("رجاء تسجيل الدخول مره اخري");
+      return;
+    }
+  
+    const generateTableCode = () => {
+      return [...Array(20)]
+        .map(() =>
+          Math.random().toString(36).charAt(2)
+        )
+        .join(''); 
+    };
+  
+    try {
+      const tableCode = generateTableCode();
+      const response = await axios.put(
+        `${apiUrl}/api/table/${tableid}`,
+        { tableCode },
+        config
+      );  
+      toast.success("تم تغير كود الطاوله بنجاح!", {
+        position: toast.POSITION.TOP_CENTER,
+        autoClose: 3000,
+      });
+    } catch (error) {
+      console.error("حدث خطأ أثناء إنشاء كود الطاوله", error);
+      toast.error("حدث خطأ أثناء إنشاء كود الطاوله!", {
+        position: toast.POSITION.TOP_CENTER,
+        autoClose: 5000,
+      });
+    }
+  };
+  
   const createwebQR = async (e) => {
     e.preventDefault();
     if (!token) {
@@ -174,11 +225,6 @@ const Tables = () => {
       const response = await axios.get(apiUrl + "/api/table");
       const tables = response.data;
       setlistoftable(tables);
-      const descriptions = tables.map((table) => table.description);
-      setlistoftabledescription((prevDescription) => [
-        ...prevDescription,
-        ...descriptions,
-      ]);
     } catch (error) {
       console.error("Error getting all tables:", error);
     }
@@ -391,11 +437,12 @@ const Tables = () => {
                 </th>
                 <th>م</th>
                 <th>رقم الطاولة</th>
-                <th>الوصف</th>
                 <th>عدد المقاعد</th>
                 <th>السكشن</th>
+                <th>المكان</th>
+                <th>الحاله</th>
                 <th>متاح</th>
-                {/* <th>الحجز</th> */}
+                <th>تغير الكود</th>
                 <th>QR</th>
                 <th>اجراءات</th>
               </tr>
@@ -419,12 +466,16 @@ const Tables = () => {
                       </td>
                       <td>{i + 1}</td>
                       <td>{table.tableNumber}</td>
-                      <td>{table.description}</td>
                       <td>{table.chairs}</td>
                       <td>{table.sectionNumber}</td>
+                      <td>{table.location}</td>
+                      <td>{table.status}</td>
                       <td>{table.isValid ? "متاح" : "غير متاح"}</td>
-
-                      {/* <td>{table.reservation ? "Reserved" : "Unreserved"}</td> */}
+                      <td><button onClick={(e)=>changeCode(e, table._id)}>
+                        تغير الكود
+                        </button>
+                        </td>
+                      <td>{table.tableCode}</td>
                       <td>
                         <a
                           href="#qrTableModal"
@@ -454,7 +505,8 @@ const Tables = () => {
                             settableid(table._id);
                             settableNumber(table.tableNumber);
                             setchairs(table.chairs);
-                            settabledesc(table.description);
+                            setlocation(table.location);
+                            setisValid(table.isValid);
                           }}
                         >
                           <i
@@ -610,12 +662,38 @@ const Tables = () => {
                 </div>
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
-                    الوصف
+                    المكان
+                  </label>
+                  <input type="text"
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    required
+                    onChange={(e) => setlocation(e.target.value)}
+                  ></input>
+                </div>
+                <div className="form-group col-12 col-md-6">
+                    <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                      متاح
+                    </label>
+                    <select
+                      className="form-control border-primary m-0 p-2 h-auto"
+                      name="category"
+                      id="category"
+                      form="carform"
+                      onChange={(e) => setisValid(e.target.value)}
+                    >
+                      <option value="">اختر</option>
+                      <option value={true}>متاح</option>
+                      <option value={false}>غير متاح</option>
+                    </select>
+                  </div>
+                <div className="form-group col-12 col-md-6">
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    ملاحظات
                   </label>
                   <textarea
                     className="form-control border-primary m-0 p-2 h-auto"
                     required
-                    onChange={(e) => settabledesc(e.target.value)}
+                    onChange={(e) => setnotes(e.target.value)}
                   ></textarea>
                 </div>
               </div>
@@ -671,11 +749,7 @@ const Tables = () => {
                     </label>
                     <input
                       type="Number"
-                      defaultValue={
-                        listoftable.length > 0
-                          ? listoftable[listoftable.length - 1].tableNumber
-                          : ""
-                      }
+                      defaultValue={tableNumber}
                       className="form-control border-primary m-0 p-2 h-auto"
                       required
                       onChange={(e) => settableNumber(e.target.value)}
@@ -687,13 +761,7 @@ const Tables = () => {
                     </label>
                     <input
                       type="Number"
-                      defaultValue={
-                        listoftable.length > 0
-                          ? listoftable.find(
-                              (table, i) => table._id === tableid
-                            ).chairs
-                          : ""
-                      }
+                      defaultValue={chairs}
                       className="form-control border-primary m-0 p-2 h-auto"
                       required
                       onChange={(e) => setchairs(e.target.value)}
@@ -701,19 +769,13 @@ const Tables = () => {
                   </div>
                   <div className="form-group col-12 col-md-6">
                     <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
-                      الوصف
+                      المكان
                     </label>
                     <textarea
-                      defaultValue={
-                        listoftable.length > 0
-                          ? listoftable.find(
-                              (table, i) => table._id === tableid
-                            ).description
-                          : ""
-                      }
+                      defaultValue={location}
                       className="form-control border-primary m-0 p-2 h-auto"
                       required
-                      onChange={(e) => settabledesc(e.target.value)}
+                      onChange={(e) => setlocation(e.target.value)}
                     ></textarea>
                   </div>
                   <div className="form-group col-12 col-md-6">

@@ -1,112 +1,191 @@
-const QRCode = require('qrcode');
-const TableModel = require('../models/Table.model');
+const QRCode = require("qrcode");
+const TableModel = require("../models/Table.model");
 
-
+// Create a new table
 const createTable = async (req, res) => {
-    const { tableNumber, description, chairs, sectionNumber } = req.body;
+  const {
+    tableNumber,
+    tableCode,
+    chairs,
+    sectionNumber,
+    isValid,
+    status,
+    location,
+    notes,
+  } = req.body;
+  const createdBy = req.employee.id;
+  try {
+    // Create a new table document in the database
+    const tableCreated = await TableModel.create({
+      tableNumber,
+      tableCode,
+      chairs,
+      sectionNumber,
+      isValid,
+      status,
+      location,
+      notes,
+      createdBy,
+    });
 
-    try {
-        // Create a new table document in the database
-        const tableCreated = await TableModel.create({ tableNumber, description, chairs, sectionNumber });
-        return res.status(200).json({ message: "Table created successfully", data: tableCreated });
-    } catch (err) {
-        // Handle and return error
-        return res.status(400).json({ message: "Error creating table", err });
-    }
+    return res.status(201).json({
+      message: "Table created successfully",
+      data: tableCreated,
+    });
+  } catch (err) {
+    console.error("Error creating table:", err.message);
+    return res.status(400).json({
+      message: "Error creating table",
+      error: err.message,
+    });
+  }
 };
 
-
+// Generate a QR code for a table
 const createQR = async (req, res) => {
-    const { URL } = req.body;
+  const { URL } = req.body;
 
-    try {
-        // Generate QR code as a data URL
-        const QR = await QRCode.toDataURL(URL);
-        return res.status(200).json({ QRCode: QR });
-    } catch (err) {
-        // Handle and return error
-        return res.status(400).json({ message: "Error generating QR code", err });
-    }
+  try {
+    const QR = await QRCode.toDataURL(URL);
+    return res.status(200).json({ QRCode: QR });
+  } catch (err) {
+    console.error("Error generating QR code:", err.message);
+    return res.status(400).json({
+      message: "Error generating QR code",
+      error: err.message,
+    });
+  }
 };
 
-
+// Retrieve all tables
 const showAllTables = async (_req, res) => {
-    try {
-        // Find all table documents in the database
-        const allTables = await TableModel.find();
-        return res.status(200).json(allTables);
-    } catch (error) {
-        // Handle and return error
-        console.error("Error fetching all tables:", error);
-        return res.status(400).json({ message: "Error fetching tables", error });
-    }
+  try {
+    const allTables = await TableModel.find()
+      .populate("createdBy", "fullname username") // Include creator details
+      .populate("updatedBy", "fullname username"); // Include updater details
+
+    return res.status(200).json({
+      message: "Tables retrieved successfully",
+      data: allTables,
+    });
+  } catch (error) {
+    console.error("Error fetching all tables:", error.message);
+    return res.status(500).json({
+      message: "Error fetching tables",
+      error: error.message,
+    });
+  }
 };
 
-
+// Retrieve a specific table by ID
 const showOneTable = async (req, res) => {
-    const id = req.params.tableid;
+  const id = req.params.tableid;
 
-    try {
-        // Find a table document by ID
-        const oneTable = await TableModel.findById(id);
-        if (!oneTable) return res.status(404).json({ message: "Table does not exist" });
-        return res.status(200).json(oneTable);
-    } catch (err) {
-        // Handle and return error
-        console.error("Error fetching table:", err);
-        return res.status(500).json({ message: "Internal Server Error", err });
+  try {
+    const oneTable = await TableModel.findById(id)
+      .populate("createdBy", "fullname username")
+      .populate("updatedBy", "fullname username");
+
+    if (!oneTable) {
+      return res.status(404).json({ message: "Table not found" });
     }
+
+    return res.status(200).json({
+      message: "Table retrieved successfully",
+      data: oneTable,
+    });
+  } catch (err) {
+    console.error("Error fetching table:", err.message);
+    return res.status(500).json({
+      message: "Error fetching table",
+      error: err.message,
+    });
+  }
 };
 
-
+// Update a table by ID
 const updateTable = async (req, res) => {
-    const id = req.params.tableid;
-    const { tableNumber, description, chairs, sectionNumber, isValid } = req.body;
+  const id = req.params.tableid;
+  const updatedBy = req.employee.id;
 
-    try {
-        // Find and update the table document by ID
-        const updatedTable = await TableModel.findByIdAndUpdate(
-            { _id: id },
-            { $set: { tableNumber, description, chairs, sectionNumber, isValid } },
-            { new: true }
-        ).exec();
+  const {
+    tableNumber,
+    tableCode,
+    chairs,
+    sectionNumber,
+    isValid,
+    status,
+    location,
+    notes,
+  } = req.body;
 
-        if (!updatedTable) {
-            return res.status(404).json({ message: "Table not found" });
-        } else {
-            return res.status(200).json(updatedTable);
-        }
-    } catch (err) {
-        // Handle and return error
-        console.error("Invalid request body:", err);
-        return res.status(400).json({ message: 'Invalid request body', err });
+  try {
+    const updatedTable = await TableModel.findByIdAndUpdate(
+      id,
+      {
+        $set: {
+          tableNumber,
+          tableCode,
+          chairs,
+          sectionNumber,
+          isValid,
+          status,
+          location,
+          notes,
+          updatedBy,
+        },
+      },
+      { new: true } // Return the updated document
+    ).exec();
+
+    if (!updatedTable) {
+      return res.status(404).json({ message: "Table not found" });
     }
+
+    return res.status(200).json({
+      message: "Table updated successfully",
+      data: updatedTable,
+    });
+  } catch (err) {
+    console.error("Error updating table:", err.message);
+    return res.status(400).json({
+      message: "Error updating table",
+      error: err.message,
+    });
+  }
 };
 
-
+// Delete a table by ID
 const deleteTable = async (req, res) => {
-    const id = req.params.tableid;
+  const id = req.params.tableid;
 
-    try {
-        // Find and delete the table document by ID
-        const deletedTable = await TableModel.findByIdAndDelete(id).exec();
-        if (deletedTable) {
-            return res.status(200).json({ message: "Table deleted successfully" });
-        } else {
-            return res.status(404).json({ message: "Table not found or already deleted" });
-        }
-    } catch (error) {
-        // Handle and return error
-        console.error("Error deleting table:", error);
-        return res.status(500).json({ message: "Server Error: Unable to process your request at this time", error });
+  try {
+    const deletedTable = await TableModel.findByIdAndDelete(id).exec();
+
+    if (!deletedTable) {
+      return res.status(404).json({
+        message: "Table not found or already deleted",
+      });
     }
+
+    return res.status(200).json({
+      message: "Table deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting table:", error.message);
+    return res.status(500).json({
+      message: "Error deleting table",
+      error: error.message,
+    });
+  }
 };
 
+// Export all controller functions
 module.exports = {
-    createTable,
-    createQR,
-    showAllTables,
-    showOneTable,
-    updateTable,
-    deleteTable
+  createTable,
+  createQR,
+  showAllTables,
+  showOneTable,
+  updateTable,
+  deleteTable,
 };

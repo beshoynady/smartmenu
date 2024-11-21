@@ -17,16 +17,23 @@ const TableSchema = new Schema(
                 validator: function (v) {
                     return v > 0;
                 },
-                message: '{VALUE} is not a valid table number'
-            }
+                message: '{VALUE} is not a valid table number',
+            },
         },
-        // Description of the table
-        description: {
+        // Unique Table Code
+        tableCode: {
             type: String,
+            unique:true,
             required: true,
             trim: true,
             minlength: 1,
             maxlength: 100,
+            validate: {
+                validator: function (v) {
+                    return /^[a-zA-Z0-9]+$/.test(v);
+                },
+                message: '{VALUE} is not a valid table code',
+            },
         },
         // Number of chairs at the table
         chairs: {
@@ -39,14 +46,14 @@ const TableSchema = new Schema(
                 validator: function (v) {
                     return v > 0;
                 },
-                message: '{VALUE} is not a valid number of chairs'
-            }
+                message: '{VALUE} is not a valid number of chairs',
+            },
         },
         // Whether the table is valid or not
         isValid: {
             type: Boolean,
             default: true,
-            required: true
+            required: true,
         },
         // Section number where the table is located
         sectionNumber: {
@@ -55,20 +62,39 @@ const TableSchema = new Schema(
             min: 1,
             max: 100,
         },
-        // Creation date of the table
-        createdAt: {
-            type: Date,
-            default: Date.now,
+        // Table status
+        status: {
+            type: String,
+            enum: ['Available', 'Reserved', 'Occupied', 'Cleaning', 'Maintenance'],
+            default: 'Available',
+        },
+        // Location of the table within the section
+        location: {
+            type: String,
+            trim: true,
+            minlength: 1,
+            maxlength: 100,
+        },
+        // Notes about the table
+        notes: {
+            type: String,
+            trim: true,
+            maxlength: 300,
+        },
+        // User who created the table
+        createdBy: {
+            type: Schema.Types.ObjectId,
+            ref: 'Employee',
             required: true,
         },
-        // Last update date of the table
-        updatedAt: {
-            type: Date,
-            default: Date.now,
-        }
+        // User who last updated the table
+        updatedBy: {
+            type: Schema.Types.ObjectId,
+            ref: 'Employee',
+        },
     },
     {
-        timestamps: true,
+        timestamps: true, // Automatically add createdAt and updatedAt
     }
 );
 
