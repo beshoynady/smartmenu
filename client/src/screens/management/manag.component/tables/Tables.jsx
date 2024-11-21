@@ -172,11 +172,14 @@ const Tables = () => {
         `${apiUrl}/api/table/${tableid}`,
         { tableCode },
         config
-      );  
-      toast.success("تم تغير كود الطاوله بنجاح!", {
-        position: toast.POSITION.TOP_CENTER,
-        autoClose: 3000,
-      });
+      );
+      if(response) {
+        toast.success("تم تغير كود الطاوله بنجاح!", {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: 3000,
+        });
+        getAllTable()
+      }
     } catch (error) {
       console.error("حدث خطأ أثناء إنشاء كود الطاوله", error);
       toast.error("حدث خطأ أثناء إنشاء كود الطاوله!", {
@@ -226,8 +229,11 @@ const Tables = () => {
     }
     try {
       const response = await axios.get(apiUrl + "/api/table");
-      const tables = response.data;
-      setlistoftable(tables);
+      if(response.status === 200) {
+        const tables = response.data;
+        setlistoftable(tables);
+        console.log({tables})
+      }
     } catch (error) {
       console.error("Error getting all tables:", error);
     }
