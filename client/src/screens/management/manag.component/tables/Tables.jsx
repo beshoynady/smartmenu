@@ -230,7 +230,7 @@ const Tables = () => {
     try {
       const response = await axios.get(apiUrl + "/api/table");
       if(response.status === 200) {
-        const tables = response.data;
+        const tables = response.data.data;
         setlistoftable(tables);
         console.log({tables})
       }
@@ -458,7 +458,7 @@ const Tables = () => {
               </tr>
             </thead>
             <tbody>
-              {listoftable&&listoftable.map((table, i) => {
+              {listoftable && listoftable.map((table, i) => {
                 if ((i >= startpagination) & (i < endpagination)) {
                   return (
                     <tr key={i}>
