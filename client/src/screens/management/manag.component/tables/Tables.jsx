@@ -34,6 +34,7 @@ const Tables = () => {
   const [qrimage, setqrimage] = useState("");
   const [tableid, settableid] = useState("");
   const [tableCode, settableCode] = useState("");
+  const [notes, setnotes] = useState("");
   const [location, setlocation] = useState("");
   const [listoftable, setlistoftable] = useState([]);
   const [tableNumber, settableNumber] = useState(0);
@@ -66,6 +67,7 @@ const Tables = () => {
         location,
         tableCode,
         isValid,
+        notes
       };
 
       // Send request to create table
@@ -112,6 +114,7 @@ const Tables = () => {
           sectionNumber,
           location,
           isValid,
+          notes
    },
         config
       );
