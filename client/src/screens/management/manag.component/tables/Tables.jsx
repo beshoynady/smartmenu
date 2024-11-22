@@ -481,7 +481,7 @@ const Tables = () => {
                       <td>{table.location}</td>
                       <td>{table.status}</td>
                       <td>{table.isValid ? "متاح" : "غير متاح"}</td>
-                      <td><button onClick={(e)=>changeCode(e, table._id)}>
+                      <td><button className="btn btn-success" onClick={(e)=>changeCode(e, table._id)}>
                         تغير الكود
                         </button>
                         </td>
