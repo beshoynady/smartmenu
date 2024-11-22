@@ -125,7 +125,7 @@ const Tables = () => {
     }
   };
   // Function to create QR code for the table URL
-  const createQR = async (e, tableCode) => {
+  const createQR = async (e) => {
     e.preventDefault();
     if (!token) {
       // Handle case where token is not available
@@ -494,6 +494,7 @@ const Tables = () => {
                           onClick={() => {
                             settableid(table._id);
                             settableNumber(table.tableNumber);
+                            settableCode(table.tableCode);
                             setqrimage("");
                           }}
                         >
