@@ -159,8 +159,9 @@ const POS = () => {
         `${apiUrl}/api/customer/phone/${phone}`,
         config
       );
-      const customer = response.data;
 
+      const customer = response.data;
+      
       if (customer) {
         setisClientFounded(true);
         setcustomerId(customer._id);

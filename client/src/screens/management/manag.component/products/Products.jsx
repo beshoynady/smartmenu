@@ -435,6 +435,7 @@ const Products = () => {
     if (!category) {
       getallproducts();
     }
+    getallproducts();
     const products = listofProducts.filter(
       (product) => product.category._id === category
     );
@@ -445,6 +446,7 @@ const Products = () => {
     if (!name) {
       getallproducts();
     }
+    getallproducts();
     const products = listofProducts.filter(
       (pro) => pro.name.startsWith(name) === true
     );
@@ -677,6 +679,7 @@ const Products = () => {
                 <th>الاسم</th>
                 <th>الوصف</th>
                 <th>التصنيف</th>
+                <th>قسم الاعداد</th>
                 <th>كومبو</th>
                 <th>الاحجام</th>
                 <th>الاضافات</th>
@@ -711,6 +714,7 @@ const Products = () => {
                             {product.description}
                           </td>
                           <td>{product.category.name}</td>
+                          <td>{product.preparationSection}</td>
                           <td>
                             {product.comboItems
                               ?.map(
