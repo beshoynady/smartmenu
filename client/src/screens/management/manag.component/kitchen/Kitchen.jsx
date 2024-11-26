@@ -61,7 +61,7 @@ const Kitchen = () => {
       // console.log({ kitchenOrders })
       // Set all orders state
       setAllOrders(kitchenOrders);
-      
+
       // Filter active orders based on certain conditions
       const activeOrders = kitchenOrders.filter(
         (order) =>
@@ -189,7 +189,7 @@ const Kitchen = () => {
       }
 
       setFilteredKitchenConsumptionToday([]);
-      console.log("Fetching kitchen consumption...");
+      // console.log("Fetching kitchen consumption...");
 
       const response = await axios.get(
         `${apiUrl}/api/consumption`,
@@ -207,7 +207,7 @@ const Kitchen = () => {
           }
         );
 
-        console.log({ kitchenConsumptionsToday, kitchenConsumptions });
+        // console.log({ kitchenConsumptionsToday, kitchenConsumptions });
         setFilteredKitchenConsumptionToday(kitchenConsumptionsToday);
       } else {
         console.error("Unexpected response or empty data");
