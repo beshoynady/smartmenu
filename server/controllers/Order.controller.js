@@ -113,8 +113,8 @@ const getOrder = async (req, res) => {
 const getOrders = async (req, res) => {
   try {
     const orders = await OrderModel.find()
-      .populate("products.productid", "_id name price preparationSection")
-      .populate("products.extras.extraDetails.extraId", "_id name price")
+    .populate("products.productid", "_id name price preparationSection")
+    .populate("products.extras.extraDetails.extraId", "_id name price")
       .populate("table", "_id tableNumber sectionNumber")
       .populate("user", "_id username address deliveryArea phone")
       .populate("createdBy", "_id fullname username role shift sectionNumber")
@@ -148,7 +148,7 @@ const getLimitOrders = async (req, res) => {
     const orders = await OrderModel.find()
       .sort({ createdAt: -1 })
       .limit(limit)
-      .populate("products.productid", "_id name price")
+      .populate("products.productid", "_id name price preparationSection")
       .populate("products.extras.extraDetails.extraId", "_id name price")
       .populate("table", "_id tableNumber sectionNumber")
       .populate("user", "_id username address deliveryArea phone")
