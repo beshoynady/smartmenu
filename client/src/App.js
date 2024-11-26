@@ -19,7 +19,9 @@ const ManagerDash = React.lazy(() =>
   import("./screens/management/manag.component/managerdash/ManagerDash")
 );
 const ManagerDashBoard = React.lazy(() =>
-  import("./screens/management/manag.component/managerdash/ManagerDashBoard.jsx")
+  import(
+    "./screens/management/manag.component/managerdash/ManagerDashBoard.jsx"
+  )
 );
 const Info = React.lazy(() =>
   import("./screens/management/manag.component/setting/info")
@@ -450,7 +452,6 @@ function App() {
       // You can add additional error handling logic here, such as displaying an error message to the user.
     }
   };
-
 
   // ++++++++++ order ++++++++++++
   const [allOrders, setallOrders] = useState([]);
@@ -1027,16 +1028,13 @@ function App() {
     }
   };
 
-
-  const createSerial = ()=>{
+  const createSerial = () => {
     const serial =
-          allOrders && allOrders.length > 0
-            ? String(
-                Number(allOrders[0].serial) + 1
-              ).padStart(6, "0")
-            : "000001";
-    return serial        
-  }
+      allOrders && allOrders.length > 0
+        ? String(Number(allOrders[0].serial) + 1).padStart(6, "0")
+        : "000001";
+    return serial;
+  };
 
   const createDeliveryOrderByClient = async (
     userId,
@@ -1051,8 +1049,7 @@ function App() {
       const userOrders =
         allOrders &&
         allOrders.filter((order) => order.user && order.user?._id === userId);
-      const lastUserOrder =
-        userOrders.length > 0 ? userOrders[0] : null;
+      const lastUserOrder = userOrders.length > 0 ? userOrders[0] : null;
 
       // Check if the last user order is active
       if (lastUserOrder && lastUserOrder.isActive) {
@@ -1181,8 +1178,7 @@ function App() {
       // Find orders for the specified table
       const tableOrders =
         allOrders && allOrders.filter((order) => order.table?._id === tableId);
-      const lastTableOrder =
-        tableOrders.length > 0 ? tableOrders[0] : {};
+      const lastTableOrder = tableOrders.length > 0 ? tableOrders[0] : {};
       const lastTableOrderActive = lastTableOrder && lastTableOrder.isActive;
 
       if (lastTableOrderActive) {
@@ -1321,8 +1317,7 @@ function App() {
       const tableOrder =
         allOrders &&
         allOrders.filter((order) => order.table && order.table._id === tableId);
-      const lastTableOrder =
-        tableOrder.length > 0 ? tableOrder[0] : null;
+      const lastTableOrder = tableOrder.length > 0 ? tableOrder[0] : null;
       const lastTableOrderActive = lastTableOrder
         ? lastTableOrder.isActive
         : false;
@@ -1535,8 +1530,7 @@ function App() {
         allOrders.filter(
           (order) => order.table && order.table._id === clientId
         );
-      const lastTableOrder =
-        tableOrder.length > 0 ? tableOrder[0] : null;
+      const lastTableOrder = tableOrder.length > 0 ? tableOrder[0] : null;
       const lastTableOrderActive = lastTableOrder
         ? lastTableOrder.isActive
         : false;
@@ -1545,8 +1539,7 @@ function App() {
       const userOrder =
         allOrders &&
         allOrders.filter((order) => order.user && order.user._id === clientId);
-      const lastUserOrder =
-        userOrder.length > 0 ? userOrder[0] : null;
+      const lastUserOrder = userOrder.length > 0 ? userOrder[0] : null;
       const lastUserOrderActive = lastUserOrder
         ? lastUserOrder.isActive
         : false;
@@ -1790,8 +1783,6 @@ function App() {
     // calculateExtrasSubtotal(updatedProducts);
   };
 
-
-
   // Function to split the invoice and pay a portion of it
   const splitInvoice = async (e) => {
     try {
@@ -1876,17 +1867,19 @@ function App() {
   const [employeeLoginInfo, setEmployeeLoginInfo] = useState(null);
   const [clientInfo, setClientInfo] = useState({});
 
+  const [isTokenValid, setIsTokenValid] = useState(false);
+
   const getUserInfoFromToken = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
+    const userToken = localStorage.getItem("token_u");
+    const employeeToken = localStorage.getItem("token_e");
+
+    if (!userToken && !employeeToken) {
+      toast.error("رجاء تسجيل الدخول مره أخرى");
+      setIsTokenValid(false);
       return;
     }
-    // setisLoading(true)
-    try {
-      const userToken = localStorage.getItem("token_u");
-      const employeeToken = localStorage.getItem("token_e");
 
+    try {
       let decodedToken = null;
 
       if (employeeToken) {
@@ -1898,6 +1891,7 @@ function App() {
       if (userToken) {
         decodedToken = jwt_decode(userToken);
         setUserLoginInfo(decodedToken);
+
         if (decodedToken) {
           const userId = decodedToken.userinfo.id;
           if (userId) {
@@ -1909,14 +1903,11 @@ function App() {
         }
       }
 
-      if (!employeeToken && !userToken) {
-        setUserLoginInfo(null);
-        setEmployeeLoginInfo(null);
-      }
+      setIsTokenValid(true);
     } catch (error) {
-      console.error("Error fetching user info from token:", error);
-    } finally {
-      setisLoading(false);
+      console.error("Error verifying token:", error);
+      toast.error("خطأ أثناء التحقق من التوكن. يرجى تسجيل الدخول مرة أخرى.");
+      setIsTokenValid(false);
     }
   };
 
@@ -2007,7 +1998,7 @@ function App() {
   const [allReservations, setallReservations] = useState([]);
   const getAllReservations = async () => {
     try {
-      const response = await axios.get(`${apiUrl}/api/reservation`,config);
+      const response = await axios.get(`${apiUrl}/api/reservation`, config);
       if (response.data) {
         setallReservations(response.data);
       } else {
@@ -2183,15 +2174,11 @@ function App() {
     }
   };
 
-
   const fetchData = async () => {
-    setisLoading(true);
     try {
-      await getUserInfoFromToken();
-      await getRestaurant();
-
-      // Fetch all data in parallel
+      setisLoading(true);
       await Promise.all([
+        getRestaurant(),
         getAllEmployees(),
         getAllProducts(),
         getAllMenuCategories(),
@@ -2202,20 +2189,32 @@ function App() {
       ]);
     } catch (error) {
       console.error("Error fetching data:", error);
-      toast.error("Error fetching data");
+      toast.error("خطأ أثناء جلب البيانات");
     } finally {
       setisLoading(false);
     }
   };
 
+  // عند التحقق من التوكن
   useEffect(() => {
-    getAllOrders()
-  }, [isRefresh])
-  
+    const initialize = async () => {
+      setisLoading(true);
+      await getUserInfoFromToken();
+      setisLoading(false);
+    };
 
+    initialize();
+  }, []);
+
+  // جلب البيانات عند التأكد من صلاحية التوكن
   useEffect(() => {
-    fetchData();
+    if (isTokenValid) {
+      fetchData();
+    }
+  }, [isTokenValid]);
 
+  // إدارة تحديث الطلبات والإشعارات
+  useEffect(() => {
     const handleConnectError = (error) => {
       console.error("Socket connection error:", error);
       toast.error("هناك مشكلة في نظام الإشعارات");
@@ -2236,13 +2235,12 @@ function App() {
     };
   }, []);
 
-  // useEffect(() => {
-  //   Payment_pending_orders()
-  // }, [allOrders])
-
+  // تحديث التكلفة عند تغير الحالة
   useEffect(() => {
-    calculateOrderCost();
-    getAllOrders();
+    if (isTokenValid) {
+      calculateOrderCost();
+      getAllOrders();
+    }
   }, [count, itemsInCart, productOrderToUpdate, isLogin]);
 
   return (
@@ -2377,7 +2375,7 @@ function App() {
         filterByDateRange,
         filterByTime,
         isRefresh,
-       setisRefresh
+        setisRefresh,
       }}
     >
       {isLoading && <LoadingPage />}
@@ -2417,7 +2415,7 @@ function App() {
               path="managerdashboard"
               element={
                 <Suspense fallback={<LoadingPage />}>
-                  <ManagerDashBoard/>
+                  <ManagerDashBoard />
                 </Suspense>
               }
             />
@@ -2545,7 +2543,7 @@ function App() {
               path="bar"
               element={
                 <Suspense fallback={<LoadingPage />}>
-                  <Bar/>
+                  <Bar />
                 </Suspense>
               }
             />
