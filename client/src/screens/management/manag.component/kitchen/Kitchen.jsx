@@ -656,7 +656,7 @@ const Kitchen = () => {
       <div className="col-12 d-flex flex-wrap justify-content-around align-items-start">
         {orderactive &&
           orderactive.map((order, i) => {
-            if (order.products.filter((product) => product.isDone === false && product.preparationSection ==='Kitchen').length > 0) {
+            if (order.products.filter((product) => product.isDone === false && product.productid?.preparationSection ==='Kitchen').length > 0) {
               return (
                 <div className="col-lg-3 col-md-4 col-sm-6 col-12 mb-4" key={i}>
                   <div
