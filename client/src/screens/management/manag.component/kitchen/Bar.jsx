@@ -700,7 +700,7 @@ const Bar = () => {
                     </div>
                     <ul className="list-group list-group-flush">
                       {order.products
-                        .filter((product) => product.isDone === false && product.preparationSection ==='Bar')
+                        .filter((product) => product.isDone === false && product.productid?.preparationSection ==='Bar')
                         .map((product, i) => {
                           return (
                             <>
