@@ -61,7 +61,7 @@ const Kitchen = () => {
       // console.log({ kitchenOrders })
       // Set all orders state
       setAllOrders(kitchenOrders);
-
+      
       // Filter active orders based on certain conditions
       const activeOrders = kitchenOrders.filter(
         (order) =>
@@ -70,7 +70,7 @@ const Kitchen = () => {
             order.status === "Preparing" ||
             order.status === "Prepared")
       );
-
+      console.log({activeOrders})
       // Set active orders state
       setOrderActive(activeOrders);
       const getAllRecipe = await axios.get(`${apiUrl}/api/recipe`, config);
