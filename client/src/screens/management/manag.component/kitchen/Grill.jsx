@@ -701,7 +701,7 @@ const Grill = () => {
                     </div>
                     <ul className="list-group list-group-flush">
                       {order.products
-                        .filter((product) => product.isDone === false && product.productid?.preparationSection ==='Bar')
+                        .filter((product) => product.isDone === false && product.productid?.preparationSection ==='Grill')
                         .map((product, i) => {
                           return (
                             <>
