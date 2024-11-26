@@ -806,9 +806,6 @@ const Kitchen = () => {
               );
 
 
-
-
-
             } else if (
               order.status === "Prepared" &&
               order.products.filter(

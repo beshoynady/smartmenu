@@ -651,8 +651,6 @@ const Grill = () => {
 
 
 
-
-
       <div className="col-12 d-flex flex-wrap justify-content-around align-items-start">
         {orderactive &&
           orderactive.map((order, i) => {
