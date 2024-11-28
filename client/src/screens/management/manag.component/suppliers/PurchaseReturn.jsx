@@ -24,7 +24,7 @@ const PurchaseReturn = () => {
     setstartpagination, setendpagination } = useContext(detacontext)
 
     const purchaseReturnPermission = permissionsList?.filter(
-      (permission) => permission.resource === "Purchases Returns"
+      (permission) => permission.resource === "Purchase Returns"
     )[0];
 
 
