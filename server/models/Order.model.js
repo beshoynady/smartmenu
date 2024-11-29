@@ -242,12 +242,6 @@ const OrderSchema = new mongoose.Schema({
     default: null
   },
 
-  // User associated with the order
-  user: {
-    type: ObjectId,
-    ref: 'User',
-    default: null
-  },
   // Created by employee
   createdBy: {
     type: ObjectId,
@@ -273,6 +267,12 @@ const OrderSchema = new mongoose.Schema({
     default: null
   },
 
+  // User associated with the order
+  user: {
+    type: ObjectId,
+    ref: 'User',
+    default: null
+  },
   // Customer name
   name: {
     type: String,
@@ -305,8 +305,31 @@ const OrderSchema = new mongoose.Schema({
     type: String,
     default: 'Pending',
     required: true,
-    enum: ['Pending', 'Approved', 'Preparing', 'Prepared', 'On the way', 'Delivered', 'Cancelled'],
+    enum: ['Pending', 'Approved', 'On the way', 'Delivered', 'Cancelled'],
   },
+
+  // preparationStatus of the order
+  preparationStatus: {
+    kitchen: {
+      type: String,
+      default: 'Pending',
+      required: true,
+      enum: ['Pending', 'Preparing', 'Prepared', 'Cancelled'],
+    },
+    bar: {
+      type: String,
+      default: 'Pending',
+      required: true,
+      enum: ['Pending', 'Preparing', 'Prepared', 'Cancelled'],
+    },
+    grill: {
+      type: String,
+      default: 'Pending',
+      required: true,
+      enum: ['Pending', 'Preparing', 'Prepared', 'Cancelled'],
+    },
+  },
+
   // Type of order (internal, delivery, takeout)
   orderType: {
     type: String,

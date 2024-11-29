@@ -19,7 +19,8 @@ const Kitchen = () => {
     },
   };
 
-  const { formatDate, formatTime , isRefresh, setisRefresh  } = useContext(detacontext);
+  const { formatDate, formatTime, isRefresh, setisRefresh } =
+    useContext(detacontext);
 
   const start = useRef();
   const ready = useRef();
@@ -66,11 +67,11 @@ const Kitchen = () => {
       const activeOrders = kitchenOrders.filter(
         (order) =>
           order.isActive &&
-          (order.status === "Approved" ||
-            order.status === "Preparing" ||
-            order.status === "Prepared")
+          order.status === "Approved" &&
+          (order.preparationStatus.Kitchen === "Preparing" ||
+            order.preparationStatus.Kitchen === "Prepared")
       );
-      console.log({activeOrders})
+      console.log({ activeOrders });
       // Set active orders state
       setOrderActive(activeOrders);
       const getAllRecipe = await axios.get(`${apiUrl}/api/recipe`, config);
@@ -99,27 +100,28 @@ const Kitchen = () => {
               // console.log({ productIngredients })
 
               // Update consumptionOrderActive
-              productIngredients&&productIngredients.forEach((item) => {
-                const existingItemIndex =
-                  updatedConsumptionOrderActive.findIndex(
-                    (con) => con.itemId?._id === item.itemId?._id
-                  );
-                const amount = item.amount * product.quantity;
+              productIngredients &&
+                productIngredients.forEach((item) => {
+                  const existingItemIndex =
+                    updatedConsumptionOrderActive.findIndex(
+                      (con) => con.itemId?._id === item.itemId?._id
+                    );
+                  const amount = item.amount * product.quantity;
 
-                if (existingItemIndex !== -1) {
-                  // If the item already exists, update the amount
-                  updatedConsumptionOrderActive[existingItemIndex].amount +=
-                    amount;
-                } else {
-                  // If the item does not exist, add it to the array
-                  updatedConsumptionOrderActive.push({
-                    itemId: item.itemId,
-                    name: item.name,
-                    unit: item.unit,
-                    amount,
-                  });
-                }
-              });
+                  if (existingItemIndex !== -1) {
+                    // If the item already exists, update the amount
+                    updatedConsumptionOrderActive[existingItemIndex].amount +=
+                      amount;
+                  } else {
+                    // If the item does not exist, add it to the array
+                    updatedConsumptionOrderActive.push({
+                      itemId: item.itemId,
+                      name: item.name,
+                      unit: item.unit,
+                      amount,
+                    });
+                  }
+                });
 
               product.extras &&
                 product.extras.map((productextra) => {
@@ -170,10 +172,6 @@ const Kitchen = () => {
     }
   };
 
-
-
-
-
   const today = formatDate(new Date());
   const [date, setDate] = useState(today);
   const [allKitchenConsumption, setAllKitchenConsumption] = useState([]);
@@ -191,10 +189,7 @@ const Kitchen = () => {
       setFilteredKitchenConsumptionToday([]);
       // console.log("Fetching kitchen consumption...");
 
-      const response = await axios.get(
-        `${apiUrl}/api/consumption`,
-        config
-      );
+      const response = await axios.get(`${apiUrl}/api/consumption`, config);
 
       if (response && response.data) {
         const kitchenConsumptions = response.data.data || [];
@@ -227,11 +222,10 @@ const Kitchen = () => {
         toast.error("رجاء تسجيل الدخول مره اخري");
         return;
       }
-      const status = "Preparing";
-      const orderData = { status };
+      const preparationStatus = { "preparationStatus.kitchen": "Preparing" };
       const response = await axios.put(
         `${apiUrl}/api/order/${id}`,
-        orderData,
+        preparationStatus,
         config
       );
       if (response.status === 200) {
@@ -256,7 +250,10 @@ const Kitchen = () => {
     try {
       // Fetch order data by ID
       const orderData = await axios.get(`${apiUrl}/api/order/${id}`);
-      const products = await orderData.data.products;
+      const orderProduct = orderData.data.products;
+      const products = orderProduct.filter(
+        (product) => product.preparationSection === "Kitchen"
+      );
 
       const fetchKitchenConsumption = await axios.get(
         apiUrl + "/api/consumption",
@@ -411,66 +408,65 @@ const Kitchen = () => {
         });
 
       // console.log({ totalConsumptionOrder })
-      totalConsumptionOrder&&totalConsumptionOrder.map(async (item) => {
-        let kitconsumption = await kitchenConsumptionsToday.find(
-          (kitItem) => kitItem.stockItemId._id === item.itemId?._id
-        );
-        try {
-          const consumptionQuantity =
-            kitconsumption.consumptionQuantity + item.amount;
-          const bookBalance = kitconsumption.bookBalance - item.amount;
-          console.log({ productsProduced: item.productsProduced });
-          // Update kitchen consumption data
-          const update = await axios.put(
-            `${apiUrl}/api/consumption/${kitconsumption._id}`,
-            {
-              consumptionQuantity,
-              bookBalance,
-              productsProduced: item.productsProduced,
-            },
-            config
+      totalConsumptionOrder &&
+        totalConsumptionOrder.map(async (item) => {
+          let kitconsumption = await kitchenConsumptionsToday.find(
+            (kitItem) => kitItem.stockItemId._id === item.itemId?._id
           );
-          // console.log({ update: update });
-        } catch (error) {
-          console.log({ error: error });
-        }
-      });
+          try {
+            const consumptionQuantity =
+              kitconsumption.consumptionQuantity + item.amount;
+            const bookBalance = kitconsumption.bookBalance - item.amount;
+            console.log({ productsProduced: item.productsProduced });
+            // Update kitchen consumption data
+            const update = await axios.put(
+              `${apiUrl}/api/consumption/${kitconsumption._id}`,
+              {
+                consumptionQuantity,
+                bookBalance,
+                productsProduced: item.productsProduced,
+              },
+              config
+            );
+            // console.log({ update: update });
+          } catch (error) {
+            console.log({ error: error });
+          }
+        });
 
       // Perform other operations if needed after the loop completes
       // Update order status or perform other tasks
 
-      const status = "Prepared";
-      const updateproducts = products&&products.map((prod) => ({
-        ...prod,
-        isDone: true,
-      }));
+      const preparationStatus = { "preparationStatus.kitchen": "Prepared" };
 
-
+      const updateproducts =
+        products &&
+        products.map((prod) => ({
+          ...prod,
+          isDone: true,
+        }));
 
       if (type === "Internal") {
         const waiter = await specifiedWaiter(id);
         await axios.put(
           `${apiUrl}/api/order/${id}`,
-          { products: updateproducts, status, waiter },
+          { products: updateproducts, preparationStatus, waiter },
           config
         );
-        kitchenSocket.emit("orderready", `اورد جاهز -${waiter}`);
-        
+        kitchenSocket.emit("orderready", `اورد جاهز في المطبخ -${waiter}`);
       } else {
         await axios.put(
           `${apiUrl}/api/order/${id}`,
-          { products: updateproducts, status },
+          { products: updateproducts, preparationStatus },
           config
         );
-        kitchenSocket.emit("orderready", `اورد جاهز`);
+        kitchenSocket.emit("orderready", `اورد جاهز في المطبخ`);
       }
-
 
       // Set all orders state
       getAllOrders();
       getKitchenConsumption();
       toast.success("تم تجهيز الاوردر !");
-
     } catch (error) {
       console.log(error);
       toast.error(
@@ -580,8 +576,6 @@ const Kitchen = () => {
     return minutesPassed;
   };
 
-
-
   // Fetches orders and active waiters on initial render
   useEffect(() => {
     getAllRecipe();
@@ -597,7 +591,6 @@ const Kitchen = () => {
     getKitchenConsumption();
   }, [isRefresh]);
 
-
   return (
     <div
       className="w-100 h-100 d-flex flex-wrap align-content-start justify-content-around align-items-start  overflowY-auto bg-transparent p-1"
@@ -608,7 +601,8 @@ const Kitchen = () => {
         style={{ borderBottom: "1px solid red" }}
       >
         {orderactive &&
-          consumptionOrderActive&&consumptionOrderActive.map((item, index) => (
+          consumptionOrderActive &&
+          consumptionOrderActive.map((item, index) => (
             <div
               className="card bg-primary text-white"
               style={{ height: "100px", width: "130px" }}
@@ -649,22 +643,26 @@ const Kitchen = () => {
           ))}
       </div>
 
-
-
-
-
       <div className="col-12 d-flex flex-wrap justify-content-around align-items-start">
         {orderactive &&
           orderactive.map((order, i) => {
-            if (order.products.filter((product) => product.isDone === false && product.productid?.preparationSection ==='Kitchen').length > 0) {
+            if (
+              order.products.filter(
+                (product) =>
+                  product.isDone === false &&
+                  product.productid?.preparationSection === "Kitchen"
+              ).length > 0
+            ) {
               return (
                 <div className="col-lg-3 col-md-4 col-sm-6 col-12 mb-4" key={i}>
                   <div
                     className="card text-white bg-success"
                     style={{ width: "260px" }}
                   >
-                    <div className="card-body text-right d-flex justify-content-between p-0 m-1"
-                    style={{fontSize:'14px', fontWeight:'500'}}>
+                    <div
+                      className="card-body text-right d-flex justify-content-between p-0 m-1"
+                      style={{ fontSize: "14px", fontWeight: "500" }}
+                    >
                       <div className="col-6 p-0">
                         <p className="card-text">
                           {" "}
@@ -703,7 +701,11 @@ const Kitchen = () => {
                     </div>
                     <ul className="list-group list-group-flush">
                       {order.products
-                        .filter((product) => product.isDone === false && product.productid?.preparationSection ==='Kitchen')
+                        .filter(
+                          (product) =>
+                            product.isDone === false &&
+                            product.productid?.preparationSection === "Kitchen"
+                        )
                         .map((product, i) => {
                           return (
                             <>
@@ -804,8 +806,6 @@ const Kitchen = () => {
                   </div>
                 </div>
               );
-
-
             } else if (
               order.status === "Prepared" &&
               order.products.filter(
@@ -818,8 +818,10 @@ const Kitchen = () => {
                     className="card text-white bg-success"
                     style={{ width: "260px" }}
                   >
-                    <div className="card-body text-right d-flex justify-content-between p-0 m-1"
-                    style={{fontSize:'14px', fontWeight:'500'}}>
+                    <div
+                      className="card-body text-right d-flex justify-content-between p-0 m-1"
+                      style={{ fontSize: "14px", fontWeight: "500" }}
+                    >
                       <div className="col-6 p-0">
                         <p className="card-text">
                           {" "}

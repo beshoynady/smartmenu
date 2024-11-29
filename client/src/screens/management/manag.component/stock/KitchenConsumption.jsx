@@ -734,6 +734,7 @@ const KitchenUsegePermission =
                     })}
                   </select>
                 </div>
+                
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
                     رصيد محول
@@ -771,6 +772,7 @@ const KitchenUsegePermission =
                   />
                 </div>
               </div>
+
               <div className="modal-footer d-flex flex-nowrap align-items-center justify-content-between m-0 p-1">
                 <input
                   type="submit"

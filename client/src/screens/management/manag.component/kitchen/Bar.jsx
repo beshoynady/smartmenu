@@ -67,8 +67,8 @@ const Bar = () => {
         (order) =>
           order.isActive &&
           (order.status === "Approved" ||
-            order.status === "Preparing" ||
-            order.status === "Prepared")
+            order.preparationStatus.Bar === "Preparing" ||
+            order.preparationStatus.Bar === "Prepared")
       );
 
       // Set active orders state
@@ -227,11 +227,10 @@ const Bar = () => {
         toast.error("رجاء تسجيل الدخول مره اخري");
         return;
       }
-      const status = "Preparing";
-      const orderData = { status };
+      const preparationStatus = { "preparationStatus.Bar": "Preparing" };
       const response = await axios.put(
         `${apiUrl}/api/order/${id}`,
-        orderData,
+        preparationStatus,
         config
       );
       if (response.status === 200) {
@@ -256,7 +255,10 @@ const Bar = () => {
     try {
       // Fetch order data by ID
       const orderData = await axios.get(`${apiUrl}/api/order/${id}`);
-      const products = await orderData.data.products;
+      const orderProduct = orderData.data.products;
+      const products = orderProduct.filter(
+        (product) => product.preparationSection === "Bar"
+      );
 
       const fetchKitchenConsumption = await axios.get(
         apiUrl + "/api/consumption",
@@ -439,7 +441,8 @@ const Bar = () => {
       // Perform other operations if needed after the loop completes
       // Update order status or perform other tasks
 
-      const status = "Prepared";
+      const preparationStatus = { "preparationStatus.Bar": "Prepared" };
+
       const updateproducts = products&&products.map((prod) => ({
         ...prod,
         isDone: true,
@@ -451,7 +454,7 @@ const Bar = () => {
         const waiter = await specifiedWaiter(id);
         await axios.put(
           `${apiUrl}/api/order/${id}`,
-          { products: updateproducts, status, waiter },
+          { products: updateproducts, preparationStatus, waiter },
           config
         );
         kitchenSocket.emit("orderready", `اورد جاهز -${waiter}`);
@@ -459,7 +462,7 @@ const Bar = () => {
       } else {
         await axios.put(
           `${apiUrl}/api/order/${id}`,
-          { products: updateproducts, status },
+          { products: updateproducts, preparationStatus },
           config
         );
         kitchenSocket.emit("orderready", `اورد جاهز`);
