@@ -68,7 +68,8 @@ const Kitchen = () => {
         (order) =>
           order.isActive &&
           order.status === "Approved" &&
-          (order.preparationStatus.Kitchen === "Preparing" ||
+          (order.preparationStatus.Kitchen === "Pending" ||
+            order.preparationStatus.Kitchen === "Preparing" ||
             order.preparationStatus.Kitchen === "Prepared")
       );
       console.log({ activeOrders });

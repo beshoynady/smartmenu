@@ -66,10 +66,11 @@ const Grill = () => {
       const activeOrders = kitchenOrders.filter(
         (order) =>
           order.isActive &&
-          (order.status === "Approved" ||
-            order.preparationStatus.Grill === "Preparing" ||
-            order.preparationStatus.Grill === "Prepared")
-      );
+        order.status === "Approved" &&
+        (order.preparationStatus.Grill === "Pending" ||
+          order.preparationStatus.Grill === "Preparing" ||
+          order.preparationStatus.Grill === "Prepared")
+    );
 
       // Set active orders state
       setOrderActive(activeOrders);
