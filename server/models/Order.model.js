@@ -310,19 +310,19 @@ const OrderSchema = new mongoose.Schema({
 
   // preparationStatus of the order
   preparationStatus: {
-    kitchen: {
+    Kitchen: {
       type: String,
       default: 'Pending',
       required: true,
       enum: ['Pending', 'Preparing', 'Prepared', 'Cancelled'],
     },
-    bar: {
+    Bar: {
       type: String,
       default: 'Pending',
       required: true,
       enum: ['Pending', 'Preparing', 'Prepared', 'Cancelled'],
     },
-    grill: {
+    Grill: {
       type: String,
       default: 'Pending',
       required: true,
