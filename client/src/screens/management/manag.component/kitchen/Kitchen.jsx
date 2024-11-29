@@ -256,6 +256,7 @@ const Kitchen = () => {
       const products = orderProduct.filter(
         (product) => product.preparationSection === "Kitchen"
       );
+      console.log({ products });
 
       const fetchKitchenConsumption = await axios.get(
         apiUrl + "/api/consumption",
@@ -447,6 +448,7 @@ const Kitchen = () => {
           ...prod,
           isDone: true,
         }));
+        console.log({ updateproducts });
 
       if (type === "Internal") {
         const waiter = await specifiedWaiter(id);
