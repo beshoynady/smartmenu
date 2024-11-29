@@ -513,12 +513,20 @@ const Kitchen = () => {
         toast.error("رجاء تسجيل الدخول مره اخري");
         return;
       }
+      if (AllWaiters.length === 0) {
+        // Handle case where token is not available
+        toast.warn("قائمه الندلاء فارغه ! رجاء اعاده تحميل الصفحة و اذا ظلت المشكله ابلغ الاداره");
+        return;
+      }
       // البحث عن الطلب بالمعرف المحدد
       const getorder = allOrders.find((order) => order._id === id);
       if (!getorder) {
         throw new Error("Order not found");
       }
 
+      if (getorder.status) {
+        
+      }
       // استخراج رقم القسم من بيانات الطاولة المرتبطة بالطلب
       const tablesectionNumber =
         getorder.table && getorder.table?.sectionNumber;

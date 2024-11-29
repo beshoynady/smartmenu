@@ -337,6 +337,7 @@ const OrderSchema = new mongoose.Schema({
     default: 'Internal',
     required: true
   },
+  
   isSplit: {
     type: Boolean,
     required: true,
