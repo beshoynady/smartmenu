@@ -224,7 +224,7 @@ const Kitchen = () => {
         toast.error("رجاء تسجيل الدخول مره اخري");
         return;
       }
-      const preparationStatus = { "preparationStatus.kitchen": "Preparing" };
+      const preparationStatus = { "preparationStatus.Kitchen": "Preparing" };
       const response = await axios.put(
         `${apiUrl}/api/order/${id}`,
         preparationStatus,
@@ -439,7 +439,7 @@ const Kitchen = () => {
       // Perform other operations if needed after the loop completes
       // Update order status or perform other tasks
 
-      const preparationStatus = { "preparationStatus.kitchen": "Prepared" };
+      const preparationStatus = { "preparationStatus.Kitchen": "Prepared" };
 
       const updateproducts =
         products &&
@@ -785,7 +785,7 @@ const Kitchen = () => {
                         })}
                     </ul>
                     <div className="card-footer text-center w-100 d-flex flex-row">
-                      {order.preparationStatus.kitchen === "Preparing" ? (
+                      {order.preparationStatus.Kitchen === "Preparing" ? (
                         <button
                           className="btn w-100 btn-warning h-100 btn btn-lg"
                           onClick={() => {
@@ -809,7 +809,7 @@ const Kitchen = () => {
                 </div>
               );
             } else if (
-              order.preparationStatus.kitchen === "Prepared" &&
+              order.preparationStatus.Kitchen === "Prepared" &&
               order.products.filter(
                 (pr) => pr.isDone === true && pr.isDeleverd === false
               ).length > 0
