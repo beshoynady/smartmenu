@@ -452,6 +452,10 @@ const Grill = () => {
 
       if (type === "Internal") {
         const waiter = await specifiedWaiter(id);
+        if (!waiter) {
+          toast.warn("لا يوجد نادل متاح لتسليم الطلب. يرجى مراجعة الإدارة!");
+          return; 
+        }
         await axios.put(
           `${apiUrl}/api/order/${id}`,
           { products: updateproducts, preparationStatus, waiter },

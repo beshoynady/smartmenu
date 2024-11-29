@@ -450,6 +450,10 @@ const Kitchen = () => {
 
       if (type === "Internal") {
         const waiter = await specifiedWaiter(id);
+        if (!waiter) {
+          toast.warn("لا يوجد نادل متاح لتسليم الطلب. يرجى مراجعة الإدارة!");
+          return; 
+        }
         await axios.put(
           `${apiUrl}/api/order/${id}`,
           { products: updateproducts, preparationStatus, waiter },
@@ -525,7 +529,7 @@ const Kitchen = () => {
       }
 
       if (getorder.status) {
-        
+
       }
       // استخراج رقم القسم من بيانات الطاولة المرتبطة بالطلب
       const tablesectionNumber =
