@@ -782,7 +782,7 @@ const Grill = () => {
                         })}
                     </ul>
                     <div className="card-footer text-center w-100 d-flex flex-row">
-                      {order.status === "Preparing" ? (
+                      {order.preparationStatus.Grill === "Preparing" ? (
                         <button
                           className="btn w-100 btn-warning h-100 btn btn-lg"
                           onClick={() => {
@@ -811,7 +811,7 @@ const Grill = () => {
 
 
             } else if (
-              order.status === "Prepared" &&
+              order.preparationStatus.Grill === "Prepared" &&
               order.products.filter(
                 (pr) => pr.isDone === true && pr.isDeleverd === false
               ).length > 0

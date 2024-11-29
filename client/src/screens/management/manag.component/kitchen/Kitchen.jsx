@@ -785,7 +785,7 @@ const Kitchen = () => {
                         })}
                     </ul>
                     <div className="card-footer text-center w-100 d-flex flex-row">
-                      {order.status === "Preparing" ? (
+                      {order.preparationStatus.kitchen === "Preparing" ? (
                         <button
                           className="btn w-100 btn-warning h-100 btn btn-lg"
                           onClick={() => {
@@ -809,7 +809,7 @@ const Kitchen = () => {
                 </div>
               );
             } else if (
-              order.status === "Prepared" &&
+              order.preparationStatus.kitchen === "Prepared" &&
               order.products.filter(
                 (pr) => pr.isDone === true && pr.isDeleverd === false
               ).length > 0
