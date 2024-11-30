@@ -287,7 +287,7 @@ const Kitchen = () => {
                   (recipe) => recipe.productId._id === product.productid?._id
                 )?.ingredients || [];
 
-            console.log({ productIngredients });
+            // console.log({ productIngredients });
             // Update consumptionOrderActive
             productIngredients &&
               productIngredients.forEach((item) => {
@@ -335,7 +335,7 @@ const Kitchen = () => {
                         produced.productId === product.productid?._id
                     );
 
-                console.log({ foundProducedProduct });
+                // console.log({ foundProducedProduct });
 
                 if (!foundProducedProduct) {
                   const newProducedProduct = product.sizeId
@@ -351,7 +351,7 @@ const Kitchen = () => {
                         productionCount: product.quantity,
                         productName: product.name,
                       };
-                  console.log({ newProducedProduct });
+                  // console.log({ newProducedProduct });
                   existingItem?.productsProduced.push(newProducedProduct);
                 } else {
                   foundProducedProduct.productionCount += product.quantity;
@@ -444,10 +444,16 @@ const Kitchen = () => {
 
       const updateproducts =
         products &&
-        products.map((prod) => ({
-          ...prod,
-          isDone: true,
-        }));
+        orderProduct.map((prod) => {
+          const findProduct = orderProduct.find(product=>product.productid?._id === prod.productid._id)
+          if (findProduct) {
+            return {
+              ...prod,
+              isDone: true,
+            };
+          }
+          return prod;
+        });
         console.log({ updateproducts });
 
       if (type === "Internal") {
