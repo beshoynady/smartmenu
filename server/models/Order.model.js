@@ -305,7 +305,7 @@ const OrderSchema = new mongoose.Schema({
     type: String,
     default: 'Pending',
     required: true,
-    enum: ['Pending', 'Approved', 'On the way', 'Delivered', 'Cancelled'],
+    enum: ['Pending', 'Approved', 'Cancelled'],
   },
 
   // preparationStatus of the order
@@ -314,19 +314,19 @@ const OrderSchema = new mongoose.Schema({
       type: String,
       default: 'Pending',
       required: true,
-      enum: ['Pending', 'Preparing', 'Prepared', 'Cancelled'],
+      enum: ['Pending', 'Preparing', 'Prepared', 'On the way', 'Delivered','Cancelled'],
     },
     Bar: {
       type: String,
       default: 'Pending',
       required: true,
-      enum: ['Pending', 'Preparing', 'Prepared', 'Cancelled'],
+      enum: ['Pending', 'Preparing', 'Prepared', 'On the way', 'Delivered','Cancelled'],
     },
     Grill: {
       type: String,
       default: 'Pending',
       required: true,
-      enum: ['Pending', 'Preparing', 'Prepared', 'Cancelled'],
+      enum: ['Pending', 'Preparing', 'Prepared', 'On the way', 'Delivered','Cancelled'],
     },
   },
   // Type of order (internal, delivery, takeout)

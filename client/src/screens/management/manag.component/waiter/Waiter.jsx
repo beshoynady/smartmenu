@@ -5,7 +5,8 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 
 const Waiter = () => {
-  const { employeeLoginInfo , isRefresh, setisRefresh } = useContext(detacontext);
+  const { employeeLoginInfo, isRefresh, setisRefresh } =
+    useContext(detacontext);
 
   const apiUrl = process.env.REACT_APP_API_URL;
   const token = localStorage.getItem("token_e");
@@ -99,15 +100,37 @@ const Waiter = () => {
     }
   };
 
-  const updateOrderOnWay = async (id) => {
+  const updateOrderOnWay = async (id, products) => {
     try {
       if (!token) {
         // Handle case where token is not available
         toast.error("رجاء تسجيل الدخول مره اخري");
         return;
       }
-      const status = "On the way";
-      await axios.put(`${apiUrl}/api/order/${id}`, { status }, config);
+      const preparationSection = [];
+      products.forEach((product) => {
+        const section = product.productid?.preparationSection;
+        if (section) preparationSection.push(section);
+      });
+
+      for (const section of preparationSection) {
+        const preparationStatus = {
+          [`preparationStatus.${section}`]: "On the way",
+        };
+        try {
+          await axios.put(
+            `${apiUrl}/api/order/${id}`,
+            preparationStatus,
+            config
+          );
+        } catch (error) {
+          console.error(
+            `Error updating preparation status for section ${section}:`,
+            error
+          );
+        }
+      }
+
       fetchInternalOrders();
       fetchPendingData();
       toast.success("تم تاكيد استلام الاوردر!");
@@ -117,13 +140,13 @@ const Waiter = () => {
     }
   };
 
-  const updateOrderDelivered = async (id) => {
+  const updateOrderDelivered = async (id, products) => {
     try {
-      const orderData = await axios.get(`${apiUrl}/api/order/${id}`, config);
-      const products = orderData.data.products.map((prod) => ({
+      products.map((prod) => ({
         ...prod,
         isDeleverd: true,
       }));
+
       const status = "Delivered";
       const updateOrder = await axios.put(
         `${apiUrl}/api/order/${id}`,
@@ -133,6 +156,29 @@ const Waiter = () => {
         },
         config
       );
+      const preparationSection = [];
+      products.forEach((product) => {
+        const section = product.productid?.preparationSection;
+        if (section) preparationSection.push(section);
+      });
+
+      for (const section of preparationSection) {
+        const preparationStatus = {
+          [`preparationStatus.${section}`]: "On the way",
+        };
+        try {
+          await axios.put(
+            `${apiUrl}/api/order/${id}`,
+            preparationStatus,
+            config
+          );
+        } catch (error) {
+          console.error(
+            `Error updating preparation status for section ${section}:`,
+            error
+          );
+        }
+      }
       if (updateOrder.status === 200) {
         fetchInternalOrders();
         fetchPendingData();
@@ -413,11 +459,19 @@ const Waiter = () => {
                     })}
                 </ul>
                 <div className="card-footer text-center">
-                  {order.status === "Prepared" ? (
+                  {order.preparationStatus.Kitchen === "Prepared" ||
+                  order.preparationStatus.Grill === "Prepared" ||
+                  order.preparationStatus.Bar === "Prepared" ? (
                     <button
                       className="btn w-100 btn-warning h-100 btn btn-lg"
                       onClick={() => {
-                        updateOrderOnWay(order._id);
+                        updateOrderOnWay(
+                          order._id,
+                          order.products.filter(
+                            (pr) =>
+                              pr.isDone === true && pr.isDeleverd === false
+                          )
+                        );
                       }}
                     >
                       استلام الطلب
@@ -426,7 +480,13 @@ const Waiter = () => {
                     <button
                       className="btn w-100 btn-success h-100 btn btn-lg"
                       onClick={() => {
-                        updateOrderDelivered(order._id);
+                        updateOrderDelivered(
+                          order._id,
+                          order.products.filter(
+                            (pr) =>
+                              pr.isDone === true && pr.isDeleverd === false
+                          )
+                        );
                       }}
                     >
                       تم التسليم

@@ -19,7 +19,8 @@ const Bar = () => {
     },
   };
 
-  const { formatDate, formatTime , isRefresh, setisRefresh  } = useContext(detacontext);
+  const { formatDate, formatTime, isRefresh, setisRefresh } =
+    useContext(detacontext);
 
   const start = useRef();
   const ready = useRef();
@@ -66,11 +67,11 @@ const Bar = () => {
       const activeOrders = kitchenOrders.filter(
         (order) =>
           order.isActive &&
-        order.status === "Approved" &&
-        (order.preparationStatus.Bar === "Pending" ||
-          order.preparationStatus.Bar === "Preparing" ||
-          order.preparationStatus.Bar === "Prepared")
-    );
+          order.status === "Approved" &&
+          (order.preparationStatus.Bar === "Pending" ||
+            order.preparationStatus.Bar === "Preparing" ||
+            order.preparationStatus.Bar === "ء")
+      );
 
       // Set active orders state
       setOrderActive(activeOrders);
@@ -100,27 +101,28 @@ const Bar = () => {
               // console.log({ productIngredients })
 
               // Update consumptionOrderActive
-              productIngredients&&productIngredients.forEach((item) => {
-                const existingItemIndex =
-                  updatedConsumptionOrderActive.findIndex(
-                    (con) => con.itemId?._id === item.itemId?._id
-                  );
-                const amount = item.amount * product.quantity;
+              productIngredients &&
+                productIngredients.forEach((item) => {
+                  const existingItemIndex =
+                    updatedConsumptionOrderActive.findIndex(
+                      (con) => con.itemId?._id === item.itemId?._id
+                    );
+                  const amount = item.amount * product.quantity;
 
-                if (existingItemIndex !== -1) {
-                  // If the item already exists, update the amount
-                  updatedConsumptionOrderActive[existingItemIndex].amount +=
-                    amount;
-                } else {
-                  // If the item does not exist, add it to the array
-                  updatedConsumptionOrderActive.push({
-                    itemId: item.itemId,
-                    name: item.name,
-                    unit: item.unit,
-                    amount,
-                  });
-                }
-              });
+                  if (existingItemIndex !== -1) {
+                    // If the item already exists, update the amount
+                    updatedConsumptionOrderActive[existingItemIndex].amount +=
+                      amount;
+                  } else {
+                    // If the item does not exist, add it to the array
+                    updatedConsumptionOrderActive.push({
+                      itemId: item.itemId,
+                      name: item.name,
+                      unit: item.unit,
+                      amount,
+                    });
+                  }
+                });
 
               product.extras &&
                 product.extras.map((productextra) => {
@@ -171,10 +173,6 @@ const Bar = () => {
     }
   };
 
-
-
-
-
   const today = formatDate(new Date());
   const [date, setDate] = useState(today);
   const [allKitchenConsumption, setAllKitchenConsumption] = useState([]);
@@ -192,10 +190,7 @@ const Bar = () => {
       setFilteredKitchenConsumptionToday([]);
       console.log("Fetching kitchen consumption...");
 
-      const response = await axios.get(
-        `${apiUrl}/api/consumption`,
-        config
-      );
+      const response = await axios.get(`${apiUrl}/api/consumption`, config);
 
       if (response && response.data) {
         const kitchenConsumptions = response.data.data || [];
@@ -414,30 +409,31 @@ const Bar = () => {
         });
 
       // console.log({ totalConsumptionOrder })
-      totalConsumptionOrder&&totalConsumptionOrder.map(async (item) => {
-        let kitconsumption = await kitchenConsumptionsToday.find(
-          (kitItem) => kitItem.stockItemId._id === item.itemId?._id
-        );
-        try {
-          const consumptionQuantity =
-            kitconsumption.consumptionQuantity + item.amount;
-          const bookBalance = kitconsumption.bookBalance - item.amount;
-          console.log({ productsProduced: item.productsProduced });
-          // Update kitchen consumption data
-          const update = await axios.put(
-            `${apiUrl}/api/consumption/${kitconsumption._id}`,
-            {
-              consumptionQuantity,
-              bookBalance,
-              productsProduced: item.productsProduced,
-            },
-            config
+      totalConsumptionOrder &&
+        totalConsumptionOrder.map(async (item) => {
+          let kitconsumption = await kitchenConsumptionsToday.find(
+            (kitItem) => kitItem.stockItemId._id === item.itemId?._id
           );
-          // console.log({ update: update });
-        } catch (error) {
-          console.log({ error: error });
-        }
-      });
+          try {
+            const consumptionQuantity =
+              kitconsumption.consumptionQuantity + item.amount;
+            const bookBalance = kitconsumption.bookBalance - item.amount;
+            console.log({ productsProduced: item.productsProduced });
+            // Update kitchen consumption data
+            const update = await axios.put(
+              `${apiUrl}/api/consumption/${kitconsumption._id}`,
+              {
+                consumptionQuantity,
+                bookBalance,
+                productsProduced: item.productsProduced,
+              },
+              config
+            );
+            // console.log({ update: update });
+          } catch (error) {
+            console.log({ error: error });
+          }
+        });
 
       // Perform other operations if needed after the loop completes
       // Update order status or perform other tasks
@@ -447,7 +443,9 @@ const Bar = () => {
       const updateproducts =
         products &&
         orderProduct.map((prod) => {
-          const findProduct = products.find(product=>product.productid?._id === prod.productid._id)
+          const findProduct = products.find(
+            (product) => product.productid?._id === prod.productid._id
+          );
           if (findProduct) {
             return {
               ...prod,
@@ -456,15 +454,13 @@ const Bar = () => {
           }
           return prod;
         });
-        console.log({ updateproducts });
-
-
+      console.log({ updateproducts });
 
       if (type === "Internal") {
         const waiter = await specifiedWaiter(id);
         if (!waiter) {
           toast.warn("لا يوجد نادل متاح لتسليم الطلب. يرجى مراجعة الإدارة!");
-          return; 
+          return;
         }
 
         await axios.put(
@@ -473,7 +469,6 @@ const Bar = () => {
           config
         );
         kitchenSocket.emit("orderready", `اورد جاهز -${waiter}`);
-        
       } else {
         await axios.put(
           `${apiUrl}/api/order/${id}`,
@@ -483,12 +478,10 @@ const Bar = () => {
         kitchenSocket.emit("orderready", `اورد جاهز`);
       }
 
-
       // Set all orders state
       getAllOrders();
       getKitchenConsumption();
       toast.success("تم تجهيز الاوردر !");
-
     } catch (error) {
       console.log(error);
       toast.error(
@@ -536,7 +529,9 @@ const Bar = () => {
 
       if (AllWaiters.length === 0) {
         // Handle case where token is not available
-        toast.warn("قائمه الندلاء فارغه ! رجاء اعاده تحميل الصفحة و اذا ظلت المشكله ابلغ الاداره");
+        toast.warn(
+          "قائمه الندلاء فارغه ! رجاء اعاده تحميل الصفحة و اذا ظلت المشكله ابلغ الاداره"
+        );
         return;
       }
       // البحث عن الطلب بالمعرف المحدد
@@ -604,8 +599,6 @@ const Bar = () => {
     return minutesPassed;
   };
 
-
-
   // Fetches orders and active waiters on initial render
   useEffect(() => {
     getAllRecipe();
@@ -621,7 +614,6 @@ const Bar = () => {
     getKitchenConsumption();
   }, [isRefresh]);
 
-
   return (
     <div
       className="w-100 h-100 d-flex flex-wrap align-content-start justify-content-around align-items-start  overflowY-auto bg-transparent p-1"
@@ -632,7 +624,8 @@ const Bar = () => {
         style={{ borderBottom: "1px solid red" }}
       >
         {orderactive &&
-          consumptionOrderActive&&consumptionOrderActive.map((item, index) => (
+          consumptionOrderActive &&
+          consumptionOrderActive.map((item, index) => (
             <div
               className="card bg-primary text-white"
               style={{ height: "100px", width: "130px" }}
@@ -673,19 +666,26 @@ const Bar = () => {
           ))}
       </div>
 
-
       <div className="col-12 d-flex flex-wrap justify-content-around align-items-start">
         {orderactive &&
           orderactive.map((order, i) => {
-            if (order.products.filter((product) => product.isDone === false && product.productid?.preparationSection ==='Bar').length > 0) {
+            if (
+              order.products.filter(
+                (product) =>
+                  product.isDone === false &&
+                  product.productid?.preparationSection === "Bar"
+              ).length > 0
+            ) {
               return (
                 <div className="col-lg-3 col-md-4 col-sm-6 col-12 mb-4" key={i}>
                   <div
                     className="card text-white bg-success"
                     style={{ width: "260px" }}
                   >
-                    <div className="card-body text-right d-flex justify-content-between p-0 m-1"
-                    style={{fontSize:'14px', fontWeight:'500'}}>
+                    <div
+                      className="card-body text-right d-flex justify-content-between p-0 m-1"
+                      style={{ fontSize: "14px", fontWeight: "500" }}
+                    >
                       <div className="col-6 p-0">
                         <p className="card-text">
                           {" "}
@@ -724,7 +724,11 @@ const Bar = () => {
                     </div>
                     <ul className="list-group list-group-flush">
                       {order.products
-                        .filter((product) => product.isDone === false && product.productid?.preparationSection ==='Bar')
+                        .filter(
+                          (product) =>
+                            product.isDone === false &&
+                            product.productid?.preparationSection === "Bar"
+                        )
                         .map((product, i) => {
                           return (
                             <>
@@ -825,9 +829,6 @@ const Bar = () => {
                   </div>
                 </div>
               );
-
-
-
             } else if (
               order.preparationStatus.Bar === "Prepared" &&
               order.products.filter(
@@ -840,8 +841,10 @@ const Bar = () => {
                     className="card text-white bg-success"
                     style={{ width: "260px" }}
                   >
-                    <div className="card-body text-right d-flex justify-content-between p-0 m-1"
-                    style={{fontSize:'14px', fontWeight:'500'}}>
+                    <div
+                      className="card-body text-right d-flex justify-content-between p-0 m-1"
+                      style={{ fontSize: "14px", fontWeight: "500" }}
+                    >
                       <div className="col-6 p-0">
                         <p className="card-text">
                           {" "}

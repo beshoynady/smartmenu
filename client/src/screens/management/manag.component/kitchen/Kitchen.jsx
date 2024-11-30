@@ -73,6 +73,7 @@ const Kitchen = () => {
             order.preparationStatus.Kitchen === "Preparing" ||
             order.preparationStatus.Kitchen === "Prepared")
       );
+
       console.log({ activeOrders });
       // Set active orders state
       setOrderActive(activeOrders);
@@ -242,7 +243,7 @@ const Kitchen = () => {
       toast.error("فش بدء الاوردر ! اعد تحميل الصفحة ");
     }
   };
-  
+
   const updateOrderDone = async (id, type) => {
     if (!token) {
       // Handle case where token is not available
@@ -445,7 +446,9 @@ const Kitchen = () => {
       const updateproducts =
         products &&
         orderProduct.map((prod) => {
-          const findProduct = products.find(product=>product.productid?._id === prod.productid._id)
+          const findProduct = products.find(
+            (product) => product.productid?._id === prod.productid._id
+          );
           if (findProduct) {
             return {
               ...prod,
@@ -454,13 +457,13 @@ const Kitchen = () => {
           }
           return prod;
         });
-        console.log({ updateproducts });
+      console.log({ updateproducts });
 
       if (type === "Internal") {
         const waiter = await specifiedWaiter(id);
         if (!waiter) {
           toast.warn("لا يوجد نادل متاح لتسليم الطلب. يرجى مراجعة الإدارة!");
-          return; 
+          return;
         }
         await axios.put(
           `${apiUrl}/api/order/${id}`,
@@ -527,7 +530,9 @@ const Kitchen = () => {
       }
       if (AllWaiters.length === 0) {
         // Handle case where token is not available
-        toast.warn("قائمه الندلاء فارغه ! رجاء اعاده تحميل الصفحة و اذا ظلت المشكله ابلغ الاداره");
+        toast.warn(
+          "قائمه الندلاء فارغه ! رجاء اعاده تحميل الصفحة و اذا ظلت المشكله ابلغ الاداره"
+        );
         return;
       }
       // البحث عن الطلب بالمعرف المحدد
@@ -537,7 +542,6 @@ const Kitchen = () => {
       }
 
       if (getorder.status) {
-
       }
       // استخراج رقم القسم من بيانات الطاولة المرتبطة بالطلب
       const tablesectionNumber =
