@@ -35,7 +35,7 @@ const OrderSchema = new mongoose.Schema({
   // Array of products in the order
   products: [
     {
-      : {
+      productid: {
         type: ObjectId,
         ref: 'Product',
         required: true,
@@ -329,7 +329,6 @@ const OrderSchema = new mongoose.Schema({
       enum: ['Pending', 'Preparing', 'Prepared', 'Cancelled'],
     },
   },
-
   // Type of order (internal, delivery, takeout)
   orderType: {
     type: String,
