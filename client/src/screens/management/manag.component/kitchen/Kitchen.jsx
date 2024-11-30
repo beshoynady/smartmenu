@@ -242,7 +242,7 @@ const Kitchen = () => {
       toast.error("فش بدء الاوردر ! اعد تحميل الصفحة ");
     }
   };
-
+  
   const updateOrderDone = async (id, type) => {
     if (!token) {
       // Handle case where token is not available
@@ -254,7 +254,7 @@ const Kitchen = () => {
       const orderData = await axios.get(`${apiUrl}/api/order/${id}`);
       const orderProduct = orderData.data.products;
       const products = orderProduct.filter(
-        (product) => product.preparationSection === "Kitchen"
+        (product) => product.productid?.preparationSection === "Kitchen"
       );
       console.log({ products });
 

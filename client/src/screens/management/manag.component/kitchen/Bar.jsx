@@ -258,7 +258,7 @@ const Bar = () => {
       const orderData = await axios.get(`${apiUrl}/api/order/${id}`);
       const orderProduct = orderData.data.products;
       const products = orderProduct.filter(
-        (product) => product.preparationSection === "Bar"
+        (product) => product.productid?.preparationSection === "Bar"
       );
 
       const fetchKitchenConsumption = await axios.get(
