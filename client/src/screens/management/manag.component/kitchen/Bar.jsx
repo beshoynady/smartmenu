@@ -444,10 +444,19 @@ const Bar = () => {
 
       const preparationStatus = { "preparationStatus.Bar": "Prepared" };
 
-      const updateproducts = products&&products.map((prod) => ({
-        ...prod,
-        isDone: true,
-      }));
+      const updateproducts =
+        products &&
+        orderProduct.map((prod) => {
+          const findProduct = products.find(product=>product.productid?._id === prod.productid._id)
+          if (findProduct) {
+            return {
+              ...prod,
+              isDone: true,
+            };
+          }
+          return prod;
+        });
+        console.log({ updateproducts });
 
 
 

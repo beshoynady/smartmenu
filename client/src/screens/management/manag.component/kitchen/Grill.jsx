@@ -443,10 +443,19 @@ const Grill = () => {
       // Update order status or perform other tasks
 
       const preparationStatus = { "preparationStatus.Grill": "Prepared" };
-      const updateproducts = products&&products.map((prod) => ({
-        ...prod,
-        isDone: true,
-      }));
+      const updateproducts =
+        products &&
+        orderProduct.map((prod) => {
+          const findProduct = products.find(product=>product.productid?._id === prod.productid._id)
+          if (findProduct) {
+            return {
+              ...prod,
+              isDone: true,
+            };
+          }
+          return prod;
+        });
+        console.log({ updateproducts });
 
 
 

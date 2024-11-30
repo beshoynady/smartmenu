@@ -445,7 +445,7 @@ const Kitchen = () => {
       const updateproducts =
         products &&
         orderProduct.map((prod) => {
-          const findProduct = orderProduct.find(product=>product.productid?._id === prod.productid._id)
+          const findProduct = products.find(product=>product.productid?._id === prod.productid._id)
           if (findProduct) {
             return {
               ...prod,
