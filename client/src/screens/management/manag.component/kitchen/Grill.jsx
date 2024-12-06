@@ -210,7 +210,7 @@ const Grill = () => {
       }
     } catch (error) {
       console.error("Error fetching Grill consumption:", error);
-      toast.error("حدث خطأ أثناء جلب استهلاك المطبخ");
+      toast.error("حدث خطأ أثناء جلب استهلاك الشوايه");
     }
   };
 
@@ -256,7 +256,7 @@ const Grill = () => {
       );
   
       if (!GrillProducts.length) {
-        toast.warn("لا توجد منتجات بحاجة إلى تجهيز في المطبخ");
+        toast.warn("لا توجد منتجات بحاجة إلى تجهيز في الشوايه");
         return;
       }
   
@@ -382,7 +382,7 @@ const Grill = () => {
           config
         );
         if (response){
-          GrillSocket.emit("orderready", `أورد جاهز في المطبخ - ${waiter}`);
+          GrillSocket.emit("orderready", `أورد جاهز في الشوايه - ${waiter}`);
         }
       } else {
         await axios.put(
@@ -392,7 +392,7 @@ const Grill = () => {
            },
           config
         );
-        GrillSocket.emit("orderready", "أورد جاهز في المطبخ");
+        GrillSocket.emit("orderready", "أورد جاهز في الشوايه");
       }
   
       // 6. Refresh state

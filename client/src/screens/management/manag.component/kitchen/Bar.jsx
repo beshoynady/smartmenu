@@ -210,7 +210,7 @@ const Bar = () => {
       }
     } catch (error) {
       console.error("Error fetching Bar consumption:", error);
-      toast.error("حدث خطأ أثناء جلب استهلاك المطبخ");
+      toast.error("حدث خطأ أثناء جلب استهلاك البار");
     }
   };
 
@@ -258,7 +258,7 @@ const Bar = () => {
       );
   
       if (!BarProducts.length) {
-        toast.warn("لا توجد منتجات بحاجة إلى تجهيز في المطبخ");
+        toast.warn("لا توجد منتجات بحاجة إلى تجهيز في البار");
         return;
       }
   
@@ -384,7 +384,7 @@ const Bar = () => {
           config
         );
         if (response){
-          BarSocket.emit("orderready", `أورد جاهز في المطبخ - ${waiter}`);
+          BarSocket.emit("orderready", `أورد جاهز في البار - ${waiter}`);
         }
       } else {
         await axios.put(
@@ -394,7 +394,7 @@ const Bar = () => {
            },
           config
         );
-        BarSocket.emit("orderready", "أورد جاهز في المطبخ");
+        BarSocket.emit("orderready", "أورد جاهز في البار");
       }
   
       // 6. Refresh state
