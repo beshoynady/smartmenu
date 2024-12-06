@@ -625,8 +625,8 @@ const Kitchen = () => {
           toast.warn("لا يوجد نادل متاح لتسليم الطلب. يرجى مراجعة الإدارة!");
           return;
         }
-        const preparationStatus = { "preparationStatus.Kitchen": "Prepared" };
-        // const preparationStatus = { "preparationStatus.Kitchen": "Preparing" };
+        // const preparationStatus = { "preparationStatus.Kitchen": "Prepared" };
+        const preparationStatus = { "preparationStatus.Kitchen": "Preparing" };
 
         await axios.put(
           `${apiUrl}/api/order/${id}`,
