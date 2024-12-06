@@ -113,8 +113,8 @@ const getOrder = async (req, res) => {
 const getOrders = async (req, res) => {
   try {
     const orders = await OrderModel.find()
-    .populate("products.productid", "_id name price preparationSection")
-    .populate("products.extras.extraDetails.extraId", "_id name price")
+      .populate("products.productid", "_id name price preparationSection")
+      .populate("products.extras.extraDetails.extraId", "_id name price")
       .populate("table", "_id tableNumber sectionNumber")
       .populate("user", "_id username address deliveryArea phone")
       .populate("createdBy", "_id fullname username role shift sectionNumber")
@@ -181,9 +181,11 @@ const updateOrder = async (req, res) => {
   try {
     const orderId = req.params.id;
 
-    const updatedOrder = await OrderModel.findByIdAndUpdate(orderId, req.body, {
-      new: true,
-    });
+    const updatedOrder = await OrderModel.findByIdAndUpdate(
+      orderId,
+      { $set: req.body },
+      { new: true }
+    );
     if (!updatedOrder) {
       return res.status(404).json({ error: "Order not found" });
     }
