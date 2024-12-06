@@ -630,7 +630,7 @@ const Kitchen = () => {
           `${apiUrl}/api/order/${id}`,
           {preparationStatus,
           products: updatedProducts,
-          waiter}
+          waiter},
           config
         );
         if (response){
