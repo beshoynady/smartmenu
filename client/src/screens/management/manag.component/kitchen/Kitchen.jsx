@@ -651,7 +651,7 @@ const Kitchen = () => {
           },
           config
         );
-          waiterSocket.emit("orderready", `أورد جاهز في المطبخ - ${waiter}`);
+          waiterSocket.emit("orderready", `أورد جاهز في المطبخ-${waiter}`);
       } else {
         await axios.put(
           `${apiUrl}/api/order/${id}`,

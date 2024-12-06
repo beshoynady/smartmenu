@@ -206,7 +206,6 @@ const NavBar = () => {
       const currentWaiterId = employeeLoginInfo.id;
       console.log({employeeLoginInfo, notification, parts, waiterId, currentWaiterId});
 
-      if (waiterId) {
         const notificationText = parts[0];
         // Check if the waiter id matches the current user's waiter id
         if (waiterId === currentWaiterId) {
@@ -230,7 +229,7 @@ const NavBar = () => {
             return updatedNotifications;
           });
         }
-      } else {
+      else {
         setNotifications((prevNotifications) => {
           const updatedNotifications = [...prevNotifications, notification];
           // Save notifications to localStorage
