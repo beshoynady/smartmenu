@@ -206,10 +206,10 @@ cashierNamespace.on('connection', (socket) => {
 kitchenNamespace.on('connection', (socket) => {
   console.log('Kitchen connected');
 
-  socket.on('orderready', (notification) => {
-    console.log("Order ready notification:", notification);
-    waiterNamespace.emit('orderready', notification);
-  });
+  // socket.on('orderready', (notification) => {
+  //   console.log("Order ready notification:", notification);
+  //   kitchenNamespace.emit('orderready', notification);
+  // });
 
   socket.on('orderkitchen', (notification) => {
     console.log("Order ready notification:", notification);
@@ -270,7 +270,7 @@ waiterNamespace.on('connection', (socket) => {
   });
   socket.on('helprequest', (notification) => {
     console.log("Help request received:", notification);
-    cashierNamespace.emit('helprequest', notification);
+    waiterNamespace.emit('helprequest', notification);
   });
 
   socket.on('disconnect', () => {

@@ -141,11 +141,7 @@ const ProfitLoss = React.lazy(() =>
   import("./screens/management/manag.component/reports/ProfitAndLoss.jsx")
 );
 
-// const socket = io(process.env.REACT_APP_API_URL, {
-//   reconnection: true,
-//   reconnectionAttempts: Infinity,
-//   reconnectionDelay: 1000,
-// });
+
 
 const cashierSocket = io(`${process.env.REACT_APP_API_URL}/cashier`, {
   reconnection: true,

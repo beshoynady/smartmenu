@@ -10,6 +10,12 @@ const kitchenSocket = io(`${process.env.REACT_APP_API_URL}/kitchen`, {
   reconnectionDelay: 1000,
 });
 
+const waiterSocket = io(`${process.env.REACT_APP_API_URL}/waiter`, {
+  reconnection: true,
+  reconnectionAttempts: Infinity,
+  reconnectionDelay: 1000,
+});
+
 const Kitchen = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
   const token = localStorage.getItem("token_e");
@@ -633,7 +639,7 @@ const Kitchen = () => {
           config
         );
         if (response){
-          kitchenSocket.emit("orderready", `أورد جاهز في المطبخ - ${waiter}`);
+          waiterSocket.emit("orderready", `أورد جاهز في المطبخ - ${waiter}`);
         }
       } else {
         await axios.put(
@@ -643,7 +649,7 @@ const Kitchen = () => {
            },
           config
         );
-        kitchenSocket.emit("orderready", "أورد جاهز في المطبخ");
+        waiterSocket.emit("orderready", "أورد جاهز في المطبخ");
       }
   
       // 6. Refresh state
