@@ -249,13 +249,17 @@ const NavBar = () => {
       cashierSocket.on("neworder", handleNewOrderNotification);
       cashierSocket.on("helprequest", handleNewOrderNotification);
       cashierSocket.on("orderready", handleNewOrderNotification);
-    } else if (employeeLoginInfo.role === "chef") {
+    } else if (employeeLoginInfo.role === "chef" ||
+      employeeLoginInfo.role === "programer") {
       kitchenSocket.on("orderkitchen", handleNewOrderNotification);
-    } else if (employeeLoginInfo.role === "Bartender") {
+    } else if (employeeLoginInfo.role === "Bartender" ||
+      employeeLoginInfo.role === "programer") {
       BarSocket.on("orderBar", handleNewOrderNotification);
-    }else if (employeeLoginInfo.role === "Grill Chef") {
+    }else if (employeeLoginInfo.role === "Grill Chef" ||
+      employeeLoginInfo.role === "programer") {
       GrillSocket.on("orderGrill", handleNewOrderNotification);
-    }else if (employeeLoginInfo.role === "waiter") {
+    }else if (employeeLoginInfo.role === "waiter" ||
+      employeeLoginInfo.role === "programer") {
       waiterSocket.on("orderready", handleNewOrderNotification);
       waiterSocket.on("neworder", handleNewOrderNotification);
       waiterSocket.on("helprequest", handleNewOrderNotification);
