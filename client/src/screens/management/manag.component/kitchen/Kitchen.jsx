@@ -617,7 +617,7 @@ const Kitchen = () => {
         ),
       }));
   
-      const preparationStatus = { "preparationStatus.Kitchen": "Prepared" };
+      // const preparationStatus = { "preparationStatus.Kitchen": "Prepared" };
   
       if (type === "Internal") {
         const waiter = await specifiedWaiter(id);
@@ -625,6 +625,7 @@ const Kitchen = () => {
           toast.warn("لا يوجد نادل متاح لتسليم الطلب. يرجى مراجعة الإدارة!");
           return;
         }
+        const preparationStatus = { "preparationStatus.Kitchen": "Prepared" };
         await axios.put(
           `${apiUrl}/api/order/${id}`,
           { products: updatedProducts, preparationStatus, waiter },
@@ -632,6 +633,7 @@ const Kitchen = () => {
         );
         kitchenSocket.emit("orderready", `أورد جاهز في المطبخ - ${waiter}`);
       } else {
+      const preparationStatus = { "preparationStatus.Kitchen": "Prepared" };
         await axios.put(
           `${apiUrl}/api/order/${id}`,
           { products: updatedProducts, preparationStatus },
