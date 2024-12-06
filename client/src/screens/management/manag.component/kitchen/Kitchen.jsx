@@ -626,9 +626,11 @@ const Kitchen = () => {
           return;
         }
         const preparationStatus = { "preparationStatus.Kitchen": "Prepared" };
+        // const preparationStatus = { "preparationStatus.Kitchen": "Preparing" };
+
         await axios.put(
           `${apiUrl}/api/order/${id}`,
-          { products: updatedProducts, preparationStatus, waiter },
+          { products: updatedProducts, waiter },
           config
         );
         kitchenSocket.emit("orderready", `أورد جاهز في المطبخ - ${waiter}`);
