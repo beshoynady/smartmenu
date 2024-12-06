@@ -628,9 +628,7 @@ const Kitchen = () => {
         const preparationStatus = { "preparationStatus.Kitchen": "Prepared" };
         const response = await axios.put(
           `${apiUrl}/api/order/${id}`,
-          {preparationStatus,
-          
-          waiter},
+          {preparationStatus},
           config
         );
         if (response){
