@@ -158,6 +158,16 @@ const kitchenSocket = io(`${process.env.REACT_APP_API_URL}/kitchen`, {
   reconnectionAttempts: Infinity,
   reconnectionDelay: 1000,
 });
+const GrillSocket = io(`${process.env.REACT_APP_API_URL}/Grill`, {
+  reconnection: true,
+  reconnectionAttempts: Infinity,
+  reconnectionDelay: 1000,
+});
+const BarSocket = io(`${process.env.REACT_APP_API_URL}/Bar`, {
+  reconnection: true,
+  reconnectionAttempts: Infinity,
+  reconnectionDelay: 1000,
+});
 
 const waiterSocket = io(`${process.env.REACT_APP_API_URL}/waiter`, {
   reconnection: true,
@@ -2222,15 +2232,21 @@ function App() {
 
     cashierSocket.on("connect_error", handleConnectError);
     kitchenSocket.on("connect_error", handleConnectError);
+    GrillSocket.on("connect_error", handleConnectError);
+    BarSocket.on("connect_error", handleConnectError);
     waiterSocket.on("connect_error", handleConnectError);
 
     return () => {
       cashierSocket.off("connect_error", handleConnectError);
       kitchenSocket.off("connect_error", handleConnectError);
+      GrillSocket.off("connect_error", handleConnectError);
+      BarSocket.off("connect_error", handleConnectError);
       waiterSocket.off("connect_error", handleConnectError);
 
       cashierSocket.disconnect();
       kitchenSocket.disconnect();
+      GrillSocket.disconnect();
+      BarSocket.disconnect();
       waiterSocket.disconnect();
     };
   }, []);

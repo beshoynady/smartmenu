@@ -23,6 +23,16 @@ const kitchenSocket = io(`${process.env.REACT_APP_API_URL}/kitchen`, {
   reconnectionAttempts: Infinity,
   reconnectionDelay: 1000,
 });
+const BarSocket = io(`${process.env.REACT_APP_API_URL}/Bar`, {
+  reconnection: true,
+  reconnectionAttempts: Infinity,
+  reconnectionDelay: 1000,
+});
+const GrillSocket = io(`${process.env.REACT_APP_API_URL}/Grill`, {
+  reconnection: true,
+  reconnectionAttempts: Infinity,
+  reconnectionDelay: 1000,
+});
 
 const waiterSocket = io(`${process.env.REACT_APP_API_URL}/waiter`, {
   reconnection: true,
@@ -241,7 +251,11 @@ const NavBar = () => {
       cashierSocket.on("orderready", handleNewOrderNotification);
     } else if (employeeLoginInfo.role === "chef") {
       kitchenSocket.on("orderkitchen", handleNewOrderNotification);
-    } else if (employeeLoginInfo.role === "waiter") {
+    } else if (employeeLoginInfo.role === "Bartender") {
+      kitchenSocket.on("orderBar", handleNewOrderNotification);
+    }else if (employeeLoginInfo.role === "Grill Chef") {
+      kitchenSocket.on("orderGrill", handleNewOrderNotification);
+    }else if (employeeLoginInfo.role === "waiter") {
       waiterSocket.on("orderready", handleNewOrderNotification);
       waiterSocket.on("neworder", handleNewOrderNotification);
       waiterSocket.on("helprequest", handleNewOrderNotification);

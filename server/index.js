@@ -223,6 +223,44 @@ kitchenNamespace.on('connection', (socket) => {
 });
 
 
+BarNamespace.on('connection', (socket) => {
+  console.log('Bar connected');
+
+  socket.on('orderready', (notification) => {
+    console.log("Order ready notification:", notification);
+    waiterNamespace.emit('orderready', notification);
+  });
+
+  socket.on('orderBar', (notification) => {
+    console.log("Order ready notification:", notification);
+    BarNamespace.emit('orderBar', notification);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Bar disconnected');
+  });
+});
+
+
+GrillNamespace.on('connection', (socket) => {
+  console.log('Grill connected');
+
+  socket.on('orderready', (notification) => {
+    console.log("Order ready notification:", notification);
+    waiterNamespace.emit('orderready', notification);
+  });
+
+  socket.on('orderGrill', (notification) => {
+    console.log("Order ready notification:", notification);
+    GrillNamespace.emit('orderGrill', notification);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Grill disconnected');
+  });
+});
+
+
 
 
 // التعامل مع اتصالات الويتر
