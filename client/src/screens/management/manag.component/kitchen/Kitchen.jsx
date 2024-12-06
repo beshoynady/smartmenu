@@ -630,7 +630,7 @@ const Kitchen = () => {
 
         await axios.put(
           `${apiUrl}/api/order/${id}`,
-          { products: updatedProducts, waiter },
+          { products: updatedProducts,preparationStatus, waiter },
           config
         );
         kitchenSocket.emit("orderready", `أورد جاهز في المطبخ - ${waiter}`);
