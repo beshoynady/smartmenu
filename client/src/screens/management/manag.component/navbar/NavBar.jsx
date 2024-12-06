@@ -202,9 +202,9 @@ const NavBar = () => {
     // Define the event handler
     const handleNewOrderNotification = (notification) => {
       const parts = notification.split("-");
-      const waiterId = parts[1];
+      const waiterId = parts[1] || null;
       const currentWaiterId = employeeLoginInfo.id;
-      console.log({ notification, parts, waiterId });
+      console.log({ notification, parts, waiterId ,currentWaiterId});
 
       if (waiterId) {
         const notificationText = parts[0];
