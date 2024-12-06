@@ -625,7 +625,6 @@ const Kitchen = () => {
           toast.warn("لا يوجد نادل متاح لتسليم الطلب. يرجى مراجعة الإدارة!");
           return;
         }
-        // const preparationStatus = { "preparationStatus.Kitchen": "Prepared" };
         const response = await axios.put(
           `${apiUrl}/api/order/${id}`,
           {"preparationStatus.Kitchen": "Prepared",
@@ -637,10 +636,11 @@ const Kitchen = () => {
           kitchenSocket.emit("orderready", `أورد جاهز في المطبخ - ${waiter}`);
         }
       } else {
-      const preparationStatus = { "preparationStatus.Kitchen": "Prepared" };
         await axios.put(
           `${apiUrl}/api/order/${id}`,
-          { products: updatedProducts, preparationStatus },
+          { products: updatedProducts, 
+            "preparationStatus.Kitchen": "Prepared",
+           },
           config
         );
         kitchenSocket.emit("orderready", "أورد جاهز في المطبخ");

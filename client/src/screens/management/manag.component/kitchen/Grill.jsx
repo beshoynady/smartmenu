@@ -4,7 +4,7 @@ import { detacontext } from "../../../../App";
 import { toast } from "react-toastify";
 import io from "socket.io-client";
 
-const kitchenSocket = io(`${process.env.REACT_APP_API_URL}/kitchen`, {
+const GrillSocket = io(`${process.env.REACT_APP_API_URL}/Grill`, {
   reconnection: true,
   reconnectionAttempts: Infinity,
   reconnectionDelay: 1000,
@@ -58,13 +58,13 @@ const Grill = () => {
 
       // Fetch orders from the API
       const ordersResponse = await axios.get(`${apiUrl}/api/order/limit/50`);
-      const kitchenOrders = ordersResponse.data;
-      // console.log({ kitchenOrders })
+      const GrillOrders = ordersResponse.data;
+      // console.log({ GrillOrders })
       // Set all orders state
-      setAllOrders(kitchenOrders);
+      setAllOrders(GrillOrders);
 
       // Filter active orders based on certain conditions
-      const activeOrders = kitchenOrders.filter(
+      const activeOrders = GrillOrders.filter(
         (order) =>
           order.isActive &&
           order.status === "Approved" &&
@@ -175,11 +175,11 @@ const Grill = () => {
 
   const today = formatDate(new Date());
   const [date, setDate] = useState(today);
-  const [allKitchenConsumption, setAllKitchenConsumption] = useState([]);
-  const [filteredKitchenConsumptionToday, setFilteredKitchenConsumptionToday] =
+  const [allGrillConsumption, setAllGrillConsumption] = useState([]);
+  const [filteredGrillConsumptionToday, setFilteredGrillConsumptionToday] =
     useState([]);
 
-  const getKitchenConsumption = async () => {
+  const getGrillConsumption = async () => {
     try {
       if (!token) {
         // Handle case where token is not available
@@ -187,29 +187,29 @@ const Grill = () => {
         return;
       }
 
-      setFilteredKitchenConsumptionToday([]);
-      console.log("Fetching kitchen consumption...");
+      setFilteredGrillConsumptionToday([]);
+      console.log("Fetching Grill consumption...");
 
       const response = await axios.get(`${apiUrl}/api/consumption`, config);
 
       if (response && response.data) {
-        const kitchenConsumptions = response.data.data || [];
-        setAllKitchenConsumption(kitchenConsumptions);
+        const GrillConsumptions = response.data.data || [];
+        setAllGrillConsumption(GrillConsumptions);
 
-        const kitchenConsumptionsToday = kitchenConsumptions.filter(
+        const GrillConsumptionsToday = GrillConsumptions.filter(
           (kitItem) => {
             const itemDate = formatDate(kitItem.createdAt);
             return itemDate === date;
           }
         );
 
-        console.log({ kitchenConsumptionsToday, kitchenConsumptions });
-        setFilteredKitchenConsumptionToday(kitchenConsumptionsToday);
+        console.log({ GrillConsumptionsToday, GrillConsumptions });
+        setFilteredGrillConsumptionToday(GrillConsumptionsToday);
       } else {
         console.error("Unexpected response or empty data");
       }
     } catch (error) {
-      console.error("Error fetching kitchen consumption:", error);
+      console.error("Error fetching Grill consumption:", error);
       toast.error("حدث خطأ أثناء جلب استهلاك المطبخ");
     }
   };
@@ -241,252 +241,171 @@ const Grill = () => {
       toast.error("فش بدء الاوردر ! اعد تحميل الصفحة ");
     }
   };
-
   const updateOrderDone = async (id, type) => {
     if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
+      toast.error("رجاء تسجيل الدخول مره أخرى");
       return;
     }
+  
     try {
-      // Fetch order data by ID
-      const orderData = await axios.get(`${apiUrl}/api/order/${id}`);
-      const orderProduct = orderData.data.products;
-      const products = orderProduct.filter(
+      // 1. Fetch order and product data
+      const { data: orderData } = await axios.get(`${apiUrl}/api/order/${id}`, config);
+      const { products: orderProducts } = orderData;
+      const GrillProducts = orderProducts.filter(
         (product) => product.productid?.preparationSection === "Grill"
       );
-
-      const fetchKitchenConsumption = await axios.get(
-        apiUrl + "/api/consumption",
-        config
-      );
-      const Allkitchenconsumption = await fetchKitchenConsumption.data.data;
-
-      const kitchenConsumptionsToday = await Allkitchenconsumption.filter(
-        (kitItem) => {
-          const itemDate = formatDate(kitItem.createdAt);
-          return itemDate === date;
-        }
-      );
-
-      let totalConsumptionOrder = [];
-      // Loop through each product in the order
-      products &&
-        products.forEach((product) => {
-          if (!product.isDone) {
-            console.log({ product });
-            const productIngredients = product.sizeId
-              ? allRecipe.find(
-                  (recipe) =>
-                    recipe.productId._id === product.productid?._id &&
-                    recipe.sizeId === product.sizeId
-                )?.ingredients
-              : allRecipe.find(
-                  (recipe) => recipe.productId._id === product.productid?._id
-                )?.ingredients || [];
-
-            console.log({ productIngredients });
-            // Update consumptionOrderActive
-            productIngredients &&
-              productIngredients.forEach((item) => {
-                console.log({ item });
-                let kitconsumption = kitchenConsumptionsToday.find(
-                  (kitItem) => kitItem.stockItemId._id === item.itemId?._id
-                );
-                console.log({ kitconsumption });
-
-                const existingItemIndex = totalConsumptionOrder.findIndex(
-                  (con) => con.itemId?._id === item.itemId?._id
-                );
-                console.log({ existingItemIndex });
-
-                const amount = item.amount * product.quantity;
-
-                if (existingItemIndex !== -1) {
-                  // If the item already exists, update the amount
-                  totalConsumptionOrder[existingItemIndex].amount += amount;
-                } else {
-                  // If the item does not exist, add it to the array
-                  totalConsumptionOrder.push({
-                    itemId: item.itemId,
-                    amount,
-                    productsProduced: kitconsumption
-                      ? [...kitconsumption.productsProduced]
-                      : [],
-                  });
-                }
-
-                console.log({ totalConsumptionOrder });
-
-                const existingItem = totalConsumptionOrder.find(
-                  (con) => con.itemId?._id === item.itemId?._id
-                );
-
-                let foundProducedProduct = product.sizeId
-                  ? existingItem?.productsProduced?.find(
-                      (produced) =>
-                        produced.productId === product.productid?._id &&
-                        produced.sizeId === product.sizeId
-                    )
-                  : existingItem?.productsProduced?.find(
-                      (produced) =>
-                        produced.productId === product.productid?._id
-                    );
-
-                console.log({ foundProducedProduct });
-
-                if (!foundProducedProduct) {
-                  const newProducedProduct = product.sizeId
-                    ? {
-                        productId: product.productid?._id,
-                        sizeId: product.sizeId,
-                        sizeName: product.size,
-                        productionCount: product.quantity,
-                        productName: product.name,
-                      }
-                    : {
-                        productId: product.productid?._id,
-                        productionCount: product.quantity,
-                        productName: product.name,
-                      };
-                  console.log({ newProducedProduct });
-                  existingItem?.productsProduced.push(newProducedProduct);
-                } else {
-                  foundProducedProduct.productionCount += product.quantity;
-                }
-              });
-            // console.log({ totalConsumptionOrder })
-
-            product.extras &&
-              product.extras.forEach((productextra) => {
-                productextra.extraDetails.forEach((extra) => {
-                  const extraIngredients =
-                    allRecipe.find(
-                      (recipe) => recipe.productId._id === extra.extraId._id
-                    )?.ingredients || [];
-
-                  // Update consumptionOrderActive
-                  extraIngredients.forEach((item) => {
-                    const existingItemIndex = totalConsumptionOrder.findIndex(
-                      (con) => con.itemId?._id === item.itemId?._id
-                    );
-                    const amount = item.amount;
-
-                    if (existingItemIndex !== -1) {
-                      // If the item already exists, update the amount
-                      totalConsumptionOrder[existingItemIndex].amount += amount;
-                    } else {
-                      // If the item does not exist, add it to the array
-                      totalConsumptionOrder.push({
-                        itemId: item.itemId,
-                        amount,
-                      });
-                    }
-
-                    let foundProducedProduct = totalConsumptionOrder[
-                      existingItemIndex
-                    ]?.productsProduced?.find(
-                      (produced) => produced.productId === extra.extraId?._id
-                    );
-
-                    if (!foundProducedProduct) {
-                      const newProducedProduct = {
-                        productId: extra.extraId?._id,
-                        productionCount: 1,
-                        productName: extra.name,
-                      };
-
-                      totalConsumptionOrder[
-                        existingItemIndex
-                      ]?.productsProduced.push(newProducedProduct);
-                    } else {
-                      foundProducedProduct.productionCount += 1;
-                    }
-                  });
-                });
-              });
-          }
-        });
-
-      // console.log({ totalConsumptionOrder })
-      totalConsumptionOrder &&
-        totalConsumptionOrder.map(async (item) => {
-          let kitconsumption = await kitchenConsumptionsToday.find(
-            (kitItem) => kitItem.stockItemId._id === item.itemId?._id
+  
+      if (!GrillProducts.length) {
+        toast.warn("لا توجد منتجات بحاجة إلى تجهيز في المطبخ");
+        return;
+      }
+  
+      // 2. Fetch today's Grill consumption data
+      const { data: consumptionData } = await axios.get(`${apiUrl}/api/consumption`, config);
+      const allGrillConsumption = consumptionData.data;
+      const GrillConsumptionsToday = allGrillConsumption.filter((item) => {
+        const itemDate = formatDate(item.createdAt);
+        return itemDate === date;
+      });
+  
+      // 3. Prepare total consumption order
+      const totalConsumptionOrder = [];
+  
+      for (const product of GrillProducts) {
+        if (product.isDone) continue;
+  
+        // Fetch product ingredients from recipes
+        const productIngredients = product.sizeId
+          ? allRecipe.find(
+              (recipe) =>
+                recipe.productId._id === product.productid?._id &&
+                recipe.sizeId === product.sizeId
+            )?.ingredients
+          : allRecipe.find(
+              (recipe) => recipe.productId._id === product.productid?._id
+            )?.ingredients || [];
+  
+        // Process ingredients
+        for (const ingredient of productIngredients || []) {
+          const existingItemIndex = totalConsumptionOrder.findIndex(
+            (item) => item.itemId?._id === ingredient.itemId?._id
           );
-          try {
-            const consumptionQuantity =
-              kitconsumption.consumptionQuantity + item.amount;
-            const bookBalance = kitconsumption.bookBalance - item.amount;
-            console.log({ productsProduced: item.productsProduced });
-            // Update kitchen consumption data
-            const update = await axios.put(
-              `${apiUrl}/api/consumption/${kitconsumption._id}`,
-              {
-                consumptionQuantity,
-                bookBalance,
-                productsProduced: item.productsProduced,
-              },
-              config
+  
+          const amount = ingredient.amount * product.quantity;
+  
+          if (existingItemIndex !== -1) {
+            totalConsumptionOrder[existingItemIndex].amount += amount;
+          } else {
+            const GrillConsumption = GrillConsumptionsToday.find(
+              (kitItem) => kitItem.stockItemId._id === ingredient.itemId?._id
             );
-            // console.log({ update: update });
-          } catch (error) {
-            console.log({ error: error });
+  
+            totalConsumptionOrder.push({
+              itemId: ingredient.itemId,
+              amount,
+              productsProduced: GrillConsumption
+                ? [...GrillConsumption.productsProduced]
+                : [],
+            });
           }
-        });
-
-      // Perform other operations if needed after the loop completes
-      // Update order status or perform other tasks
-
-      const preparationStatus = { "preparationStatus.Grill": "Prepared" };
-      const updateproducts =
-        products &&
-        orderProduct.map((prod) => {
-          const findProduct = products.find(
-            (product) => product.productid?._id === prod.productid._id
+        }
+  
+        // Process extras
+        for (const extraGroup of product.extras || []) {
+          for (const extra of extraGroup.extraDetails) {
+            const extraIngredients =
+              allRecipe.find((recipe) => recipe.productId._id === extra.extraId._id)
+                ?.ingredients || [];
+  
+            for (const ingredient of extraIngredients) {
+              const existingItemIndex = totalConsumptionOrder.findIndex(
+                (item) => item.itemId?._id === ingredient.itemId?._id
+              );
+              const amount = ingredient.amount;
+  
+              if (existingItemIndex !== -1) {
+                totalConsumptionOrder[existingItemIndex].amount += amount;
+              } else {
+                totalConsumptionOrder.push({
+                  itemId: ingredient.itemId,
+                  amount,
+                });
+              }
+            }
+          }
+        }
+      }
+  
+      // 4. Update consumption data in the Grill
+      for (const item of totalConsumptionOrder) {
+        const GrillConsumption = GrillConsumptionsToday.find(
+          (kitItem) => kitItem.stockItemId._id === item.itemId?._id
+        );
+  
+        if (GrillConsumption) {
+          const consumptionQuantity = GrillConsumption.consumptionQuantity + item.amount;
+          const bookBalance = GrillConsumption.bookBalance - item.amount;
+  
+          await axios.put(
+            `${apiUrl}/api/consumption/${GrillConsumption._id}`,
+            {
+              consumptionQuantity,
+              bookBalance,
+              productsProduced: item.productsProduced,
+            },
+            config
           );
-          if (findProduct) {
-            return {
-              ...prod,
-              isDone: true,
-            };
-          }
-          return prod;
-        });
-      console.log({ updateproducts });
-
+        }
+      }
+  
+      // 5. Update order status
+      const updatedProducts = orderProducts.map((product) => ({
+        ...product,
+        isDone: GrillProducts.some(
+          (GrillProduct) => GrillProduct.productid?._id === product.productid._id
+        ),
+      }));
+  
+      // const preparationStatus = { "preparationStatus.Grill": "Prepared" };
+  
       if (type === "Internal") {
         const waiter = await specifiedWaiter(id);
         if (!waiter) {
           toast.warn("لا يوجد نادل متاح لتسليم الطلب. يرجى مراجعة الإدارة!");
           return;
         }
-        await axios.put(
+        const response = await axios.put(
           `${apiUrl}/api/order/${id}`,
-          { products: updateproducts, preparationStatus, waiter },
+          {"preparationStatus.Grill": "Prepared",
+          products: updatedProducts,
+          waiter},
           config
         );
-        kitchenSocket.emit("orderready", `اورد جاهز -${waiter}`);
+        if (response){
+          GrillSocket.emit("orderready", `أورد جاهز في المطبخ - ${waiter}`);
+        }
       } else {
         await axios.put(
           `${apiUrl}/api/order/${id}`,
-          { products: updateproducts, preparationStatus },
+          { products: updatedProducts, 
+            "preparationStatus.Grill": "Prepared",
+           },
           config
         );
-        kitchenSocket.emit("orderready", `اورد جاهز`);
+        GrillSocket.emit("orderready", "أورد جاهز في المطبخ");
       }
-
-      // Set all orders state
+  
+      // 6. Refresh state
       getAllOrders();
-      getKitchenConsumption();
-      toast.success("تم تجهيز الاوردر !");
+      getGrillConsumption();
+      toast.success("تم تجهيز الطلب بنجاح!");
     } catch (error) {
-      console.log(error);
-      toast.error(
-        "حدث خطأ اثناء تعديل حاله الاودر !اعد تحميل الصفحة و حاول مره اخري "
-      );
+      console.error("Error in updating order:", error);
+      toast.error("حدث خطأ أثناء تعديل حالة الطلب. يرجى إعادة المحاولة.");
     }
   };
+
+
 
   // Fetches all active waiters from the API
 
@@ -601,14 +520,14 @@ const Grill = () => {
     getAllRecipe();
     getAllWaiters();
     getAllOrders();
-    getKitchenConsumption();
+    getGrillConsumption();
   }, []);
 
   useEffect(() => {
     getAllRecipe();
     getAllWaiters();
     getAllOrders();
-    getKitchenConsumption();
+    getGrillConsumption();
   }, [isRefresh]);
 
   return (
@@ -643,10 +562,10 @@ const Grill = () => {
                   style={{ fontSize: "14px", fontWeight: "500" }}
                 >
                   الرصيد:{" "}
-                  {filteredKitchenConsumptionToday.find(
+                  {filteredGrillConsumptionToday.find(
                     (cons) => cons.stockItemId._id === item.itemId?._id
                   )
-                    ? filteredKitchenConsumptionToday.find(
+                    ? filteredGrillConsumptionToday.find(
                         (cons) => cons.stockItemId._id === item.itemId?._id
                       ).bookBalance
                     : "0"}{" "}
