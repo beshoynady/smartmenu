@@ -204,7 +204,7 @@ const NavBar = () => {
       const parts = notification.split("-");
       const waiterId = parts[1] || null;
       const currentWaiterId = employeeLoginInfo.id;
-      console.log({ notification, parts, waiterId ,currentWaiterId});
+      console.log({employeeLoginInfo, notification, parts, waiterId, currentWaiterId});
 
       if (waiterId) {
         const notificationText = parts[0];
