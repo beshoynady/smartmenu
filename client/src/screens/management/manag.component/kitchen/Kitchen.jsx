@@ -629,7 +629,7 @@ const Kitchen = () => {
         const response = await axios.put(
           `${apiUrl}/api/order/${id}`,
           {preparationStatus,
-          products: updatedProducts,
+          
           waiter},
           config
         );
