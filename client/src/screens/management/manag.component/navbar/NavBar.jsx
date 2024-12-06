@@ -197,7 +197,7 @@ const NavBar = () => {
     // Define the event handler
     const handleNewOrderNotification = (notification) => {
       const parts = notification.split("-");
-      // console.log({notification, parts})
+      console.log({notification, parts})
       
       if (parts.length === 2) {
         const notificationText = parts[0];
@@ -273,9 +273,9 @@ const NavBar = () => {
       } else if (employeeLoginInfo.role === "chef") {
         kitchenSocket.off("orderkitchen", handleNewOrderNotification);
       }else if (employeeLoginInfo.role === "Bartender") {
-        kitchenSocket.off("orderkitchen", handleNewOrderNotification);
+        BarSocket.off("orderkitchen", handleNewOrderNotification);
       }else if (employeeLoginInfo.role === "Grill Chef") {
-        kitchenSocket.off("orderkitchen", handleNewOrderNotification);
+        GrillSocket.off("orderkitchen", handleNewOrderNotification);
       } else if (employeeLoginInfo.role === "waiter") {
         waiterSocket.off("neworder", handleNewOrderNotification);
         waiterSocket.off("orderready", handleNewOrderNotification);
