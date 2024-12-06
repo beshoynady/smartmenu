@@ -254,12 +254,7 @@ const OrderSchema = new mongoose.Schema({
     ref: 'Employee',
     default: null
   },
-  // Waiter serving the order
-  waiter: {
-    type: ObjectId,
-    ref: 'Employee',
-    default: null
-  },
+
   // Delivery person for the order
   deliveryMan: {
     type: ObjectId,
@@ -287,27 +282,25 @@ const OrderSchema = new mongoose.Schema({
     type: String,
     default: null,
   },
-  // Help status for the order
-  help: {
-    type: String,
-    default: 'Not requested',
-    required: true,
-    enum: ['Not requested', 'Requests assistance', 'Requests bill'],
-  },
-  helpStatus: {
-    type: String,
-    default: 'Not send',
-    required: true,
-    enum: ['Not send', 'Send waiter', 'On the way', 'Assistance done'],
-  },
   // Status of the order
+  
+  isPartiallyDelivered: {
+    type: Boolean,
+    default: false,
+    required: true,
+  },
   status: {
     type: String,
     default: 'Pending',
     required: true,
-    enum: ['Pending', 'Approved', 'Cancelled'],
+    enum: ['Pending', 'Approved','Prepared', 'On the way','Delivered', 'Cancelled'],
   },
-
+    // Waiter serving the order
+    waiter: {
+      type: ObjectId,
+      ref: 'Employee',
+      default: null
+    },
   // preparationStatus of the order
   preparationStatus: {
     Kitchen: {
@@ -336,6 +329,19 @@ const OrderSchema = new mongoose.Schema({
     default: 'Internal',
     required: true
   },
+    // Help status for the order
+    help: {
+      type: String,
+      default: 'Not requested',
+      required: true,
+      enum: ['Not requested', 'Requests assistance', 'Requests bill'],
+    },
+    helpStatus: {
+      type: String,
+      default: 'Not send',
+      required: true,
+      enum: ['Not send', 'Send waiter', 'On the way', 'Assistance done'],
+    },  
   
   isSplit: {
     type: Boolean,
