@@ -4,7 +4,7 @@ import { detacontext } from "../../../../App";
 import { toast } from "react-toastify";
 import io from "socket.io-client";
 
-const BarSocket = io(`${process.env.REACT_APP_API_URL}/Bar`, {
+const BarSocket = io(`${process.env.REACT_APP_API_URL}/bar`, {
   reconnection: true,
   reconnectionAttempts: Infinity,
   reconnectionDelay: 1000,

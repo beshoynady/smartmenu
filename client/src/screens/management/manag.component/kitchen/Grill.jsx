@@ -4,7 +4,7 @@ import { detacontext } from "../../../../App";
 import { toast } from "react-toastify";
 import io from "socket.io-client";
 
-const GrillSocket = io(`${process.env.REACT_APP_API_URL}/Grill`, {
+const GrillSocket = io(`${process.env.REACT_APP_API_URL}/grill`, {
   reconnection: true,
   reconnectionAttempts: Infinity,
   reconnectionDelay: 1000,

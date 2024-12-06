@@ -158,12 +158,12 @@ const kitchenSocket = io(`${process.env.REACT_APP_API_URL}/kitchen`, {
   reconnectionAttempts: Infinity,
   reconnectionDelay: 1000,
 });
-const GrillSocket = io(`${process.env.REACT_APP_API_URL}/Grill`, {
+const GrillSocket = io(`${process.env.REACT_APP_API_URL}/grill`, {
   reconnection: true,
   reconnectionAttempts: Infinity,
   reconnectionDelay: 1000,
 });
-const BarSocket = io(`${process.env.REACT_APP_API_URL}/Bar`, {
+const BarSocket = io(`${process.env.REACT_APP_API_URL}/bar`, {
   reconnection: true,
   reconnectionAttempts: Infinity,
   reconnectionDelay: 1000,

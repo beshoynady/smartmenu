@@ -159,6 +159,8 @@ const io = socketIo(server, {
 
 const cashierNamespace = io.of('/cashier');
 const kitchenNamespace = io.of('/kitchen');
+const BarNamespace = io.of('/bar');
+const GrillNamespace = io.of('/grill');
 const waiterNamespace = io.of('/waiter');
 
 // التعامل مع اتصالات الكاشير
@@ -198,9 +200,6 @@ cashierNamespace.on('connection', (socket) => {
     console.log('Cashier disconnected');
   });
 });
-
-
-
 
 
 // التعامل مع اتصالات المطبخ
@@ -259,8 +258,6 @@ GrillNamespace.on('connection', (socket) => {
     console.log('Grill disconnected');
   });
 });
-
-
 
 
 // التعامل مع اتصالات الويتر
