@@ -258,23 +258,19 @@ const NavBar = () => {
       cashierSocket.on("helprequest", handleNewOrderNotification);
       cashierSocket.on("orderready", handleNewOrderNotification);
     } else if (
-      employeeLoginInfo.role === "chef" ||
-      employeeLoginInfo.role === "programer"
+      employeeLoginInfo.role === "chef"
     ) {
       kitchenSocket.on("orderkitchen", handleNewOrderNotification);
     } else if (
-      employeeLoginInfo.role === "Bartender" ||
-      employeeLoginInfo.role === "programer"
+      employeeLoginInfo.role === "Bartender"
     ) {
       BarSocket.on("orderBar", handleNewOrderNotification);
     } else if (
-      employeeLoginInfo.role === "Grill Chef" ||
-      employeeLoginInfo.role === "programer"
+      employeeLoginInfo.role === "Grill Chef"
     ) {
       GrillSocket.on("orderGrill", handleNewOrderNotification);
     } else if (
-      employeeLoginInfo.role === "waiter" ||
-      employeeLoginInfo.role === "programer"
+      employeeLoginInfo.role === "waiter"
     ) {
       waiterSocket.on("orderready", handleNewOrderNotification);
       waiterSocket.on("neworder", handleNewOrderNotification);
