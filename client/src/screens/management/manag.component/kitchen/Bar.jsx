@@ -59,12 +59,12 @@ const Bar = () => {
       // Fetch orders from the API
       const ordersResponse = await axios.get(`${apiUrl}/api/order/limit/50`);
       const BarOrders = ordersResponse.data;
-      // console.log({ kitchenOrders })
+      // console.log({ BarOrders })
       // Set all orders state
-      setAllOrders(kitchenOrders);
+      setAllOrders(BarOrders);
 
       // Filter active orders based on certain conditions
-      const activeOrders = kitchenOrders.filter(
+      const activeOrders = BarOrders.filter(
         (order) =>
           order.isActive &&
           order.status === "Approved" &&
@@ -175,11 +175,11 @@ const Bar = () => {
 
   const today = formatDate(new Date());
   const [date, setDate] = useState(today);
-  const [allKitchenConsumption, setAllKitchenConsumption] = useState([]);
-  const [filteredKitchenConsumptionToday, setFilteredKitchenConsumptionToday] =
+  const [allBarConsumption, setAllBarConsumption] = useState([]);
+  const [filteredBarConsumptionToday, setFilteredBarConsumptionToday] =
     useState([]);
 
-  const getKitchenConsumption = async () => {
+  const getBarConsumption = async () => {
     try {
       if (!token) {
         // Handle case where token is not available
@@ -187,29 +187,29 @@ const Bar = () => {
         return;
       }
 
-      setFilteredKitchenConsumptionToday([]);
-      console.log("Fetching kitchen consumption...");
+      setFilteredBarConsumptionToday([]);
+      console.log("Fetching Bar consumption...");
 
       const response = await axios.get(`${apiUrl}/api/consumption`, config);
 
       if (response && response.data) {
-        const kitchenConsumptions = response.data.data || [];
-        setAllKitchenConsumption(kitchenConsumptions);
+        const BarConsumptions = response.data.data || [];
+        setAllBarConsumption(BarConsumptions);
 
-        const kitchenConsumptionsToday = kitchenConsumptions.filter(
+        const BarConsumptionsToday = BarConsumptions.filter(
           (kitItem) => {
             const itemDate = formatDate(kitItem.createdAt);
             return itemDate === date;
           }
         );
 
-        console.log({ kitchenConsumptionsToday, kitchenConsumptions });
-        setFilteredKitchenConsumptionToday(kitchenConsumptionsToday);
+        console.log({ BarConsumptionsToday, BarConsumptions });
+        setFilteredBarConsumptionToday(BarConsumptionsToday);
       } else {
         console.error("Unexpected response or empty data");
       }
     } catch (error) {
-      console.error("Error fetching kitchen consumption:", error);
+      console.error("Error fetching Bar consumption:", error);
       toast.error("حدث خطأ أثناء جلب استهلاك المطبخ");
     }
   };
@@ -253,7 +253,7 @@ const Bar = () => {
       // 1. Fetch order and product data
       const { data: orderData } = await axios.get(`${apiUrl}/api/order/${id}`, config);
       const { products: orderProducts } = orderData;
-      const kitchenProducts = orderProducts.filter(
+      const BarProducts = orderProducts.filter(
         (product) => product.productid?.preparationSection === "Bar"
       );
   
