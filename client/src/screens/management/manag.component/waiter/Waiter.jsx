@@ -5,8 +5,16 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 
 const Waiter = () => {
-  const { employeeLoginInfo, isRefresh, setisRefresh } =
-    useContext(detacontext);
+  const {
+    employeeLoginInfo,
+    isRefresh,
+    setisRefresh,
+    cashierSocket,
+    kitchenSocket,
+    BarSocket,
+    GrillSocket,
+    waiterSocket,
+  } = useContext(detacontext);
 
   const apiUrl = process.env.REACT_APP_API_URL;
   const token = localStorage.getItem("token_e");

@@ -19,8 +19,17 @@ const Bar = () => {
     },
   };
 
-  const { formatDate, formatTime, isRefresh, setisRefresh } =
-    useContext(detacontext);
+  const {
+    formatDate,
+    formatTime,
+    isRefresh,
+    setisRefresh,
+    cashierSocket,
+    kitchenSocket,
+    BarSocket,
+    GrillSocket,
+    waiterSocket,
+  } = useContext(detacontext);
 
   const start = useRef();
   const ready = useRef();
@@ -196,12 +205,10 @@ const Bar = () => {
         const BarConsumptions = response.data.data || [];
         setAllBarConsumption(BarConsumptions);
 
-        const BarConsumptionsToday = BarConsumptions.filter(
-          (kitItem) => {
-            const itemDate = formatDate(kitItem.createdAt);
-            return itemDate === date;
-          }
-        );
+        const BarConsumptionsToday = BarConsumptions.filter((kitItem) => {
+          const itemDate = formatDate(kitItem.createdAt);
+          return itemDate === date;
+        });
 
         console.log({ BarConsumptionsToday, BarConsumptions });
         setFilteredBarConsumptionToday(BarConsumptionsToday);
@@ -242,40 +249,45 @@ const Bar = () => {
     }
   };
 
-
   const updateOrderDone = async (id, type) => {
     if (!token) {
       toast.error("رجاء تسجيل الدخول مره أخرى");
       return;
     }
-  
+
     try {
       // 1. Fetch order and product data
-      const { data: orderData } = await axios.get(`${apiUrl}/api/order/${id}`, config);
+      const { data: orderData } = await axios.get(
+        `${apiUrl}/api/order/${id}`,
+        config
+      );
       const { products: orderProducts } = orderData;
       const BarProducts = orderProducts.filter(
         (product) => product.productid?.preparationSection === "Bar"
       );
-  
+
       if (!BarProducts.length) {
         toast.warn("لا توجد منتجات بحاجة إلى تجهيز في البار");
         return;
       }
-  
+
       // 2. Fetch today's Bar consumption data
-      const { data: consumptionData } = await axios.get(`${apiUrl}/api/consumption`, config);
+      const { data: consumptionData } = await axios.get(
+        `${apiUrl}/api/consumption`,
+        config
+      );
       const allBarConsumption = consumptionData.data;
       const BarConsumptionsToday = allBarConsumption.filter((item) => {
         const itemDate = formatDate(item.createdAt);
         return itemDate === date;
       });
-  
+
       // 3. Prepare total consumption order
       const totalConsumptionOrder = [];
-  
+
       for (const product of BarProducts) {
         if (product.isDone) continue;
-  
+
         // Fetch product ingredients from recipes
         const productIngredients = product.sizeId
           ? allRecipe.find(
@@ -286,22 +298,22 @@ const Bar = () => {
           : allRecipe.find(
               (recipe) => recipe.productId._id === product.productid?._id
             )?.ingredients || [];
-  
+
         // Process ingredients
         for (const ingredient of productIngredients || []) {
           const existingItemIndex = totalConsumptionOrder.findIndex(
             (item) => item.itemId?._id === ingredient.itemId?._id
           );
-  
+
           const amount = ingredient.amount * product.quantity;
-  
+
           if (existingItemIndex !== -1) {
             totalConsumptionOrder[existingItemIndex].amount += amount;
           } else {
             const BarConsumption = BarConsumptionsToday.find(
               (kitItem) => kitItem.stockItemId._id === ingredient.itemId?._id
             );
-  
+
             totalConsumptionOrder.push({
               itemId: ingredient.itemId,
               amount,
@@ -311,20 +323,21 @@ const Bar = () => {
             });
           }
         }
-  
+
         // Process extras
         for (const extraGroup of product.extras || []) {
           for (const extra of extraGroup.extraDetails) {
             const extraIngredients =
-              allRecipe.find((recipe) => recipe.productId._id === extra.extraId._id)
-                ?.ingredients || [];
-  
+              allRecipe.find(
+                (recipe) => recipe.productId._id === extra.extraId._id
+              )?.ingredients || [];
+
             for (const ingredient of extraIngredients) {
               const existingItemIndex = totalConsumptionOrder.findIndex(
                 (item) => item.itemId?._id === ingredient.itemId?._id
               );
               const amount = ingredient.amount;
-  
+
               if (existingItemIndex !== -1) {
                 totalConsumptionOrder[existingItemIndex].amount += amount;
               } else {
@@ -337,17 +350,18 @@ const Bar = () => {
           }
         }
       }
-  
+
       // 4. Update consumption data in the Bar
       for (const item of totalConsumptionOrder) {
         const BarConsumption = BarConsumptionsToday.find(
           (kitItem) => kitItem.stockItemId._id === item.itemId?._id
         );
-  
+
         if (BarConsumption) {
-          const consumptionQuantity = BarConsumption.consumptionQuantity + item.amount;
+          const consumptionQuantity =
+            BarConsumption.consumptionQuantity + item.amount;
           const bookBalance = BarConsumption.bookBalance - item.amount;
-  
+
           await axios.put(
             `${apiUrl}/api/consumption/${BarConsumption._id}`,
             {
@@ -359,7 +373,7 @@ const Bar = () => {
           );
         }
       }
-  
+
       // 5. Update order status
       const updatedProducts = orderProducts.map((product) => ({
         ...product,
@@ -367,9 +381,9 @@ const Bar = () => {
           (BarProduct) => BarProduct.productid?._id === product.productid._id
         ),
       }));
-  
+
       // const preparationStatus = { "preparationStatus.Bar": "Prepared" };
-  
+
       if (type === "Internal") {
         const waiter = await specifiedWaiter(id);
         if (!waiter) {
@@ -378,25 +392,25 @@ const Bar = () => {
         }
         const response = await axios.put(
           `${apiUrl}/api/order/${id}`,
-          {"preparationStatus.Bar": "Prepared",
-          products: updatedProducts,
-          waiter},
+          {
+            "preparationStatus.Bar": "Prepared",
+            products: updatedProducts,
+            waiter,
+          },
           config
         );
-        if (response){
+        if (response) {
           BarSocket.emit("orderready", `أورد جاهز في البار - ${waiter}`);
         }
       } else {
         await axios.put(
           `${apiUrl}/api/order/${id}`,
-          { products: updatedProducts, 
-            "preparationStatus.Bar": "Prepared",
-           },
+          { products: updatedProducts, "preparationStatus.Bar": "Prepared" },
           config
         );
         BarSocket.emit("orderready", "أورد جاهز في البار");
       }
-  
+
       // 6. Refresh state
       getAllOrders();
       getBarConsumption();
@@ -406,8 +420,6 @@ const Bar = () => {
       toast.error("حدث خطأ أثناء تعديل حالة الطلب. يرجى إعادة المحاولة.");
     }
   };
-
-
 
   // Fetches all active waiters from the API
 

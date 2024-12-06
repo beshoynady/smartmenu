@@ -10,12 +10,6 @@ const kitchenSocket = io(`${process.env.REACT_APP_API_URL}/kitchen`, {
   reconnectionDelay: 1000,
 });
 
-const waiterSocket = io(`${process.env.REACT_APP_API_URL}/waiter`, {
-  reconnection: true,
-  reconnectionAttempts: Infinity,
-  reconnectionDelay: 1000,
-});
-
 const Kitchen = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
   const token = localStorage.getItem("token_e");
@@ -25,8 +19,17 @@ const Kitchen = () => {
     },
   };
 
-  const { formatDate, formatTime, isRefresh, setisRefresh } =
-    useContext(detacontext);
+  const {
+    formatDate,
+    formatTime,
+    isRefresh,
+    setisRefresh,
+    cashierSocket,
+    kitchenSocket,
+    BarSocket,
+    GrillSocket,
+    waiterSocket,
+  } = useContext(detacontext);
 
   const start = useRef();
   const ready = useRef();
@@ -447,7 +450,6 @@ const Kitchen = () => {
   //     // Perform other operations if needed after the loop completes
   //     // Update order status or perform other tasks
 
-      
   //     const updateproducts =
   //       products &&
   //       orderProduct.map((prod) => {
@@ -503,34 +505,40 @@ const Kitchen = () => {
       toast.error("رجاء تسجيل الدخول مره أخرى");
       return;
     }
-  
+
     try {
       // 1. Fetch order and product data
-      const { data: orderData } = await axios.get(`${apiUrl}/api/order/${id}`, config);
+      const { data: orderData } = await axios.get(
+        `${apiUrl}/api/order/${id}`,
+        config
+      );
       const { products: orderProducts } = orderData;
       const kitchenProducts = orderProducts.filter(
         (product) => product.productid?.preparationSection === "Kitchen"
       );
-  
+
       if (!kitchenProducts.length) {
         toast.warn("لا توجد منتجات بحاجة إلى تجهيز في المطبخ");
         return;
       }
-  
+
       // 2. Fetch today's kitchen consumption data
-      const { data: consumptionData } = await axios.get(`${apiUrl}/api/consumption`, config);
+      const { data: consumptionData } = await axios.get(
+        `${apiUrl}/api/consumption`,
+        config
+      );
       const allKitchenConsumption = consumptionData.data;
       const kitchenConsumptionsToday = allKitchenConsumption.filter((item) => {
         const itemDate = formatDate(item.createdAt);
         return itemDate === date;
       });
-  
+
       // 3. Prepare total consumption order
       const totalConsumptionOrder = [];
-  
+
       for (const product of kitchenProducts) {
         if (product.isDone) continue;
-  
+
         // Fetch product ingredients from recipes
         const productIngredients = product.sizeId
           ? allRecipe.find(
@@ -541,22 +549,22 @@ const Kitchen = () => {
           : allRecipe.find(
               (recipe) => recipe.productId._id === product.productid?._id
             )?.ingredients || [];
-  
+
         // Process ingredients
         for (const ingredient of productIngredients || []) {
           const existingItemIndex = totalConsumptionOrder.findIndex(
             (item) => item.itemId?._id === ingredient.itemId?._id
           );
-  
+
           const amount = ingredient.amount * product.quantity;
-  
+
           if (existingItemIndex !== -1) {
             totalConsumptionOrder[existingItemIndex].amount += amount;
           } else {
             const kitchenConsumption = kitchenConsumptionsToday.find(
               (kitItem) => kitItem.stockItemId._id === ingredient.itemId?._id
             );
-  
+
             totalConsumptionOrder.push({
               itemId: ingredient.itemId,
               amount,
@@ -566,20 +574,21 @@ const Kitchen = () => {
             });
           }
         }
-  
+
         // Process extras
         for (const extraGroup of product.extras || []) {
           for (const extra of extraGroup.extraDetails) {
             const extraIngredients =
-              allRecipe.find((recipe) => recipe.productId._id === extra.extraId._id)
-                ?.ingredients || [];
-  
+              allRecipe.find(
+                (recipe) => recipe.productId._id === extra.extraId._id
+              )?.ingredients || [];
+
             for (const ingredient of extraIngredients) {
               const existingItemIndex = totalConsumptionOrder.findIndex(
                 (item) => item.itemId?._id === ingredient.itemId?._id
               );
               const amount = ingredient.amount;
-  
+
               if (existingItemIndex !== -1) {
                 totalConsumptionOrder[existingItemIndex].amount += amount;
               } else {
@@ -592,17 +601,18 @@ const Kitchen = () => {
           }
         }
       }
-  
+
       // 4. Update consumption data in the kitchen
       for (const item of totalConsumptionOrder) {
         const kitchenConsumption = kitchenConsumptionsToday.find(
           (kitItem) => kitItem.stockItemId._id === item.itemId?._id
         );
-  
+
         if (kitchenConsumption) {
-          const consumptionQuantity = kitchenConsumption.consumptionQuantity + item.amount;
+          const consumptionQuantity =
+            kitchenConsumption.consumptionQuantity + item.amount;
           const bookBalance = kitchenConsumption.bookBalance - item.amount;
-  
+
           await axios.put(
             `${apiUrl}/api/consumption/${kitchenConsumption._id}`,
             {
@@ -614,17 +624,18 @@ const Kitchen = () => {
           );
         }
       }
-  
+
       // 5. Update order status
       const updatedProducts = orderProducts.map((product) => ({
         ...product,
         isDone: kitchenProducts.some(
-          (kitchenProduct) => kitchenProduct.productid?._id === product.productid._id
+          (kitchenProduct) =>
+            kitchenProduct.productid?._id === product.productid._id
         ),
       }));
-  
+
       // const preparationStatus = { "preparationStatus.Kitchen": "Prepared" };
-  
+
       if (type === "Internal") {
         const waiter = await specifiedWaiter(id);
         if (!waiter) {
@@ -633,25 +644,26 @@ const Kitchen = () => {
         }
         const response = await axios.put(
           `${apiUrl}/api/order/${id}`,
-          {"preparationStatus.Kitchen": "Prepared",
-          products: updatedProducts,
-          waiter},
+          {
+            "preparationStatus.Kitchen": "Prepared",
+            products: updatedProducts,
+            waiter,
+          },
           config
         );
-        if (response){
           waiterSocket.emit("orderready", `أورد جاهز في المطبخ - ${waiter}`);
-        }
       } else {
         await axios.put(
           `${apiUrl}/api/order/${id}`,
-          { products: updatedProducts, 
+          {
+            products: updatedProducts,
             "preparationStatus.Kitchen": "Prepared",
-           },
+          },
           config
         );
         waiterSocket.emit("orderready", "أورد جاهز في المطبخ");
       }
-  
+
       // 6. Refresh state
       getAllOrders();
       getKitchenConsumption();
@@ -661,7 +673,6 @@ const Kitchen = () => {
       toast.error("حدث خطأ أثناء تعديل حالة الطلب. يرجى إعادة المحاولة.");
     }
   };
-  
 
   // Fetches all active waiters from the API
 

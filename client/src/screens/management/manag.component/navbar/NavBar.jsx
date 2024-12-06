@@ -12,36 +12,46 @@ import notificationSound from "../../../../audio/sound.mp3";
 //   reconnection: true,
 // });
 
-const cashierSocket = io(`${process.env.REACT_APP_API_URL}/cashier`, {
-  reconnection: true,
-  reconnectionAttempts: Infinity,
-  reconnectionDelay: 1000,
-});
+// const cashierSocket = io(`${process.env.REACT_APP_API_URL}/cashier`, {
+//   reconnection: true,
+//   reconnectionAttempts: Infinity,
+//   reconnectionDelay: 1000,
+// });
 
-const kitchenSocket = io(`${process.env.REACT_APP_API_URL}/kitchen`, {
-  reconnection: true,
-  reconnectionAttempts: Infinity,
-  reconnectionDelay: 1000,
-});
-const BarSocket = io(`${process.env.REACT_APP_API_URL}/bar`, {
-  reconnection: true,
-  reconnectionAttempts: Infinity,
-  reconnectionDelay: 1000,
-});
-const GrillSocket = io(`${process.env.REACT_APP_API_URL}/grill`, {
-  reconnection: true,
-  reconnectionAttempts: Infinity,
-  reconnectionDelay: 1000,
-});
+// const kitchenSocket = io(`${process.env.REACT_APP_API_URL}/kitchen`, {
+//   reconnection: true,
+//   reconnectionAttempts: Infinity,
+//   reconnectionDelay: 1000,
+// });
+// const BarSocket = io(`${process.env.REACT_APP_API_URL}/bar`, {
+//   reconnection: true,
+//   reconnectionAttempts: Infinity,
+//   reconnectionDelay: 1000,
+// });
+// const GrillSocket = io(`${process.env.REACT_APP_API_URL}/grill`, {
+//   reconnection: true,
+//   reconnectionAttempts: Infinity,
+//   reconnectionDelay: 1000,
+// });
 
-const waiterSocket = io(`${process.env.REACT_APP_API_URL}/waiter`, {
-  reconnection: true,
-  reconnectionAttempts: Infinity,
-  reconnectionDelay: 1000,
-});
+// const waiterSocket = io(`${process.env.REACT_APP_API_URL}/waiter`, {
+//   reconnection: true,
+//   reconnectionAttempts: Infinity,
+//   reconnectionDelay: 1000,
+// });
 
 const NavBar = () => {
-  const { permissionsList, employeeLoginInfo, isRefresh, setisRefresh } = useContext(detacontext);
+  const {
+    permissionsList,
+    employeeLoginInfo,
+    isRefresh,
+    setisRefresh,
+    cashierSocket,
+    kitchenSocket,
+    BarSocket,
+    GrillSocket,
+    waiterSocket,
+  } = useContext(detacontext);
 
   const apiUrl = process.env.REACT_APP_API_URL;
   const token = localStorage.getItem("token_e");
@@ -139,8 +149,6 @@ const NavBar = () => {
     setMessages((prevMessages) => prevMessages.filter((_, i) => i !== index));
   };
 
-
-
   const employeeLogout = () => {
     try {
       // Remove admin token from local storage
@@ -185,9 +193,6 @@ const NavBar = () => {
     }
   };
 
-
-
-
   useEffect(() => {
     // Load notifications from localStorage on component mount
     const savedNotifications =
@@ -197,8 +202,8 @@ const NavBar = () => {
     // Define the event handler
     const handleNewOrderNotification = (notification) => {
       const parts = notification.split("-");
-      console.log({notification, parts})
-      
+      console.log({ notification, parts });
+
       if (parts.length === 2) {
         const notificationText = parts[0];
         const waiterId = parts[1];
@@ -207,8 +212,11 @@ const NavBar = () => {
         if (waiterId === currentWaiterId) {
           // Assuming currentWaiterId is the ID of the current waiter
           setNotifications((prevNotifications) => {
-            const updatedNotifications = [...prevNotifications, notificationText];
-            setisRefresh(updatedNotifications.length)
+            const updatedNotifications = [
+              ...prevNotifications,
+              notificationText,
+            ];
+            setisRefresh(updatedNotifications.length);
 
             // Save notifications to localStorage
             localStorage.setItem(
@@ -226,7 +234,7 @@ const NavBar = () => {
         setNotifications((prevNotifications) => {
           const updatedNotifications = [...prevNotifications, notification];
           // Save notifications to localStorage
-          setisRefresh(updatedNotifications.length)
+          setisRefresh(updatedNotifications.length);
 
           localStorage.setItem(
             "notifications",
@@ -249,17 +257,25 @@ const NavBar = () => {
       cashierSocket.on("neworder", handleNewOrderNotification);
       cashierSocket.on("helprequest", handleNewOrderNotification);
       cashierSocket.on("orderready", handleNewOrderNotification);
-    } else if (employeeLoginInfo.role === "chef" ||
-      employeeLoginInfo.role === "programer") {
+    } else if (
+      employeeLoginInfo.role === "chef" ||
+      employeeLoginInfo.role === "programer"
+    ) {
       kitchenSocket.on("orderkitchen", handleNewOrderNotification);
-    } else if (employeeLoginInfo.role === "Bartender" ||
-      employeeLoginInfo.role === "programer") {
+    } else if (
+      employeeLoginInfo.role === "Bartender" ||
+      employeeLoginInfo.role === "programer"
+    ) {
       BarSocket.on("orderBar", handleNewOrderNotification);
-    }else if (employeeLoginInfo.role === "Grill Chef" ||
-      employeeLoginInfo.role === "programer") {
+    } else if (
+      employeeLoginInfo.role === "Grill Chef" ||
+      employeeLoginInfo.role === "programer"
+    ) {
       GrillSocket.on("orderGrill", handleNewOrderNotification);
-    }else if (employeeLoginInfo.role === "waiter" ||
-      employeeLoginInfo.role === "programer") {
+    } else if (
+      employeeLoginInfo.role === "waiter" ||
+      employeeLoginInfo.role === "programer"
+    ) {
       waiterSocket.on("orderready", handleNewOrderNotification);
       waiterSocket.on("neworder", handleNewOrderNotification);
       waiterSocket.on("helprequest", handleNewOrderNotification);
@@ -276,9 +292,9 @@ const NavBar = () => {
         cashierSocket.off("helprequest", handleNewOrderNotification);
       } else if (employeeLoginInfo.role === "chef") {
         kitchenSocket.off("orderkitchen", handleNewOrderNotification);
-      }else if (employeeLoginInfo.role === "Bartender") {
+      } else if (employeeLoginInfo.role === "Bartender") {
         BarSocket.off("orderkitchen", handleNewOrderNotification);
-      }else if (employeeLoginInfo.role === "Grill Chef") {
+      } else if (employeeLoginInfo.role === "Grill Chef") {
         GrillSocket.off("orderkitchen", handleNewOrderNotification);
       } else if (employeeLoginInfo.role === "waiter") {
         waiterSocket.off("neworder", handleNewOrderNotification);
@@ -287,7 +303,6 @@ const NavBar = () => {
       }
     };
   }, []);
-
 
   useEffect(() => {
     getAllCustomerMessage();

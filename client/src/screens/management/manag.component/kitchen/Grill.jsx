@@ -19,8 +19,17 @@ const Grill = () => {
     },
   };
 
-  const { formatDate, formatTime, isRefresh, setisRefresh } =
-    useContext(detacontext);
+  const {
+    formatDate,
+    formatTime,
+    isRefresh,
+    setisRefresh,
+    cashierSocket,
+    kitchenSocket,
+    BarSocket,
+    GrillSocket,
+    waiterSocket,
+  } = useContext(detacontext);
 
   const start = useRef();
   const ready = useRef();
@@ -196,12 +205,10 @@ const Grill = () => {
         const GrillConsumptions = response.data.data || [];
         setAllGrillConsumption(GrillConsumptions);
 
-        const GrillConsumptionsToday = GrillConsumptions.filter(
-          (kitItem) => {
-            const itemDate = formatDate(kitItem.createdAt);
-            return itemDate === date;
-          }
-        );
+        const GrillConsumptionsToday = GrillConsumptions.filter((kitItem) => {
+          const itemDate = formatDate(kitItem.createdAt);
+          return itemDate === date;
+        });
 
         console.log({ GrillConsumptionsToday, GrillConsumptions });
         setFilteredGrillConsumptionToday(GrillConsumptionsToday);
@@ -246,34 +253,40 @@ const Grill = () => {
       toast.error("رجاء تسجيل الدخول مره أخرى");
       return;
     }
-  
+
     try {
       // 1. Fetch order and product data
-      const { data: orderData } = await axios.get(`${apiUrl}/api/order/${id}`, config);
+      const { data: orderData } = await axios.get(
+        `${apiUrl}/api/order/${id}`,
+        config
+      );
       const { products: orderProducts } = orderData;
       const GrillProducts = orderProducts.filter(
         (product) => product.productid?.preparationSection === "Grill"
       );
-  
+
       if (!GrillProducts.length) {
         toast.warn("لا توجد منتجات بحاجة إلى تجهيز في الشوايه");
         return;
       }
-  
+
       // 2. Fetch today's Grill consumption data
-      const { data: consumptionData } = await axios.get(`${apiUrl}/api/consumption`, config);
+      const { data: consumptionData } = await axios.get(
+        `${apiUrl}/api/consumption`,
+        config
+      );
       const allGrillConsumption = consumptionData.data;
       const GrillConsumptionsToday = allGrillConsumption.filter((item) => {
         const itemDate = formatDate(item.createdAt);
         return itemDate === date;
       });
-  
+
       // 3. Prepare total consumption order
       const totalConsumptionOrder = [];
-  
+
       for (const product of GrillProducts) {
         if (product.isDone) continue;
-  
+
         // Fetch product ingredients from recipes
         const productIngredients = product.sizeId
           ? allRecipe.find(
@@ -284,22 +297,22 @@ const Grill = () => {
           : allRecipe.find(
               (recipe) => recipe.productId._id === product.productid?._id
             )?.ingredients || [];
-  
+
         // Process ingredients
         for (const ingredient of productIngredients || []) {
           const existingItemIndex = totalConsumptionOrder.findIndex(
             (item) => item.itemId?._id === ingredient.itemId?._id
           );
-  
+
           const amount = ingredient.amount * product.quantity;
-  
+
           if (existingItemIndex !== -1) {
             totalConsumptionOrder[existingItemIndex].amount += amount;
           } else {
             const GrillConsumption = GrillConsumptionsToday.find(
               (kitItem) => kitItem.stockItemId._id === ingredient.itemId?._id
             );
-  
+
             totalConsumptionOrder.push({
               itemId: ingredient.itemId,
               amount,
@@ -309,20 +322,21 @@ const Grill = () => {
             });
           }
         }
-  
+
         // Process extras
         for (const extraGroup of product.extras || []) {
           for (const extra of extraGroup.extraDetails) {
             const extraIngredients =
-              allRecipe.find((recipe) => recipe.productId._id === extra.extraId._id)
-                ?.ingredients || [];
-  
+              allRecipe.find(
+                (recipe) => recipe.productId._id === extra.extraId._id
+              )?.ingredients || [];
+
             for (const ingredient of extraIngredients) {
               const existingItemIndex = totalConsumptionOrder.findIndex(
                 (item) => item.itemId?._id === ingredient.itemId?._id
               );
               const amount = ingredient.amount;
-  
+
               if (existingItemIndex !== -1) {
                 totalConsumptionOrder[existingItemIndex].amount += amount;
               } else {
@@ -335,17 +349,18 @@ const Grill = () => {
           }
         }
       }
-  
+
       // 4. Update consumption data in the Grill
       for (const item of totalConsumptionOrder) {
         const GrillConsumption = GrillConsumptionsToday.find(
           (kitItem) => kitItem.stockItemId._id === item.itemId?._id
         );
-  
+
         if (GrillConsumption) {
-          const consumptionQuantity = GrillConsumption.consumptionQuantity + item.amount;
+          const consumptionQuantity =
+            GrillConsumption.consumptionQuantity + item.amount;
           const bookBalance = GrillConsumption.bookBalance - item.amount;
-  
+
           await axios.put(
             `${apiUrl}/api/consumption/${GrillConsumption._id}`,
             {
@@ -357,17 +372,18 @@ const Grill = () => {
           );
         }
       }
-  
+
       // 5. Update order status
       const updatedProducts = orderProducts.map((product) => ({
         ...product,
         isDone: GrillProducts.some(
-          (GrillProduct) => GrillProduct.productid?._id === product.productid._id
+          (GrillProduct) =>
+            GrillProduct.productid?._id === product.productid._id
         ),
       }));
-  
+
       // const preparationStatus = { "preparationStatus.Grill": "Prepared" };
-  
+
       if (type === "Internal") {
         const waiter = await specifiedWaiter(id);
         if (!waiter) {
@@ -376,25 +392,25 @@ const Grill = () => {
         }
         const response = await axios.put(
           `${apiUrl}/api/order/${id}`,
-          {"preparationStatus.Grill": "Prepared",
-          products: updatedProducts,
-          waiter},
+          {
+            "preparationStatus.Grill": "Prepared",
+            products: updatedProducts,
+            waiter,
+          },
           config
         );
-        if (response){
+        if (response) {
           GrillSocket.emit("orderready", `أورد جاهز في الشوايه - ${waiter}`);
         }
       } else {
         await axios.put(
           `${apiUrl}/api/order/${id}`,
-          { products: updatedProducts, 
-            "preparationStatus.Grill": "Prepared",
-           },
+          { products: updatedProducts, "preparationStatus.Grill": "Prepared" },
           config
         );
         GrillSocket.emit("orderready", "أورد جاهز في الشوايه");
       }
-  
+
       // 6. Refresh state
       getAllOrders();
       getGrillConsumption();
@@ -404,8 +420,6 @@ const Grill = () => {
       toast.error("حدث خطأ أثناء تعديل حالة الطلب. يرجى إعادة المحاولة.");
     }
   };
-
-
 
   // Fetches all active waiters from the API
 

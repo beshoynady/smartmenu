@@ -2388,6 +2388,12 @@ function App() {
         filterByTime,
         isRefresh,
         setisRefresh,
+
+        cashierSocket,
+        kitchenSocket,
+        BarSocket,
+        GrillSocket,
+        waiterSocket
       }}
     >
       {isLoading && <LoadingPage />}

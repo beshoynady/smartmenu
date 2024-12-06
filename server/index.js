@@ -173,28 +173,6 @@ cashierNamespace.on('connection', (socket) => {
     // إرسال الإشعار إلى المطبخ
     cashierNamespace.emit('neworder', notification);
   });
-  socket.on('orderready', (notification) => {
-    console.log("New order received:", notification);
-    // إرسال الإشعار إلى المطبخ
-    cashierNamespace.emit('orderready', notification);
-  });
-
-  // استقبال إشعار من الكاشير إلى الويتر
-  socket.on('helprequest', (notification) => {
-    console.log("Order ready notification:", notification);
-    waiterNamespace.emit('helprequest', notification);
-  });
-
-  socket.on('orderwaiter', (notification) => {
-    console.log("Order ready notification:", notification);
-    waiterNamespace.emit('orderwaiter', notification);
-  });
-
-  socket.on('orderkitchen', (notification) => {
-    console.log("Order ready notification:", notification);
-    kitchenNamespace.emit('orderkitchen', notification);
-    // cashierNamespace.emit('orderready', notification);
-  });
 
   socket.on('disconnect', () => {
     console.log('Cashier disconnected');
@@ -205,11 +183,6 @@ cashierNamespace.on('connection', (socket) => {
 // التعامل مع اتصالات المطبخ
 kitchenNamespace.on('connection', (socket) => {
   console.log('Kitchen connected');
-
-  // socket.on('orderready', (notification) => {
-  //   console.log("Order ready notification:", notification);
-  //   kitchenNamespace.emit('orderready', notification);
-  // });
 
   socket.on('orderkitchen', (notification) => {
     console.log("Order ready notification:", notification);
@@ -225,11 +198,6 @@ kitchenNamespace.on('connection', (socket) => {
 BarNamespace.on('connection', (socket) => {
   console.log('Bar connected');
 
-  socket.on('orderready', (notification) => {
-    console.log("Order ready notification:", notification);
-    waiterNamespace.emit('orderready', notification);
-  });
-
   socket.on('orderBar', (notification) => {
     console.log("Order ready notification:", notification);
     BarNamespace.emit('orderBar', notification);
@@ -243,11 +211,6 @@ BarNamespace.on('connection', (socket) => {
 
 GrillNamespace.on('connection', (socket) => {
   console.log('Grill connected');
-
-  socket.on('orderready', (notification) => {
-    console.log("Order ready notification:", notification);
-    waiterNamespace.emit('orderready', notification);
-  });
 
   socket.on('orderGrill', (notification) => {
     console.log("Order ready notification:", notification);
@@ -271,6 +234,11 @@ waiterNamespace.on('connection', (socket) => {
   socket.on('helprequest', (notification) => {
     console.log("Help request received:", notification);
     waiterNamespace.emit('helprequest', notification);
+  });
+  
+  socket.on('orderwaiter', (notification) => {
+    console.log("Order ready notification:", notification);
+    waiterNamespace.emit('orderwaiter', notification);
   });
 
   socket.on('disconnect', () => {

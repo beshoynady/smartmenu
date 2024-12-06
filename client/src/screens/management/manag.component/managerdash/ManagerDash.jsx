@@ -17,18 +17,6 @@ import {
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const cashierSocket = io(`${process.env.REACT_APP_API_URL}/cashier`, {
-  reconnection: true,
-  reconnectionAttempts: Infinity,
-  reconnectionDelay: 1000,
-});
-
-const waiterSocket = io(`${process.env.REACT_APP_API_URL}/waiter`, {
-  reconnection: true,
-  reconnectionAttempts: Infinity,
-  reconnectionDelay: 1000,
-});
-
 const ManagerDash = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
   const token = localStorage.getItem("token_e");
@@ -50,6 +38,11 @@ const ManagerDash = () => {
     setendpagination,
     isRefresh,
     setisRefresh,
+    cashierSocket,
+    kitchenSocket,
+    BarSocket,
+    GrillSocket,
+    waiterSocket,
   } = useContext(detacontext);
 
   const [showModal, setShowModal] = useState(false);
@@ -172,7 +165,7 @@ const ManagerDash = () => {
   ];
   const [update, setupdate] = useState(false);
 
-  const changeorderstauts = async (e, orderId, cashier) => {
+  const changeOrderStauts = async (e, orderId, cashier) => {
     try {
       if (!token) {
         // Handle case where token is not available
@@ -192,9 +185,9 @@ const ManagerDash = () => {
         toast.success("تم تغيير حالة الطلب بنجاح");
 
         if (status === "Approved") {
+          kitchenSocket.emit("orderkitchen", "استلام اوردر جديد");
           setupdate(!update);
           setisRefresh(!isRefresh);
-          cashierSocket.emit("orderkitchen", "استلام اوردر جديد");
         }
       }
     } catch (error) {
@@ -1023,7 +1016,7 @@ const ManagerDash = () => {
                                   className="form-control border-primary m-0 p-2 h-auto"
                                   name="status"
                                   onChange={(e) => {
-                                    changeorderstauts(
+                                    changeOrderStauts(
                                       e,
                                       recent._id,
                                       employeeLoginInfo.id
