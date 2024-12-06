@@ -252,9 +252,9 @@ const NavBar = () => {
     } else if (employeeLoginInfo.role === "chef") {
       kitchenSocket.on("orderkitchen", handleNewOrderNotification);
     } else if (employeeLoginInfo.role === "Bartender") {
-      kitchenSocket.on("orderBar", handleNewOrderNotification);
+      BarSocket.on("orderBar", handleNewOrderNotification);
     }else if (employeeLoginInfo.role === "Grill Chef") {
-      kitchenSocket.on("orderGrill", handleNewOrderNotification);
+      GrillSocket.on("orderGrill", handleNewOrderNotification);
     }else if (employeeLoginInfo.role === "waiter") {
       waiterSocket.on("orderready", handleNewOrderNotification);
       waiterSocket.on("neworder", handleNewOrderNotification);
@@ -271,6 +271,10 @@ const NavBar = () => {
         cashierSocket.off("orderready", handleNewOrderNotification);
         cashierSocket.off("helprequest", handleNewOrderNotification);
       } else if (employeeLoginInfo.role === "chef") {
+        kitchenSocket.off("orderkitchen", handleNewOrderNotification);
+      }else if (employeeLoginInfo.role === "Bartender") {
+        kitchenSocket.off("orderkitchen", handleNewOrderNotification);
+      }else if (employeeLoginInfo.role === "Grill Chef") {
         kitchenSocket.off("orderkitchen", handleNewOrderNotification);
       } else if (employeeLoginInfo.role === "waiter") {
         waiterSocket.off("neworder", handleNewOrderNotification);
