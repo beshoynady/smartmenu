@@ -202,12 +202,12 @@ const NavBar = () => {
     // Define the event handler
     const handleNewOrderNotification = (notification) => {
       const parts = notification.split("-");
-      console.log({ notification, parts });
+      const waiterId = parts[1];
+      const currentWaiterId = employeeLoginInfo.id;
+      console.log({ notification, parts, waiterId });
 
-      if (parts.length === 2) {
+      if (waiterId) {
         const notificationText = parts[0];
-        const waiterId = parts[1];
-        const currentWaiterId = employeeLoginInfo.id;
         // Check if the waiter id matches the current user's waiter id
         if (waiterId === currentWaiterId) {
           // Assuming currentWaiterId is the ID of the current waiter
