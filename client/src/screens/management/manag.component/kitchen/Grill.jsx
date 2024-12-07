@@ -2,13 +2,6 @@ import { useState, useEffect, useRef, useContext } from "react";
 import axios from "axios";
 import { detacontext } from "../../../../App";
 import { toast } from "react-toastify";
-import io from "socket.io-client";
-
-const GrillSocket = io(`${process.env.REACT_APP_API_URL}/grill`, {
-  reconnection: true,
-  reconnectionAttempts: Infinity,
-  reconnectionDelay: 1000,
-});
 
 const Grill = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
@@ -248,6 +241,7 @@ const Grill = () => {
       toast.error("فش بدء الاوردر ! اعد تحميل الصفحة ");
     }
   };
+
   const updateOrderDone = async (id, type) => {
     if (!token) {
       toast.error("رجاء تسجيل الدخول مره أخرى");
@@ -381,6 +375,7 @@ const Grill = () => {
             GrillProduct.productid?._id === product.productid._id
         ),
       }));
+      console.log({updatedProducts})
 
       // const preparationStatus = { "preparationStatus.Grill": "Prepared" };
 

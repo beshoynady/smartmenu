@@ -2,13 +2,8 @@ import { useState, useEffect, useRef, useContext } from "react";
 import axios from "axios";
 import { detacontext } from "../../../../App";
 import { toast } from "react-toastify";
-import io from "socket.io-client";
 
-const kitchenSocket = io(`${process.env.REACT_APP_API_URL}/kitchen`, {
-  reconnection: true,
-  reconnectionAttempts: Infinity,
-  reconnectionDelay: 1000,
-});
+
 
 const Kitchen = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
