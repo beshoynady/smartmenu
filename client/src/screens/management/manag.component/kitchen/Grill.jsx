@@ -368,13 +368,18 @@ const Grill = () => {
       }
 
       // 5. Update order status
-      const updatedProducts = orderProducts.map((product) => ({
-        ...product,
-        isDone: GrillProducts.some(
-          (GrillProduct) =>
-            GrillProduct.productid?._id === product.productid._id
-        ),
-      }));
+      const updatedProducts = orderProducts.map((product) => {
+        if (
+          GrillProducts.some(
+            (GrillProduct) =>
+              GrillProduct.productid?._id === product.productid._id
+          )
+        ) {
+          return { ...product, isDone: true };
+        } else {
+          return product;
+        }
+      });
       console.log({updatedProducts})
 
       // const preparationStatus = { "preparationStatus.Grill": "Prepared" };

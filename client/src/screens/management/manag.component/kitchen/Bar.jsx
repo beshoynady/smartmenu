@@ -375,12 +375,18 @@ const Bar = () => {
       }
 
       // 5. Update order status
-      const updatedProducts = orderProducts.map((product) => ({
-        ...product,
-        isDone: BarProducts.some(
-          (BarProduct) => BarProduct.productid?._id === product.productid._id
-        ),
-      }));
+      const updatedProducts = orderProducts.map((product) => {
+        if (
+          BarProducts.some(
+            (BarProduct) =>
+              BarProduct.productid?._id === product.productid._id
+          )
+        ) {
+          return { ...product, isDone: true };
+        } else {
+          return product;
+        }
+      });
 
       // const preparationStatus = { "preparationStatus.Bar": "Prepared" };
 
