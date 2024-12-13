@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { detacontext } from "../../../../App";
 import "../orders/Orders.css";
 
-const preparationsection = () => {
+const PreparationSection = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
   const token = localStorage.getItem("token_e");
 
@@ -157,25 +157,24 @@ const preparationsection = () => {
     }
   };
 
-  const searchByPreparationSectionName = (name)=>{
-    e.preventDefault();
+  const searchByPreparationSectionName = (name) => {
     if (!token) {
       // Handle case where token is not available
       toast.error("رجاء تسجيل الدخول مره اخري");
       return;
     }
-    if(!name){
-      getAllPreparationSections()
-    }else{
-        const preparationSection = allPreparationSections
-          ? allPreparationSections.filter(
-              (PreparationSection) => PreparationSection.name.startsWith(name) === true
-            )
-          : [];
-          setallPreparationSections(preparationSection)
+    if (!name) {
+      getAllPreparationSections();
+    } else {
+      const preparationSection = allPreparationSections
+        ? allPreparationSections.filter(
+            (PreparationSection) =>
+              PreparationSection.name.startsWith(name) === true
+          )
+        : [];
+      setallPreparationSections(preparationSection);
     }
-    
-  }
+  };
 
   const handlePreparationSectionData = (PreparationSection) => {
     setPreparationSectionId(PreparationSection._id);
@@ -246,7 +245,9 @@ const preparationsection = () => {
                 <input
                   type="text"
                   className="form-control border-primary m-0 p-2 h-auto"
-                  onChange={(e) => searchByPreparationSectionName(e.target.value)}
+                  onChange={(e) =>
+                    searchByPreparationSectionName(e.target.value)
+                  }
                 />
               </div>
             </div>
@@ -484,8 +485,6 @@ const preparationsection = () => {
                     <option value="false">غير متاح</option>
                   </select>
                 </div>
-
-              
               </div>
 
               <div className="modal-footer d-flex flex-nowrap align-items-center justify-content-between m-0 p-1">
@@ -548,4 +547,4 @@ const preparationsection = () => {
   );
 };
 
-export default preparationsection;
+export default PreparationSection;
