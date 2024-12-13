@@ -207,6 +207,7 @@ const getProductByCategory = async (req, res) => {
     const categoryid = req.params.categoryid;
     const products = await ProductModel.find({ category: categoryid })
       .populate("category")
+      .populate("PreparationSection")
       .populate("sizes.sizeRecipe")
       .populate({
         path: "productRecipe",
@@ -237,6 +238,7 @@ const getOneProduct = async (req, res) => {
     const productid = req.params.productid;
     const product = await ProductModel.findById(productid)
       .populate("category")
+      .populate("PreparationSection")
       .populate("sizes.sizeRecipe")
       .populate({
         path: "productRecipe",

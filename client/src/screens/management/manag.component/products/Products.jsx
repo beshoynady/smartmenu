@@ -118,7 +118,7 @@ const Products = () => {
   const [hasExtras, setHasExtras] = useState(false);
   const [isAddon, setIsAddon] = useState(false);
   const [extras, setExtras] = useState([]);
-  
+
   const addExtra = (extraId) => {
     console.log({ extraId });
     if (extras.includes(extraId)) {
@@ -127,11 +127,31 @@ const Products = () => {
       setExtras([...extras, extraId]);
     }
   };
-  const preparationSectionEN= ["Bar", "Kitchen", "Grill"]
-  const preparationSectionAR= ["بار", "مطبخ", "شوايه"]
 
-  const [preparationSection, setpreparationSection] = useState('');
-  
+  const [preparationSection, setpreparationSection] = useState("");
+  const [allPreparationSections, setallPreparationSections] = useState([]);
+
+  const getAllPreparationSections = async () => {
+    if (!token) {
+      toast.error("رجاء تسجيل الدخول مره اخرى");
+      return;
+    }
+
+    try {
+      const res = await axios.get(`${apiUrl}/api/preparationsection`, config);
+      if (res.status === 200) {
+        const PreparationSections = res.data.data;
+        console.log({ PreparationSections });
+        setallPreparationSections(PreparationSections);
+      } else {
+        throw new Error("Failed to fetch data");
+      }
+    } catch (error) {
+      console.error("حدث خطأ أثناء استلام البيانات:", error);
+      toast.error("حدث خطأ أثناء جلب البيانات، يرجى المحاولة مرة أخرى لاحقًا.");
+    }
+  };
+
   const createProduct = async (e) => {
     e.preventDefault();
 
@@ -261,7 +281,7 @@ const Products = () => {
     setproductdiscount(product.discount);
     setproductcategoryid(product.category._id);
     setavailable(product.available);
-    setpreparationSection(product.preparationSection);
+    setpreparationSection(product.preparationSection?._id);
     setsizes(
       product.sizes
         ? product.sizes
@@ -496,25 +516,23 @@ const Products = () => {
     }
   };
 
+  const calculateTotalCost = (ingredients) => {
+    let total = 0;
 
+    ingredients &&
+      ingredients.map((ingredient) => {
+        const costPart = ingredient.itemId?.costOfPart;
+        const costOfIngerdient = Number(ingredient.amount) * Number(costPart);
+        total += costOfIngerdient;
+      });
+    return total;
+  };
 
-  const calculateTotalCost = (ingredients)=>{
-    let total = 0
-    
-    ingredients&&ingredients.map(ingredient=>{
-      const costPart = ingredient.itemId?.costOfPart
-      const costOfIngerdient = Number(ingredient.amount) * Number(costPart)
-      total += costOfIngerdient
-    })
-    return total
-  }
-
-  
   useEffect(() => {
     getallproducts();
     getallCategories();
     getAllOrders();
-    // getallStockItem()
+    getAllPreparationSections();
   }, []);
 
   return (
@@ -714,7 +732,7 @@ const Products = () => {
                             {product.description}
                           </td>
                           <td>{product.category.name}</td>
-                          <td>{product.preparationSection}</td>
+                          <td>{product.preparationSection?.name}</td>
                           <td>
                             {product.comboItems
                               ?.map(
@@ -728,7 +746,10 @@ const Products = () => {
                           <td>{product.sizes.length}</td>
                           <td>{product.extras.length}</td>
                           <td>
-                            {product.productRecipe? calculateTotalCost(product.productRecipe?.ingredients) / product.productRecipe?.numberOfMeals
+                            {product.productRecipe
+                              ? calculateTotalCost(
+                                  product.productRecipe?.ingredients
+                                ) / product.productRecipe?.numberOfMeals
                               : "اضف تكلفه"}
                           </td>
                           <td>{product.price}</td>
@@ -785,8 +806,11 @@ const Products = () => {
                               <td></td>
                               <td></td>
                               <td>
-                               {size.sizeRecipe? calculateTotalCost(size.sizeRecipe?.ingredients) / Number(size.sizeRecipe?.numberOfMeals)
-                              : "اضف تكلفه"}
+                                {size.sizeRecipe
+                                  ? calculateTotalCost(
+                                      size.sizeRecipe?.ingredients
+                                    ) / Number(size.sizeRecipe?.numberOfMeals)
+                                  : "اضف تكلفه"}
                               </td>
                               <td>{size.sizePrice}</td>
                               <td>{size.sizeDiscount}</td>
@@ -938,10 +962,10 @@ const Products = () => {
                     onChange={(e) => setpreparationSection(e.target.value)}
                   >
                     <option value="">اختر القسم</option>
-                    {preparationSectionEN.map((section, i) => {
+                    {allPreparationSections.map((section, i) => {
                       return (
-                        <option value={section} key={i}>
-                          {preparationSectionAR[i]}
+                        <option value={section._id} key={i}>
+                          {section.name}
                         </option>
                       );
                     })}
@@ -1343,11 +1367,14 @@ const Products = () => {
                     form="carform"
                     onChange={(e) => setpreparationSection(e.target.value)}
                   >
-                    <option value={preparationSection}>{preparationSection}</option>
-                    {preparationSectionEN.map((section, i) => {
+                    <option value={preparationSection._id}>
+                      {allPreparationSections.find(section=>section._id===preparationSection).name}
+                    </option>
+
+                    {allPreparationSections.map((section, i) => {
                       return (
-                        <option value={section} key={i}>
-                          {preparationSectionAR[i]}
+                        <option value={section._id} key={i}>
+                          {section.name}
                         </option>
                       );
                     })}
