@@ -1,0 +1,167 @@
+const PreparationTicketModel = require("../models/PreparationTicket.model.js");
+
+const createPreparationTicket = async (req, res) => {
+  try {
+    const {
+      order,
+      preparationSection,
+      status,
+      products,
+    } = req.body;
+
+    const newPreparationTicket = await PreparationTicketModel.create({
+      order,
+      preparationSection,
+      status,
+      products,
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "Preparation ticket created successfully",
+      data: newPreparationTicket,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to create preparation ticket",
+      error: error.message,
+    });
+  }
+};
+
+const getAllPreparationTickets = async (req, res) => {
+  try {
+    const preparationTickets = await PreparationTicketModel.find()
+      .populate("order")
+      .populate("products.productid", "_id name preparationSection")
+      .populate("products.extras.extraDetails.extraId", "_id name")
+      .populate("preparationSection", "_id name")
+      .populate("responsibleEmployee", "_id username role")
+      .populate("waiter", "_id fullname username role shift sectionNumber");
+    res.status(200).json({
+      success: true,
+      data: preparationTickets,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch preparation tickets",
+      error: error.message,
+    });
+  }
+};
+
+const getPreparationTicketById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const preparationTicket = await PreparationTicketModel.findById(id)
+      .populate("order")
+      .populate("products.productid", "_id name preparationSection")
+      .populate("products.extras.extraDetails.extraId", "_id name")
+      .populate("preparationSection", "_id name")
+      .populate("responsibleEmployee", "_id username role")
+      .populate("waiter", "_id fullname username role shift sectionNumber");
+    if (!preparationTicket) {
+      return res.status(404).json({
+        success: false,
+        message: "Preparation ticket not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: preparationTicket,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch preparation ticket",
+      error: error.message,
+    });
+  }
+};
+
+const updatePreparationTicket = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const {
+      order,
+      preparationSection,
+      status,
+      responsibleEmployee,
+      waiter,
+      products,
+    } = req.body;
+
+    const updatedPreparationTicket =
+      await PreparationTicketModel.findByIdAndUpdate(
+        id,
+        {
+          order,
+          preparationSection,
+          status,
+          responsibleEmployee,
+          waiter,
+          products,
+        },
+        { new: true, runValidators: true }
+      );
+
+    if (!updatedPreparationTicket) {
+      return res.status(404).json({
+        success: false,
+        message: "Preparation ticket not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Preparation ticket updated successfully",
+      data: updatedPreparationTicket,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to update preparation ticket",
+      error: error.message,
+    });
+  }
+};
+
+const deletePreparationTicket = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const deletedPreparationTicket =
+      await PreparationTicketModel.findByIdAndDelete(id);
+
+    if (!deletedPreparationTicket) {
+      return res.status(404).json({
+        success: false,
+        message: "Preparation ticket not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Preparation ticket deleted successfully",
+      data: deletedPreparationTicket,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to delete preparation ticket",
+      error: error.message,
+    });
+  }
+};
+
+module.exports = {
+  createPreparationTicket,
+  getAllPreparationTickets,
+  getPreparationTicketById,
+  updatePreparationTicket,
+  deletePreparationTicket,
+};
