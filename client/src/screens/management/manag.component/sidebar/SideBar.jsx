@@ -17,11 +17,11 @@ const SideBar = () => {
 
   const arrowRefs = {
     arrowsetting: useRef(),
-    arrowmen: useRef(),
-    arrowemp: useRef(),
-    arrowsto: useRef(),
+    arrowmenue: useRef(),
+    arrowemployee: useRef(),
+    arrowstory: useRef(),
     arrowmessage: useRef(),
-    arrowsexp: useRef(),
+    arrowsexpinsev: useRef(),
     arrowssupplier: useRef(),
     arrowsCash: useRef(),
     arrowtable: useRef(),
@@ -321,8 +321,8 @@ const SideBar = () => {
                   )[0]?.read) && (
                   <li
                     className="list"
-                    ref={arrowRefs.arrowmen}
-                    onClick={() => openSubMenu(arrowRefs.arrowmen)}
+                    ref={arrowRefs.arrowmenue}
+                    onClick={() => openSubMenu(arrowRefs.arrowmenue)}
                   >
                     <div className="iconlink">
                       <a href="#">
@@ -334,6 +334,9 @@ const SideBar = () => {
                       <i className="bx bxs-chevron-down arrow"></i>
                     </div>
                     <ul className="submenu">
+                    <li className="list">
+                        <Link to="preparationsection">اقسام الاعداد</Link>
+                      </li>
                       {(isProgrammer ||
                         permissionsList?.filter(
                           (permission) =>
@@ -343,9 +346,14 @@ const SideBar = () => {
                           <Link to="menucategory">التصنيفات</Link>
                         </li>
                       )}
+                       {(isProgrammer ||
+                        permissionsList?.filter(
+                          (permission) => permission.resource === "products"
+                        )[0]?.update) && (
                       <li className="list">
                         <Link to="products">الأطباق</Link>
                       </li>
+                      )}
                       {(isProgrammer ||
                         permissionsList?.filter(
                           (permission) => permission.resource === "Recipes"
@@ -368,8 +376,8 @@ const SideBar = () => {
                   )[0]?.read) && (
                   <li
                     className="list"
-                    ref={arrowRefs.arrowemp}
-                    onClick={() => openSubMenu(arrowRefs.arrowemp)}
+                    ref={arrowRefs.arrowemployee}
+                    onClick={() => openSubMenu(arrowRefs.arrowemployee)}
                   >
                     <div className="iconlink">
                       <a href="#">
@@ -473,8 +481,8 @@ const SideBar = () => {
                   )[0]?.read) && (
                   <li
                     className="list"
-                    ref={arrowRefs.arrowsto}
-                    onClick={() => openSubMenu(arrowRefs.arrowsto)}
+                    ref={arrowRefs.arrowstory}
+                    onClick={() => openSubMenu(arrowRefs.arrowstory)}
                   >
                     <div className="iconlink">
                       <a href="#">
@@ -620,8 +628,8 @@ const SideBar = () => {
                   )[0]?.read) && (
                   <li
                     className="list"
-                    ref={arrowRefs.arrowsexp}
-                    onClick={() => openSubMenu(arrowRefs.arrowsexp)}
+                    ref={arrowRefs.arrowsexpinsev}
+                    onClick={() => openSubMenu(arrowRefs.arrowsexpinsev)}
                   >
                     <div className="iconlink">
                       <a href="#">

@@ -32,6 +32,9 @@ const Orders = React.lazy(() =>
 const Products = React.lazy(() =>
   import("./screens/management/manag.component/products/Products")
 );
+const PreparationSection = React.lazy(() =>
+  import("./screens/management/manag.component/products/PreparationSection.jsx")
+);
 const ProductRecipe = React.lazy(() =>
   import("./screens/management/manag.component/products/ProductRecipe")
 );
@@ -2458,6 +2461,14 @@ function App() {
               element={
                 <Suspense fallback={<LoadingPage />}>
                   <Products />
+                </Suspense>
+              }
+            />
+            <Route
+              path="preparationsection"
+              element={
+                <Suspense fallback={<LoadingPage />}>
+                  <PreparationSection />
                 </Suspense>
               }
             />

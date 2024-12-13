@@ -158,6 +158,7 @@ const OrderSchema = new mongoose.Schema({
     }
   ],
 
+
   subtotalSplitOrder: {
     type: Number,
     required: true,

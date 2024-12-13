@@ -1,0 +1,551 @@
+import React, { useState, useEffect, useContext } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { detacontext } from "../../../../App";
+import "../orders/Orders.css";
+
+const preparationsection = () => {
+  const apiUrl = process.env.REACT_APP_API_URL;
+  const token = localStorage.getItem("token_e");
+
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const {
+    allProducts,
+    setisLoading,
+    EditPagination,
+    startpagination,
+    endpagination,
+    setstartpagination,
+    setendpagination,
+  } = useContext(detacontext);
+
+  const [preparationSectionName, setpreparationSectionName] = useState("");
+  const [isActive, setisActive] = useState(false);
+
+  const [PreparationSectionId, setPreparationSectionId] = useState("");
+
+  const [allPreparationSections, setallPreparationSections] = useState([]);
+
+  const createPreparationSection = async (event) => {
+    event.preventDefault();
+
+    if (!token) {
+      toast.error("رجاء تسجيل الدخول مره أخرى");
+      return;
+    }
+
+    const PreparationSectionData = {
+      name: preparationSectionName,
+      isActive,
+    };
+
+    try {
+      const response = await axios.post(
+        `${apiUrl}/api/preparationsection/`,
+        PreparationSectionData,
+        config
+      );
+
+      if (response.isActive === 201) {
+        await getAllPreparationSections();
+        toast.success("تم إنشاء قسم الاعداد بنجاح.");
+      } else {
+        throw new Error("حدث خطأ أثناء إنشاء قسم الاعداد.");
+      }
+    } catch (error) {
+      console.error("حدث خطأ أثناء إرسال الطلب:", error);
+      if (error.response) {
+        handleErrorResponse(error.response);
+      } else {
+        toast.error("حدث خطأ أثناء الاتصال بالخادم.");
+      }
+    }
+  };
+
+  const handleErrorResponse = (response) => {
+    if (
+      response.isActive === 400 &&
+      response.data.message === "Preparation Section name already exists"
+    ) {
+      toast.error("اسم قسم الاعداد موجود بالفعل. الرجاء اختيار اسم آخر.");
+    } else if (response.isActive === 401) {
+      toast.error("انتهت صلاحية الجلسة، رجاء تسجيل الدخول مره أخرى.");
+    } else {
+      toast.error("حدث خطأ أثناء إنشاء قسم الاعداد. الرجاء المحاولة مرة أخرى.");
+    }
+  };
+
+  const getAllPreparationSections = async () => {
+    if (!token) {
+      toast.error("رجاء تسجيل الدخول مره اخرى");
+      return;
+    }
+
+    try {
+      const res = await axios.get(`${apiUrl}/api/preparationsection/`);
+      if (res.isActive === 200) {
+        const categories = res.data.data;
+        setallPreparationSections(categories);
+      } else {
+        throw new Error("Failed to fetch data");
+      }
+    } catch (error) {
+      console.error("حدث خطأ أثناء استلام البيانات:", error);
+      toast.error("حدث خطأ أثناء جلب البيانات، يرجى المحاولة مرة أخرى لاحقًا.");
+    }
+  };
+
+  const editPreparationSection = async (event) => {
+    event.preventDefault();
+
+    if (!token) {
+      toast.error("رجاء تسجيل الدخول مره اخرى");
+      return;
+    }
+
+    const bodyData = {
+      name: preparationSectionName,
+      isActive,
+    };
+
+    try {
+      const editResponse = await axios.put(
+        `${apiUrl}/api/preparationsection/${PreparationSectionId}`,
+        bodyData,
+        config
+      );
+
+      if (editResponse.isActive === 200) {
+        getAllPreparationSections();
+        toast.success("تم تعديل قسم الاعداد بنجاح.");
+      } else {
+        throw new Error("فشل تعديل قسم الاعداد");
+      }
+    } catch (error) {
+      console.error("حدث خطأ أثناء تعديل قسم الاعداد:", error);
+      toast.error("حدث خطأ أثناء تعديل قسم الاعداد. الرجاء المحاولة لاحقًا.");
+    }
+  };
+
+  const deletePreparationSection = async (event) => {
+    event.preventDefault();
+
+    if (!token) {
+      toast.error("رجاء تسجيل الدخول مره اخرى");
+      return;
+    }
+
+    try {
+      const deleted = await axios.delete(
+        `${apiUrl}/api/preparationsection/${PreparationSectionId}`
+      );
+
+      if (deleted.isActive === 200) {
+        getAllPreparationSections();
+        toast.success("تم حذف قسم الاعداد بنجاح.");
+      } else {
+        throw new Error("فشل حذف قسم الاعداد");
+      }
+    } catch (error) {
+      console.error("حدث خطأ أثناء حذف قسم الاعداد:", error);
+      toast.error("حدث خطأ أثناء حذف قسم الاعداد. الرجاء المحاولة لاحقًا.");
+    }
+  };
+
+  const searchByPreparationSectionName = (name)=>{
+    e.preventDefault();
+    if (!token) {
+      // Handle case where token is not available
+      toast.error("رجاء تسجيل الدخول مره اخري");
+      return;
+    }
+    if(!name){
+      getAllPreparationSections()
+    }else{
+        const preparationSection = allPreparationSections
+          ? allPreparationSections.filter(
+              (PreparationSection) => PreparationSection.name.startsWith(name) === true
+            )
+          : [];
+          setallPreparationSections(preparationSection)
+    }
+    
+  }
+
+  const handlePreparationSectionData = (PreparationSection) => {
+    setPreparationSectionId(PreparationSection._id);
+    setpreparationSectionName(PreparationSection.name);
+    setisActive(PreparationSection.isActive);
+  };
+
+  useEffect(() => {
+    getallPreparationSections();
+  }, []);
+
+  return (
+    <div className="w-100 px-3 d-flex align-itmes-center justify-content-start">
+      <div className="table-responsive">
+        <div className="table-wrapper p-3 mw-100">
+          <div className="table-title">
+            <div className="w-100 d-flex flex-wrap align-items-center justify-content-between">
+              <div className="col-12 col-md-4 text-md-right text-center mb-3 mb-md-0">
+                <h2>
+                  ادارة <b>اقسام اعداد الطلبات</b>
+                </h2>
+              </div>
+              <div className="col-12 col-md-8 d-flex flex-wrap justify-content-between align-items-center p-0">
+                <div className="col-12 col-sm-3 d-flex align-items-center m-0 p-0">
+                  <a
+                    href="#addPreparationSectionModal"
+                    className="btn btn-success w-100 d-flex align-items-center justify-content-center text-nowrap"
+                    data-toggle="modal"
+                  >
+                    <span>اضافه قسم اعداد</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="table-filter print-hide">
+            <div className="col-12 text-dark d-flex flex-wrap align-items-center justify-content-start p-0 m-0">
+              <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
+                <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                  عرض
+                </label>
+                <select
+                  className="form-control border-primary m-0 p-2 h-auto"
+                  onChange={(e) => {
+                    setstartpagination(0);
+                    setendpagination(e.target.value);
+                  }}
+                >
+                  {(() => {
+                    const options = [];
+                    for (let i = 5; i < 100; i += 5) {
+                      options.push(
+                        <option key={i} value={i}>
+                          {i}
+                        </option>
+                      );
+                    }
+                    return options;
+                  })()}
+                </select>
+              </div>
+
+              <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
+                <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                  اسم قسم الاعداد
+                </label>
+                <input
+                  type="text"
+                  className="form-control border-primary m-0 p-2 h-auto"
+                  onChange={(e) => searchByPreparationSectionName(e.target.value)}
+                />
+              </div>
+            </div>
+          </div>
+
+          <table className="table table-striped table-hover">
+            <thead>
+              <tr>
+                {/* <th>
+                          <span className="custom-checkbox">
+                            <input type="checkbox" className="form-check-input form-check-input-lg" id="selectAll" />
+                            <label htmlFor="selectAll"></label>
+                          </span>
+                        </th> */}
+                <th>م</th>
+                <th>الاسم</th>
+                <th>الحالة</th>
+                <th>بواسطة</th>
+                <th>تعديل</th>
+                <th>اجراءات</th>
+              </tr>
+            </thead>
+            <tbody>
+              {allPreparationSections &&
+                allPreparationSections.map((PreparationSection, i) => {
+                  if ((i >= startpagination) & (i < endpagination)) {
+                    return (
+                      <tr key={i}>
+                        {/* <td>
+                                  <span className="custom-checkbox">
+                                    <input type="checkbox" className="form-check-input form-check-input-lg" id="checkbox1" name="options[]" value="1" />
+                                    <label htmlFor="checkbox1"></label>
+                                  </span>
+                                </td> */}
+                        <td>{i + 1}</td>
+                        <td>{PreparationSection.name}</td>
+                        <td>
+                          {PreparationSection.isActive ? "متاحة" : "ليست متاحة"}
+                        </td>
+
+                        <td>
+                          {PreparationSection.createdBy
+                            ? PreparationSection.createdBy?.username
+                            : "غير معروف"}
+                        </td>
+                        <td>
+                          <a
+                            href="#editPreparationSectionModal"
+                            className="edit"
+                            data-toggle="modal"
+                            onClick={() =>
+                              handlePreparationSectionData(PreparationSection)
+                            }
+                          >
+                            <i
+                              className="material-icons"
+                              data-toggle="tooltip"
+                              title="Edit"
+                            >
+                              &#xE254;
+                            </i>
+                          </a>
+
+                          <a
+                            href="#deletePreparationSectionModal"
+                            className="delete"
+                            data-toggle="modal"
+                            onClick={() =>
+                              setPreparationSectionId(PreparationSection._id)
+                            }
+                          >
+                            <i
+                              className="material-icons"
+                              data-toggle="tooltip"
+                              title="Delete"
+                            >
+                              &#xE872;
+                            </i>
+                          </a>
+                        </td>
+                      </tr>
+                    );
+                  }
+                })}
+            </tbody>
+          </table>
+          <div className="clearfix">
+            <div className="hint-text text-dark">
+              عرض{" "}
+              <b>
+                {allPreparationSections.length > endpagination
+                  ? endpagination
+                  : allPreparationSections.length}
+              </b>{" "}
+              من <b>{allPreparationSections.length}</b> عنصر
+            </div>
+            <ul className="pagination">
+              <li onClick={EditPagination} className="page-item disabled">
+                <a href="#">السابق</a>
+              </li>
+              <li onClick={EditPagination} className="page-item">
+                <a href="#" className="page-link">
+                  1
+                </a>
+              </li>
+              <li onClick={EditPagination} className="page-item">
+                <a href="#" className="page-link">
+                  2
+                </a>
+              </li>
+              <li onClick={EditPagination} className="page-item true">
+                <a href="#" className="page-link">
+                  3
+                </a>
+              </li>
+              <li onClick={EditPagination} className="page-item">
+                <a href="#" className="page-link">
+                  4
+                </a>
+              </li>
+              <li onClick={EditPagination} className="page-item">
+                <a href="#" className="page-link">
+                  5
+                </a>
+              </li>
+              <li onClick={EditPagination} className="page-item">
+                <a href="#" className="page-link">
+                  التالي
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div id="addPreparationSectionModal" className="modal fade">
+        <div className="modal-dialog modal-lg">
+          <div className="modal-content shadow-lg border-0 rounded ">
+            <form onSubmit={(e) => createPreparationSection(e, setisLoading)}>
+              <div className="modal-header d-flex flex-wrap align-items-center text-light bg-primary">
+                <h4 className="modal-title">اضافه قسم اعداد</h4>
+                <button
+                  type="button"
+                  className="close m-0 p-1"
+                  data-dismiss="modal"
+                  aria-hidden="true"
+                >
+                  &times;
+                </button>
+              </div>
+              <div className="modal-body d-flex flex-wrap align-items-center p-3 text-right">
+                <div className="form-group col-12 col-md-6">
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    الاسم
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    required
+                    value={preparationSectionName}
+                    onChange={(e) => setpreparationSectionName(e.target.value)}
+                  />
+                </div>
+                <div className="form-group col-12 col-md-6">
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    الحالة
+                  </label>
+                  <select
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    value={isActive.toString()}
+                    onChange={(e) => setisActive(e.target.value === "true")}
+                  >
+                    <option value="">اختر الحالة</option>
+                    <option value="true">متاح</option>
+                    <option value="false">غير متاح</option>
+                  </select>
+                </div>
+              </div>
+              <div className="modal-footer d-flex flex-nowrap align-items-center justify-content-between m-0 p-1">
+                <input
+                  type="submit"
+                  className="btn btn-success col-6 h-100 px-2 py-3 m-0"
+                  value="اضافه"
+                />
+                <input
+                  type="button"
+                  className="btn btn-danger col-6 h-100 px-2 py-3 m-0"
+                  data-dismiss="modal"
+                  value="إغلاق"
+                />
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div id="editPreparationSectionModal" className="modal fade">
+        <div className="modal-dialog modal-lg">
+          <div className="modal-content shadow-lg border-0 rounded ">
+            <form onSubmit={editPreparationSection}>
+              <div className="modal-header d-flex flex-wrap align-items-center text-light bg-primary">
+                <h4 className="modal-title">تعديل قسم الاعداد</h4>
+                <button
+                  type="button"
+                  className="close m-0 p-1"
+                  data-dismiss="modal"
+                  aria-hidden="true"
+                >
+                  &times;
+                </button>
+              </div>
+              <div className="modal-body d-flex flex-wrap align-items-center p-3 text-right">
+                <div className="form-group col-12 col-md-6">
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    الاسم
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    required
+                    value={preparationSectionName}
+                    onChange={(e) => setpreparationSectionName(e.target.value)}
+                  />
+                </div>
+                <div className="form-group col-12 col-md-6">
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    الحالة
+                  </label>
+                  <select
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    value={isActive.toString()} // تحويل قيمة isActive إلى سلسلة نصية
+                    onChange={(e) => setisActive(e.target.value === "true")} // تحويل القيمة المحددة إلى قيمة بوليانية
+                  >
+                    <option value="true">متاح</option>
+                    <option value="false">غير متاح</option>
+                  </select>
+                </div>
+
+              
+              </div>
+
+              <div className="modal-footer d-flex flex-nowrap align-items-center justify-content-between m-0 p-1">
+                <input
+                  type="submit"
+                  className="btn btn-success col-6 h-100 px-2 py-3 m-0"
+                  value="حفظ"
+                />
+                <input
+                  type="button"
+                  className="btn btn-danger col-6 h-100 px-2 py-3 m-0"
+                  data-dismiss="modal"
+                  value="إغلاق"
+                />
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div id="deletePreparationSectionModal" className="modal fade">
+        <div className="modal-dialog modal-lg">
+          <div className="modal-content shadow-lg border-0 rounded ">
+            <form onSubmit={deletePreparationSection}>
+              <div className="modal-header d-flex flex-wrap align-items-center text-light bg-primary">
+                <h4 className="modal-title">حذف قسم اعداد</h4>
+                <button
+                  type="button"
+                  className="close m-0 p-1"
+                  data-dismiss="modal"
+                  aria-hidden="true"
+                >
+                  &times;
+                </button>
+              </div>
+              <div className="modal-body d-flex flex-wrap align-items-center p-3 text-right">
+                <p>هل انت متاكد من حذف هذا قسم الاعداد?</p>
+                <p className="text-warning text-center mt-3">
+                  <small>لا يمكن الرجوع فيه.</small>
+                </p>
+              </div>
+              <div className="modal-footer d-flex flex-nowrap align-items-center justify-content-between m-0 p-1">
+                <input
+                  type="submit"
+                  className="btn btn-warning col-6 h-100 px-2 py-3 m-0"
+                  value="حذف"
+                />
+                <input
+                  type="button"
+                  className="btn btn-danger col-6 h-100 px-2 py-3 m-0"
+                  data-dismiss="modal"
+                  value="إغلاق"
+                />
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default preparationsection;
