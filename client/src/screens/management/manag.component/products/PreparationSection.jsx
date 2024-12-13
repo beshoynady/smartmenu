@@ -50,11 +50,13 @@ const PreparationSection = () => {
         PreparationSectionData,
         config
       );
-      if(response.status === 409 ){
+      if (response.status === 409) {
         toast.error("هذا القسم موجود بالفعل تاكد من الاسم.");
-
       }
-      console.log({newPreparationSection : response.data.data, PreparationSectionData})
+      console.log({
+        newPreparationSection: response.data.data,
+        PreparationSectionData,
+      });
       if (response.isActive === 201) {
         await getAllPreparationSections();
         toast.success("تم إنشاء قسم الاعداد بنجاح.");
@@ -91,10 +93,10 @@ const PreparationSection = () => {
     }
 
     try {
-      const res = await axios.get(`${apiUrl}/api/preparationsection`,config);
+      const res = await axios.get(`${apiUrl}/api/preparationsection`, config);
       if (res.status === 200) {
         const PreparationSections = res.data.data;
-        console.log({PreparationSections})
+        console.log({ PreparationSections });
         setallPreparationSections(PreparationSections);
       } else {
         throw new Error("Failed to fetch data");
@@ -296,6 +298,11 @@ const PreparationSection = () => {
                         <td>
                           {PreparationSection.createdBy
                             ? PreparationSection.createdBy?.username
+                            : "غير معروف"}
+                        </td>
+                        <td>
+                          {PreparationSection.updatedBy
+                            ? PreparationSection.updatedBy?.username
                             : "غير معروف"}
                         </td>
                         <td>
