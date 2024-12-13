@@ -50,6 +50,10 @@ const PreparationSection = () => {
         PreparationSectionData,
         config
       );
+      if(response.status === 409 ){
+        toast.error("هذا القسم موجود بالفعل تاكد من الاسم.");
+
+      }
       console.log({newPreparationSection : response.data.data})
       if (response.isActive === 201) {
         await getAllPreparationSections();
@@ -89,8 +93,9 @@ const PreparationSection = () => {
     try {
       const res = await axios.get(`${apiUrl}/api/preparationsection/`);
       if (res.isActive === 200) {
-        const categories = res.data.data;
-        setallPreparationSections(categories);
+        const PreparationSections = res.data.data;
+        console.log({PreparationSections})
+        setallPreparationSections(PreparationSections);
       } else {
         throw new Error("Failed to fetch data");
       }
