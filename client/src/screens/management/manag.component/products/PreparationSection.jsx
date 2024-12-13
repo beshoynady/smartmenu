@@ -92,7 +92,7 @@ const PreparationSection = () => {
 
     try {
       const res = await axios.get(`${apiUrl}/api/preparationsection`,config);
-      if (res.isActive === 200) {
+      if (res.status === 200) {
         const PreparationSections = res.data.data;
         console.log({PreparationSections})
         setallPreparationSections(PreparationSections);
