@@ -183,7 +183,7 @@ const PreparationSection = () => {
   };
 
   useEffect(() => {
-    getallPreparationSections();
+    getAllPreparationSections();
   }, []);
 
   return (
