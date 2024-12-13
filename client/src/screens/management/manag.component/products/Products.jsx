@@ -1371,7 +1371,7 @@ const Products = () => {
                       {allPreparationSections.find(section=>section._id===preparationSection)?.name}
                     </option>:'لم يتم تحديد قسم'}
 
-                    {allPreparationSections.map((section, i) => {
+                    {allPreparationSections&&allPreparationSections.map((section, i) => {
                       return (
                         <option value={section._id} key={i}>
                           {section.name}
