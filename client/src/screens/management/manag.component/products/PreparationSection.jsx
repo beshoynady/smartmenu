@@ -50,7 +50,7 @@ const PreparationSection = () => {
         PreparationSectionData,
         config
       );
-
+      console.log({newPreparationSection : response.data.data})
       if (response.isActive === 201) {
         await getAllPreparationSections();
         toast.success("تم إنشاء قسم الاعداد بنجاح.");
