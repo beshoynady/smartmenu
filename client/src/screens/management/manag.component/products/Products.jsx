@@ -1367,9 +1367,9 @@ const Products = () => {
                     form="carform"
                     onChange={(e) => setpreparationSection(e.target.value)}
                   >
-                    <option value={preparationSection._id}>
-                      {allPreparationSections.find(section=>section._id===preparationSection).name}
-                    </option>
+                    {preparationSection?<option value={preparationSection._id}>
+                      {allPreparationSections.find(section=>section._id===preparationSection)?.name}
+                    </option>:'لم يتم تحديد قسم'}
 
                     {allPreparationSections.map((section, i) => {
                       return (
