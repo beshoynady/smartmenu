@@ -54,7 +54,7 @@ const PreparationSection = () => {
         toast.error("هذا القسم موجود بالفعل تاكد من الاسم.");
 
       }
-      console.log({newPreparationSection : response.data.data})
+      console.log({newPreparationSection : response.data.data, PreparationSectionData})
       if (response.isActive === 201) {
         await getAllPreparationSections();
         toast.success("تم إنشاء قسم الاعداد بنجاح.");
