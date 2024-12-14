@@ -110,25 +110,29 @@ const ManagerDash = () => {
       setCancelledOrders(cancelledOrders);
 
       const shiftId = employeeLoginInfo.shift;
-      const shiftData = await axios.get(
-        `${apiUrl}/api/shift/${shiftId}`,
-        config
-      );
-      const todayDate = new Date().toISOString().split("T")[0];
-
-      const startTime = new Date(
-        `${todayDate}T${shiftData.data.startTime}:00Z`
-      ).getTime();
-      const endTime = new Date(
-        `${todayDate}T${shiftData.data.endTime}:00Z`
-      ).getTime();
-
-      const shiftOrders = dayOrders.filter((order) => {
-        const orderTime = new Date(order.createdAt).getTime();
-        return orderTime >= startTime && orderTime <= endTime;
-      });
-      setorderShift(shiftOrders);
-      console.log({ shiftData, startTime, endTime, shiftOrders });
+      if(shiftId){
+        const shiftData = await axios.get(
+          `${apiUrl}/api/shift/${shiftId}`,
+          config
+        );
+        const todayDate = new Date().toISOString().split("T")[0];
+  
+        const startTime = new Date(
+          `${todayDate}T${shiftData.data.startTime}:00Z`
+        ).getTime();
+        const endTime = new Date(
+          `${todayDate}T${shiftData.data.endTime}:00Z`
+        ).getTime();
+  
+        const shiftOrders = dayOrders.filter((order) => {
+          const orderTime = new Date(order.createdAt).getTime();
+          return orderTime >= startTime && orderTime <= endTime;
+        });
+        setorderShift(shiftOrders);
+        console.log({ shiftData, startTime, endTime, shiftOrders });
+      }else{
+        toast.warn('لا يمكن تحديد اوردرات الشيف لان هذا المستخدم ليس له شيفت محدد')
+      }
     } catch (error) {
       // Handle and log error
       console.error("Error fetching orders data:", error.message);
