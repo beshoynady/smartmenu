@@ -213,7 +213,7 @@ const ManagerDash = () => {
           const listOrderProducts = []
           orderProducts&&orderProducts.map(product=>{
             if(section._id === product.productid?.preparationSection){
-              listOrderProducts.push({product})
+              listOrderProducts.push({...product, productid:product._id})
             }
           })
           if(listOrderProducts.length>0){

@@ -325,7 +325,7 @@ const Employees = () => {
     }
     if (listOfEmployees.length > 0 && shift) {
       const FilterEmployees = listOfEmployees.filter(
-        (employee) => employee.shift._id === shift
+        (employee) => employee.shift?._id === shift
       );
       if (FilterEmployees) {
         setListOfEmployees(FilterEmployees);
