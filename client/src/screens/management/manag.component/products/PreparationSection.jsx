@@ -152,7 +152,6 @@ const PreparationSection = () => {
         `${apiUrl}/api/preparationsection/${PreparationSectionId}`,
         config
       );
-
       if (deleted.status === 200) {
         getAllPreparationSections();
         toast.success("تم حذف قسم الاعداد بنجاح.");
