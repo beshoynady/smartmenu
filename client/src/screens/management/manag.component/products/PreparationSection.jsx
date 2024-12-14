@@ -57,7 +57,7 @@ const PreparationSection = () => {
         newPreparationSection: response.data.data,
         PreparationSectionData,
       });
-      if (response.isActive === 201) {
+      if (response.status === 201) {
         await getAllPreparationSections();
         toast.success("تم إنشاء قسم الاعداد بنجاح.");
       } else {
@@ -75,11 +75,11 @@ const PreparationSection = () => {
 
   const handleErrorResponse = (response) => {
     if (
-      response.isActive === 400 &&
+      response.status === 400 &&
       response.data.message === "Preparation Section name already exists"
     ) {
       toast.error("اسم قسم الاعداد موجود بالفعل. الرجاء اختيار اسم آخر.");
-    } else if (response.isActive === 401) {
+    } else if (response.status === 401) {
       toast.error("انتهت صلاحية الجلسة، رجاء تسجيل الدخول مره أخرى.");
     } else {
       toast.error("حدث خطأ أثناء إنشاء قسم الاعداد. الرجاء المحاولة مرة أخرى.");
@@ -153,7 +153,7 @@ const PreparationSection = () => {
         config
       );
 
-      if (deleted.isActive === 200) {
+      if (deleted.status === 200) {
         getAllPreparationSections();
         toast.success("تم حذف قسم الاعداد بنجاح.");
       } else {
@@ -347,6 +347,7 @@ const PreparationSection = () => {
                 })}
             </tbody>
           </table>
+
           <div className="clearfix">
             <div className="hint-text text-dark">
               عرض{" "}
