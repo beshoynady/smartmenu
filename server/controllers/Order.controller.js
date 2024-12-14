@@ -184,8 +184,10 @@ const updateOrder = async (req, res) => {
     const updatedOrder = await OrderModel.findByIdAndUpdate(
       orderId,
       { $set: req.body },
-      { new: true }
-    );
+      { new: true })
+      .populate("products.productid", "_id name price preparationSection")
+    .populate("products.extras.extraDetails.extraId", "_id name price")
+;
     if (!updatedOrder) {
       return res.status(404).json({ error: "Order not found" });
     }

@@ -212,7 +212,7 @@ const ManagerDash = () => {
         allPreparationSections&&allPreparationSections.map(section=>{
           const listOrderProducts = []
           orderProducts&&orderProducts.map(product=>{
-            if(section._id === product.productid?._id){
+            if(section._id === product.productid?.preparationSection){
               listOrderProducts.push({product})
             }
           })
@@ -222,7 +222,7 @@ const ManagerDash = () => {
               preparationSection: section._id,
               products: listOrderProducts
             },config)
-            console.log({createTicket})
+            console.log({listOrderProducts, createTicket})
           }
         })
         fetchOrdersData();
