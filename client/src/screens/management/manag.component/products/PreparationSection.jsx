@@ -127,7 +127,7 @@ const PreparationSection = () => {
         config
       );
 
-      if (editResponse.isActive === 200) {
+      if (editResponse.status === 200) {
         getAllPreparationSections();
         toast.success("تم تعديل قسم الاعداد بنجاح.");
       } else {
@@ -149,7 +149,8 @@ const PreparationSection = () => {
 
     try {
       const deleted = await axios.delete(
-        `${apiUrl}/api/preparationsection/${PreparationSectionId}`
+        `${apiUrl}/api/preparationsection/${PreparationSectionId}`,
+        config
       );
 
       if (deleted.isActive === 200) {
