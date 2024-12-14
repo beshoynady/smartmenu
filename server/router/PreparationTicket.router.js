@@ -6,7 +6,7 @@ const {
   getPreparationTicketById,
   updatePreparationTicket,
   deletePreparationTicket
-} = require("../controllers/PreparationSection.controller");
+} = require("../controllers/PreparationTicket.controller");
 
 const authenticateToken = require("../utlits/authenticate");
 const checkSubscription = require("../utlits/checkSubscription");
