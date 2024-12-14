@@ -203,7 +203,7 @@ const ManagerDash = () => {
       );
       if (response) {
         console.log({response})
-        const orderProducts = response.products 
+        const orderProducts = response.data?.products 
         console.log({orderProducts})
         allPreparationSections&&allPreparationSections.map(section=>{
           const listOrderProducts = []
@@ -212,12 +212,14 @@ const ManagerDash = () => {
               listOrderProducts.push({product})
             }
           })
-          const createTicket = axios.post( `${apiUrl}/api/preparationticket`,{
-            order: orderId,
-            preparationSection: section._id,
-            products: listOrderProducts
-          },config)
-          console.log({createTicket})
+          if(listOrderProducts.length>0){
+            const createTicket = axios.post( `${apiUrl}/api/preparationticket`,{
+              order: orderId,
+              preparationSection: section._id,
+              products: listOrderProducts
+            },config)
+            console.log({createTicket})
+          }
         })
         fetchOrdersData();
 
