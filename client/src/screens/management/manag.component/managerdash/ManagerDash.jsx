@@ -202,11 +202,12 @@ const ManagerDash = () => {
         config
       );
       if (response) {
+        console.log({response})
         const orderProducts = response.products 
         console.log({orderProducts})
-        allPreparationSections.map(section=>{
+        allPreparationSections&&allPreparationSections.map(section=>{
           const listOrderProducts = []
-        orderProducts.map(product=>{
+          orderProducts&&orderProducts.map(product=>{
             if(section._id === product.productid?._id){
               listOrderProducts.push({product})
             }
