@@ -222,7 +222,8 @@ const ManagerDash = () => {
               preparationSection: section._id,
               products: listOrderProducts
             },config)
-            console.log({listOrderProducts, createTicket})
+            
+            console.log({listOrderProducts, createTicket:createTicket.data})
           }
         })
         fetchOrdersData();
