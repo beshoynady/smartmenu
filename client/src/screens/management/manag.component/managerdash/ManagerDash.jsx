@@ -165,6 +165,28 @@ const ManagerDash = () => {
   ];
   const [update, setupdate] = useState(false);
 
+  const [allPreparationSections, setallPreparationSections] = useState([]);
+
+  const getAllPreparationSections = async () => {
+    if (!token) {
+      toast.error("رجاء تسجيل الدخول مره اخرى");
+      return;
+    }
+
+    try {
+      const res = await axios.get(`${apiUrl}/api/preparationsection`, config);
+      if (res.status === 200) {
+        const PreparationSections = res.data.data;
+        console.log({ PreparationSections });
+        setallPreparationSections(PreparationSections);
+      } else {
+        throw new Error("Failed to fetch data");
+      }
+    } catch (error) {
+      console.error("حدث خطأ أثناء استلام البيانات:", error);
+      toast.error("حدث خطأ أثناء جلب البيانات، يرجى المحاولة مرة أخرى لاحقًا.");
+    }
+  };
   const changeOrderStauts = async (e, orderId, cashier) => {
     try {
       if (!token) {
@@ -180,6 +202,22 @@ const ManagerDash = () => {
         config
       );
       if (response) {
+        const orderProducts = response.products 
+        console.log({orderProducts})
+        allPreparationSections.map(section=>{
+          const listOrderProducts = []
+        orderProducts.map(product=>{
+            if(section._id === product.productid?._id){
+              listOrderProducts.push({product})
+            }
+          })
+          const createTicket = axios.post( `${apiUrl}/api/preparationticket`,{
+            order: orderId,
+            preparationSection: section._id,
+            products: listOrderProducts
+          },config)
+          console.log({createTicket})
+        })
         fetchOrdersData();
 
         toast.success("تم تغيير حالة الطلب بنجاح");
@@ -617,76 +655,9 @@ const ManagerDash = () => {
       const products = await order.data.products;
       const aproveorder = "Approved";
 
-      // Loop through each product in the order
-      // for (const product of products) {
-      //   if (!product.isDone) {
-      //     // Fetch kitchen consumption data
-      //     // await getKitchenConsumption();
-      //     const getKitchenConsumption = await axios.get(apiUrl+'/api/consumption');
-      //     const Allkitchenconsumption = await getKitchenConsumption.data.data
-      //     const quantity = product.quantity;
-      //     const productId = product.productid;
-      //     const name = product.name;
-      //     console.log({ productId, quantity, name });
-
-      //     // Find product details
-      //     const foundProduct = listofProducts.length>0?listofProducts.find((p) => p._id === productId):"";
-      //     const recipe = foundProduct ? foundProduct.Recipe : [];
-
-      //     // Calculate consumption for each ingredient in the recipe
-      //     for (const rec of recipe) {
-      //       const today = new Date().toISOString().split('T')[0]; // تاريخ اليوم بتنسيق YYYY-MM-DD
-      //       const kitconsumptionToday = Allkitchenconsumption.filter((kitItem) => {
-      //         const itemDate = new Date(kitItem.createdAt).toISOString().split('T')[0];
-      //         return itemDate === today;
-      //       });
-
-      //       let kitconsumption = null;
-      //       if (kitconsumptionToday.length > 0) {
-      //         kitconsumption = kitconsumptionToday.find((kitItem) => kitItem.stockItemId === rec.itemId);
-      //       }
-      //       if (kitconsumption) {
-      //         const productAmount = rec.amount * quantity;
-      //         console.log({ productAmount });
-
-      //         const consumptionQuantity = kitconsumption.consumptionQuantity + productAmount;
-      //         console.log({ consumptionQuantity });
-
-      //         const bookBalance = kitconsumption.quantityTransferredToKitchen - consumptionQuantity;
-
-      //         let foundProducedProduct = kitconsumption.productsProduced.find((produced) => produced.productId === productId);
-
-      //         if (!foundProducedProduct) {
-      //           foundProducedProduct = { productId: productId, productionCount: quantity, productName: name };
-      //           kitconsumption.productsProduced.push(foundProducedProduct);
-      //         } else {
-      //           foundProducedProduct.productionCount += quantity;
-      //         }
-      //         try{
-      // if (!token) {
-      // Handle case where token is not available
-      // toast.error('رجاء تسجيل الدخول مره اخري');
-      // }
-      //           // Update kitchen consumption data
-      //           const update = await axios.put(`${apiUrl}/api/consumption/${kitconsumption._id}`, {
-      //             consumptionQuantity,
-      //             bookBalance,
-      //             productsProduced: kitconsumption.productsProduced
-      //           });
-      //           console.log({ update: update });
-      //         } catch (error) {
-      //           console.log({ error: error });
-      //         }
-      //       } else {
-
-      //       }
-      //     }
-      //   }
-      // }
-
+      
       // Update order status or perform other tasks
 
-      const status = "Prepared";
       const updateproducts = products.map((prod) => ({
         ...prod,
         isDone: true,
@@ -714,6 +685,7 @@ const ManagerDash = () => {
   }, [update, isRefresh]);
 
   useEffect(() => {
+    getAllPreparationSections()
     employeeLoginInfo && getCashRegistersByEmployee(employeeLoginInfo?.id);
   }, []);
 
@@ -870,6 +842,7 @@ const ManagerDash = () => {
                     </select>
                   </div>
                 </div>
+
                 <div className="row align-items-center justify-content-between mb-3">
                   <div className="col p-0">
                     <button
@@ -932,6 +905,7 @@ const ManagerDash = () => {
                     </button>
                   </div>
                 </div>
+
                 <div className="table-responsive">
                   <table className="table table-striped table-hover">
                     <thead>
@@ -1110,6 +1084,8 @@ const ManagerDash = () => {
                     </tbody>
                   </table>
                 </div>
+
+                {/* pagination */}
                 <div className="clearfix">
                   <div className="hint-text text-dark">
                     عرض{" "}
@@ -1186,6 +1162,7 @@ const ManagerDash = () => {
                     </li>
                   </ul>
                 </div>
+
               </div>
             </div>
           </div>
