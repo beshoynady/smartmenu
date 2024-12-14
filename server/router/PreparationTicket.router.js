@@ -1,24 +1,26 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 const {
-  createPreparationSection,
-    getAllPreparationSections,
-    getPreparationSectionById,
-    updatePreparationSection,
-    deletePreparationSection,
-} = require('../controllers/PreparationSection.controller');
+  createPreparationTicket,
+  getAllPreparationTickets,
+  getPreparationTicketById,
+  updatePreparationTicket,
+  deletePreparationTicket
+} = require("../controllers/PreparationSection.controller");
 
-const authenticateToken = require('../utlits/authenticate')
-const checkSubscription = require('../utlits/checkSubscription')
+const authenticateToken = require("../utlits/authenticate");
+const checkSubscription = require("../utlits/checkSubscription");
 
-router.route('/')
-  .post(authenticateToken, checkSubscription, createPreparationSection)
-  .get(authenticateToken, checkSubscription, getAllPreparationSections);
+router
+  .route("/")
+  .post(authenticateToken, checkSubscription, createPreparationTicket)
+  .get(authenticateToken, checkSubscription, getAllPreparationTickets);
 
-router.route('/:id')
+router
+  .route("/:id")
 
-  .get(authenticateToken, checkSubscription, getPreparationSectionById)
-  .put(authenticateToken, checkSubscription, updatePreparationSection)
-  .delete(authenticateToken, checkSubscription, deletePreparationSection);
+  .get(authenticateToken, checkSubscription, getPreparationTicketById)
+  .put(authenticateToken, checkSubscription, updatePreparationTicket)
+  .delete(authenticateToken, checkSubscription, deletePreparationTicket);
 
 module.exports = router;
