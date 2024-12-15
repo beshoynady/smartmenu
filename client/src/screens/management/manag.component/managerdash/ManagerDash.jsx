@@ -223,7 +223,7 @@ const ManagerDash = () => {
               products: listOrderProducts
             },config)
             
-            console.log({listOrderProducts, createTicket:createTicket.data})
+            console.log({listOrderProducts, createTicket:createTicket, createTicketdata:createTicket.data})
           }
         })
         fetchOrdersData();
