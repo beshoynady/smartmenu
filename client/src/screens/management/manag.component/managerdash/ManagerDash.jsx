@@ -233,7 +233,7 @@ const ManagerDash = () => {
                   `${apiUrl}/api/preparationticket`,
                   {
                     order: orderId,
-                    preparationSection: section._id,
+                    preparationSection: section,
                     products: listOrderProducts,
                   },
                   config

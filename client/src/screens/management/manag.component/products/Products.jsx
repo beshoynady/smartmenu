@@ -734,7 +734,7 @@ const Products = () => {
                             {product.description}
                           </td>
                           <td>{product.category.name}</td>
-                          <td>{product.preparationSection?.name}</td>
+                          <td>{product.preparationSection}</td>
                           <td>
                             {product.comboItems
                               ?.map(
