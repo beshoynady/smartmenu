@@ -110,28 +110,30 @@ const ManagerDash = () => {
       setCancelledOrders(cancelledOrders);
 
       const shiftId = employeeLoginInfo.shift;
-      if(shiftId){
+      if (shiftId) {
         const shiftData = await axios.get(
           `${apiUrl}/api/shift/${shiftId}`,
           config
         );
         const todayDate = new Date().toISOString().split("T")[0];
-  
+
         const startTime = new Date(
           `${todayDate}T${shiftData.data.startTime}:00Z`
         ).getTime();
         const endTime = new Date(
           `${todayDate}T${shiftData.data.endTime}:00Z`
         ).getTime();
-  
+
         const shiftOrders = dayOrders.filter((order) => {
           const orderTime = new Date(order.createdAt).getTime();
           return orderTime >= startTime && orderTime <= endTime;
         });
         setorderShift(shiftOrders);
         console.log({ shiftData, startTime, endTime, shiftOrders });
-      }else{
-        toast.warn('لا يمكن تحديد اوردرات الشيف لان هذا المستخدم ليس له شيفت محدد')
+      } else {
+        toast.warn(
+          "لا يمكن تحديد اوردرات الشيف لان هذا المستخدم ليس له شيفت محدد"
+        );
       }
     } catch (error) {
       // Handle and log error
@@ -206,26 +208,44 @@ const ManagerDash = () => {
         config
       );
       if (response) {
-        console.log({response})
-        const orderProducts = response.data?.products 
-        console.log({orderProducts})
-        allPreparationSections&&allPreparationSections.map(section=>{
-          const listOrderProducts = []
-          orderProducts&&orderProducts.map(product=>{
-            if(section._id === product.productid?.preparationSection){
-              listOrderProducts.push({...product, productid:product._id})
+        console.log({ response });
+        const orderProducts = response.data?.products;
+        console.log({ orderProducts });
+        allPreparationSections &&
+          allPreparationSections.map((section) => {
+            const listOrderProducts = [];
+            orderProducts &&
+              orderProducts.map((product) => {
+                if (section._id === product.productid?.preparationSection) {
+                  listOrderProducts.push({
+                    ...product,
+                    productid: product._id,
+                  });
+                }
+              });
+            if (listOrderProducts.length > 0) {
+              axios
+                .post(
+                  `${apiUrl}/api/preparationticket`,
+                  {
+                    order: orderId,
+                    preparationSection: section._id,
+                    products: listOrderProducts,
+                  },
+                  config
+                )
+                .then((response) => {
+                  console.log({
+                    listOrderProducts,
+                    createTicket: response,
+                    createTicketdata: response.data,
+                  });
+                })
+                .catch((error) => {
+                  console.error("Error creating ticket:", error);
+                });
             }
-          })
-          if(listOrderProducts.length>0){
-            const createTicket = axios.post( `${apiUrl}/api/preparationticket`,{
-              order: orderId,
-              preparationSection: section._id,
-              products: listOrderProducts
-            },config)
-            
-            console.log({listOrderProducts, createTicket:createTicket, createTicketdata:createTicket.data})
-          }
-        })
+          });
         fetchOrdersData();
 
         toast.success("تم تغيير حالة الطلب بنجاح");
@@ -663,7 +683,6 @@ const ManagerDash = () => {
       const products = await order.data.products;
       const aproveorder = "Approved";
 
-      
       // Update order status or perform other tasks
 
       const updateproducts = products.map((prod) => ({
@@ -693,7 +712,7 @@ const ManagerDash = () => {
   }, [update, isRefresh]);
 
   useEffect(() => {
-    getAllPreparationSections()
+    getAllPreparationSections();
     employeeLoginInfo && getCashRegistersByEmployee(employeeLoginInfo?.id);
   }, []);
 
@@ -1170,7 +1189,6 @@ const ManagerDash = () => {
                     </li>
                   </ul>
                 </div>
-
               </div>
             </div>
           </div>
