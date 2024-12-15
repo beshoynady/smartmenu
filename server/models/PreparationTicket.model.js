@@ -9,10 +9,16 @@ const PreparationTicketSchema = new mongoose.Schema(
       required: true,
     },
     preparationSection: {
-      type: ObjectId,
-      ref: "PreparationSection",
-      required: true,
+      type: String,
+      required: [true, "Preparation section is required"],
+      enum: ["Kitchen", "Bar", "Grill"],
     },
+    
+    // preparationSection: {
+    //   type: ObjectId,
+    //   ref: "PreparationSection",
+    //   required: true,
+    // },
     status: {
       type: String,
       default: "Pending",

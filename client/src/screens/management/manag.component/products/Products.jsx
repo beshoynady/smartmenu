@@ -129,28 +129,30 @@ const Products = () => {
   };
 
   const [preparationSection, setpreparationSection] = useState("");
-  const [allPreparationSections, setallPreparationSections] = useState([]);
+  const preparationSectionList = ["Kitchen", "Bar", "Grill"]
 
-  const getAllPreparationSections = async () => {
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره اخرى");
-      return;
-    }
+  // const [allPreparationSections, setallPreparationSections] = useState([]);
 
-    try {
-      const res = await axios.get(`${apiUrl}/api/preparationsection`, config);
-      if (res.status === 200) {
-        const PreparationSections = res.data.data;
-        console.log({ PreparationSections });
-        setallPreparationSections(PreparationSections);
-      } else {
-        throw new Error("Failed to fetch data");
-      }
-    } catch (error) {
-      console.error("حدث خطأ أثناء استلام البيانات:", error);
-      toast.error("حدث خطأ أثناء جلب البيانات، يرجى المحاولة مرة أخرى لاحقًا.");
-    }
-  };
+  // const getAllPreparationSections = async () => {
+  //   if (!token) {
+  //     toast.error("رجاء تسجيل الدخول مره اخرى");
+  //     return;
+  //   }
+
+  //   try {
+  //     const res = await axios.get(`${apiUrl}/api/preparationsection`, config);
+  //     if (res.status === 200) {
+  //       const PreparationSections = res.data.data;
+  //       console.log({ PreparationSections });
+  //       setallPreparationSections(PreparationSections);
+  //     } else {
+  //       throw new Error("Failed to fetch data");
+  //     }
+  //   } catch (error) {
+  //     console.error("حدث خطأ أثناء استلام البيانات:", error);
+  //     toast.error("حدث خطأ أثناء جلب البيانات، يرجى المحاولة مرة أخرى لاحقًا.");
+  //   }
+  // };
 
   const createProduct = async (e) => {
     e.preventDefault();
@@ -532,7 +534,7 @@ const Products = () => {
     getallproducts();
     getallCategories();
     getAllOrders();
-    getAllPreparationSections();
+    // getAllPreparationSections();
   }, []);
 
   return (
@@ -962,13 +964,20 @@ const Products = () => {
                     onChange={(e) => setpreparationSection(e.target.value)}
                   >
                     <option value="">اختر القسم</option>
-                    {allPreparationSections.map((section, i) => {
+                    {preparationSectionList.map((section, i) => {
+                      return (
+                        <option value={section} key={i}>
+                          {section}
+                        </option>
+                      );
+                    })}
+                    {/* {allPreparationSections.map((section, i) => {
                       return (
                         <option value={section._id} key={i}>
                           {section.name}
                         </option>
                       );
-                    })}
+                    })} */}
                   </select>
                 </div>
                 <div className="form-group col-12 col-md-6">
@@ -1367,17 +1376,28 @@ const Products = () => {
                     form="carform"
                     onChange={(e) => setpreparationSection(e.target.value)}
                   >
-                    {preparationSection?<option value={preparationSection._id}>
-                      {allPreparationSections.find(section=>section._id===preparationSection)?.name}
+                    {preparationSection?<option value={preparationSection}>
+                      {preparationSection}
                     </option>:'لم يتم تحديد قسم'}
 
-                    {allPreparationSections&&allPreparationSections.map((section, i) => {
+                    {preparationSectionList.map((section, i) => {
+                      return (
+                        <option value={section} key={i}>
+                          {section}
+                        </option>
+                      );
+                    })}
+
+                    {/* {preparationSection?<option value={preparationSection._id}>
+                      {allPreparationSections.find(section=>section._id===preparationSection)?.name}
+                    </option>:'لم يتم تحديد قسم'} */}
+                    {/* {allPreparationSections.map((section, i) => {
                       return (
                         <option value={section._id} key={i}>
                           {section.name}
                         </option>
                       );
-                    })}
+                    })} */}
                   </select>
                 </div>
                 <div className="form-group col-12 col-md-6">

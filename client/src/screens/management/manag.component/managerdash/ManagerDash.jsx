@@ -169,30 +169,34 @@ const ManagerDash = () => {
     "تم التسليم",
     "ملغي",
   ];
+  const preparationSection = ["Kitchen", "Bar", "Grill"]
   const [update, setupdate] = useState(false);
 
-  const [allPreparationSections, setallPreparationSections] = useState([]);
+  // const [allPreparationSections, setallPreparationSections] = useState([]);
 
-  const getAllPreparationSections = async () => {
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره اخرى");
-      return;
-    }
+  // const getAllPreparationSections = async () => {
+  //   if (!token) {
+  //     toast.error("رجاء تسجيل الدخول مره اخرى");
+  //     return;
+  //   }
 
-    try {
-      const res = await axios.get(`${apiUrl}/api/preparationsection`, config);
-      if (res.status === 200) {
-        const PreparationSections = res.data.data;
-        console.log({ PreparationSections });
-        setallPreparationSections(PreparationSections);
-      } else {
-        throw new Error("Failed to fetch data");
-      }
-    } catch (error) {
-      console.error("حدث خطأ أثناء استلام البيانات:", error);
-      toast.error("حدث خطأ أثناء جلب البيانات، يرجى المحاولة مرة أخرى لاحقًا.");
-    }
-  };
+  //   try {
+  //     const res = await axios.get(`${apiUrl}/api/preparationsection`, config);
+  //     if (res.status === 200) {
+  //       const PreparationSections = res.data.data;
+  //       console.log({ PreparationSections });
+  //       setallPreparationSections(PreparationSections);
+  //     } else {
+  //       throw new Error("Failed to fetch data");
+  //     }
+  //   } catch (error) {
+  //     console.error("حدث خطأ أثناء استلام البيانات:", error);
+  //     toast.error("حدث خطأ أثناء جلب البيانات، يرجى المحاولة مرة أخرى لاحقًا.");
+  //   }
+  // };
+
+
+
   const changeOrderStauts = async (e, orderId, cashier) => {
     try {
       if (!token) {
@@ -211,12 +215,12 @@ const ManagerDash = () => {
         console.log({ response });
         const orderProducts = response.data?.products;
         console.log({ orderProducts });
-        allPreparationSections &&
-          allPreparationSections.map((section) => {
+        preparationSection &&
+        preparationSection.map((section) => {
             const listOrderProducts = [];
             orderProducts &&
               orderProducts.map((product) => {
-                if (section._id === product.productid?.preparationSection) {
+                if (product.productid?.preparationSection === section) {
                   listOrderProducts.push({
                     ...product,
                     productid: product._id,
@@ -712,7 +716,7 @@ const ManagerDash = () => {
   }, [update, isRefresh]);
 
   useEffect(() => {
-    getAllPreparationSections();
+    // getAllPreparationSections();
     employeeLoginInfo && getCashRegistersByEmployee(employeeLoginInfo?.id);
   }, []);
 
