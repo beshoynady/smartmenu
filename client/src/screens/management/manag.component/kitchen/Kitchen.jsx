@@ -59,7 +59,7 @@ const Kitchen = () => {
       }
 
       // Fetch orders from the API
-      const Response = await axios.get(`${apiUrl}/api/preparationticket`);
+      const Response = await axios.get(`${apiUrl}/api/preparationticket`, config);
       const PreparationTicket = Response.data.data;
       console.log({Response, PreparationTicket });
       // console.log({ kitchenOrders })
