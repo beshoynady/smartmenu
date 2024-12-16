@@ -3,8 +3,6 @@ import axios from "axios";
 import { detacontext } from "../../../../App";
 import { toast } from "react-toastify";
 
-
-
 const Kitchen = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
   const token = localStorage.getItem("token_e");
@@ -52,7 +50,7 @@ const Kitchen = () => {
     }
   };
 
-  const getAllOrders = async () => {
+  const getAllPreparationTicket = async () => {
     try {
       if (!token) {
         // Handle case where token is not available
@@ -61,26 +59,29 @@ const Kitchen = () => {
       }
 
       // Fetch orders from the API
-      const ordersResponse = await axios.get(`${apiUrl}/api/order/limit/50`);
-      const kitchenOrders = ordersResponse.data;
+      const Response = await axios.get(`${apiUrl}/api/preparationticket`);
+      const PreparationTicket = ordersResponse.data.data;
       console.log({ ordersResponse });
       // console.log({ kitchenOrders })
       // Set all orders state
       setAllOrders(kitchenOrders);
-
-      // Filter active orders based on certain conditions
-      const activeOrders = kitchenOrders.filter(
-        (order) =>
-          order.isActive &&
-          order.status === "Approved" &&
-          (order.preparationStatus.Kitchen === "Pending" ||
-            order.preparationStatus.Kitchen === "Preparing" ||
-            order.preparationStatus.Kitchen === "Prepared")
+      const kitchenPreparationTicket = PreparationTicket.filter(
+        (ticket) =>
+          ticket.preparationSection === "Kitchen" && ticket.isActive === true
       );
+      // Filter active orders based on certain conditions
+      // const activePreparationTicket = kitchenPreparationTicket.filter(
+      //   (ticket) =>
+      //     ticket.isActive &&
+      //     ticket.preparationStatus === "Approved" &&
+      //     (ticket.preparationStatus === "Pending" ||
+      //       ticket.preparationStatus === "Preparing" ||
+      //       ticket.preparationStatus === "Prepared")
+      // );
 
-      console.log({ activeOrders });
+      console.log({ kitchenPreparationTicket });
       // Set active orders state
-      setOrderActive(activeOrders);
+      setOrderActive(kitchenPreparationTicket);
       const getAllRecipe = await axios.get(`${apiUrl}/api/recipe`, config);
       const allRecipeData = await getAllRecipe.data;
 
@@ -90,8 +91,8 @@ const Kitchen = () => {
 
       // console.log({ allRecipe, activeOrders })
       activeOrders &&
-        activeOrders.forEach((order) => {
-          order.products.forEach((product) => {
+        kitchenPreparationTicket.forEach((ticket) => {
+          ticket.products.forEach((product) => {
             if (!product.isDone) {
               // console.log({ order, product })
               const productIngredients = product.sizeId
@@ -178,6 +179,132 @@ const Kitchen = () => {
       console.error("Error fetching orders:", error);
     }
   };
+  // const getAllOrders = async () => {
+  //   try {
+  //     if (!token) {
+  //       // Handle case where token is not available
+  //       toast.error("رجاء تسجيل الدخول مره اخري");
+  //       return;
+  //     }
+
+  //     // Fetch orders from the API
+  //     const ordersResponse = await axios.get(`${apiUrl}/api/order/limit/50`);
+  //     const kitchenOrders = ordersResponse.data;
+  //     console.log({ ordersResponse });
+  //     // console.log({ kitchenOrders })
+  //     // Set all orders state
+  //     setAllOrders(kitchenOrders);
+
+  //     // Filter active orders based on certain conditions
+  //     const activeOrders = kitchenOrders.filter(
+  //       (order) =>
+  //         order.isActive &&
+  //         order.status === "Approved" &&
+  //         (order.preparationStatus.Kitchen === "Pending" ||
+  //           order.preparationStatus.Kitchen === "Preparing" ||
+  //           order.preparationStatus.Kitchen === "Prepared")
+  //     );
+
+  //     console.log({ activeOrders });
+  //     // Set active orders state
+  //     setOrderActive(activeOrders);
+  //     const getAllRecipe = await axios.get(`${apiUrl}/api/recipe`, config);
+  //     const allRecipeData = await getAllRecipe.data;
+
+  //     const allRecipe = allRecipeData;
+
+  //     const updatedConsumptionOrderActive = [];
+
+  //     // console.log({ allRecipe, activeOrders })
+  //     activeOrders &&
+  //       activeOrders.forEach((order) => {
+  //         order.products.forEach((product) => {
+  //           if (!product.isDone) {
+  //             // console.log({ order, product })
+  //             const productIngredients = product.sizeId
+  //               ? allRecipe.find(
+  //                   (recipe) =>
+  //                     recipe.productId._id === product.productid?._id &&
+  //                     recipe.sizeId === product.sizeId
+  //                 )?.ingredients
+  //               : allRecipe.find(
+  //                   (recipe) => recipe.productId._id === product.productid?._id
+  //                 )?.ingredients || [];
+
+  //             // console.log({ productIngredients })
+
+  //             // Update consumptionOrderActive
+  //             productIngredients &&
+  //               productIngredients.forEach((item) => {
+  //                 const existingItemIndex =
+  //                   updatedConsumptionOrderActive.findIndex(
+  //                     (con) => con.itemId?._id === item.itemId?._id
+  //                   );
+  //                 const amount = item.amount * product.quantity;
+
+  //                 if (existingItemIndex !== -1) {
+  //                   // If the item already exists, update the amount
+  //                   updatedConsumptionOrderActive[existingItemIndex].amount +=
+  //                     amount;
+  //                 } else {
+  //                   // If the item does not exist, add it to the array
+  //                   updatedConsumptionOrderActive.push({
+  //                     itemId: item.itemId,
+  //                     name: item.name,
+  //                     unit: item.unit,
+  //                     amount,
+  //                   });
+  //                 }
+  //               });
+
+  //             product.extras &&
+  //               product.extras.map((productextra) => {
+  //                 productextra.extraDetails.map((extra) => {
+  //                   const extraIngredients =
+  //                     allRecipe.find(
+  //                       (recipe) => recipe.productId._id === extra.extraId._id
+  //                     )?.ingredients || [];
+
+  //                   // console.log({ extraIngredients })
+
+  //                   // Update consumptionOrderActive
+  //                   extraIngredients &&
+  //                     extraIngredients.forEach((item) => {
+  //                       const existingItemIndex =
+  //                         updatedConsumptionOrderActive.findIndex(
+  //                           (con) => con.itemId?._id === item.itemId?._id
+  //                         );
+  //                       const amount = item.amount;
+
+  //                       if (existingItemIndex !== -1) {
+  //                         // If the item already exists, update the amount
+  //                         updatedConsumptionOrderActive[
+  //                           existingItemIndex
+  //                         ].amount += amount;
+  //                       } else {
+  //                         // If the item does not exist, add it to the array
+  //                         updatedConsumptionOrderActive.push({
+  //                           itemId: item.itemId,
+  //                           name: item.name,
+  //                           unit: item.unit,
+  //                           amount,
+  //                         });
+  //                       }
+  //                     });
+  //                 });
+  //               });
+  //           }
+  //         });
+  //       });
+  //     console.log({ updatedConsumptionOrderActive });
+
+  //     // Set updated consumptionOrderActive state
+  //     setConsumptionOrderActive(updatedConsumptionOrderActive);
+  //   } catch (error) {
+  //     // Handle errors
+  //     console.error("Error fetching orders:", error);
+  //   }
+  // };
 
   const today = formatDate(new Date());
   const [date, setDate] = useState(today);
@@ -229,9 +356,9 @@ const Kitchen = () => {
         toast.error("رجاء تسجيل الدخول مره اخري");
         return;
       }
-      const preparationStatus = { "preparationStatus.Kitchen": "Preparing" };
+      const preparationStatus = "Preparing";
       const response = await axios.put(
-        `${apiUrl}/api/order/${id}`,
+        `${apiUrl}/api/preparationticket/${id}`,
         preparationStatus,
         config
       );
@@ -247,6 +374,31 @@ const Kitchen = () => {
       toast.error("فش بدء الاوردر ! اعد تحميل الصفحة ");
     }
   };
+  // const orderInProgress = async (id) => {
+  //   try {
+  //     if (!token) {
+  //       // Handle case where token is not available
+  //       toast.error("رجاء تسجيل الدخول مره اخري");
+  //       return;
+  //     }
+  //     const preparationStatus = { "preparationStatus.Kitchen": "Preparing" };
+  //     const response = await axios.put(
+  //       `${apiUrl}/api/order/${id}`,
+  //       preparationStatus,
+  //       config
+  //     );
+  //     if (response.status === 200) {
+  //       // Fetch orders from the API
+  //       await getAllOrders();
+  //       toast.success("الاوردر يجهز!");
+  //     } else {
+  //       toast.error("حدث خطأ اثناء قبول الاوردر ! حاول مره اهري");
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //     toast.error("فش بدء الاوردر ! اعد تحميل الصفحة ");
+  //   }
+  // };
 
   // const updateOrderDone = async (id, type) => {
   //   if (!token) {
@@ -503,14 +655,14 @@ const Kitchen = () => {
 
     try {
       // 1. Fetch order and product data
-      const { data: orderData } = await axios.get(
-        `${apiUrl}/api/order/${id}`,
+      const preparationticketData = await axios.get(
+        `${apiUrl}/api/preparationticket/${id}`,
         config
       );
-      const { products: orderProducts } = orderData;
-      const kitchenProducts = orderProducts.filter(
-        (product) => product.productid?.preparationSection === "Kitchen"
-      );
+      const { products: kitchenProducts } = preparationticketData.data.data;
+
+      const orderProducts = preparationticketData.data.data.order?.products;
+      console.log({ orderProducts });
 
       if (!kitchenProducts.length) {
         toast.warn("لا توجد منتجات بحاجة إلى تجهيز في المطبخ");
@@ -620,8 +772,12 @@ const Kitchen = () => {
         }
       }
 
-      // 5. Update order status
-      const updatedProducts = orderProducts.map((product) => {
+      const updateTicketProducts = kitchenProducts.map((product) => {
+        return { ...product, isDone: true };
+      });
+
+      // 5. Update order Products
+      const updatedOrderProducts = orderProducts.map((product) => {
         if (
           kitchenProducts.some(
             (kitchenProduct) =>
@@ -633,7 +789,13 @@ const Kitchen = () => {
           return product;
         }
       });
-      
+
+      const updateTicket = axios.put(
+        `${apiUrl}/api/preparationticket/${id}`,
+        { products: updateTicketProducts, preparationStatus: "Prepared" },
+        config
+      );
+      console.log({updatedOrderProducts, updateTicketProducts, updateTicket})
 
       // const preparationStatus = { "preparationStatus.Kitchen": "Prepared" };
 
@@ -647,17 +809,17 @@ const Kitchen = () => {
           `${apiUrl}/api/order/${id}`,
           {
             "preparationStatus.Kitchen": "Prepared",
-            products: updatedProducts,
+            products: updatedOrderProducts,
             waiter,
           },
           config
         );
-          waiterSocket.emit("orderready", `أورد جاهز في المطبخ-${waiter}`);
+        waiterSocket.emit("orderready", `أورد جاهز في المطبخ-${waiter}`);
       } else {
         await axios.put(
           `${apiUrl}/api/order/${id}`,
           {
-            products: updatedProducts,
+            products: updatedOrderProducts,
             "preparationStatus.Kitchen": "Prepared",
           },
           config
@@ -674,6 +836,184 @@ const Kitchen = () => {
       toast.error("حدث خطأ أثناء تعديل حالة الطلب. يرجى إعادة المحاولة.");
     }
   };
+  // const updateOrderDone = async (id, type) => {
+  //   if (!token) {
+  //     toast.error("رجاء تسجيل الدخول مره أخرى");
+  //     return;
+  //   }
+
+  //   try {
+  //     // 1. Fetch order and product data
+  //     const { data: orderData } = await axios.get(
+  //       `${apiUrl}/api/order/${id}`,
+  //       config
+  //     );
+  //     const { products: orderProducts } = orderData;
+  //     const kitchenProducts = orderProducts.filter(
+  //       (product) => product.productid?.preparationSection === "Kitchen"
+  //     );
+
+  //     if (!kitchenProducts.length) {
+  //       toast.warn("لا توجد منتجات بحاجة إلى تجهيز في المطبخ");
+  //       return;
+  //     }
+
+  //     // 2. Fetch today's kitchen consumption data
+  //     const { data: consumptionData } = await axios.get(
+  //       `${apiUrl}/api/consumption`,
+  //       config
+  //     );
+  //     const allKitchenConsumption = consumptionData.data;
+  //     const kitchenConsumptionsToday = allKitchenConsumption.filter((item) => {
+  //       const itemDate = formatDate(item.createdAt);
+  //       return itemDate === date;
+  //     });
+
+  //     // 3. Prepare total consumption order
+  //     const totalConsumptionOrder = [];
+
+  //     for (const product of kitchenProducts) {
+  //       if (product.isDone) continue;
+
+  //       // Fetch product ingredients from recipes
+  //       const productIngredients = product.sizeId
+  //         ? allRecipe.find(
+  //             (recipe) =>
+  //               recipe.productId._id === product.productid?._id &&
+  //               recipe.sizeId === product.sizeId
+  //           )?.ingredients
+  //         : allRecipe.find(
+  //             (recipe) => recipe.productId._id === product.productid?._id
+  //           )?.ingredients || [];
+
+  //       // Process ingredients
+  //       for (const ingredient of productIngredients || []) {
+  //         const existingItemIndex = totalConsumptionOrder.findIndex(
+  //           (item) => item.itemId?._id === ingredient.itemId?._id
+  //         );
+
+  //         const amount = ingredient.amount * product.quantity;
+
+  //         if (existingItemIndex !== -1) {
+  //           totalConsumptionOrder[existingItemIndex].amount += amount;
+  //         } else {
+  //           const kitchenConsumption = kitchenConsumptionsToday.find(
+  //             (kitItem) => kitItem.stockItemId._id === ingredient.itemId?._id
+  //           );
+
+  //           totalConsumptionOrder.push({
+  //             itemId: ingredient.itemId,
+  //             amount,
+  //             productsProduced: kitchenConsumption
+  //               ? [...kitchenConsumption.productsProduced]
+  //               : [],
+  //           });
+  //         }
+  //       }
+
+  //       // Process extras
+  //       for (const extraGroup of product.extras || []) {
+  //         for (const extra of extraGroup.extraDetails) {
+  //           const extraIngredients =
+  //             allRecipe.find(
+  //               (recipe) => recipe.productId._id === extra.extraId._id
+  //             )?.ingredients || [];
+
+  //           for (const ingredient of extraIngredients) {
+  //             const existingItemIndex = totalConsumptionOrder.findIndex(
+  //               (item) => item.itemId?._id === ingredient.itemId?._id
+  //             );
+  //             const amount = ingredient.amount;
+
+  //             if (existingItemIndex !== -1) {
+  //               totalConsumptionOrder[existingItemIndex].amount += amount;
+  //             } else {
+  //               totalConsumptionOrder.push({
+  //                 itemId: ingredient.itemId,
+  //                 amount,
+  //               });
+  //             }
+  //           }
+  //         }
+  //       }
+  //     }
+
+  //     // 4. Update consumption data in the kitchen
+  //     for (const item of totalConsumptionOrder) {
+  //       const kitchenConsumption = kitchenConsumptionsToday.find(
+  //         (kitItem) => kitItem.stockItemId._id === item.itemId?._id
+  //       );
+
+  //       if (kitchenConsumption) {
+  //         const consumptionQuantity =
+  //           kitchenConsumption.consumptionQuantity + item.amount;
+  //         const bookBalance = kitchenConsumption.bookBalance - item.amount;
+
+  //         await axios.put(
+  //           `${apiUrl}/api/consumption/${kitchenConsumption._id}`,
+  //           {
+  //             consumptionQuantity,
+  //             bookBalance,
+  //             productsProduced: item.productsProduced,
+  //           },
+  //           config
+  //         );
+  //       }
+  //     }
+
+  //     // 5. Update order status
+  //     const updatedProducts = orderProducts.map((product) => {
+  //       if (
+  //         kitchenProducts.some(
+  //           (kitchenProduct) =>
+  //             kitchenProduct.productid?._id === product.productid._id
+  //         )
+  //       ) {
+  //         return { ...product, isDone: true };
+  //       } else {
+  //         return product;
+  //       }
+  //     });
+
+  //     // const preparationStatus = { "preparationStatus.Kitchen": "Prepared" };
+
+  //     if (type === "Internal") {
+  //       const waiter = await specifiedWaiter(id);
+  //       if (!waiter) {
+  //         toast.warn("لا يوجد نادل متاح لتسليم الطلب. يرجى مراجعة الإدارة!");
+  //         return;
+  //       }
+  //       const response = await axios.put(
+  //         `${apiUrl}/api/order/${id}`,
+  //         {
+  //           "preparationStatus.Kitchen": "Prepared",
+  //           products: updatedProducts,
+  //           waiter,
+  //         },
+  //         config
+  //       );
+  //       waiterSocket.emit("orderready", `أورد جاهز في المطبخ-${waiter}`);
+  //     } else {
+  //       await axios.put(
+  //         `${apiUrl}/api/order/${id}`,
+  //         {
+  //           products: updatedProducts,
+  //           "preparationStatus.Kitchen": "Prepared",
+  //         },
+  //         config
+  //       );
+  //       waiterSocket.emit("orderready", "أورد جاهز في المطبخ");
+  //     }
+
+  //     // 6. Refresh state
+  //     getAllOrders();
+  //     getKitchenConsumption();
+  //     toast.success("تم تجهيز الطلب بنجاح!");
+  //   } catch (error) {
+  //     console.error("Error in updating order:", error);
+  //     toast.error("حدث خطأ أثناء تعديل حالة الطلب. يرجى إعادة المحاولة.");
+  //   }
+  // };
 
   // Fetches all active waiters from the API
 

@@ -5,15 +5,17 @@ const createPreparationTicket = async (req, res) => {
     const {
       order,
       preparationSection,
-      status,
+      preparationStatus,
       products,
+      isActive
     } = req.body;
 
     const newPreparationTicket = await PreparationTicketModel.create({
       order,
       preparationSection,
-      status,
+      preparationStatus,
       products,
+      isActive
     });
 
     res.status(201).json({
@@ -89,10 +91,11 @@ const updatePreparationTicket = async (req, res) => {
     const {
       order,
       preparationSection,
-      status,
+      preparationStatus,
       responsibleEmployee,
       waiter,
       products,
+      isActive
     } = req.body;
 
     const updatedPreparationTicket =
@@ -101,10 +104,11 @@ const updatePreparationTicket = async (req, res) => {
         {
           order,
           preparationSection,
-          status,
+          preparationStatus,
           responsibleEmployee,
           waiter,
           products,
+          isActive
         },
         { new: true, runValidators: true }
       );
