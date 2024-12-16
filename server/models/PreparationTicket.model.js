@@ -13,10 +13,10 @@ const PreparationTicketSchema = new mongoose.Schema(
       required: [true, "Preparation section is required"],
       enum: ["Kitchen", "Bar", "Grill"],
     },
-    isActive:{
+    isActive: {
       type: Boolean,
       require: true,
-      default:true
+      default: true,
     },
     // preparationSection: {
     //   type: ObjectId,
