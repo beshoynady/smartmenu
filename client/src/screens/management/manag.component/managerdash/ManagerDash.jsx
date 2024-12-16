@@ -223,7 +223,7 @@ const ManagerDash = () => {
                 if (product.productid?.preparationSection === section) {
                   listOrderProducts.push({
                     ...product,
-                    productid: product._id,
+                    productid: productid._id,
                   });
                 }
               });

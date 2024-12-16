@@ -31,8 +31,7 @@ const getAllPreparationTickets = async (req, res) => {
   try {
     const preparationTickets = await PreparationTicketModel.find()
       .populate("order")
-      .populate("products.productid")
-
+      .populate("products.productid", "_id name preparationSection")
       .populate("products.extras.extraDetails.extraId", "_id name")
       // .populate("preparationSection", "_id name")
       .populate("responsibleEmployee", "_id username role")
