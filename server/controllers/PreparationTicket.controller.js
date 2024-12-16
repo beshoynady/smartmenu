@@ -2,20 +2,15 @@ const PreparationTicketModel = require("../models/PreparationTicket.model.js");
 
 const createPreparationTicket = async (req, res) => {
   try {
-    const {
-      order,
-      preparationSection,
-      preparationStatus,
-      products,
-      isActive
-    } = req.body;
+    const { order, preparationSection, preparationStatus, products, isActive } =
+      req.body;
 
     const newPreparationTicket = await PreparationTicketModel.create({
       order,
       preparationSection,
       preparationStatus,
       products,
-      isActive
+      isActive,
     });
 
     res.status(201).json({
@@ -36,7 +31,8 @@ const getAllPreparationTickets = async (req, res) => {
   try {
     const preparationTickets = await PreparationTicketModel.find()
       .populate("order")
-      // .populate("products.productid", "_id name preparationSection")
+      .populate("products.productid", "_id name preparationSection")
+
       .populate("products.extras.extraDetails.extraId", "_id name")
       // .populate("preparationSection", "_id name")
       .populate("responsibleEmployee", "_id username role")
@@ -60,7 +56,7 @@ const getPreparationTicketById = async (req, res) => {
 
     const preparationTicket = await PreparationTicketModel.findById(id)
       .populate("order")
-      // .populate("products.productid", "_id name preparationSection")
+      .populate("products.productid", "_id name preparationSection")
       .populate("products.extras.extraDetails.extraId", "_id name")
       // .populate("preparationSection", "_id name")
       .populate("responsibleEmployee", "_id username role")
@@ -95,7 +91,7 @@ const updatePreparationTicket = async (req, res) => {
       responsibleEmployee,
       waiter,
       products,
-      isActive
+      isActive,
     } = req.body;
 
     const updatedPreparationTicket =
@@ -108,7 +104,7 @@ const updatePreparationTicket = async (req, res) => {
           responsibleEmployee,
           waiter,
           products,
-          isActive
+          isActive,
         },
         { new: true, runValidators: true }
       );
