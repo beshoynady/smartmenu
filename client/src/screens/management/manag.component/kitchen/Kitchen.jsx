@@ -60,11 +60,11 @@ const Kitchen = () => {
 
       // Fetch orders from the API
       const Response = await axios.get(`${apiUrl}/api/preparationticket`);
-      const PreparationTicket = ordersResponse.data.data;
-      console.log({ ordersResponse });
+      const PreparationTicket = Response.data.data;
+      console.log({Response, PreparationTicket });
       // console.log({ kitchenOrders })
       // Set all orders state
-      setAllOrders(kitchenOrders);
+      setAllOrders(PreparationTicket);
       const kitchenPreparationTicket = PreparationTicket.filter(
         (ticket) =>
           ticket.preparationSection === "Kitchen" && ticket.isActive === true
@@ -90,7 +90,7 @@ const Kitchen = () => {
       const updatedConsumptionOrderActive = [];
 
       // console.log({ allRecipe, activeOrders })
-      activeOrders &&
+      kitchenPreparationTicket &&
         kitchenPreparationTicket.forEach((ticket) => {
           ticket.products.forEach((product) => {
             if (!product.isDone) {
@@ -364,7 +364,7 @@ const Kitchen = () => {
       );
       if (response.status === 200) {
         // Fetch orders from the API
-        await getAllOrders();
+        // await getAllOrders();
         toast.success("الاوردر يجهز!");
       } else {
         toast.error("حدث خطأ اثناء قبول الاوردر ! حاول مره اهري");
@@ -828,7 +828,7 @@ const Kitchen = () => {
       }
 
       // 6. Refresh state
-      getAllOrders();
+      // getAllOrders();
       getKitchenConsumption();
       toast.success("تم تجهيز الطلب بنجاح!");
     } catch (error) {
@@ -1129,14 +1129,16 @@ const Kitchen = () => {
   useEffect(() => {
     getAllRecipe();
     getAllWaiters();
-    getAllOrders();
+    getAllPreparationTicket()
+    // getAllOrders();
     getKitchenConsumption();
   }, []);
 
   useEffect(() => {
     getAllRecipe();
     getAllWaiters();
-    getAllOrders();
+    getAllPreparationTicket()
+    // getAllOrders();
     getKitchenConsumption();
   }, [isRefresh]);
 
