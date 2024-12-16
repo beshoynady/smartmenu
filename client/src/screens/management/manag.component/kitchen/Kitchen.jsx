@@ -1198,8 +1198,7 @@ const Kitchen = () => {
             if (
               order.products.filter(
                 (product) =>
-                  product.isDone === false &&
-                  product.productid?.preparationSection === "Kitchen"
+                  product.isDone === false
               ).length > 0
             ) {
               return (
