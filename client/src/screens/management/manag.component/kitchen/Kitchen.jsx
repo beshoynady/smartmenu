@@ -27,11 +27,11 @@ const Kitchen = () => {
   const start = useRef();
   const ready = useRef();
 
-  const [orderactive, setOrderActive] = useState([]); // State for active orders
-  const [consumptionOrderActive, setConsumptionOrderActive] = useState([]); // State for active orders
-  const [allOrders, setAllOrders] = useState([]); // State for all orders
+  const [PreparationTicketActive, setPreparationTicketActive] = useState([]); // State for active Tickets
+  const [consumptionPreparationTicketActive, setConsumptionPreparationTicketActive] = useState([]); // State for active Tickets
+  const [AllPreparationTicket, setAllPreparationTicket] = useState([]); // State for all Tickets
 
-  const [allRecipe, setallRecipe] = useState([]); // State for all orders
+  const [allRecipe, setallRecipe] = useState([]); // State for all Tickets
 
   const getAllRecipe = async () => {
     try {
@@ -58,18 +58,18 @@ const Kitchen = () => {
         return;
       }
 
-      // Fetch orders from the API
+      // Fetch Tickets from the API
       const Response = await axios.get(`${apiUrl}/api/preparationticket`, config);
       const PreparationTicket = Response.data.data;
       console.log({Response, PreparationTicket });
-      // console.log({ kitchenOrders })
-      // Set all orders state
-      setAllOrders(PreparationTicket);
+      // console.log({ kitchenTickets })
+      // Set all Tickets state
+      setAllPreparationTicket(PreparationTicket);
       const kitchenPreparationTicket = PreparationTicket.filter(
         (ticket) =>
           ticket.preparationSection === "Kitchen" && ticket.isActive === true
       );
-      // Filter active orders based on certain conditions
+      // Filter active Tickets based on certain conditions
       // const activePreparationTicket = kitchenPreparationTicket.filter(
       //   (ticket) =>
       //     ticket.isActive &&
@@ -80,21 +80,21 @@ const Kitchen = () => {
       // );
 
       console.log({ kitchenPreparationTicket });
-      // Set active orders state
-      setOrderActive(kitchenPreparationTicket);
+      // Set active Tickets state
+      setPreparationTicketActive(kitchenPreparationTicket);
       const getAllRecipe = await axios.get(`${apiUrl}/api/recipe`, config);
       const allRecipeData = await getAllRecipe.data;
 
       const allRecipe = allRecipeData;
 
-      const updatedConsumptionOrderActive = [];
+      const updatedConsumptionPreparationTicketActive = [];
 
-      // console.log({ allRecipe, activeOrders })
+      // console.log({ allRecipe, activeTickets })
       kitchenPreparationTicket &&
         kitchenPreparationTicket.forEach((ticket) => {
           ticket.products.forEach((product) => {
             if (!product.isDone) {
-              // console.log({ order, product })
+              // console.log({ Ticket, product })
               const productIngredients = product.sizeId
                 ? allRecipe.find(
                     (recipe) =>
@@ -107,22 +107,22 @@ const Kitchen = () => {
 
               // console.log({ productIngredients })
 
-              // Update consumptionOrderActive
+              // Update consumptionPreparationTicketActive
               productIngredients &&
                 productIngredients.forEach((item) => {
                   const existingItemIndex =
-                    updatedConsumptionOrderActive.findIndex(
+                    updatedConsumptionPreparationTicketActive.findIndex(
                       (con) => con.itemId?._id === item.itemId?._id
                     );
                   const amount = item.amount * product.quantity;
 
                   if (existingItemIndex !== -1) {
                     // If the item already exists, update the amount
-                    updatedConsumptionOrderActive[existingItemIndex].amount +=
+                    updatedConsumptionPreparationTicketActive[existingItemIndex].amount +=
                       amount;
                   } else {
                     // If the item does not exist, add it to the array
-                    updatedConsumptionOrderActive.push({
+                    updatedConsumptionPreparationTicketActive.push({
                       itemId: item.itemId,
                       name: item.name,
                       unit: item.unit,
@@ -141,23 +141,23 @@ const Kitchen = () => {
 
                     // console.log({ extraIngredients })
 
-                    // Update consumptionOrderActive
+                    // Update consumptionPreparationTicketActive
                     extraIngredients &&
                       extraIngredients.forEach((item) => {
                         const existingItemIndex =
-                          updatedConsumptionOrderActive.findIndex(
+                          updatedConsumptionPreparationTicketActive.findIndex(
                             (con) => con.itemId?._id === item.itemId?._id
                           );
                         const amount = item.amount;
 
                         if (existingItemIndex !== -1) {
                           // If the item already exists, update the amount
-                          updatedConsumptionOrderActive[
+                          updatedConsumptionPreparationTicketActive[
                             existingItemIndex
                           ].amount += amount;
                         } else {
                           // If the item does not exist, add it to the array
-                          updatedConsumptionOrderActive.push({
+                          updatedConsumptionPreparationTicketActive.push({
                             itemId: item.itemId,
                             name: item.name,
                             unit: item.unit,
@@ -170,142 +170,15 @@ const Kitchen = () => {
             }
           });
         });
-      console.log({ updatedConsumptionOrderActive });
+      console.log({ updatedConsumptionPreparationTicketActive });
 
-      // Set updated consumptionOrderActive state
-      setConsumptionOrderActive(updatedConsumptionOrderActive);
+      // Set updated consumptionPreparationTicketActive state
+      setConsumptionPreparationTicketActive(updatedConsumptionPreparationTicketActive);
     } catch (error) {
       // Handle errors
-      console.error("Error fetching orders:", error);
+      console.error("Error fetching Tickets:", error);
     }
   };
-  // const getAllOrders = async () => {
-  //   try {
-  //     if (!token) {
-  //       // Handle case where token is not available
-  //       toast.error("رجاء تسجيل الدخول مره اخري");
-  //       return;
-  //     }
-
-  //     // Fetch orders from the API
-  //     const ordersResponse = await axios.get(`${apiUrl}/api/order/limit/50`);
-  //     const kitchenOrders = ordersResponse.data;
-  //     console.log({ ordersResponse });
-  //     // console.log({ kitchenOrders })
-  //     // Set all orders state
-  //     setAllOrders(kitchenOrders);
-
-  //     // Filter active orders based on certain conditions
-  //     const activeOrders = kitchenOrders.filter(
-  //       (order) =>
-  //         order.isActive &&
-  //         order.status === "Approved" &&
-  //         (order.preparationStatus.Kitchen === "Pending" ||
-  //           order.preparationStatus.Kitchen === "Preparing" ||
-  //           order.preparationStatus.Kitchen === "Prepared")
-  //     );
-
-  //     console.log({ activeOrders });
-  //     // Set active orders state
-  //     setOrderActive(activeOrders);
-  //     const getAllRecipe = await axios.get(`${apiUrl}/api/recipe`, config);
-  //     const allRecipeData = await getAllRecipe.data;
-
-  //     const allRecipe = allRecipeData;
-
-  //     const updatedConsumptionOrderActive = [];
-
-  //     // console.log({ allRecipe, activeOrders })
-  //     activeOrders &&
-  //       activeOrders.forEach((order) => {
-  //         order.products.forEach((product) => {
-  //           if (!product.isDone) {
-  //             // console.log({ order, product })
-  //             const productIngredients = product.sizeId
-  //               ? allRecipe.find(
-  //                   (recipe) =>
-  //                     recipe.productId._id === product.productid?._id &&
-  //                     recipe.sizeId === product.sizeId
-  //                 )?.ingredients
-  //               : allRecipe.find(
-  //                   (recipe) => recipe.productId._id === product.productid?._id
-  //                 )?.ingredients || [];
-
-  //             // console.log({ productIngredients })
-
-  //             // Update consumptionOrderActive
-  //             productIngredients &&
-  //               productIngredients.forEach((item) => {
-  //                 const existingItemIndex =
-  //                   updatedConsumptionOrderActive.findIndex(
-  //                     (con) => con.itemId?._id === item.itemId?._id
-  //                   );
-  //                 const amount = item.amount * product.quantity;
-
-  //                 if (existingItemIndex !== -1) {
-  //                   // If the item already exists, update the amount
-  //                   updatedConsumptionOrderActive[existingItemIndex].amount +=
-  //                     amount;
-  //                 } else {
-  //                   // If the item does not exist, add it to the array
-  //                   updatedConsumptionOrderActive.push({
-  //                     itemId: item.itemId,
-  //                     name: item.name,
-  //                     unit: item.unit,
-  //                     amount,
-  //                   });
-  //                 }
-  //               });
-
-  //             product.extras &&
-  //               product.extras.map((productextra) => {
-  //                 productextra.extraDetails.map((extra) => {
-  //                   const extraIngredients =
-  //                     allRecipe.find(
-  //                       (recipe) => recipe.productId._id === extra.extraId._id
-  //                     )?.ingredients || [];
-
-  //                   // console.log({ extraIngredients })
-
-  //                   // Update consumptionOrderActive
-  //                   extraIngredients &&
-  //                     extraIngredients.forEach((item) => {
-  //                       const existingItemIndex =
-  //                         updatedConsumptionOrderActive.findIndex(
-  //                           (con) => con.itemId?._id === item.itemId?._id
-  //                         );
-  //                       const amount = item.amount;
-
-  //                       if (existingItemIndex !== -1) {
-  //                         // If the item already exists, update the amount
-  //                         updatedConsumptionOrderActive[
-  //                           existingItemIndex
-  //                         ].amount += amount;
-  //                       } else {
-  //                         // If the item does not exist, add it to the array
-  //                         updatedConsumptionOrderActive.push({
-  //                           itemId: item.itemId,
-  //                           name: item.name,
-  //                           unit: item.unit,
-  //                           amount,
-  //                         });
-  //                       }
-  //                     });
-  //                 });
-  //               });
-  //           }
-  //         });
-  //       });
-  //     console.log({ updatedConsumptionOrderActive });
-
-  //     // Set updated consumptionOrderActive state
-  //     setConsumptionOrderActive(updatedConsumptionOrderActive);
-  //   } catch (error) {
-  //     // Handle errors
-  //     console.error("Error fetching orders:", error);
-  //   }
-  // };
-
   const today = formatDate(new Date());
   const [date, setDate] = useState(today);
   const [allKitchenConsumption, setAllKitchenConsumption] = useState([]);
@@ -347,9 +220,9 @@ const Kitchen = () => {
     }
   };
 
-  // Updates an order status to 'Preparing'
+  // Updates an Ticket status to 'Preparing'
 
-  const orderInProgress = async (id) => {
+  const TicketInProgress = async (id) => {
     try {
       if (!token) {
         // Handle case where token is not available
@@ -363,8 +236,8 @@ const Kitchen = () => {
         config
       );
       if (response.status === 200) {
-        // Fetch orders from the API
-        // await getAllOrders();
+        // Fetch Tickets from the API
+        // await getAllPreparationTicket();
         toast.success("الاوردر يجهز!");
       } else {
         toast.error("حدث خطأ اثناء قبول الاوردر ! حاول مره اهري");
@@ -374,295 +247,23 @@ const Kitchen = () => {
       toast.error("فش بدء الاوردر ! اعد تحميل الصفحة ");
     }
   };
-  // const orderInProgress = async (id) => {
-  //   try {
-  //     if (!token) {
-  //       // Handle case where token is not available
-  //       toast.error("رجاء تسجيل الدخول مره اخري");
-  //       return;
-  //     }
-  //     const preparationStatus = { "preparationStatus.Kitchen": "Preparing" };
-  //     const response = await axios.put(
-  //       `${apiUrl}/api/order/${id}`,
-  //       preparationStatus,
-  //       config
-  //     );
-  //     if (response.status === 200) {
-  //       // Fetch orders from the API
-  //       await getAllOrders();
-  //       toast.success("الاوردر يجهز!");
-  //     } else {
-  //       toast.error("حدث خطأ اثناء قبول الاوردر ! حاول مره اهري");
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //     toast.error("فش بدء الاوردر ! اعد تحميل الصفحة ");
-  //   }
-  // };
 
-  // const updateOrderDone = async (id, type) => {
-  //   if (!token) {
-  //     // Handle case where token is not available
-  //     toast.error("رجاء تسجيل الدخول مره اخري");
-  //     return;
-  //   }
-  //   try {
-  //     // Fetch order data by ID
-  //     const orderData = await axios.get(`${apiUrl}/api/order/${id}`);
-  //     const orderProduct = orderData.data.products;
-  //     const products = orderProduct.filter(
-  //       (product) => product.productid?.preparationSection === "Kitchen"
-  //     );
-  //     console.log({ products });
-
-  //     const fetchKitchenConsumption = await axios.get(
-  //       apiUrl + "/api/consumption",
-  //       config
-  //     );
-  //     const Allkitchenconsumption = await fetchKitchenConsumption.data.data;
-
-  //     const kitchenConsumptionsToday = await Allkitchenconsumption.filter(
-  //       (kitItem) => {
-  //         const itemDate = formatDate(kitItem.createdAt);
-  //         return itemDate === date;
-  //       }
-  //     );
-
-  //     let totalConsumptionOrder = [];
-  //     // Loop through each product in the order
-  //     products &&
-  //       products.forEach((product) => {
-  //         if (!product.isDone) {
-  //           console.log({ product });
-  //           const productIngredients = product.sizeId
-  //             ? allRecipe.find(
-  //                 (recipe) =>
-  //                   recipe.productId._id === product.productid?._id &&
-  //                   recipe.sizeId === product.sizeId
-  //               )?.ingredients
-  //             : allRecipe.find(
-  //                 (recipe) => recipe.productId._id === product.productid?._id
-  //               )?.ingredients || [];
-
-  //           // console.log({ productIngredients });
-  //           // Update consumptionOrderActive
-  //           productIngredients &&
-  //             productIngredients.forEach((item) => {
-  //               console.log({ item });
-  //               let kitconsumption = kitchenConsumptionsToday.find(
-  //                 (kitItem) => kitItem.stockItemId._id === item.itemId?._id
-  //               );
-  //               console.log({ kitconsumption });
-
-  //               const existingItemIndex = totalConsumptionOrder.findIndex(
-  //                 (con) => con.itemId?._id === item.itemId?._id
-  //               );
-  //               console.log({ existingItemIndex });
-
-  //               const amount = item.amount * product.quantity;
-
-  //               if (existingItemIndex !== -1) {
-  //                 // If the item already exists, update the amount
-  //                 totalConsumptionOrder[existingItemIndex].amount += amount;
-  //               } else {
-  //                 // If the item does not exist, add it to the array
-  //                 totalConsumptionOrder.push({
-  //                   itemId: item.itemId,
-  //                   amount,
-  //                   productsProduced: kitconsumption
-  //                     ? [...kitconsumption.productsProduced]
-  //                     : [],
-  //                 });
-  //               }
-
-  //               console.log({ totalConsumptionOrder });
-
-  //               const existingItem = totalConsumptionOrder.find(
-  //                 (con) => con.itemId?._id === item.itemId?._id
-  //               );
-
-  //               let foundProducedProduct = product.sizeId
-  //                 ? existingItem?.productsProduced?.find(
-  //                     (produced) =>
-  //                       produced.productId === product.productid?._id &&
-  //                       produced.sizeId === product.sizeId
-  //                   )
-  //                 : existingItem?.productsProduced?.find(
-  //                     (produced) =>
-  //                       produced.productId === product.productid?._id
-  //                   );
-
-  //               // console.log({ foundProducedProduct });
-
-  //               if (!foundProducedProduct) {
-  //                 const newProducedProduct = product.sizeId
-  //                   ? {
-  //                       productId: product.productid?._id,
-  //                       sizeId: product.sizeId,
-  //                       sizeName: product.size,
-  //                       productionCount: product.quantity,
-  //                       productName: product.name,
-  //                     }
-  //                   : {
-  //                       productId: product.productid?._id,
-  //                       productionCount: product.quantity,
-  //                       productName: product.name,
-  //                     };
-  //                 // console.log({ newProducedProduct });
-  //                 existingItem?.productsProduced.push(newProducedProduct);
-  //               } else {
-  //                 foundProducedProduct.productionCount += product.quantity;
-  //               }
-  //             });
-  //           // console.log({ totalConsumptionOrder })
-
-  //           product.extras &&
-  //             product.extras.forEach((productextra) => {
-  //               productextra.extraDetails.forEach((extra) => {
-  //                 const extraIngredients =
-  //                   allRecipe.find(
-  //                     (recipe) => recipe.productId._id === extra.extraId._id
-  //                   )?.ingredients || [];
-
-  //                 // Update consumptionOrderActive
-  //                 extraIngredients.forEach((item) => {
-  //                   const existingItemIndex = totalConsumptionOrder.findIndex(
-  //                     (con) => con.itemId?._id === item.itemId?._id
-  //                   );
-  //                   const amount = item.amount;
-
-  //                   if (existingItemIndex !== -1) {
-  //                     // If the item already exists, update the amount
-  //                     totalConsumptionOrder[existingItemIndex].amount += amount;
-  //                   } else {
-  //                     // If the item does not exist, add it to the array
-  //                     totalConsumptionOrder.push({
-  //                       itemId: item.itemId,
-  //                       amount,
-  //                     });
-  //                   }
-
-  //                   let foundProducedProduct = totalConsumptionOrder[
-  //                     existingItemIndex
-  //                   ]?.productsProduced?.find(
-  //                     (produced) => produced.productId === extra.extraId?._id
-  //                   );
-
-  //                   if (!foundProducedProduct) {
-  //                     const newProducedProduct = {
-  //                       productId: extra.extraId?._id,
-  //                       productionCount: 1,
-  //                       productName: extra.name,
-  //                     };
-
-  //                     totalConsumptionOrder[
-  //                       existingItemIndex
-  //                     ]?.productsProduced.push(newProducedProduct);
-  //                   } else {
-  //                     foundProducedProduct.productionCount += 1;
-  //                   }
-  //                 });
-  //               });
-  //             });
-  //         }
-  //       });
-
-  //     // console.log({ totalConsumptionOrder })
-  //     totalConsumptionOrder &&
-  //       totalConsumptionOrder.map(async (item) => {
-  //         let kitconsumption = await kitchenConsumptionsToday.find(
-  //           (kitItem) => kitItem.stockItemId._id === item.itemId?._id
-  //         );
-  //         try {
-  //           const consumptionQuantity =
-  //             kitconsumption.consumptionQuantity + item.amount;
-  //           const bookBalance = kitconsumption.bookBalance - item.amount;
-  //           console.log({ productsProduced: item.productsProduced });
-  //           // Update kitchen consumption data
-  //           const update = await axios.put(
-  //             `${apiUrl}/api/consumption/${kitconsumption._id}`,
-  //             {
-  //               consumptionQuantity,
-  //               bookBalance,
-  //               productsProduced: item.productsProduced,
-  //             },
-  //             config
-  //           );
-  //           // console.log({ update: update });
-  //         } catch (error) {
-  //           console.log({ error: error });
-  //         }
-  //       });
-
-  //     // Perform other operations if needed after the loop completes
-  //     // Update order status or perform other tasks
-
-  //     const updateproducts =
-  //       products &&
-  //       orderProduct.map((prod) => {
-  //         const findProduct = products.find(
-  //           (product) => product.productid?._id === prod.productid._id
-  //         );
-  //         if (findProduct) {
-  //           return {
-  //             ...prod,
-  //             isDone: true,
-  //           };
-  //         }
-  //         return prod;
-  //       });
-  //     console.log({ updateproducts });
-
-  //     const preparationStatus = { "preparationStatus.Kitchen": "Prepared" };
-  //     if (type === "Internal") {
-  //       const waiter = await specifiedWaiter(id);
-  //       if (!waiter) {
-  //         toast.warn("لا يوجد نادل متاح لتسليم الطلب. يرجى مراجعة الإدارة!");
-  //         return;
-  //       }
-  //       await axios.put(
-  //         `${apiUrl}/api/order/${id}`,
-  //         { products: updateproducts, preparationStatus, waiter },
-  //         config
-  //       );
-  //       kitchenSocket.emit("orderready", `اورد جاهز في المطبخ -${waiter}`);
-  //     } else {
-  //       await axios.put(
-  //         `${apiUrl}/api/order/${id}`,
-  //         { products: updateproducts, preparationStatus },
-  //         config
-  //       );
-  //       kitchenSocket.emit("orderready", `اورد جاهز في المطبخ`);
-  //     }
-
-  //     // Set all orders state
-  //     getAllOrders();
-  //     getKitchenConsumption();
-  //     toast.success("تم تجهيز الاوردر !");
-  //   } catch (error) {
-  //     console.log(error);
-  //     toast.error(
-  //       "حدث خطأ اثناء تعديل حاله الاودر !اعد تحميل الصفحة و حاول مره اخري "
-  //     );
-  //   }
-  // };
-
-  const updateOrderDone = async (id, type) => {
+  const updateTicketDone = async (id, type) => {
     if (!token) {
       toast.error("رجاء تسجيل الدخول مره أخرى");
       return;
     }
 
     try {
-      // 1. Fetch order and product data
+      // 1. Fetch Ticket and product data
       const preparationticketData = await axios.get(
         `${apiUrl}/api/preparationticket/${id}`,
         config
       );
       const { products: kitchenProducts } = preparationticketData.data.data;
 
-      const orderProducts = preparationticketData.data.data.order?.products;
-      console.log({ orderProducts });
+      const TicketProducts = preparationticketData.data.data.Ticket?.products;
+      console.log({ TicketProducts });
 
       if (!kitchenProducts.length) {
         toast.warn("لا توجد منتجات بحاجة إلى تجهيز في المطبخ");
@@ -680,8 +281,8 @@ const Kitchen = () => {
         return itemDate === date;
       });
 
-      // 3. Prepare total consumption order
-      const totalConsumptionOrder = [];
+      // 3. Prepare total consumption Ticket
+      const totalConsumptionTicket = [];
 
       for (const product of kitchenProducts) {
         if (product.isDone) continue;
@@ -699,20 +300,20 @@ const Kitchen = () => {
 
         // Process ingredients
         for (const ingredient of productIngredients || []) {
-          const existingItemIndex = totalConsumptionOrder.findIndex(
+          const existingItemIndex = totalConsumptionTicket.findIndex(
             (item) => item.itemId?._id === ingredient.itemId?._id
           );
 
           const amount = ingredient.amount * product.quantity;
 
           if (existingItemIndex !== -1) {
-            totalConsumptionOrder[existingItemIndex].amount += amount;
+            totalConsumptionTicket[existingItemIndex].amount += amount;
           } else {
             const kitchenConsumption = kitchenConsumptionsToday.find(
               (kitItem) => kitItem.stockItemId._id === ingredient.itemId?._id
             );
 
-            totalConsumptionOrder.push({
+            totalConsumptionTicket.push({
               itemId: ingredient.itemId,
               amount,
               productsProduced: kitchenConsumption
@@ -731,15 +332,15 @@ const Kitchen = () => {
               )?.ingredients || [];
 
             for (const ingredient of extraIngredients) {
-              const existingItemIndex = totalConsumptionOrder.findIndex(
+              const existingItemIndex = totalConsumptionTicket.findIndex(
                 (item) => item.itemId?._id === ingredient.itemId?._id
               );
               const amount = ingredient.amount;
 
               if (existingItemIndex !== -1) {
-                totalConsumptionOrder[existingItemIndex].amount += amount;
+                totalConsumptionTicket[existingItemIndex].amount += amount;
               } else {
-                totalConsumptionOrder.push({
+                totalConsumptionTicket.push({
                   itemId: ingredient.itemId,
                   amount,
                 });
@@ -750,7 +351,7 @@ const Kitchen = () => {
       }
 
       // 4. Update consumption data in the kitchen
-      for (const item of totalConsumptionOrder) {
+      for (const item of totalConsumptionTicket) {
         const kitchenConsumption = kitchenConsumptionsToday.find(
           (kitItem) => kitItem.stockItemId._id === item.itemId?._id
         );
@@ -776,8 +377,8 @@ const Kitchen = () => {
         return { ...product, isDone: true };
       });
 
-      // 5. Update order Products
-      const updatedOrderProducts = orderProducts.map((product) => {
+      // 5. Update Ticket Products
+      const updatedTicketProducts = TicketProducts.map((product) => {
         if (
           kitchenProducts.some(
             (kitchenProduct) =>
@@ -792,10 +393,10 @@ const Kitchen = () => {
 
       const updateTicket = axios.put(
         `${apiUrl}/api/preparationticket/${id}`,
-        { products: updateTicketProducts, preparationStatus: "Prepared" },
+        { products: updateTicketProducts, preparationStatus: "Prepared"},
         config
       );
-      console.log({updatedOrderProducts, updateTicketProducts, updateTicket})
+      console.log({updatedTicketProducts, updateTicketProducts, updateTicket})
 
       // const preparationStatus = { "preparationStatus.Kitchen": "Prepared" };
 
@@ -809,213 +410,33 @@ const Kitchen = () => {
           `${apiUrl}/api/order/${id}`,
           {
             "preparationStatus.Kitchen": "Prepared",
-            products: updatedOrderProducts,
+            products: updatedTicketProducts,
             waiter,
           },
           config
         );
-        waiterSocket.emit("orderready", `أورد جاهز في المطبخ-${waiter}`);
+        waiterSocket.emit("Ticketready", `أورد جاهز في المطبخ-${waiter}`);
       } else {
         await axios.put(
           `${apiUrl}/api/order/${id}`,
           {
-            products: updatedOrderProducts,
+            products: updatedTicketProducts,
             "preparationStatus.Kitchen": "Prepared",
           },
           config
         );
-        waiterSocket.emit("orderready", "أورد جاهز في المطبخ");
+        waiterSocket.emit("Ticketready", "أورد جاهز في المطبخ");
       }
 
       // 6. Refresh state
-      // getAllOrders();
+      // getAllPreparationTicket();
       getKitchenConsumption();
       toast.success("تم تجهيز الطلب بنجاح!");
     } catch (error) {
-      console.error("Error in updating order:", error);
+      console.error("Error in updating Ticket:", error);
       toast.error("حدث خطأ أثناء تعديل حالة الطلب. يرجى إعادة المحاولة.");
     }
   };
-  // const updateOrderDone = async (id, type) => {
-  //   if (!token) {
-  //     toast.error("رجاء تسجيل الدخول مره أخرى");
-  //     return;
-  //   }
-
-  //   try {
-  //     // 1. Fetch order and product data
-  //     const { data: orderData } = await axios.get(
-  //       `${apiUrl}/api/order/${id}`,
-  //       config
-  //     );
-  //     const { products: orderProducts } = orderData;
-  //     const kitchenProducts = orderProducts.filter(
-  //       (product) => product.productid?.preparationSection === "Kitchen"
-  //     );
-
-  //     if (!kitchenProducts.length) {
-  //       toast.warn("لا توجد منتجات بحاجة إلى تجهيز في المطبخ");
-  //       return;
-  //     }
-
-  //     // 2. Fetch today's kitchen consumption data
-  //     const { data: consumptionData } = await axios.get(
-  //       `${apiUrl}/api/consumption`,
-  //       config
-  //     );
-  //     const allKitchenConsumption = consumptionData.data;
-  //     const kitchenConsumptionsToday = allKitchenConsumption.filter((item) => {
-  //       const itemDate = formatDate(item.createdAt);
-  //       return itemDate === date;
-  //     });
-
-  //     // 3. Prepare total consumption order
-  //     const totalConsumptionOrder = [];
-
-  //     for (const product of kitchenProducts) {
-  //       if (product.isDone) continue;
-
-  //       // Fetch product ingredients from recipes
-  //       const productIngredients = product.sizeId
-  //         ? allRecipe.find(
-  //             (recipe) =>
-  //               recipe.productId._id === product.productid?._id &&
-  //               recipe.sizeId === product.sizeId
-  //           )?.ingredients
-  //         : allRecipe.find(
-  //             (recipe) => recipe.productId._id === product.productid?._id
-  //           )?.ingredients || [];
-
-  //       // Process ingredients
-  //       for (const ingredient of productIngredients || []) {
-  //         const existingItemIndex = totalConsumptionOrder.findIndex(
-  //           (item) => item.itemId?._id === ingredient.itemId?._id
-  //         );
-
-  //         const amount = ingredient.amount * product.quantity;
-
-  //         if (existingItemIndex !== -1) {
-  //           totalConsumptionOrder[existingItemIndex].amount += amount;
-  //         } else {
-  //           const kitchenConsumption = kitchenConsumptionsToday.find(
-  //             (kitItem) => kitItem.stockItemId._id === ingredient.itemId?._id
-  //           );
-
-  //           totalConsumptionOrder.push({
-  //             itemId: ingredient.itemId,
-  //             amount,
-  //             productsProduced: kitchenConsumption
-  //               ? [...kitchenConsumption.productsProduced]
-  //               : [],
-  //           });
-  //         }
-  //       }
-
-  //       // Process extras
-  //       for (const extraGroup of product.extras || []) {
-  //         for (const extra of extraGroup.extraDetails) {
-  //           const extraIngredients =
-  //             allRecipe.find(
-  //               (recipe) => recipe.productId._id === extra.extraId._id
-  //             )?.ingredients || [];
-
-  //           for (const ingredient of extraIngredients) {
-  //             const existingItemIndex = totalConsumptionOrder.findIndex(
-  //               (item) => item.itemId?._id === ingredient.itemId?._id
-  //             );
-  //             const amount = ingredient.amount;
-
-  //             if (existingItemIndex !== -1) {
-  //               totalConsumptionOrder[existingItemIndex].amount += amount;
-  //             } else {
-  //               totalConsumptionOrder.push({
-  //                 itemId: ingredient.itemId,
-  //                 amount,
-  //               });
-  //             }
-  //           }
-  //         }
-  //       }
-  //     }
-
-  //     // 4. Update consumption data in the kitchen
-  //     for (const item of totalConsumptionOrder) {
-  //       const kitchenConsumption = kitchenConsumptionsToday.find(
-  //         (kitItem) => kitItem.stockItemId._id === item.itemId?._id
-  //       );
-
-  //       if (kitchenConsumption) {
-  //         const consumptionQuantity =
-  //           kitchenConsumption.consumptionQuantity + item.amount;
-  //         const bookBalance = kitchenConsumption.bookBalance - item.amount;
-
-  //         await axios.put(
-  //           `${apiUrl}/api/consumption/${kitchenConsumption._id}`,
-  //           {
-  //             consumptionQuantity,
-  //             bookBalance,
-  //             productsProduced: item.productsProduced,
-  //           },
-  //           config
-  //         );
-  //       }
-  //     }
-
-  //     // 5. Update order status
-  //     const updatedProducts = orderProducts.map((product) => {
-  //       if (
-  //         kitchenProducts.some(
-  //           (kitchenProduct) =>
-  //             kitchenProduct.productid?._id === product.productid._id
-  //         )
-  //       ) {
-  //         return { ...product, isDone: true };
-  //       } else {
-  //         return product;
-  //       }
-  //     });
-
-  //     // const preparationStatus = { "preparationStatus.Kitchen": "Prepared" };
-
-  //     if (type === "Internal") {
-  //       const waiter = await specifiedWaiter(id);
-  //       if (!waiter) {
-  //         toast.warn("لا يوجد نادل متاح لتسليم الطلب. يرجى مراجعة الإدارة!");
-  //         return;
-  //       }
-  //       const response = await axios.put(
-  //         `${apiUrl}/api/order/${id}`,
-  //         {
-  //           "preparationStatus.Kitchen": "Prepared",
-  //           products: updatedProducts,
-  //           waiter,
-  //         },
-  //         config
-  //       );
-  //       waiterSocket.emit("orderready", `أورد جاهز في المطبخ-${waiter}`);
-  //     } else {
-  //       await axios.put(
-  //         `${apiUrl}/api/order/${id}`,
-  //         {
-  //           products: updatedProducts,
-  //           "preparationStatus.Kitchen": "Prepared",
-  //         },
-  //         config
-  //       );
-  //       waiterSocket.emit("orderready", "أورد جاهز في المطبخ");
-  //     }
-
-  //     // 6. Refresh state
-  //     getAllOrders();
-  //     getKitchenConsumption();
-  //     toast.success("تم تجهيز الطلب بنجاح!");
-  //   } catch (error) {
-  //     console.error("Error in updating order:", error);
-  //     toast.error("حدث خطأ أثناء تعديل حالة الطلب. يرجى إعادة المحاولة.");
-  //   }
-  // };
-
-  // Fetches all active waiters from the API
 
   const [AllWaiters, setAllWaiters] = useState([]); // State for active waiters
 
@@ -1043,7 +464,7 @@ const Kitchen = () => {
     }
   };
 
-  // Determines the next available waiter to take an order
+  // Determines the next available waiter to take an Ticket
   const specifiedWaiter = async (id) => {
     try {
       if (!token) {
@@ -1059,16 +480,16 @@ const Kitchen = () => {
         return;
       }
       // البحث عن الطلب بالمعرف المحدد
-      const getorder = allOrders.find((order) => order._id === id);
-      if (!getorder) {
-        throw new Error("Order not found");
+      const getTicket = AllPreparationTicket.find((Ticket) => Ticket._id === id);
+      if (!getTicket) {
+        throw new Error("Ticket not found");
       }
 
-      if (getorder.status) {
+      if (getTicket.status) {
       }
       // استخراج رقم القسم من بيانات الطاولة المرتبطة بالطلب
       const tablesectionNumber =
-        getorder.table && getorder.table?.sectionNumber;
+        getTicket.table && getTicket.table?.sectionNumber;
       if (!tablesectionNumber) {
         throw new Error("Table section number not found");
       }
@@ -1081,17 +502,17 @@ const Kitchen = () => {
         throw new Error("No waiters found in the specified section");
       }
 
-      const OrderSection = allOrders
+      const TicketSection = AllPreparationTicket
         .filter(
-          (order) =>
-            order.waiter && order.waiter.sectionNumber === tablesectionNumber
+          (Ticket) =>
+            Ticket.waiter && Ticket.waiter.sectionNumber === tablesectionNumber
         )
         .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
 
       let waiterId = "";
 
-      if (OrderSection.length > 0) {
-        const lastWaiterId = OrderSection[0]?.waiter?._id;
+      if (TicketSection.length > 0) {
+        const lastWaiterId = TicketSection[0]?.waiter?._id;
         const lastWaiterIndex = sectionWaiters.findIndex(
           (waiter) => waiter._id === lastWaiterId
         );
@@ -1115,7 +536,7 @@ const Kitchen = () => {
     }
   };
 
-  // Calculates the waiting time for an order
+  // Calculates the waiting time for an Ticket
   const waitingTime = (t) => {
     const t1 = new Date(t).getTime();
     const t2 = new Date().getTime();
@@ -1125,12 +546,11 @@ const Kitchen = () => {
     return minutesPassed;
   };
 
-  // Fetches orders and active waiters on initial render
+  // Fetches Tickets and active waiters on initial render
   useEffect(() => {
     getAllRecipe();
     getAllWaiters();
     getAllPreparationTicket()
-    // getAllOrders();
     getKitchenConsumption();
   }, []);
 
@@ -1138,7 +558,6 @@ const Kitchen = () => {
     getAllRecipe();
     getAllWaiters();
     getAllPreparationTicket()
-    // getAllOrders();
     getKitchenConsumption();
   }, [isRefresh]);
 
@@ -1149,11 +568,11 @@ const Kitchen = () => {
     >
       <div
         className="col-12 h-auto mb-1 pb-1 d-flex flex-wrap justify-content-around align-items-start"
-        style={{ borderBottom: "1px solid red" }}
+        style={{ bTicketBottom: "1px solid red" }}
       >
-        {orderactive &&
-          consumptionOrderActive &&
-          consumptionOrderActive.map((item, index) => (
+        {PreparationTicketActive &&
+          consumptionPreparationTicketActive &&
+          consumptionPreparationTicketActive.map((item, index) => (
             <div
               className="card bg-primary text-white"
               style={{ height: "100px", width: "130px" }}
@@ -1195,10 +614,10 @@ const Kitchen = () => {
       </div>
 
       <div className="col-12 d-flex flex-wrap justify-content-around align-items-start">
-        {orderactive &&
-          orderactive.map((order, i) => {
+        {PreparationTicketActive &&
+          PreparationTicketActive.map((Ticket, i) => {
             if (
-              order.products.filter(
+              Ticket.products.filter(
                 (product) =>
                   product.isDone === false
               ).length > 0
@@ -1216,41 +635,41 @@ const Kitchen = () => {
                       <div className="col-6 p-0">
                         <p className="card-text">
                           {" "}
-                          {order.table != null
-                            ? `طاولة: ${order.table.tableNumber}`
-                            : order.user
-                            ? `العميل: ${order.user.username}`
+                          {Ticket.table != null
+                            ? `طاولة: ${Ticket.table.tableNumber}`
+                            : Ticket.user
+                            ? `العميل: ${Ticket.user.username}`
                             : ""}
                         </p>
                         <p className="card-text">
-                          رقم الطلب: {order.orderNum ? order.orderNum : ""}
+                          رقم الطلب: {Ticket.TicketNum ? Ticket.TicketNum : ""}
                         </p>
-                        <p className="card-text">الفاتورة: {order.serial}</p>
+                        <p className="card-text">الفاتورة: {Ticket.serial}</p>
                         <p className="card-text">
-                          نوع الطلب: {order.orderType}
+                          نوع الطلب: {Ticket.TicketType}
                         </p>
                       </div>
 
                       <div className="col-6 p-0">
-                        {order.waiter ? (
+                        {Ticket.waiter ? (
                           <p className="card-text">
-                            الويتر: {order.waiter && order.waiter?.username}
+                            الويتر: {Ticket.waiter && Ticket.waiter?.username}
                           </p>
                         ) : (
                           ""
                         )}
                         <p className="card-text">
-                          الاستلام: {formatTime(order.createdAt)}
+                          الاستلام: {formatTime(Ticket.createdAt)}
                         </p>
                         <p className="card-text">
                           الانتظار:{" "}
-                          {setTimeout(() => waitingTime(order.updateAt), 60000)}{" "}
+                          {setTimeout(() => waitingTime(Ticket.updateAt), 60000)}{" "}
                           دقيقه
                         </p>
                       </div>
                     </div>
                     <ul className="list-group list-group-flush">
-                      {order.products
+                      {Ticket.products
                         .filter(
                           (product) =>
                             product.isDone === false &&
@@ -1333,19 +752,19 @@ const Kitchen = () => {
                         })}
                     </ul>
                     <div className="card-footer text-center w-100 d-flex flex-row">
-                      {order.preparationStatus.Kitchen === "Preparing" ? (
+                      {Ticket.preparationStatus === "Preparing" ? (
                         <button
                           className="btn w-100 btn-warning h-100 btn btn-lg"
                           onClick={() => {
-                            updateOrderDone(order._id, order.orderType);
+                            updateTicketDone(Ticket._id, Ticket.TicketType);
                           }}
                         >
                           تم التنفيذ
                         </button>
-                      ) : order.status === "Approved" ? (
+                      ) : Ticket.preparationStatus === "Pending" ? (
                         <button
                           className="btn w-100 btn-primary h-100 btn btn-lg"
-                          onClick={() => orderInProgress(order._id)}
+                          onClick={() => TicketInProgress(Ticket._id)}
                         >
                           بدء التنفيذ
                         </button>
@@ -1357,8 +776,8 @@ const Kitchen = () => {
                 </div>
               );
             } else if (
-              order.preparationStatus.Kitchen === "Prepared" &&
-              order.products.filter(
+              Ticket.preparationStatus === "Prepared" &&
+              Ticket.products.filter(
                 (pr) => pr.isDone === true && pr.isDeleverd === false
               ).length > 0
             ) {
@@ -1375,41 +794,41 @@ const Kitchen = () => {
                       <div className="col-6 p-0">
                         <p className="card-text">
                           {" "}
-                          {order.table != null
-                            ? `طاولة: ${order.table.tableNumber}`
-                            : order.user
-                            ? `العميل: ${order.user.username}`
+                          {Ticket.table != null
+                            ? `طاولة: ${Ticket.table.tableNumber}`
+                            : Ticket.user
+                            ? `العميل: ${Ticket.user.username}`
                             : ""}
                         </p>
                         <p className="card-text">
-                          رقم الطلب: {order.orderNum ? order.orderNum : ""}
+                          رقم الطلب: {Ticket.TicketNum ? Ticket.TicketNum : ""}
                         </p>
-                        <p className="card-text">الفاتورة: {order.serial}</p>
+                        <p className="card-text">الفاتورة: {Ticket.serial}</p>
                         <p className="card-text">
-                          نوع الطلب: {order.orderType}
+                          نوع الطلب: {Ticket.TicketType}
                         </p>
                       </div>
 
                       <div className="col-6 p-0">
-                        {order.waiter ? (
+                        {Ticket.waiter ? (
                           <p className="card-text">
-                            الويتر: {order.waiter && order.waiter.username}
+                            الويتر: {Ticket.waiter && Ticket.waiter.username}
                           </p>
                         ) : (
                           ""
                         )}
                         <p className="card-text">
-                          الاستلام: {formatTime(order.createdAt)}
+                          الاستلام: {formatTime(Ticket.createdAt)}
                         </p>
                         <p className="card-text">
                           الانتظار:{" "}
-                          {setTimeout(() => waitingTime(order.updateAt), 60000)}{" "}
+                          {setTimeout(() => waitingTime(Ticket.updateAt), 60000)}{" "}
                           دقيقه
                         </p>
                       </div>
                     </div>
                     <ul className="list-group list-group-flush">
-                      {order.products
+                      {Ticket.products
                         .filter(
                           (pr) => pr.isDone === true && pr.isDeleverd === false
                         )
