@@ -237,7 +237,7 @@ const Kitchen = () => {
       );
       if (response.status === 200) {
         // Fetch Tickets from the API
-        // await getAllPreparationTicket();
+        getAllPreparationTicket();
         toast.success("الاوردر يجهز!");
       } else {
         toast.error("حدث خطأ اثناء قبول الاوردر ! حاول مره اهري");
