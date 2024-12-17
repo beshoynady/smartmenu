@@ -235,6 +235,7 @@ const Kitchen = () => {
         preparationStatus,
         config
       );
+      console.log({id, preparationStatus,response})
       if (response.status === 200) {
         // Fetch Tickets from the API
         getAllPreparationTicket();
