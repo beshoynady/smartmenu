@@ -232,7 +232,7 @@ const Kitchen = () => {
       const preparationStatus = "Preparing";
       const response = await axios.put(
         `${apiUrl}/api/preparationticket/${id}`,
-        preparationStatus,
+        {preparationStatus},
         config
       );
       console.log({id, preparationStatus,response})
