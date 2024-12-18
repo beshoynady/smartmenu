@@ -263,7 +263,7 @@ const Kitchen = () => {
       );
       const { products: kitchenProducts } = preparationticketData.data.data;
 
-      const TicketProducts = preparationticketData.data.data.Ticket?.products;
+      const orderProducts = preparationticketData.data.data.order?.products;
       console.log({ TicketProducts });
 
       if (!kitchenProducts.length) {
@@ -379,7 +379,7 @@ const Kitchen = () => {
       });
 
       // 5. Update Ticket Products
-      const updatedTicketProducts = TicketProducts.map((product) => {
+      const updatedOrderProducts = orderProducts.map((product) => {
         if (
           kitchenProducts.some(
             (kitchenProduct) =>
@@ -397,7 +397,7 @@ const Kitchen = () => {
         { products: updateTicketProducts, preparationStatus: "Prepared"},
         config
       );
-      console.log({updatedTicketProducts, updateTicketProducts, updateTicket})
+      console.log({updatedOrderProducts, updateTicketProducts, updateTicket})
 
       // const preparationStatus = { "preparationStatus.Kitchen": "Prepared" };
 
@@ -411,22 +411,22 @@ const Kitchen = () => {
           `${apiUrl}/api/order/${id}`,
           {
             "preparationStatus.Kitchen": "Prepared",
-            products: updatedTicketProducts,
+            products: updatedOrderProducts,
             waiter,
           },
           config
         );
-        waiterSocket.emit("Ticketready", `أورد جاهز في المطبخ-${waiter}`);
+        waiterSocket.emit("orderready", `أورد جاهز في المطبخ-${waiter}`);
       } else {
         await axios.put(
           `${apiUrl}/api/order/${id}`,
           {
-            products: updatedTicketProducts,
+            products: updatedOrderProducts,
             "preparationStatus.Kitchen": "Prepared",
           },
           config
         );
-        waiterSocket.emit("Ticketready", "أورد جاهز في المطبخ");
+        waiterSocket.emit("orderready", "أورد جاهز في المطبخ");
       }
 
       // 6. Refresh state
@@ -757,7 +757,7 @@ const Kitchen = () => {
                         <button
                           className="btn w-100 btn-warning h-100 btn btn-lg"
                           onClick={() => {
-                            updateTicketDone(Ticket._id, Ticket.TicketType);
+                            updateTicketDone(Ticket._id, Ticket.order.orderType);
                           }}
                         >
                           تم التنفيذ
