@@ -264,7 +264,7 @@ const Kitchen = () => {
       const { products: kitchenProducts } = preparationticketData.data.data;
 
       const orderProducts = preparationticketData.data.data.order?.products;
-      console.log({ TicketProducts });
+      console.log({ orderProducts,  kitchenProducts});
 
       if (!kitchenProducts.length) {
         toast.warn("لا توجد منتجات بحاجة إلى تجهيز في المطبخ");
