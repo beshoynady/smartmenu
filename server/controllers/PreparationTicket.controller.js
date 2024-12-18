@@ -84,8 +84,6 @@ const updatePreparationTicket = async (req, res) => {
   try {
     const { id } = req.params;
     const {
-      order,
-      preparationSection,
       preparationStatus,
       responsibleEmployee,
       waiter,
@@ -96,14 +94,13 @@ const updatePreparationTicket = async (req, res) => {
     const updatedPreparationTicket =
       await PreparationTicketModel.findByIdAndUpdate(
         id,
-        {
-          order,
-          preparationSection,
+        {$set:{
           preparationStatus,
           responsibleEmployee,
           waiter,
           products,
           isActive,
+        }
         },
         { new: true, runValidators: true }
       );

@@ -1,8 +1,7 @@
 const mongoose = require("mongoose");
-
 const { ObjectId } = mongoose.Schema;
 
-// Define common validation for number fields
+// Define default configuration for numeric fields
 const defaultOptions = {
   type: Number,
   default: 0,
@@ -12,9 +11,10 @@ const defaultOptions = {
   trim: true,
 };
 
+// Define the Order schema
 const OrderSchema = new mongoose.Schema(
   {
-    // Serial number of the order
+    // Serial number of the order (6 digits, unique)
     serial: {
       type: String,
       default: "000001",
@@ -22,7 +22,7 @@ const OrderSchema = new mongoose.Schema(
       unique: true,
       validate: {
         validator: function (v) {
-          return /^[0-9]{6}$/.test(v);
+          return /^[0-9]{6}$/.test(v); // Must be a 6-digit number
         },
         message: "{VALUE} is not a valid serial number",
       },
@@ -33,9 +33,18 @@ const OrderSchema = new mongoose.Schema(
       min: 1,
       max: 1000000,
     },
-    // Array of products in the order
+    // Order type (Internal, Delivery, Takeaway)
+    orderType: {
+      type: String,
+      enum: ["Internal", "Delivery", "Takeaway"],
+      default: "Internal",
+      required: true,
+    },
+
+    // List of products associated with the order
     products: [
       {
+        // Product ID
         productid: {
           type: ObjectId,
           ref: "Product",
@@ -47,108 +56,124 @@ const OrderSchema = new mongoose.Schema(
           required: true,
           trim: true,
         },
+        // Product size ID
         sizeId: {
           type: ObjectId,
           ref: "Product",
         },
+        // Product size
         size: {
           type: String,
           trim: true,
         },
-        // Quantity of the product
+        // Product quantity
         quantity: {
           ...defaultOptions,
           validate: {
             validator: function (v) {
-              return v >= 1 && v <= 1000000;
+              return v >= 1 && v <= 1000000; // Must be between 1 and 1,000,000
             },
             message: "{VALUE} is not a valid quantity",
           },
         },
-        // Notes for the product
+        // Additional notes for the product
         notes: {
           type: String,
           default: "",
           trim: true,
         },
-        // Price of the product
+        // Product price
         price: {
           ...defaultOptions,
           validate: {
             validator: function (v) {
-              return v >= 1 && v <= 1000000;
+              return v >= 1 && v <= 1000000; // Must be greater than 0
             },
             message: "{VALUE} is not a valid price",
           },
         },
+        // Price after applying discounts
         priceAfterDiscount: {
           ...defaultOptions,
         },
-        // Total price of the product quantity
+        // Total price for the product (quantity x price)
         totalprice: {
           ...defaultOptions,
         },
-        // Indicates if the product is done
+        // Number of paid items
+        numOfPaid: {
+          ...defaultOptions,
+        },
+        // Indicates if the product is sent to preparation
+        isSend: {
+          type: Boolean,
+          default: false,
+          required: true,
+        },
+        // Indicates if the product preparation is completed
         isDone: {
           type: Boolean,
           default: false,
           required: true,
         },
-        numOfPaid: {
-          ...defaultOptions,
-        },
-        // Indicates if the product is Deleverd
+        // Indicates if the product is delivered
         isDeleverd: {
           type: Boolean,
           default: false,
           required: true,
         },
-        // Indicates if the product is to be added
+        // Indicates if the product is an addition to the order
         isAdd: {
           type: Boolean,
           default: false,
           required: true,
         },
-
+        // List of extras for the product
         extras: [
           {
             extraDetails: [
               {
+                // Extra item ID
                 extraId: {
                   type: ObjectId,
                   ref: "Product",
                 },
+                // Extra item name
                 name: {
                   type: String,
                   required: true,
                   trim: true,
                 },
+                // Extra item price
                 price: {
                   ...defaultOptions,
                   validate: {
                     validator: function (v) {
-                      return v >= 1 && v <= 100000;
+                      return v >= 1 && v <= 100000; // Must be valid price range
                     },
                     message: "{VALUE} is not a valid price",
                   },
                 },
               },
             ],
+            // Indicates if the extra item is done
             isDone: {
               type: Boolean,
               default: false,
               required: true,
             },
+            // Indicates if the extra item is paid
             isPaid: {
               type: Boolean,
               required: true,
               default: false,
             },
+            // Total price for all extras
             totalExtrasPrice: {
               ...defaultOptions,
               validate: {
                 validator: function (v) {
-                  return v >= 1 && v <= 100000;
+                  return v >= 1 && v <= 100000; // Must be within valid range
                 },
                 message: "{VALUE} is not a valid total price for extras",
               },
@@ -157,48 +182,49 @@ const OrderSchema = new mongoose.Schema(
         ],
       },
     ],
-
+    // Subtotal of the split order
     subtotalSplitOrder: {
       type: Number,
       required: true,
       default: 0,
       validate: {
         validator: function (v) {
-          return v >= 0;
+          return v >= 0; // Must be non-negative
         },
-        message: "{VALUE} should be greater than zero",
+        message: "{VALUE} should be greater than or equal to zero",
       },
     },
-
+    // Subtotal of the order
     subTotal: {
       type: Number,
       required: true,
       default: 0,
       validate: {
         validator: function (v) {
-          return v >= 0;
+          return v >= 0; // Must be non-negative
         },
-        message: "{VALUE} should be greater than zero",
+        message: "{VALUE} should be greater than or equal to zero",
       },
     },
-    // Tax for the order
+    // Sales tax applied to the order
     salesTax: {
       type: Number,
       default: 0,
       required: true,
     },
+    // Service tax applied to the order
     serviceTax: {
       type: Number,
       default: 0,
       required: true,
     },
-    // Delivery cost of the order
+    // Delivery cost for the order
     deliveryCost: {
       type: Number,
       default: 0,
       required: true,
     },
-    // Discount for the product
+    // Discount applied to the order
     discount: {
       type: Number,
       default: 0,
@@ -210,7 +236,7 @@ const OrderSchema = new mongoose.Schema(
         message: "{VALUE} is not a valid discount value",
       },
     },
-    // Addition for the product
+    // Additional charges applied to the order
     addition: {
       type: Number,
       default: 0,
@@ -229,9 +255,9 @@ const OrderSchema = new mongoose.Schema(
       default: 0,
       validate: {
         validator: function (v) {
-          return v >= 0;
+          return v >= 0; // Must be non-negative
         },
-        message: "{VALUE} should be greater than zero",
+        message: "{VALUE} should be greater than or equal to zero",
       },
     },
     // Table associated with the order
@@ -240,27 +266,25 @@ const OrderSchema = new mongoose.Schema(
       ref: "Table",
       default: null,
     },
-    // Created by employee
+    // Employee who created the order
     createdBy: {
       type: ObjectId,
       ref: "Employee",
       default: null,
     },
-    // Cashier employee
+    // Employee cashier for the order
     cashier: {
       type: ObjectId,
       ref: "Employee",
       default: null,
     },
-
     // Delivery person for the order
     deliveryMan: {
       type: ObjectId,
       ref: "Employee",
       default: null,
     },
-
-    // User associated with the order
+    // Customer (User) associated with the order
     user: {
       type: ObjectId,
       ref: "User",
@@ -280,13 +304,7 @@ const OrderSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
-    // Status of the order
-
-    isPartiallyDelivered: {
-      type: Boolean,
-      default: false,
-      required: true,
-    },
+    // Order status
     status: {
       type: String,
       default: "Pending",
@@ -306,48 +324,21 @@ const OrderSchema = new mongoose.Schema(
       ref: "Employee",
       default: null,
     },
-    // preparationStatus of the order
-    // preparationStatus: {
-    //   Kitchen: {
-    //     type: String,
-    //     default: 'Pending',
-    //     required: true,
-    //     enum: ['Pending', 'Preparing', 'Prepared', 'On the way', 'Delivered','Cancelled'],
-    //   },
-    //   Bar: {
-    //     type: String,
-    //     default: 'Pending',
-    //     required: true,
-    //     enum: ['Pending', 'Preparing', 'Prepared', 'On the way', 'Delivered','Cancelled'],
-    //   },
-    //   Grill: {
-    //     type: String,
-    //     default: 'Pending',
-    //     required: true,
-    //     enum: ['Pending', 'Preparing', 'Prepared', 'On the way', 'Delivered','Cancelled'],
-    //   },
-    // },
-    // Type of order (internal, delivery, takeout)
-    orderType: {
-      type: String,
-      enum: ["Internal", "Delivery", "Takeaway"],
-      default: "Internal",
-      required: true,
-    },
-    // Help status for the order
+    // Help request status
     help: {
       type: String,
       default: "Not requested",
       required: true,
       enum: ["Not requested", "Requests assistance", "Requests bill"],
     },
+    // Help request progress
     helpStatus: {
       type: String,
       default: "Not send",
       required: true,
       enum: ["Not send", "Send waiter", "On the way", "Assistance done"],
     },
-
+    // Indicates if the order is split
     isSplit: {
       type: Boolean,
       required: true,
@@ -367,7 +358,7 @@ const OrderSchema = new mongoose.Schema(
       enum: ["Pending", "Paid"],
       trim: true,
     },
-    // Date of payment
+    // Payment date
     payment_date: {
       type: Date,
       default: Date.now,
@@ -381,9 +372,11 @@ const OrderSchema = new mongoose.Schema(
       trim: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true } // Automatically manage createdAt and updatedAt fields
 );
 
+// Create the Order model
 const OrderModel = mongoose.model("Order", OrderSchema);
 
+// Export the Order model
 module.exports = OrderModel;
