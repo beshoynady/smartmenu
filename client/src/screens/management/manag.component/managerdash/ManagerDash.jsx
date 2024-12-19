@@ -197,11 +197,13 @@ const ManagerDash = () => {
 
 
 
-  const changeOrderStauts = async (e, orderId,orderProducts, cashier)  => {
+  const changeOrderStauts = async (e, orderId,orderProducts)  => {
     if (!token) {
       // Handle case where token is not available
         toast.error("رجاء تسجيل الدخول مره اخري");
       }
+      const cashier= employeeLoginInfo.id
+
       const status = e.target.value;
       const isActive = status === "Cancelled" ? false : true;
       orderProducts.map(product=>{
@@ -1037,7 +1039,7 @@ const ManagerDash = () => {
                                     changeOrderStauts(
                                       e,
                                       recent._id,
-                                      employeeLoginInfo.id
+                                      recent.products,
                                     );
                                   }}
                                 >
