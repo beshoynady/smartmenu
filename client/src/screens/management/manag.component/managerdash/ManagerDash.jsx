@@ -274,8 +274,8 @@ const ManagerDash = () => {
         // Notify the kitchen for new orders
         if (status === "Approved") {
           kitchenSocket.emit("orderkitchen", "استلام أوردر جديد");
-          setUpdate(!update);
-          setIsRefresh(!isRefresh);
+          setupdate(!update);
+          setisRefresh(!isRefresh);
         }
       }
     } catch (error) {
@@ -285,7 +285,7 @@ const ManagerDash = () => {
   };
   
 
-  // const changeOrderStauts = async (e, orderId,orderProducts)  => {
+  // const changeOrderStatus = async (e, orderId,orderProducts)  => {
   //   if (!token) {
   //     // Handle case where token is not available
   //       toast.error("رجاء تسجيل الدخول مره اخري");
@@ -1125,7 +1125,7 @@ const ManagerDash = () => {
                                   className="form-control border-primary m-0 p-2 h-auto"
                                   name="status"
                                   onChange={(e) => {
-                                    changeOrderStauts(
+                                    changeOrderStatus(
                                       e,
                                       recent._id,
                                       recent.products,
