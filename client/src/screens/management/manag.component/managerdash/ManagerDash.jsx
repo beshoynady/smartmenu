@@ -197,73 +197,86 @@ const ManagerDash = () => {
 
 
 
-  const changeOrderStauts = async (e, orderId, cashier) => {
-    try {
-      if (!token) {
-        // Handle case where token is not available
+  const changeOrderStauts = async (e, orderId,orderProducts, cashier)  => {
+    if (!token) {
+      // Handle case where token is not available
         toast.error("رجاء تسجيل الدخول مره اخري");
       }
       const status = e.target.value;
       const isActive = status === "Cancelled" ? false : true;
-
-      const response = await axios.put(
-        `${apiUrl}/api/order/${orderId}`,
-        { status, isActive, cashier },
-        config
-      );
-      if (response) {
-        console.log({ response });
-        const orderProducts = response.data?.products;
-        console.log({ orderProducts });
-        preparationSection &&
-        preparationSection.map((section) => {
-            const listOrderProducts = [];
-            orderProducts &&
-              orderProducts.map((product) => {
-                if (product.productid?.preparationSection === section) {
-                  listOrderProducts.push({
-                    ...product,
-                    // productid: product.productid._id,
-                  });
-                }
-              });
-            if (listOrderProducts.length > 0) {
-              axios
-                .post(
-                  `${apiUrl}/api/preparationticket`,
-                  {
-                    order: orderId,
-                    preparationSection: section,
-                    products: listOrderProducts,
-                  },
-                  config
-                )
-                .then((response) => {
-                  console.log({
-                    listOrderProducts,
-                    createTicket: response,
-                    createTicketdata: response.data,
-                  });
-                })
-                .catch((error) => {
-                  console.error("Error creating ticket:", error);
+      orderProducts.map(product=>{
+        return {...product, isSend:true}
+      })
+      console.log({ orderProducts });
+      if(status === "Cancelled"){
+        try {
+          const response = await axios.put(
+            `${apiUrl}/api/order/${orderId}`,
+            { status, isActive, cashier },
+            config
+          );
+        } catch (error) {
+            console.error("خطأ في تغيير حالة الطلب:", error);
+            toast.error("حدث خطأ أثناء تغيير حالة الطلب");
+          }
+      }else{
+        
+        try {
+        const response = await axios.put(
+          `${apiUrl}/api/order/${orderId}`,
+          { status, isActive, cashier, products:orderProducts },
+          config
+        );
+        if (response) {
+          preparationSection &&
+          preparationSection.map((section) => {
+              const sectionProducts = [];
+              orderProducts &&
+                orderProducts.map((product) => {
+                  if (product.productid?.preparationSection === section && product.isSend === false) {
+                    sectionProducts.push({
+                      ...product,
+                    });
+                  }
                 });
-            }
-          });
-        fetchOrdersData();
-
-        toast.success("تم تغيير حالة الطلب بنجاح");
-
-        if (status === "Approved") {
-          kitchenSocket.emit("orderkitchen", "استلام اوردر جديد");
-          setupdate(!update);
-          setisRefresh(!isRefresh);
+              if (sectionProducts.length > 0) {
+                axios
+                  .post(
+                    `${apiUrl}/api/preparationticket`,
+                    {
+                      order: orderId,
+                      preparationSection: section,
+                      products: sectionProducts,
+                    },
+                    config
+                  )
+                  .then((response) => {
+                    console.log({
+                      sectionProducts,
+                      createTicket: response,
+                      createTicketdata: response.data,
+                    });
+                  })
+                  .catch((error) => {
+                    console.error("Error creating ticket:", error);
+                  });
+              }
+            });
+          fetchOrdersData();
+  
+          toast.success("تم تغيير حالة الطلب بنجاح");
+  
+          if (status === "Approved") {
+            kitchenSocket.emit("orderkitchen", "استلام اوردر جديد");
+            setupdate(!update);
+            setisRefresh(!isRefresh);
+          }
         }
+      } catch (error) {
+        console.error("خطأ في تغيير حالة الطلب:", error);
+        toast.error("حدث خطأ أثناء تغيير حالة الطلب");
       }
-    } catch (error) {
-      console.error("خطأ في تغيير حالة الطلب:", error);
-      toast.error("حدث خطأ أثناء تغيير حالة الطلب");
-    }
+      }
   };
 
   const paymentstatus = ["Pending", "Paid"];
