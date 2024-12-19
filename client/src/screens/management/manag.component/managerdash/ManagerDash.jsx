@@ -234,7 +234,7 @@ const ManagerDash = () => {
         // Handle other statuses (e.g., Approved)
         if (preparationSection?.length > 0) {
           preparationSection.forEach((section) => {
-            const sectionProducts = updatedProducts.filter(
+            const sectionProducts = orderProducts.filter(
               (product) =>
                 product.productid?.preparationSection === section && !product.isSend
             );
