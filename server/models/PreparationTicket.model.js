@@ -44,7 +44,6 @@ const PreparationTicketSchema = new mongoose.Schema(
       type: ObjectId,
       ref: "Employee",
       default: null,
-      required: true
     },
     products: [
       {

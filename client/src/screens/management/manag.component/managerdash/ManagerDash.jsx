@@ -238,6 +238,7 @@ const ManagerDash = () => {
                   if (product.productid?.preparationSection === section && product.isSend === false) {
                     sectionProducts.push({
                       ...product,
+                      orderProductId:product._id
                     });
                   }
                 });
