@@ -31,6 +31,12 @@ const getAllPreparationTickets = async (req, res) => {
   try {
     const preparationTickets = await PreparationTicketModel.find()
       .populate("order")
+      .populate({
+        path: "order",
+        populate: {
+          path: "table",
+        },
+      })
       .populate("products.productid", "_id name preparationSection")
       .populate("products.extras.extraDetails.extraId", "_id name")
       // .populate("preparationSection", "_id name")
@@ -55,6 +61,12 @@ const getPreparationTicketById = async (req, res) => {
 
     const preparationTicket = await PreparationTicketModel.findById(id)
       .populate("order")
+      .populate({
+        path: "order",
+        populate: {
+          path: "table",
+        },
+      })
       .populate("products.productid", "_id name preparationSection")
       .populate("products.extras.extraDetails.extraId", "_id name")
       // .populate("preparationSection", "_id name")
@@ -94,13 +106,14 @@ const updatePreparationTicket = async (req, res) => {
     const updatedPreparationTicket =
       await PreparationTicketModel.findByIdAndUpdate(
         id,
-        {$set:{
-          preparationStatus,
-          responsibleEmployee,
-          waiter,
-          products,
-          isActive,
-        }
+        {
+          $set: {
+            preparationStatus,
+            responsibleEmployee,
+            waiter,
+            products,
+            isActive,
+          },
         },
         { new: true, runValidators: true }
       );

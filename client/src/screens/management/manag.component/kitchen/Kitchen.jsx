@@ -379,18 +379,14 @@ const Kitchen = () => {
       });
 
       // 5. Update Ticket Products
-      const updatedOrderProducts = orderProducts.map((product) => {
-        if (
-          kitchenProducts.some(
-            (kitchenProduct) =>
-              kitchenProduct.productid?._id === product.productid._id
-          )
-        ) {
-          return { ...product, isDone: true };
-        } else {
-          return product;
-        }
-      });
+      const updatedOrderProducts = orderProducts.map((product) =>
+        kitchenProducts.some(
+          (kitchenProduct) =>
+            kitchenProduct.productid?._id === product.productid?._id
+        )
+          ? { ...product, isDone: true }
+          : product
+      );
 
       const updateTicket = axios.put(
         `${apiUrl}/api/preparationticket/${id}`,
@@ -410,7 +406,6 @@ const Kitchen = () => {
         const response = await axios.put(
           `${apiUrl}/api/order/${id}`,
           {
-            "preparationStatus.Kitchen": "Prepared",
             products: updatedOrderProducts,
             waiter,
           },
@@ -422,7 +417,6 @@ const Kitchen = () => {
           `${apiUrl}/api/order/${id}`,
           {
             products: updatedOrderProducts,
-            "preparationStatus.Kitchen": "Prepared",
           },
           config
         );
@@ -490,7 +484,7 @@ const Kitchen = () => {
       }
       // استخراج رقم القسم من بيانات الطاولة المرتبطة بالطلب
       const tablesectionNumber =
-        getTicket.table && getTicket.table?.sectionNumber;
+        getTicket.order?.table && getTicket.order?.table?.sectionNumber;
       if (!tablesectionNumber) {
         throw new Error("Table section number not found");
       }
