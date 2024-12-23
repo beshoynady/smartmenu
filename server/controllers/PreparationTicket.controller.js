@@ -55,6 +55,34 @@ const getAllPreparationTickets = async (req, res) => {
   }
 };
 
+const getActivePreparationTickets = async (req, res) => {
+  try {
+    const preparationTickets = await PreparationTicketModel.find({isActive: true})
+      .populate("order")
+      .populate({
+        path: "order",
+        populate: {
+          path: "table",
+        },
+      })
+      .populate("products.productid", "_id name preparationSection")
+      .populate("products.extras.extraDetails.extraId", "_id name")
+      // .populate("preparationSection", "_id name")
+      .populate("responsibleEmployee", "_id username role")
+      .populate("waiter", "_id fullname username role shift sectionNumber");
+    res.status(200).json({
+      success: true,
+      data: preparationTickets,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch preparation tickets",
+      error: error.message,
+    });
+  }
+};
+
 const getPreparationTicketById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -170,6 +198,7 @@ const deletePreparationTicket = async (req, res) => {
 module.exports = {
   createPreparationTicket,
   getAllPreparationTickets,
+  getActivePreparationTickets,
   getPreparationTicketById,
   updatePreparationTicket,
   deletePreparationTicket,

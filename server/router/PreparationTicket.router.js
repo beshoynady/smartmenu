@@ -3,9 +3,10 @@ const router = express.Router();
 const {
   createPreparationTicket,
   getAllPreparationTickets,
+  getActivePreparationTickets,
   getPreparationTicketById,
   updatePreparationTicket,
-  deletePreparationTicket
+  deletePreparationTicket,
 } = require("../controllers/PreparationTicket.controller");
 
 const authenticateToken = require("../utlits/authenticate");
@@ -15,6 +16,10 @@ router
   .route("/")
   .post(authenticateToken, checkSubscription, createPreparationTicket)
   .get(authenticateToken, checkSubscription, getAllPreparationTickets);
+
+router
+  .route("/activepreparationtickets")
+  .get(authenticateToken, checkSubscription, getActivePreparationTickets);
 
 router
   .route("/:id")

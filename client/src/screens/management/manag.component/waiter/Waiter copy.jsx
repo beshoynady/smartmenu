@@ -29,75 +29,84 @@ const Waiter = () => {
   const ready = useRef();
 
   // State for pending orders and payments
-  const [ActivePreparationTickets, setActivePreparationTickets] = useState([]);
+  const [pendingOrders, setPendingOrders] = useState([]);
   const [pendingPayments, setPendingPayments] = useState([]);
 
   // Function to fetch pending orders and payments
-  const fetchActivePreparationTickets = async () => {
+  const fetchPendingData = async () => {
     try {
       if (!token) {
         // Handle case where token is not available
         toast.error("رجاء تسجيل الدخول مره اخري");
         return;
       }
-      const res = await axios.get(apiUrl + "/api/preparationticket/activepreparationtickets", config);
-      const filterWaiterTickets = res.data?.filter(
-        (Ticket) => Ticket.order.waiter?._id === employeeLoginInfo.id
+      const res = await axios.get(apiUrl + "/api/order/limit/50", config);
+      const filterMyOrder = res.data?.filter(
+        (order) => order.waiter?._id === employeeLoginInfo.id
       );
-        setActivePreparationTickets(filterWaiterTickets);
-        // setPendingPayments(recentPaymentStatus);
+      if (filterMyOrder.length > 0) {
+        const recentStatus = filterMyOrder.filter(
+          (order) => order.status === "Pending"
+        );
+
+        const recentPaymentStatus = filterMyOrder.filter(
+          (order) => order.payment_status === "Pending"
+        );
+        setPendingOrders(recentStatus);
+        setPendingPayments(recentPaymentStatus);
+      }
     } catch (error) {
       console.log(error);
     }
   };
 
   // State for internal orders
-  // const [internalOrders, setInternalOrders] = useState([]);
+  const [internalOrders, setInternalOrders] = useState([]);
 
-  // // Function to fetch internal orders
-  // const fetchInternalOrders = async () => {
-  //   try {
-  //     if (!token) {
-  //       // Handle case where token is not available
-  //       toast.error("رجاء تسجيل الدخول مره اخري");
-  //       return;
-  //     }
-  //     const res = await axios.get(apiUrl + "/api/preparationticket/limit/50", config);
+  // Function to fetch internal orders
+  const fetchInternalOrders = async () => {
+    try {
+      if (!token) {
+        // Handle case where token is not available
+        toast.error("رجاء تسجيل الدخول مره اخري");
+        return;
+      }
+      const res = await axios.get(apiUrl + "/api/order/limit/50", config);
 
-  //     const filterMyOrder = res.data?.filter(
-  //       (order) => order.waiter?._id === employeeLoginInfo.id
-  //     );
+      const filterMyOrder = res.data?.filter(
+        (order) => order.waiter?._id === employeeLoginInfo.id
+      );
 
-  //     const activeOrders = filterMyOrder.filter(
-  //       (order) => order.isActive === true
-  //     );
-  //     const internalOrdersData = activeOrders.filter(
-  //       (order) => order.orderType === "Internal"
-  //     );
+      const activeOrders = filterMyOrder.filter(
+        (order) => order.isActive === true
+      );
+      const internalOrdersData = activeOrders.filter(
+        (order) => order.orderType === "Internal"
+      );
 
-  //     console.log({ internalOrdersData: internalOrdersData });
-  //     const products =
-  //       internalOrdersData.length > 0
-  //         ? internalOrdersData.flatMap((order) => order.products)
-  //         : [];
-  //     console.log({ products: products });
-  //     const productsFiltered =
-  //       products.length > 0
-  //         ? products.filter(
-  //             (product) =>
-  //               product.isDone === true && product.isDeleverd === false
-  //           )
-  //         : [];
+      console.log({ internalOrdersData: internalOrdersData });
+      const products =
+        internalOrdersData.length > 0
+          ? internalOrdersData.flatMap((order) => order.products)
+          : [];
+      console.log({ products: products });
+      const productsFiltered =
+        products.length > 0
+          ? products.filter(
+              (product) =>
+                product.isDone === true && product.isDeleverd === false
+            )
+          : [];
 
-  //     console.log({ productsFiltered: productsFiltered });
+      console.log({ productsFiltered: productsFiltered });
 
-  //     if (productsFiltered.length > 0) {
-  //       setInternalOrders(internalOrdersData);
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+      if (productsFiltered.length > 0) {
+        setInternalOrders(internalOrdersData);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const updateOrderOnWay = async (id, products) => {
     try {
@@ -106,22 +115,32 @@ const Waiter = () => {
         toast.error("رجاء تسجيل الدخول مره اخري");
         return;
       }
-        const preparationStatus = "On the way"
+      const preparationSection = [];
+      products.forEach((product) => {
+        const section = product.productid?.preparationSection;
+        if (section) preparationSection.push(section);
+      });
+
+      for (const section of preparationSection) {
+        const preparationStatus = {
+          [`preparationStatus.${section}`]: "On the way",
+        };
         try {
           await axios.put(
-            `${apiUrl}/api/preparationticket/${id}`,
+            `${apiUrl}/api/order/${id}`,
             preparationStatus,
             config
           );
         } catch (error) {
           console.error(
-            `Error updating preparation status`,
+            `Error updating preparation status for section ${section}:`,
             error
           );
         }
+      }
 
       fetchInternalOrders();
-      fetchActivePreparationTickets();
+      fetchPendingData();
       toast.success("تم تاكيد استلام الاوردر!");
     } catch (error) {
       console.log(error);
@@ -131,20 +150,46 @@ const Waiter = () => {
 
   const updateOrderDelivered = async (id, products) => {
     try {
+      products.map((prod) => ({
+        ...prod,
+        isDeleverd: true,
+      }));
 
-      const preparationStatus = "Delivered";
-      const isDelivered = true
+      const status = "Delivered";
       const updateOrder = await axios.put(
-        `${apiUrl}/api/preparationticket/${id}`,
+        `${apiUrl}/api/order/${id}`,
         {
-          preparationStatus,
-          isDelivered,
+          status,
+          products,
         },
         config
       );
+      const preparationSection = [];
+      products.forEach((product) => {
+        const section = product.productid?.preparationSection;
+        if (section) preparationSection.push(section);
+      });
+
+      for (const section of preparationSection) {
+        const preparationStatus = {
+          [`preparationStatus.${section}`]: "On the way",
+        };
+        try {
+          await axios.put(
+            `${apiUrl}/api/order/${id}`,
+            preparationStatus,
+            config
+          );
+        } catch (error) {
+          console.error(
+            `Error updating preparation status for section ${section}:`,
+            error
+          );
+        }
+      }
       if (updateOrder.status === 200) {
         fetchInternalOrders();
-        fetchActivePreparationTickets();
+        fetchPendingData();
         toast.success("تم تاكيد توصيل الاوردر!");
       }
     } catch (error) {
@@ -162,13 +207,13 @@ const Waiter = () => {
       }
       const helpStatus = "On the way";
       const res = await axios.put(
-        `${apiUrl}/api/preparationticket/${id}`,
+        `${apiUrl}/api/order/${id}`,
         { helpStatus },
         config
       );
       if (res.status === 200) {
         fetchInternalOrders();
-        fetchActivePreparationTickets();
+        fetchPendingData();
         toast.success("تم تاكيد الاتجاه لتقديم المساعده!");
       }
     } catch (error) {
@@ -185,8 +230,8 @@ const Waiter = () => {
         return;
       }
       const helpStatus = "Assistance done";
-      await axios.put(`${apiUrl}/api/preparationticket/${id}`, { helpStatus }, config);
-      fetchActivePreparationTickets();
+      await axios.put(`${apiUrl}/api/order/${id}`, { helpStatus }, config);
+      fetchPendingData();
       fetchInternalOrders();
       toast.success("تم تاكيد تقديم المساعده!");
     } catch (error) {
@@ -197,11 +242,11 @@ const Waiter = () => {
 
   // Fetch initial data on component mount
   useEffect(() => {
-    fetchActivePreparationTickets();
+    fetchPendingData();
     fetchInternalOrders();
   }, []);
   useEffect(() => {
-    fetchActivePreparationTickets();
+    fetchPendingData();
     fetchInternalOrders();
   }, [isRefresh]);
 
@@ -293,9 +338,13 @@ const Waiter = () => {
             );
           })}
 
-      {ActivePreparationTickets &&
-        ActivePreparationTickets.map((Ticket, i) => {
-           {
+      {internalOrders &&
+        internalOrders.map((order, i) => {
+          if (
+            order.products.filter(
+              (pr) => pr.isDone === true && pr.isDeleverd === false
+            ).length > 0
+          ) {
             return (
               <div
                 className="card text-white bg-success"
@@ -307,25 +356,25 @@ const Waiter = () => {
                 >
                   <div className="col-6 p-0">
                     <p className="card-text">
-                      الطاولة: {Ticket.order.table?.tableNumber}
+                      الطاولة: {order.table?.tableNumber}
                     </p>
-                    <p className="card-text">رقم الفاتورة: {Ticket.order.serial}</p>
-                    <p className="card-text">نوع الطلب: {Ticket.order.orderType}</p>
+                    <p className="card-text">رقم الفاتورة: {order.serial}</p>
+                    <p className="card-text">نوع الطلب: {order.orderType}</p>
                   </div>
                   <div className="col-6 p-0">
                     <p className="card-text">
-                      الويتر: {Ticket.waiter?.username}
+                      الويتر: {order.waiter?.username}
                     </p>
                     <p className="card-text">
                       التنفيذ:{" "}
-                      {new Date(Ticket.updatedAt).toLocaleTimeString([], {
+                      {new Date(order.updatedAt).toLocaleTimeString([], {
                         hour: "2-digit",
                         minute: "2-digit",
                       })}
                     </p>
                     <p className="card-text">
                       الاستلام:{" "}
-                      {new Date(Ticket.createdAt).toLocaleTimeString([], {
+                      {new Date(order.createdAt).toLocaleTimeString([], {
                         hour: "2-digit",
                         minute: "2-digit",
                       })}
@@ -333,13 +382,24 @@ const Waiter = () => {
                   </div>
                 </div>
                 <ul className="list-group list-group-flush">
-                  {Ticket.products.map((product, i) => {
+                  {order.products
+                    .filter(
+                      (pr) => pr.isDone === true && pr.isDeleverd === false
+                    )
+                    .map((product, i) => {
                       return (
                         <>
                           <li
                             className="list-group-item d-flex flex-column justify-content-between align-items-center"
                             key={i}
-                            
+                            style={
+                              product.isAdd
+                                ? {
+                                    backgroundColor: "red",
+                                    color: "white",
+                                  }
+                                : { color: "black" }
+                            }
                           >
                             <div className="d-flex justify-content-between align-items-center w-100">
                               <p
@@ -407,13 +467,14 @@ const Waiter = () => {
                     })}
                 </ul>
                 <div className="card-footer text-center">
-                  {Ticket.Status === "Prepared" ? (
+                  {order.preparationStatus === "Prepared" ||
+                  order.preparationStatus.Grill === "Prepared" ? (
                     <button
                       className="btn w-100 btn-warning h-100 btn btn-lg"
                       onClick={() => {
                         updateOrderOnWay(
-                          Ticket._id,
-                          Ticket.products.filter(
+                          order._id,
+                          order.products.filter(
                             (pr) =>
                               pr.isDone === true && pr.isDeleverd === false
                           )
@@ -427,8 +488,8 @@ const Waiter = () => {
                       className="btn w-100 btn-success h-100 btn btn-lg"
                       onClick={() => {
                         updateOrderDelivered(
-                          Ticket._id,
-                          Ticket.products.filter(
+                          order._id,
+                          order.products.filter(
                             (pr) =>
                               pr.isDone === true && pr.isDeleverd === false
                           )
