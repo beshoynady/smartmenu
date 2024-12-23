@@ -34,18 +34,24 @@ const Waiter = () => {
 
   // Function to fetch pending orders and payments
   const fetchActivePreparationTickets = async () => {
+    if (!token) {
+      // Handle case where token is not available
+      toast.error("رجاء تسجيل الدخول مره اخري");
+      return;
+    }
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
-      const res = await axios.get(apiUrl + "/api/preparationticket/activepreparationtickets", config);
-      const filterWaiterTickets = res.data?.filter(
-        (Ticket) => Ticket.order.waiter?._id === employeeLoginInfo.id
+      const res = await axios.get(
+        apiUrl + "/api/preparationticket/activepreparationtickets",
+        config
       );
-        setActivePreparationTickets(filterWaiterTickets);
-        // setPendingPayments(recentPaymentStatus);
+      const filterWaiterTickets = res.data?.filter(
+        (Ticket) =>
+          Ticket.waiter?._id === employeeLoginInfo.id &&
+          (Ticket.preparationStatus === "Prepared" ||
+            Ticket.preparationStatus === "On the way")
+      );
+      setActivePreparationTickets(filterWaiterTickets);
+      // setPendingPayments(recentPaymentStatus);
     } catch (error) {
       console.log(error);
     }
@@ -106,19 +112,16 @@ const Waiter = () => {
         toast.error("رجاء تسجيل الدخول مره اخري");
         return;
       }
-        const preparationStatus = "On the way"
-        try {
-          await axios.put(
-            `${apiUrl}/api/preparationticket/${id}`,
-            preparationStatus,
-            config
-          );
-        } catch (error) {
-          console.error(
-            `Error updating preparation status`,
-            error
-          );
-        }
+      const preparationStatus = "On the way";
+      try {
+        await axios.put(
+          `${apiUrl}/api/preparationticket/${id}`,
+          preparationStatus,
+          config
+        );
+      } catch (error) {
+        console.error(`Error updating preparation status`, error);
+      }
 
       fetchInternalOrders();
       fetchActivePreparationTickets();
@@ -131,9 +134,8 @@ const Waiter = () => {
 
   const updateOrderDelivered = async (id, products) => {
     try {
-
       const preparationStatus = "Delivered";
-      const isDelivered = true
+      const isDelivered = true;
       const updateOrder = await axios.put(
         `${apiUrl}/api/preparationticket/${id}`,
         {
@@ -185,7 +187,11 @@ const Waiter = () => {
         return;
       }
       const helpStatus = "Assistance done";
-      await axios.put(`${apiUrl}/api/preparationticket/${id}`, { helpStatus }, config);
+      await axios.put(
+        `${apiUrl}/api/preparationticket/${id}`,
+        { helpStatus },
+        config
+      );
       fetchActivePreparationTickets();
       fetchInternalOrders();
       toast.success("تم تاكيد تقديم المساعده!");
@@ -295,7 +301,7 @@ const Waiter = () => {
 
       {ActivePreparationTickets &&
         ActivePreparationTickets.map((Ticket, i) => {
-           {
+          {
             return (
               <div
                 className="card text-white bg-success"
@@ -309,8 +315,12 @@ const Waiter = () => {
                     <p className="card-text">
                       الطاولة: {Ticket.order.table?.tableNumber}
                     </p>
-                    <p className="card-text">رقم الفاتورة: {Ticket.order.serial}</p>
-                    <p className="card-text">نوع الطلب: {Ticket.order.orderType}</p>
+                    <p className="card-text">
+                      رقم الفاتورة: {Ticket.order?.serial}
+                    </p>
+                    <p className="card-text">
+                      نوع الطلب: {Ticket.order?.orderType}
+                    </p>
                   </div>
                   <div className="col-6 p-0">
                     <p className="card-text">
@@ -334,80 +344,79 @@ const Waiter = () => {
                 </div>
                 <ul className="list-group list-group-flush">
                   {Ticket.products.map((product, i) => {
-                      return (
-                        <>
-                          <li
-                            className="list-group-item d-flex flex-column justify-content-between align-items-center"
-                            key={i}
-                            
-                          >
-                            <div className="d-flex justify-content-between align-items-center w-100">
-                              <p
-                                style={{
-                                  fontSize: "1.2em",
-                                  fontWeight: "bold",
-                                }}
-                              >
-                                {i + 1}- {product.name}
-                              </p>
-                              <span
-                                style={{
-                                  fontSize: "1.2em",
-                                  fontWeight: "bold",
-                                }}
-                              >
-                                {" "}
-                                × {product.quantity}
-                              </span>
-                            </div>
-                            <div
+                    return (
+                      <>
+                        <li
+                          className="list-group-item d-flex flex-column justify-content-between align-items-center"
+                          key={i}
+                        >
+                          <div className="d-flex justify-content-between align-items-center w-100">
+                            <p
                               style={{
                                 fontSize: "1.2em",
                                 fontWeight: "bold",
                               }}
                             >
-                              {product.notes}
-                            </div>
-                          </li>
-                          {product.extras &&
-                            product.extras.length > 0 &&
-                            product.extras.map((extra, j) => {
-                              if (extra && extra.isDone === false) {
-                                return (
-                                  <li
-                                    className="list-group-item d-flex flex-column justify-content-between align-items-center"
-                                    key={`${i}-${j}`}
-                                    style={
-                                      product.isAdd
-                                        ? {
-                                            backgroundColor: "red",
-                                            color: "white",
-                                          }
-                                        : { color: "black" }
-                                    }
-                                  >
-                                    <div className="d-flex justify-content-between align-items-center w-100">
-                                      {extra.extraDetails.map((detail) => (
-                                        <p
-                                          className="badge badge-secondary m-1"
-                                          key={detail.extraid}
-                                        >
-                                          {`${detail.name}`}
-                                        </p>
-                                      ))}
-                                    </div>
-                                  </li>
-                                );
-                              } else {
-                                return null;
-                              }
-                            })}
-                        </>
-                      );
-                    })}
+                              {i + 1}- {product.name}
+                            </p>
+                            <span
+                              style={{
+                                fontSize: "1.2em",
+                                fontWeight: "bold",
+                              }}
+                            >
+                              {" "}
+                              × {product.quantity}
+                            </span>
+                          </div>
+                          <div
+                            style={{
+                              fontSize: "1.2em",
+                              fontWeight: "bold",
+                            }}
+                          >
+                            {product.notes}
+                          </div>
+                        </li>
+                        {product.extras &&
+                          product.extras.length > 0 &&
+                          product.extras.map((extra, j) => {
+                            if (extra && extra.isDone === false) {
+                              return (
+                                <li
+                                  className="list-group-item d-flex flex-column justify-content-between align-items-center"
+                                  key={`${i}-${j}`}
+                                  style={
+                                    product.isAdd
+                                      ? {
+                                          backgroundColor: "red",
+                                          color: "white",
+                                        }
+                                      : { color: "black" }
+                                  }
+                                >
+                                  <div className="d-flex justify-content-between align-items-center w-100">
+                                    {extra.extraDetails.map((detail) => (
+                                      <p
+                                        className="badge badge-secondary m-1"
+                                        key={detail.extraid}
+                                      >
+                                        {`${detail.name}`}
+                                      </p>
+                                    ))}
+                                  </div>
+                                </li>
+                              );
+                            } else {
+                              return null;
+                            }
+                          })}
+                      </>
+                    );
+                  })}
                 </ul>
                 <div className="card-footer text-center">
-                  {Ticket.Status === "Prepared" ? (
+                  {Ticket.preparationStatus === "Prepared" ? (
                     <button
                       className="btn w-100 btn-warning h-100 btn btn-lg"
                       onClick={() => {
