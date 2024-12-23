@@ -60,7 +60,7 @@ const Orders = () => {
     } catch (error) {
       // Log the error for debugging purposes
       console.error("Error fetching orders:", error);
-  
+      setListOfOrders([]);
       // Handle specific error scenarios
       if (error.response) {
         const { status, data } = error.response;
