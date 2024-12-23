@@ -467,9 +467,8 @@ const Waiter = () => {
                     })}
                 </ul>
                 <div className="card-footer text-center">
-                  {order.preparationStatus.Kitchen === "Prepared" ||
-                  order.preparationStatus.Grill === "Prepared" ||
-                  order.preparationStatus.Bar === "Prepared" ? (
+                  {order.preparationStatus === "Prepared" ||
+                  order.preparationStatus.Grill === "Prepared" ? (
                     <button
                       className="btn w-100 btn-warning h-100 btn btn-lg"
                       onClick={() => {

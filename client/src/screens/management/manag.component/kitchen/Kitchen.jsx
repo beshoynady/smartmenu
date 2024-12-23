@@ -262,9 +262,9 @@ const Kitchen = () => {
         config
       );
       const { products: kitchenProducts } = preparationticketData.data.data;
-
+      const orderId = await preparationticketData.data.data?.order._id
       const orderProducts = preparationticketData.data.data.order?.products;
-      console.log({ orderProducts,  kitchenProducts});
+      console.log({preparationticketData:preparationticketData.data.data, orderId, orderProducts,  kitchenProducts});
 
       if (!kitchenProducts.length) {
         toast.warn("لا توجد منتجات بحاجة إلى تجهيز في المطبخ");
@@ -404,7 +404,7 @@ const Kitchen = () => {
           return;
         }
         const response = await axios.put(
-          `${apiUrl}/api/order/${id}`,
+          `${apiUrl}/api/order/${orderId}`,
           {
             products: updatedOrderProducts,
             waiter,
@@ -414,7 +414,7 @@ const Kitchen = () => {
         waiterSocket.emit("orderready", `أورد جاهز في المطبخ-${waiter}`);
       } else {
         await axios.put(
-          `${apiUrl}/api/order/${id}`,
+          `${apiUrl}/api/order/${orderId}`,
           {
             products: updatedOrderProducts,
           },
