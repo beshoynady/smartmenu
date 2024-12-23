@@ -264,7 +264,7 @@ const Kitchen = () => {
       const { products: kitchenProducts } = preparationticketData.data.data;
       const orderId = await preparationticketData.data.data?.order._id
       const orderProducts = preparationticketData.data.data.order?.products;
-      console.log({preparationticketData:preparationticketData.data.data, orderId, orderProducts,  kitchenProducts});
+      // console.log({preparationticketData:preparationticketData.data.data, orderId, orderProducts,  kitchenProducts});
 
       if (!kitchenProducts.length) {
         toast.warn("لا توجد منتجات بحاجة إلى تجهيز في المطبخ");
@@ -479,6 +479,7 @@ const Kitchen = () => {
       if (!getTicket) {
         throw new Error("Ticket not found");
       }
+      console.log({AllPreparationTicket, getTicket})
 
       if (getTicket.status) {
       }
