@@ -35,24 +35,50 @@ const Orders = () => {
 
   const [showModal, setShowModal] = useState(false);
 
-  const [listOfOrders, setlistOfOrders] = useState([]);
+  const [listOfOrders, setListOfOrders] = useState([]);
+
   // Fetch orders from API
   const getOrders = async () => {
+    // Check if the user is authenticated
     if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
+      toast.error("يرجى تسجيل الدخول مرة أخرى."); // Show an error message if token is missing
       return;
     }
+  
     try {
-      const res = await axios.get(apiUrl + "/api/order", config);
-      const ordersData = res.data.reverse();
-      setlistOfOrders(ordersData);
-      console.log({ ordersData });
+      const response = await axios.get(`${apiUrl}/api/order`, config); // Construct API URL
+  
+      // Check if there are orders in the response
+      const ordersData = response.data;
+      if (ordersData && ordersData.length > 0) {
+        setListOfOrders(ordersData.reverse()); // Update state with fetched orders
+        console.log("Fetched orders:", ordersData);
+      } else {
+        setListOfOrders([]); // Clear the list if no orders are found
+        toast.info("لا توجد طلبات متاحة حالياً."); // Inform the user
+      }
     } catch (error) {
-      console.log(error);
-      // Display toast or handle error
+      // Log the error for debugging purposes
+      console.error("Error fetching orders:", error);
+  
+      // Handle specific error scenarios
+      if (error.response) {
+        const { status, data } = error.response;
+        if (status === 401) {
+          toast.error("غير مصرح. يرجى تسجيل الدخول مرة أخرى.");
+        } else {
+          toast.error(data?.message || "حدث خطأ أثناء تحميل الطلبات.");
+        }
+      } else if (error.request) {
+        console.error("No response received:", error.request);
+        toast.error("فشل الاتصال بالخادم. يرجى التحقق من الشبكة.");
+      } else {
+        console.error("Request setup error:", error.message);
+        toast.error("حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.");
+      }
     }
   };
+  
   const [listProductsOrder, setlistProductsOrder] = useState([]);
   const [orderData, setorderData] = useState("");
   const [ivocedate, setivocedate] = useState(new Date());
@@ -94,23 +120,51 @@ const Orders = () => {
   const [orderId, setOrderId] = useState("");
 
   // Delete order
-  const deleteOrder = async (e) => {
-    e.preventDefault();
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
-    try {
-      const id = orderId;
-      await axios.delete(`${apiUrl}/api/order/${id}`, config);
-      getOrders();
-      toast.success("Order deleted successfully");
-    } catch (error) {
-      console.log(error);
-      toast.error("Failed to delete order");
-    }
-  };
+    const handleDeleteOrder = async (event) => {
+      event.preventDefault();
+    
+      // Check if the user is authenticated
+      if (!token) {
+        toast.error("يرجى تسجيل الدخول مرة أخرى."); // Show an error message if token is missing
+        return;
+      }
+    
+      try {
+        const orderIdToDelete = orderId; // Use a clear and descriptive variable name
+        const deleteUrl = `${apiUrl}/api/order/${orderIdToDelete}`; // Construct the API URL
+    
+        // Send a DELETE request to the server
+        await axios.delete(deleteUrl, config);
+    
+        // Refresh the orders list after deletion
+        await getOrders();
+    
+        // Show a success message
+        toast.success("تم حذف الطلب بنجاح.");
+      } catch (error) {
+        // Handle specific error scenarios based on status code
+        if (error.response) {
+          // Server responded with a status code outside the 2xx range
+          const { status, data } = error.response;
+          if (status === 401) {
+            toast.error("غير مصرح. يرجى تسجيل الدخول مرة أخرى.");
+          } else if (status === 404) {
+            toast.error("الطلب غير موجود. قد يكون تم حذفه مسبقًا.");
+          } else {
+            toast.error(data?.message || "حدث خطأ غير متوقع.");
+          }
+        } else if (error.request) {
+          // Request was made but no response was received
+          console.error("No response received:", error.request);
+          toast.error("فشل الاتصال بالخادم. يرجى التحقق من الشبكة.");
+        } else {
+          // Something else went wrong during the request setup
+          console.error("Request setup error:", error.message);
+          toast.error("حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.");
+        }
+      }
+    };
+    
 
   const [selectedIds, setSelectedIds] = useState([]);
   const handleCheckboxChange = (e) => {
@@ -152,7 +206,7 @@ const Orders = () => {
       const orders = listOfOrders.filter((order) =>
         order.serial.toString().startsWith(serial)
       );
-      setlistOfOrders(orders);
+      setListOfOrders(orders);
     } else {
       getOrders();
     }
@@ -164,7 +218,7 @@ const Orders = () => {
       getOrders();
     } else {
       const orders = listOfOrders.filter((order) => order.orderType === type);
-      setlistOfOrders(orders.reverse());
+      setListOfOrders(orders.reverse());
     }
   };
 
@@ -262,7 +316,7 @@ const Orders = () => {
                   <select
                     className="form-control border-primary m-0 p-2 h-auto"
                     onChange={(e) =>
-                      setlistOfOrders(
+                      setListOfOrders(
                         filterByTime(e.target.value, listOfOrders)
                       )
                     }
@@ -309,7 +363,7 @@ const Orders = () => {
                       type="button"
                       className="btn btn-primary h-100 p-2 "
                       onClick={() =>
-                        setlistOfOrders(filterByDateRange(listOfOrders))
+                        setListOfOrders(filterByDateRange(listOfOrders))
                       }
                     >
                       <i className="fa fa-search"></i>
@@ -488,7 +542,7 @@ const Orders = () => {
       <div id="deleteOrderModal" className="modal fade">
         <div className="modal-dialog modal-lg">
           <div className="modal-content shadow-lg border-0 rounded ">
-            <form onSubmit={deleteOrder}>
+            <form onSubmit={handleDeleteOrder}>
               <div className="modal-header d-flex flex-wrap align-items-center text-light bg-primary">
                 <h4 className="modal-title">Delete Order</h4>
                 <button
