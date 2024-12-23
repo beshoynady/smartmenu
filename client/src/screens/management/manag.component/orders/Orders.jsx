@@ -149,19 +149,25 @@ const Orders = () => {
           if (status === 401) {
             toast.error("غير مصرح. يرجى تسجيل الدخول مرة أخرى.");
           } else if (status === 404) {
+            await getOrders();
             toast.error("الطلب غير موجود. قد يكون تم حذفه مسبقًا.");
           } else {
+            await getOrders();
             toast.error(data?.message || "حدث خطأ غير متوقع.");
           }
         } else if (error.request) {
+          await getOrders();
           // Request was made but no response was received
           console.error("No response received:", error.request);
           toast.error("فشل الاتصال بالخادم. يرجى التحقق من الشبكة.");
         } else {
+          await getOrders();
           // Something else went wrong during the request setup
           console.error("Request setup error:", error.message);
           toast.error("حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.");
         }
+      } finally{
+        await getOrders();
       }
     };
     
