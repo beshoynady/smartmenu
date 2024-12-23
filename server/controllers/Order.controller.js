@@ -92,6 +92,13 @@ const createOrder = async (req, res) => {
 const getOrder = async (req, res) => {
   try {
     const orderId = req.params.id;
+
+    // Validate order ID format
+    if (!orderId.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ error: "Invalid order ID format" });
+    }
+
+    // Fetch the order by ID with population
     const order = await OrderModel.findById(orderId)
       .populate("products.productid", "_id name price preparationSection")
       .populate("products.extras.extraDetails.extraId", "_id name price")
@@ -100,18 +107,34 @@ const getOrder = async (req, res) => {
       .populate("createdBy", "_id fullname username role shift sectionNumber")
       .populate("cashier", "_id fullname username role shift sectionNumber")
       .populate("waiter", "_id fullname username role shift sectionNumber")
-      .populate("deliveryMan", "_id fullname username role shift ");
+      .populate("deliveryMan", "_id fullname username role shift");
+
+    // Handle case where order is not found
     if (!order) {
       return res.status(404).json({ error: "Order not found" });
     }
+
+    // Respond with the found order
     res.status(200).json(order);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    console.error("Error fetching order:", err);
+
+    // Handle specific error scenarios
+    if (err.name === "CastError") {
+      return res.status(400).json({ error: "Invalid order ID format" });
+    }
+
+    // Handle other unexpected errors
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: err.message });
   }
 };
 
+
 const getOrders = async (req, res) => {
   try {
+    // Fetch orders from the database with necessary population
     const orders = await OrderModel.find()
       .populate("products.productid", "_id name price preparationSection")
       .populate("products.extras.extraDetails.extraId", "_id name price")
@@ -120,26 +143,32 @@ const getOrders = async (req, res) => {
       .populate("createdBy", "_id fullname username role shift sectionNumber")
       .populate("cashier", "_id fullname username role shift sectionNumber")
       .populate("waiter", "_id fullname username role shift sectionNumber")
-      .populate("deliveryMan", "_id fullname username role shift ");
+      .populate("deliveryMan", "_id fullname username role shift");
 
+    // Handle the case where no orders are found
     if (!orders || orders.length === 0) {
       return res.status(404).json({ error: "No orders found" });
     }
 
+    // Return the fetched orders
     res.status(200).json(orders);
   } catch (err) {
     console.error("Error fetching orders:", err);
+
+    // Handle validation errors
     if (err.name === "ValidationError") {
-      res
+      return res
         .status(422)
         .json({ error: "Invalid data format", details: err.errors });
-    } else {
-      res
-        .status(500)
-        .json({ error: "Internal server error", details: err.message });
     }
+
+    // Handle other errors
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: err.message });
   }
 };
+
 
 const getLimitOrders = async (req, res) => {
   try {

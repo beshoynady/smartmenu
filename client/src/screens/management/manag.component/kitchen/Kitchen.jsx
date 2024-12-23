@@ -28,7 +28,10 @@ const Kitchen = () => {
   const ready = useRef();
 
   const [PreparationTicketActive, setPreparationTicketActive] = useState([]); // State for active Tickets
-  const [consumptionPreparationTicketActive, setConsumptionPreparationTicketActive] = useState([]); // State for active Tickets
+  const [
+    consumptionPreparationTicketActive,
+    setConsumptionPreparationTicketActive,
+  ] = useState([]); // State for active Tickets
   const [AllPreparationTicket, setAllPreparationTicket] = useState([]); // State for all Tickets
 
   const [allRecipe, setallRecipe] = useState([]); // State for all Tickets
@@ -59,9 +62,12 @@ const Kitchen = () => {
       }
 
       // Fetch Tickets from the API
-      const Response = await axios.get(`${apiUrl}/api/preparationticket`, config);
+      const Response = await axios.get(
+        `${apiUrl}/api/preparationticket`,
+        config
+      );
       const PreparationTicket = Response.data.data;
-      console.log({Response, PreparationTicket });
+      console.log({ Response, PreparationTicket });
       // console.log({ kitchenTickets })
       // Set all Tickets state
       setAllPreparationTicket(PreparationTicket);
@@ -118,8 +124,9 @@ const Kitchen = () => {
 
                   if (existingItemIndex !== -1) {
                     // If the item already exists, update the amount
-                    updatedConsumptionPreparationTicketActive[existingItemIndex].amount +=
-                      amount;
+                    updatedConsumptionPreparationTicketActive[
+                      existingItemIndex
+                    ].amount += amount;
                   } else {
                     // If the item does not exist, add it to the array
                     updatedConsumptionPreparationTicketActive.push({
@@ -173,7 +180,9 @@ const Kitchen = () => {
       console.log({ updatedConsumptionPreparationTicketActive });
 
       // Set updated consumptionPreparationTicketActive state
-      setConsumptionPreparationTicketActive(updatedConsumptionPreparationTicketActive);
+      setConsumptionPreparationTicketActive(
+        updatedConsumptionPreparationTicketActive
+      );
     } catch (error) {
       // Handle errors
       console.error("Error fetching Tickets:", error);
@@ -232,10 +241,10 @@ const Kitchen = () => {
       const preparationStatus = "Preparing";
       const response = await axios.put(
         `${apiUrl}/api/preparationticket/${id}`,
-        {preparationStatus},
+        { preparationStatus },
         config
       );
-      console.log({id, preparationStatus,response})
+      console.log({ id, preparationStatus, response });
       if (response.status === 200) {
         // Fetch Tickets from the API
         getAllPreparationTicket();
@@ -262,7 +271,7 @@ const Kitchen = () => {
         config
       );
       const { products: kitchenProducts } = preparationticketData.data.data;
-      const orderId = await preparationticketData.data.data?.order._id
+      const orderId = await preparationticketData.data.data?.order._id;
       const orderProducts = preparationticketData.data.data.order?.products;
       // console.log({preparationticketData:preparationticketData.data.data, orderId, orderProducts,  kitchenProducts});
 
@@ -388,17 +397,11 @@ const Kitchen = () => {
           : product
       );
 
-      const updateTicket = axios.put(
-        `${apiUrl}/api/preparationticket/${id}`,
-        { products: updateTicketProducts, preparationStatus: "Prepared"},
-        config
-      );
-      console.log({updatedOrderProducts, updateTicketProducts, updateTicket})
-
-      // const preparationStatus = { "preparationStatus.Kitchen": "Prepared" };
+      // console.log({updatedOrderProducts, updateTicketProducts, updateTicket})
 
       if (type === "Internal") {
         const waiter = await specifiedWaiter(id);
+        console.log({ waiter });
         if (!waiter) {
           toast.warn("لا يوجد نادل متاح لتسليم الطلب. يرجى مراجعة الإدارة!");
           return;
@@ -411,6 +414,16 @@ const Kitchen = () => {
           },
           config
         );
+        const updateTicket = axios.put(
+          `${apiUrl}/api/preparationticket/${id}`,
+          {
+            products: updateTicketProducts,
+            preparationStatus: "Prepared",
+            waiter,
+          },
+          config
+        );
+        console.log({updateTicket})
         waiterSocket.emit("orderready", `أورد جاهز في المطبخ-${waiter}`);
       } else {
         await axios.put(
@@ -418,6 +431,11 @@ const Kitchen = () => {
           {
             products: updatedOrderProducts,
           },
+          config
+        );
+        const updateTicket = axios.put(
+          `${apiUrl}/api/preparationticket/${id}`,
+          { products: updateTicketProducts, preparationStatus: "Prepared" },
           config
         );
         waiterSocket.emit("orderready", "أورد جاهز في المطبخ");
@@ -475,11 +493,13 @@ const Kitchen = () => {
         return;
       }
       // البحث عن الطلب بالمعرف المحدد
-      const getTicket = AllPreparationTicket.find((Ticket) => Ticket._id === id);
+      const getTicket = AllPreparationTicket.find(
+        (Ticket) => Ticket._id === id
+      );
       if (!getTicket) {
         throw new Error("Ticket not found");
       }
-      console.log({AllPreparationTicket, getTicket})
+      // console.log({AllPreparationTicket, getTicket})
 
       if (getTicket.status) {
       }
@@ -498,12 +518,10 @@ const Kitchen = () => {
         throw new Error("No waiters found in the specified section");
       }
 
-      const TicketSection = AllPreparationTicket
-        .filter(
-          (Ticket) =>
-            Ticket.waiter && Ticket.waiter.sectionNumber === tablesectionNumber
-        )
-        .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+      const TicketSection = AllPreparationTicket.filter(
+        (Ticket) =>
+          Ticket.waiter && Ticket.waiter?.sectionNumber === tablesectionNumber
+      ).sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
 
       let waiterId = "";
 
@@ -512,7 +530,7 @@ const Kitchen = () => {
         const lastWaiterIndex = sectionWaiters.findIndex(
           (waiter) => waiter._id === lastWaiterId
         );
-        console.log({ lastWaiterId, lastWaiterIndex });
+        // console.log({ lastWaiterId, lastWaiterIndex });
 
         waiterId =
           lastWaiterIndex !== -1 && lastWaiterIndex < sectionWaiters.length - 1
@@ -523,7 +541,7 @@ const Kitchen = () => {
         waiterId = sectionWaiters[0]._id;
       }
 
-      console.log({ waiterId });
+      // console.log({ waiterId });
 
       return waiterId;
     } catch (error) {
@@ -546,14 +564,14 @@ const Kitchen = () => {
   useEffect(() => {
     getAllRecipe();
     getAllWaiters();
-    getAllPreparationTicket()
+    getAllPreparationTicket();
     getKitchenConsumption();
   }, []);
 
   useEffect(() => {
     getAllRecipe();
     getAllWaiters();
-    getAllPreparationTicket()
+    getAllPreparationTicket();
     getKitchenConsumption();
   }, [isRefresh]);
 
@@ -613,10 +631,8 @@ const Kitchen = () => {
         {PreparationTicketActive &&
           PreparationTicketActive.map((Ticket, i) => {
             if (
-              Ticket.products.filter(
-                (product) =>
-                  product.isDone === false
-              ).length > 0
+              Ticket.products.filter((product) => product.isDone === false)
+                .length > 0
             ) {
               return (
                 <div className="col-lg-3 col-md-4 col-sm-6 col-12 mb-4" key={i}>
@@ -659,7 +675,10 @@ const Kitchen = () => {
                         </p>
                         <p className="card-text">
                           الانتظار:{" "}
-                          {setTimeout(() => waitingTime(Ticket.updateAt), 60000)}{" "}
+                          {setTimeout(
+                            () => waitingTime(Ticket.updateAt),
+                            60000
+                          )}{" "}
                           دقيقه
                         </p>
                       </div>
@@ -752,7 +771,10 @@ const Kitchen = () => {
                         <button
                           className="btn w-100 btn-warning h-100 btn btn-lg"
                           onClick={() => {
-                            updateTicketDone(Ticket._id, Ticket.order.orderType);
+                            updateTicketDone(
+                              Ticket._id,
+                              Ticket.order.orderType
+                            );
                           }}
                         >
                           تم التنفيذ
@@ -818,7 +840,10 @@ const Kitchen = () => {
                         </p>
                         <p className="card-text">
                           الانتظار:{" "}
-                          {setTimeout(() => waitingTime(Ticket.updateAt), 60000)}{" "}
+                          {setTimeout(
+                            () => waitingTime(Ticket.updateAt),
+                            60000
+                          )}{" "}
                           دقيقه
                         </p>
                       </div>
