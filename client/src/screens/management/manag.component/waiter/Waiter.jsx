@@ -123,7 +123,7 @@ const Waiter = () => {
         console.error(`Error updating preparation status`, error);
       }
 
-      fetchInternalOrders();
+      // fetchInternalOrders();
       fetchActivePreparationTickets();
       toast.success("تم تاكيد استلام الاوردر!");
     } catch (error) {
@@ -145,7 +145,7 @@ const Waiter = () => {
         config
       );
       if (updateOrder.status === 200) {
-        fetchInternalOrders();
+        // fetchInternalOrders();
         fetchActivePreparationTickets();
         toast.success("تم تاكيد توصيل الاوردر!");
       }
@@ -169,7 +169,7 @@ const Waiter = () => {
         config
       );
       if (res.status === 200) {
-        fetchInternalOrders();
+        // fetchInternalOrders();
         fetchActivePreparationTickets();
         toast.success("تم تاكيد الاتجاه لتقديم المساعده!");
       }
@@ -193,7 +193,7 @@ const Waiter = () => {
         config
       );
       fetchActivePreparationTickets();
-      fetchInternalOrders();
+      // fetchInternalOrders();
       toast.success("تم تاكيد تقديم المساعده!");
     } catch (error) {
       console.log(error);
@@ -204,11 +204,11 @@ const Waiter = () => {
   // Fetch initial data on component mount
   useEffect(() => {
     fetchActivePreparationTickets();
-    fetchInternalOrders();
+    // fetchInternalOrders();
   }, []);
   useEffect(() => {
     fetchActivePreparationTickets();
-    fetchInternalOrders();
+    // fetchInternalOrders();
   }, [isRefresh]);
 
   return (
