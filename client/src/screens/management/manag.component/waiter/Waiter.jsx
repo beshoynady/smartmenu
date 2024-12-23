@@ -44,12 +44,13 @@ const Waiter = () => {
         apiUrl + "/api/preparationticket/activepreparationtickets",
         config
       );
-      const filterWaiterTickets = res.data?.filter(
+      const filterWaiterTickets = res.data.data?.filter(
         (Ticket) =>
           Ticket.waiter?._id === employeeLoginInfo.id &&
           (Ticket.preparationStatus === "Prepared" ||
             Ticket.preparationStatus === "On the way")
       );
+      console.log({activepreparationtickets:res.data.data,filterWaiterTickets})
       setActivePreparationTickets(filterWaiterTickets);
       // setPendingPayments(recentPaymentStatus);
     } catch (error) {
