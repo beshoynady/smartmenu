@@ -305,7 +305,7 @@ const Waiter = () => {
           {
             return (
               <div
-                className="card text-white bg-success"
+                className="card bg-success"
                 style={{ width: "260px" }}
               >
                 <div
