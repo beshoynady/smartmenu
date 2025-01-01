@@ -3,6 +3,7 @@ import axios from "axios";
 import { detacontext } from "../../../../App";
 
 import { Link } from "react-router-dom";
+
 import "./SideBar.css";
 
 const SideBar = () => {
@@ -122,7 +123,7 @@ const SideBar = () => {
                   role === "manager" ||
                   role === "owner") && (
                   <li className="list">
-                    <Link to="pos">
+                    <Link to="/pos">
                       <span className="material-symbols-outlined list-icon ml-2">
                         point_of_sale
                       </span>
@@ -130,7 +131,7 @@ const SideBar = () => {
                     </Link>
                     <ul className="submenu blank">
                       <li className="list">
-                        <Link to="pos" className="linkname">
+                        <Link to="/pos" className="linkname">
                           نقطة البيع
                         </Link>
                       </li>
@@ -289,7 +290,6 @@ const SideBar = () => {
                       <i className="bx bxs-chevron-down arrow"></i>
                     </div>
                     <ul className="submenu">
-                      
                       <li className="list">
                         <Link to="tables">ادارة الطاولات</Link>
                       </li>
@@ -334,7 +334,7 @@ const SideBar = () => {
                       <i className="bx bxs-chevron-down arrow"></i>
                     </div>
                     <ul className="submenu">
-                    <li className="list">
+                      <li className="list">
                         <Link to="preparationsection">اقسام الاعداد</Link>
                       </li>
                       {(isProgrammer ||
@@ -346,13 +346,13 @@ const SideBar = () => {
                           <Link to="menucategory">التصنيفات</Link>
                         </li>
                       )}
-                       {(isProgrammer ||
+                      {(isProgrammer ||
                         permissionsList?.filter(
                           (permission) => permission.resource === "products"
                         )[0]?.update) && (
-                      <li className="list">
-                        <Link to="products">الأطباق</Link>
-                      </li>
+                        <li className="list">
+                          <Link to="products">الأطباق</Link>
+                        </li>
                       )}
                       {(isProgrammer ||
                         permissionsList?.filter(
@@ -548,8 +548,7 @@ const SideBar = () => {
                       )}
                       {(isProgrammer ||
                         permissionsList?.filter(
-                          (permission) =>
-                            permission.resource === "Grill Usage"
+                          (permission) => permission.resource === "Grill Usage"
                         )[0]?.read) && (
                         <li className="list">
                           <Link to="grillconsumption">استهلاك الشوايه</Link>
@@ -557,8 +556,7 @@ const SideBar = () => {
                       )}
                       {(isProgrammer ||
                         permissionsList?.filter(
-                          (permission) =>
-                            permission.resource === "Bar Usage"
+                          (permission) => permission.resource === "Bar Usage"
                         )[0]?.read) && (
                         <li className="list">
                           <Link to="Barconsumption">استهلاك البار</Link>
