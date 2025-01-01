@@ -2410,6 +2410,7 @@ function App() {
 
           <Route
             path="/management/*"
+            
             element={
               <Suspense fallback={<LoadingPage />}>
                 <ManagLayout />

@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { detacontext } from "../../../../App";
 
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 import "./SideBar.css";
 
@@ -123,7 +124,7 @@ const SideBar = () => {
                   role === "manager" ||
                   role === "owner") && (
                   <li className="list">
-                    <Link to="/pos">
+                    <Link to="pos">
                       <span className="material-symbols-outlined list-icon ml-2">
                         point_of_sale
                       </span>
@@ -131,7 +132,7 @@ const SideBar = () => {
                     </Link>
                     <ul className="submenu blank">
                       <li className="list">
-                        <Link to="/pos" className="linkname">
+                        <Link to="pos" className="linkname">
                           نقطة البيع
                         </Link>
                       </li>

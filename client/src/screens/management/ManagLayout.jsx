@@ -1,7 +1,8 @@
 import React, { useContext } from 'react';
 import './ManagLayout.css';
 import { detacontext } from '../../App';
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
+import { Outlet } from "react-router";
 import NavBar from './manag.component/navbar/NavBar';
 import SideBar from './manag.component/sidebar/SideBar';
 import { ToastContainer } from 'react-toastify';
