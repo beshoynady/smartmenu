@@ -100,7 +100,7 @@ const SideBar = () => {
                 {/* managerdashboard */}
                 {(isProgrammer || role === "manager" || role === "owner") && (
                   <li className="list">
-                    <Link to="/management/managerdashboard">
+                    <Link to="managerdashboard">
                       <span className="material-symbols-outlined list-icon ml-2">
                         dashboard
                       </span>
@@ -108,7 +108,7 @@ const SideBar = () => {
                     </Link>
                     <ul className="submenu blank">
                       <li className="list">
-                        <Link to="/management/managerdashboard" className="linkname">
+                        <Link to="managerdashboard" className="linkname">
                           داش بورد
                         </Link>
                       </li>
@@ -122,7 +122,7 @@ const SideBar = () => {
                   role === "manager" ||
                   role === "owner") && (
                   <li className="list">
-                    <Link to="/management/pos">
+                    <Link to="pos">
                       <span className="material-symbols-outlined list-icon ml-2">
                         point_of_sale
                       </span>
@@ -130,7 +130,7 @@ const SideBar = () => {
                     </Link>
                     <ul className="submenu blank">
                       <li className="list">
-                        <Link to="/management/pos" className="linkname">
+                        <Link to="pos" className="linkname">
                           نقطة البيع
                         </Link>
                       </li>
@@ -144,7 +144,7 @@ const SideBar = () => {
                   role === "manager" ||
                   role === "owner") && (
                   <li className="list">
-                    <Link to="/management/kitchen">
+                    <Link to="kitchen">
                       <span className="material-symbols-outlined list-icon ml-2">
                         cooking
                       </span>
@@ -152,7 +152,7 @@ const SideBar = () => {
                     </Link>
                     <ul className="submenu blank">
                       <li className="list">
-                        <Link to="/management/kitchen" className="linkname">
+                        <Link to="kitchen" className="linkname">
                           المطبخ
                         </Link>
                       </li>
@@ -165,7 +165,7 @@ const SideBar = () => {
                   role === "manager" ||
                   role === "owner") && (
                   <li className="list">
-                    <Link to="/management/bar">
+                    <Link to="bar">
                       <span className="material-symbols-outlined list-icon ml-2">
                         liquor
                       </span>
@@ -174,7 +174,7 @@ const SideBar = () => {
                     </Link>
                     <ul className="submenu blank">
                       <li className="list">
-                        <Link to="/management/bar" className="linkname">
+                        <Link to="bar" className="linkname">
                           البار
                         </Link>
                       </li>
@@ -187,7 +187,7 @@ const SideBar = () => {
                   role === "manager" ||
                   role === "owner") && (
                   <li className="list">
-                    <Link to="/management/grill">
+                    <Link to="grill">
                       <span className="material-symbols-outlined list-icon ml-2">
                         outdoor_grill
                       </span>
@@ -195,7 +195,7 @@ const SideBar = () => {
                     </Link>
                     <ul className="submenu blank">
                       <li className="list">
-                        <Link to="/management/grill" className="linkname">
+                        <Link to="grill" className="linkname">
                           الشوايه
                         </Link>
                       </li>
@@ -209,7 +209,7 @@ const SideBar = () => {
                   role === "owner" ||
                   role === "waiter") && (
                   <li className="list">
-                    <Link to="/management/waiter">
+                    <Link to="waiter">
                       <span className="material-symbols-outlined list-icon ml-2">
                         concierge
                       </span>
@@ -217,7 +217,7 @@ const SideBar = () => {
                     </Link>
                     <ul className="submenu blank">
                       <li className="list">
-                        <Link to="/management/waiter" className="linkname">
+                        <Link to="waiter" className="linkname">
                           الويتر
                         </Link>
                       </li>
@@ -231,7 +231,7 @@ const SideBar = () => {
                   role === "manager" ||
                   role === "owner") && (
                   <li className="list">
-                    <Link to="/management/deliveryman">
+                    <Link to="deliveryman">
                       <span className="material-symbols-outlined list-icon ml-2">
                         directions_bike
                       </span>
@@ -239,7 +239,7 @@ const SideBar = () => {
                     </Link>
                     <ul className="submenu blank">
                       <li className="list">
-                        <Link to="/management/deliveryman" className="linkname">
+                        <Link to="deliveryman" className="linkname">
                           الديلفري
                         </Link>
                       </li>
@@ -253,7 +253,7 @@ const SideBar = () => {
                     (permission) => permission.resource === "Orders"
                   )[0]?.read) && (
                   <li className="list">
-                    <Link to="/management/orders">
+                    <Link to="orders">
                       <span className="material-symbols-outlined list-icon ml-2">
                         list_alt
                       </span>
@@ -261,7 +261,7 @@ const SideBar = () => {
                     </Link>
                     <ul className="submenu blank">
                       <li className="list">
-                        <Link to="/management/orders" className="linkname">
+                        <Link to="orders" className="linkname">
                           الطلبات
                         </Link>
                       </li>
@@ -290,7 +290,7 @@ const SideBar = () => {
                     </div>
                     <ul className="submenu">
                       <li className="list">
-                        <Link to="/management/tables">ادارة الطاولات</Link>
+                        <Link to="tables">ادارة الطاولات</Link>
                       </li>
                       {(isProgrammer ||
                         permissionsList?.filter(
@@ -298,7 +298,7 @@ const SideBar = () => {
                             permission.resource === "Table Reservations"
                         )[0]?.read) && (
                         <li className="list">
-                          <Link to="/management/reservation">حجز الطاولات</Link>
+                          <Link to="reservation">حجز الطاولات</Link>
                         </li>
                       )}
                       {(isProgrammer ||
@@ -306,7 +306,7 @@ const SideBar = () => {
                           (permission) => permission.resource === "Tables"
                         )[0]?.read) && (
                         <li className="list">
-                          <Link to="/management/tablespage">الطاولات</Link>
+                          <Link to="tablespage">الطاولات</Link>
                         </li>
                       )}
                     </ul>
@@ -334,7 +334,7 @@ const SideBar = () => {
                     </div>
                     <ul className="submenu">
                       <li className="list">
-                        <Link to="/management/preparationsection">اقسام الاعداد</Link>
+                        <Link to="preparationsection">اقسام الاعداد</Link>
                       </li>
                       {(isProgrammer ||
                         permissionsList?.filter(
@@ -342,7 +342,7 @@ const SideBar = () => {
                             permission.resource === "Menu Categories"
                         )[0]?.read) && (
                         <li className="list">
-                          <Link to="/management/menucategory">التصنيفات</Link>
+                          <Link to="menucategory">التصنيفات</Link>
                         </li>
                       )}
                       {(isProgrammer ||
@@ -350,7 +350,7 @@ const SideBar = () => {
                           (permission) => permission.resource === "products"
                         )[0]?.update) && (
                         <li className="list">
-                          <Link to="/management/products">الأطباق</Link>
+                          <Link to="products">الأطباق</Link>
                         </li>
                       )}
                       {(isProgrammer ||
@@ -358,7 +358,7 @@ const SideBar = () => {
                           (permission) => permission.resource === "Recipes"
                         )[0]?.read) && (
                         <li className="list">
-                          <Link to="/management/productrecipe">الوصفات</Link>
+                          <Link to="productrecipe">الوصفات</Link>
                         </li>
                       )}
                     </ul>
@@ -389,14 +389,14 @@ const SideBar = () => {
                     </div>
                     <ul className="submenu">
                       <li className="list">
-                        <Link to="/management/employees">البيانات</Link>
+                        <Link to="employees">البيانات</Link>
                       </li>
                       {(isProgrammer ||
                         permissionsList?.filter(
                           (permission) => permission.resource === "Permissions"
                         )[0]?.read) && (
                         <li className="list">
-                          <Link to="/management/permissions">الصلاحيات</Link>
+                          <Link to="permissions">الصلاحيات</Link>
                         </li>
                       )}
                       {(isProgrammer ||
@@ -404,7 +404,7 @@ const SideBar = () => {
                           (permission) => permission.resource === "Attendance"
                         )[0]?.read) && (
                         <li className="list">
-                          <Link to="/management/attendancerecord">الحضور والانصراف</Link>
+                          <Link to="attendancerecord">الحضور والانصراف</Link>
                         </li>
                       )}
                       {(isProgrammer ||
@@ -413,7 +413,7 @@ const SideBar = () => {
                             permission.resource === "Employee Transactions"
                         )[0]?.read) && (
                         <li className="list">
-                          <Link to="/management/employeetransactions">
+                          <Link to="employeetransactions">
                             معاملات الموظفين
                           </Link>
                         </li>
@@ -423,7 +423,7 @@ const SideBar = () => {
                           (permission) => permission.resource === "Payroll"
                         )[0]?.read) && (
                         <li className="list">
-                          <Link to="/management/payroll">المرتبات</Link>
+                          <Link to="payroll">المرتبات</Link>
                         </li>
                       )}
                     </ul>
@@ -454,17 +454,17 @@ const SideBar = () => {
                     </div>
                     <ul className="submenu">
                       <li className="list">
-                        <Link to="/management/users">إدارة المستخدمين</Link>
+                        <Link to="users">إدارة المستخدمين</Link>
                       </li>
                       <li className="list">
-                        <Link to="/management/customers">إدارة العملاء</Link>
+                        <Link to="customers">إدارة العملاء</Link>
                       </li>
                       {(isProgrammer ||
                         permissionsList?.filter(
                           (permission) => permission.resource === "Messages"
                         )[0]?.read) && (
                         <li className="list">
-                          <Link to="/management/message">رسائل العملاء</Link>
+                          <Link to="message">رسائل العملاء</Link>
                         </li>
                       )}
                     </ul>
@@ -498,7 +498,7 @@ const SideBar = () => {
                           (permission) => permission.resource === "store"
                         )[0]?.read) && (
                         <li className="list">
-                          <Link to="/management/store">المخازن</Link>
+                          <Link to="store">المخازن</Link>
                         </li>
                       )}
                       {(isProgrammer ||
@@ -507,7 +507,7 @@ const SideBar = () => {
                             permission.resource === "stock Categories"
                         )[0]?.read) && (
                         <li className="list">
-                          <Link to="/management/categoryStock">التصنيفات</Link>
+                          <Link to="categoryStock">التصنيفات</Link>
                         </li>
                       )}
                       {(isProgrammer ||
@@ -515,7 +515,7 @@ const SideBar = () => {
                           (permission) => permission.resource === "stock Item"
                         )[0]?.read) && (
                         <li className="list">
-                          <Link to="/management/stockitem">الأصناف</Link>
+                          <Link to="stockitem">الأصناف</Link>
                         </li>
                       )}
                       {(isProgrammer ||
@@ -524,7 +524,7 @@ const SideBar = () => {
                             permission.resource === "stock Management"
                         )[0]?.read) && (
                         <li className="list">
-                          <Link to="/management/stockmanag">إدارة المخزون</Link>
+                          <Link to="stockmanag">إدارة المخزون</Link>
                         </li>
                       )}
                       {(isProgrammer ||
@@ -533,7 +533,7 @@ const SideBar = () => {
                             permission.resource === "stock Management"
                         )[0]?.read) && (
                         <li className="list">
-                          <Link to="/management/batchstockreport">تقرير دفعات المخزن</Link>
+                          <Link to="batchstockreport">تقرير دفعات المخزن</Link>
                         </li>
                       )}
                       {(isProgrammer ||
@@ -542,7 +542,7 @@ const SideBar = () => {
                             permission.resource === "Kitchen Usage"
                         )[0]?.read) && (
                         <li className="list">
-                          <Link to="/management/kitchenconsumption">استهلاك المطبخ</Link>
+                          <Link to="kitchenconsumption">استهلاك المطبخ</Link>
                         </li>
                       )}
                       {(isProgrammer ||
@@ -550,7 +550,7 @@ const SideBar = () => {
                           (permission) => permission.resource === "Grill Usage"
                         )[0]?.read) && (
                         <li className="list">
-                          <Link to="/management/grillconsumption">استهلاك الشوايه</Link>
+                          <Link to="grillconsumption">استهلاك الشوايه</Link>
                         </li>
                       )}
                       {(isProgrammer ||
@@ -558,7 +558,7 @@ const SideBar = () => {
                           (permission) => permission.resource === "Bar Usage"
                         )[0]?.read) && (
                         <li className="list">
-                          <Link to="/management/Barconsumption">استهلاك البار</Link>
+                          <Link to="Barconsumption">استهلاك البار</Link>
                         </li>
                       )}
                     </ul>
@@ -586,14 +586,14 @@ const SideBar = () => {
                     </div>
                     <ul className="submenu">
                       <li className="list">
-                        <Link to="/management/supplier">الموردين</Link>
+                        <Link to="supplier">الموردين</Link>
                       </li>
                       {(isProgrammer ||
                         permissionsList?.filter(
                           (permission) => permission.resource === "Purchases"
                         )[0]?.read) && (
                         <li className="list">
-                          <Link to="/management/purchase">المشتريات</Link>
+                          <Link to="purchase">المشتريات</Link>
                         </li>
                       )}
                       {(isProgrammer ||
@@ -602,7 +602,7 @@ const SideBar = () => {
                             permission.resource === "Purchase Returns"
                         )[0]?.read) && (
                         <li className="list">
-                          <Link to="/management/purchasereturn">مرتجع المشتريات</Link>
+                          <Link to="purchasereturn">مرتجع المشتريات</Link>
                         </li>
                       )}
                       {(isProgrammer ||
@@ -611,7 +611,7 @@ const SideBar = () => {
                             permission.resource === "Supplier Movement"
                         )[0]?.read) && (
                         <li className="list">
-                          <Link to="/management/suppliertransaction">تعاملات الموردين</Link>
+                          <Link to="suppliertransaction">تعاملات الموردين</Link>
                         </li>
                       )}
                     </ul>
@@ -639,7 +639,7 @@ const SideBar = () => {
                     </div>
                     <ul className="submenu">
                       <li className="list">
-                        <Link to="/management/expense">المصروفات</Link>
+                        <Link to="expense">المصروفات</Link>
                       </li>
                       {(isProgrammer ||
                         permissionsList?.filter(
@@ -647,7 +647,7 @@ const SideBar = () => {
                             permission.resource === "Daily Expenses"
                         )[0]?.read) && (
                         <li className="list">
-                          <Link to="/management/dailyexpense">تسجيل مصروف</Link>
+                          <Link to="dailyexpense">تسجيل مصروف</Link>
                         </li>
                       )}
                     </ul>
@@ -674,7 +674,7 @@ const SideBar = () => {
                     </div>
                     <ul className="submenu">
                       <li className="list">
-                        <Link to="/management/cashregister">الرصيد</Link>
+                        <Link to="cashregister">الرصيد</Link>
                       </li>
                       {(isProgrammer ||
                         permissionsList?.filter(
@@ -682,7 +682,7 @@ const SideBar = () => {
                             permission.resource === "Cash Movement"
                         )[0]?.read) && (
                         <li className="list">
-                          <Link to="/management/cashmovement">تسجيل حركة</Link>
+                          <Link to="cashmovement">تسجيل حركة</Link>
                         </li>
                       )}
                     </ul>
@@ -710,17 +710,17 @@ const SideBar = () => {
                     </li> */}
                 {/* {(isProgrammer || permissionsList?.filter(permission => permission.resource === 'stock Categories')[0]?.read) && ( */}
                 {/* <li className="list"> */}
-                {/* <Link to="/management/profitloss">التصنيفات</Link>
+                {/* <Link to="profitloss">التصنيفات</Link>
                     </li> */}
                 {/* )} */}
                 {/* {(isProgrammer || permissionsList?.filter(permission => permission.resource === 'stock Item')[0]?.read) && (
-                          <li className="list"><Link to="/management/stockitem">الأصناف</Link></li>
+                          <li className="list"><Link to="stockitem">الأصناف</Link></li>
                         )}
                         {(isProgrammer || permissionsList?.filter(permission => permission.resource === 'stock Management')[0]?.read) && (
-                          <li className="list"><Link to="/management/stockmanag">إدارة المخزون</Link></li>
+                          <li className="list"><Link to="stockmanag">إدارة المخزون</Link></li>
                         )}
                         {(isProgrammer || permissionsList?.filter(permission => permission.resource === 'Kitchen Usage')[0]?.read) && (
-                          <li className="list"><Link to="/management/kitchenconsumption">استهلاك المطبخ</Link></li>
+                          <li className="list"><Link to="kitchenconsumption">استهلاك المطبخ</Link></li>
                         )} */}
                 {/* </ul>
                 </li>
@@ -733,7 +733,7 @@ const SideBar = () => {
                       permission.resource === "Restaurant Settings"
                   )[0]?.read) && (
                   <li className="list">
-                    <Link to="/management/info">
+                    <Link to="info">
                       <span className="material-symbols-outlined list-icon ml-2">
                         settings
                       </span>
@@ -741,7 +741,7 @@ const SideBar = () => {
                     </Link>
                     <ul className="submenu blank">
                       <li className="list">
-                        <Link to="/management/info" className="linkname">
+                        <Link to="info" className="linkname">
                           الإعدادات
                         </Link>
                       </li>
