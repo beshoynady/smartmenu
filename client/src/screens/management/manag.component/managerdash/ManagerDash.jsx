@@ -318,12 +318,12 @@ const ManagerDash = () => {
           config
         );
         if (response) {
-          preparationSection &&
-          preparationSection.map((section) => {
+          allPreparationSections &&
+          allPreparationSections.map((section) => {
               const sectionProducts = [];
               orderProducts &&
                 orderProducts.map((product) => {
-                  if (product.productid?.preparationSection === section && product.isSend === false) {
+                  if (product.productid?.preparationSection === section._id && product.isSend === false) {
                     sectionProducts.push({
                       ...product,
                       orderProductId:product._id
