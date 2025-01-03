@@ -39,7 +39,7 @@ const getAllPreparationTickets = async (req, res) => {
       })
       .populate("products.productid", "_id name preparationSection")
       .populate("products.extras.extraDetails.extraId", "_id name")
-      // .populate("preparationSection", "_id name")
+      .populate("preparationSection", "_id name")
       .populate("responsibleEmployee", "_id username role")
       .populate("waiter", "_id fullname username role shift sectionNumber");
     res.status(200).json({
@@ -67,7 +67,7 @@ const getActivePreparationTickets = async (req, res) => {
       })
       .populate("products.productid", "_id name preparationSection")
       .populate("products.extras.extraDetails.extraId", "_id name")
-      // .populate("preparationSection", "_id name")
+      .populate("preparationSection", "_id name")
       .populate("responsibleEmployee", "_id username role")
       .populate("waiter", "_id fullname username role shift sectionNumber");
     res.status(200).json({
