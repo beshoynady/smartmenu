@@ -33,10 +33,7 @@ const Tables = () => {
 
   const tablePermission =
     permissionsList &&
-    permissionsList.filter(
-      (permission) => permission.resource === "Tables"
-    )[0];
-
+    permissionsList.filter((permission) => permission.resource === "Tables")[0];
 
   const [qrimage, setqrimage] = useState("");
   const [tableid, settableid] = useState("");
@@ -59,9 +56,9 @@ const Tables = () => {
     }
 
     if (tablePermission && !tablePermission.create) {
-          toast.warn("ليس لك صلاحية لانشاء طاوله جديدة");
-          return;
-        }
+      toast.warn("ليس لك صلاحية لانشاء طاوله جديدة");
+      return;
+    }
 
     const generateTableCode = () => {
       return [...Array(20)]
