@@ -108,36 +108,36 @@
   font-size: 18px;
   opacity: 0.7;
 }
-/* Styling for table cells and headers */
+
 table.table th,
 table.table td {
   border: 1px solid rgb(46, 46, 46);
-  padding: 10px;
+  padding: 5px;
   vertical-align: middle;
   text-align: center;
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 800;
   text-wrap: nowrap;
-  transition: background-color 0.3s ease; /* Add transition for hover effects */
+}
+table.table th:first-child, td:first-child {
+  position: sticky;
+  left: 0;
+  background-color: white;
+  z-index: 1;
 }
 
-/* Styling for form controls inside table cells */
 table.table td .form-control {
   min-width: auto;
 }
 
-/* Zebra-striping for odd rows */
 table.table tr:nth-of-type(odd) {
   background-color: #f9f9f9;
 }
 
-/* Hover effect for table rows */
 table.table-striped tbody tr:hover {
   background: #e0e0e0;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Add shadow effect */
 }
 
-/* Styling for links inside table cells */
 table.table td a {
   font-weight: 600;
   color: #007bff;
@@ -146,25 +146,19 @@ table.table td a {
 
 table.table td a:hover {
   color: #0056b3;
-  text-decoration: underline;
 }
 
-/* Styling for icons inside table cells */
 table.table td i {
   font-size: 20px;
-  cursor: pointer;
 }
 
-/* Styling for avatar images */
 table.table .avatar {
   border-radius: 50%;
   margin-right: 10px;
 }
 
-/* Styling for pagination */
 .pagination {
   margin: 0;
-  justify-content: center;
 }
 
 .pagination li a {
@@ -172,12 +166,11 @@ table.table .avatar {
   font-size: 14px;
   min-width: 36px;
   min-height: 36px;
-  color: #000;
+  color: #000000;
   line-height: 36px;
   border-radius: 4px;
   text-align: center;
   padding: 0 10px;
-  transition: background-color 0.3s ease, color 0.3s ease; /* Add smooth transition */
 }
 
 .pagination li a:hover {
@@ -191,7 +184,6 @@ table.table .avatar {
 
 .pagination li.disabled a {
   color: #ccc;
-  pointer-events: none; /* Disable interaction with disabled page links */
 }
 
 /* Modal styles */
@@ -217,9 +209,6 @@ table.table .avatar {
 
 .modal-header {
   padding: 10px;
-  background-color: #007bff;
-  color: white;
-  font-weight: bold;
 }
 
 .modal-body,
@@ -236,7 +225,7 @@ table.table .avatar {
   border-radius: 4px;
   border-color: #ddd;
   font-size: 16px;
-  color: #000;
+  color: #000000;
   /* min-width: max-content; */
 }
 
@@ -247,7 +236,7 @@ table.table .avatar {
 .modal form label {
   font-weight: 600;
   font-size: 16px;
-  color: #000;
+  color: #000000;
 }
 
 @media (max-width: 768px) {
