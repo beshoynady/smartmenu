@@ -570,8 +570,9 @@ const POS = () => {
                                         className="form-check form-check-flat mb-1 d-flex align-items-center"
                                         key={i}
                                         style={{
-                                          width: "47%",
+                                          width: "50%",
                                           paddingLeft: "5px",
+                                          scrollbarWidth:"thin"
                                         }}
                                       >
                                         <input
@@ -717,9 +718,10 @@ const POS = () => {
                                           className="form-check form-check-flat mb-1 d-flex align-items-center"
                                           key={i}
                                           style={{
-                                            width: "47%",
+                                            width: "50%",
                                             height: "20px",
                                             paddingLeft: "5px",
+                                            scrollbarWidth:"thin"
                                           }}
                                         >
                                           {console.log({ productExtras })}

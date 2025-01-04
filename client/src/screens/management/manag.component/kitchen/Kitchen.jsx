@@ -66,6 +66,7 @@ const Kitchen = () => {
         `${apiUrl}/api/preparationticket`,
         config
       );
+      
       const PreparationTicket = Response.data.data;
       console.log({ Response, PreparationTicket });
       // console.log({ kitchenTickets })

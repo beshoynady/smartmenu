@@ -97,8 +97,8 @@ const POSCard = () => {
                             <h5
                               className="card-title text-light mb-0 text-truncate"
                               style={{
-                                width: "60%",
-                                fontSize: "18px",
+                                width: "70%",
+                                fontSize: "16px",
                                 fontWeight: "900",
                               }}
                             >
@@ -179,8 +179,8 @@ const POSCard = () => {
                             <h5
                               className="card-title text-light mb-0 text-truncate"
                               style={{
-                                width: "60%",
-                                fontSize: "18px",
+                                width: "70%",
+                                fontSize: "16px",
                                 fontWeight: "900",
                               }}
                             >
