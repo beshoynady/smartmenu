@@ -614,7 +614,7 @@ const POS = () => {
                                         <label
                                           className="form-check-label text-dark mr-4"
                                           style={{
-                                            fontSize: "14px",
+                                            fontSize: "12px",
                                             fontWeight: "900",
                                           }}
                                           onClick={(e) =>
@@ -719,7 +719,6 @@ const POS = () => {
                                           key={i}
                                           style={{
                                             width: "50%",
-                                            height: "20px",
                                             paddingLeft: "5px",
                                             scrollbarWidth:"thin"
                                           }}
@@ -754,7 +753,7 @@ const POS = () => {
                                           <label
                                             className="form-check-label text-dark mr-4"
                                             style={{
-                                              fontSize: "14px",
+                                              fontSize: "12px",
                                               fontWeight: "900",
                                             }}
                                             onClick={(e) =>

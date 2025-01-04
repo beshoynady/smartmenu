@@ -31,6 +31,13 @@ const Tables = () => {
     setendpagination,
   } = useContext(detacontext);
 
+  const tablePermission =
+    permissionsList &&
+    permissionsList.filter(
+      (permission) => permission.resource === "Tables"
+    )[0];
+
+
   const [qrimage, setqrimage] = useState("");
   const [tableid, settableid] = useState("");
   const [tableCode, settableCode] = useState("");
@@ -45,21 +52,26 @@ const Tables = () => {
   // Function to create a new table
   const createTable = async (e) => {
     e.preventDefault();
+
     if (!token) {
-      // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        throw new Error("must login");
-      }
-      const generateTableCode = () => {
-        return [...Array(20)]
-          .map(() =>
-            Math.random().toString(36).charAt(2)
-          )
-          .join(''); 
-      };
-    
-      try {
+      toast.error("يجب تسجيل الدخول لإتمام العملية");
+      throw new Error("Authentication required");
+    }
+
+    if (tablePermission && !tablePermission.create) {
+          toast.warn("ليس لك صلاحية لانشاء طاوله جديدة");
+          return;
+        }
+
+    const generateTableCode = () => {
+      return [...Array(20)]
+        .map(() => Math.random().toString(36).charAt(2))
+        .join("");
+    };
+
+    try {
       const tableCode = generateTableCode();
+
       const tableData = {
         tableNumber,
         chairs,
@@ -67,63 +79,105 @@ const Tables = () => {
         location,
         tableCode,
         isValid,
-        notes
+        notes,
       };
 
-      // Send request to create table
       const response = await axios.post(
         `${apiUrl}/api/table/`,
         tableData,
         config
       );
+      if (response.status === 201) {
+        console.log("تم إنشاء الطاولة بنجاح:", response.data);
 
-      // Check response status
-      if (response.status === 200) {
-        // Log success message
-        console.log("Table created successfully:", response.data);
-
-        // Update table list
-        getAllTable();
-
-        // Show success toast
+        await getAllTable();
         toast.success("تم إنشاء الطاولة بنجاح.");
-      } else {
-        // Handle unexpected response
-        throw new Error("Unexpected response while creating table.");
       }
     } catch (error) {
-      // Log and show error message
-      console.error("Error creating table:", error);
-      toast.error("حدث خطأ أثناء إنشاء الطاولة. الرجاء المحاولة مرة أخرى.");
+      if (
+        error.response &&
+        error.response.status === 400 &&
+        error.response.data.message
+      ) {
+        if (error.response.data.message.includes("already exists")) {
+          toast.error(
+            `رقم الطاولة ${tableNumber} موجود بالفعل في القسم ${sectionNumber}.`
+          );
+        } else {
+          toast.error(error.response.data.message);
+        }
+      } else {
+        console.error("خطأ أثناء إنشاء الطاولة:", error);
+        toast.error("حدث خطأ أثناء إنشاء الطاولة. الرجاء المحاولة مرة أخرى.");
+      }
     }
   };
 
   // Function to edit an existing table
   const editTable = async (e) => {
     e.preventDefault();
+
+    // Check if the user is authenticated
+    if (!token) {
+      toast.error("يجب تسجيل الدخول لإتمام العملية.");
+      throw new Error("Authentication required");
+    }
+    if (tablePermission && !tablePermission.update) {
+      toast.warn("ليس لك صلاحية لتعديل بيانات طاوله ");
+      return;
+    }
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-      }
+      // Prepare the data to be sent in the request
+      const tableData = {
+        tableNumber,
+        chairs,
+        sectionNumber,
+        location,
+        isValid,
+        notes,
+      };
+
+      // Send the PUT request to update the table
       const response = await axios.put(
         `${apiUrl}/api/table/${tableid}`,
-        {         
-          tableNumber,
-          chairs,
-          sectionNumber,
-          location,
-          isValid,
-          notes
-   },
+        tableData,
         config
       );
-      console.log(response.data);
-      getAllTable();
+
+      // Handle successful response
+      if (response.status === 200) {
+        console.log("Table updated successfully:", response.data);
+
+        // Refresh the table list
+        await getAllTable();
+
+        // Show success notification
+        toast.success("تم تعديل الطاولة بنجاح.");
+      }
     } catch (error) {
-      console.error("Error editing table:", error);
+      // Handle specific errors based on status codes and messages
+      if (error.response && error.response.status === 404) {
+        toast.error("الطاولة غير موجودة.");
+      } else if (
+        error.response &&
+        error.response.status === 400 &&
+        error.response.data.message
+      ) {
+        if (error.response.data.message.includes("already exists")) {
+          toast.error(
+            `رقم الطاولة ${tableNumber} موجود بالفعل في القسم ${sectionNumber}.`
+          );
+        } else {
+          toast.error(error.response.data.message);
+        }
+      } else {
+        // Handle unexpected errors
+        console.error("Error updating table:", error);
+        toast.error("حدث خطأ أثناء تعديل الطاولة. الرجاء المحاولة مرة أخرى.");
+      }
     }
   };
+
   // Function to create QR code for the table URL
   const createQR = async (e) => {
     e.preventDefault();
@@ -132,6 +186,7 @@ const Tables = () => {
       toast.error("رجاء تسجيل الدخول مره اخري");
       return;
     }
+
     try {
       const URL = `https://${window.location.hostname}/${tableCode}`;
       const response = await axios.post(
@@ -157,15 +212,13 @@ const Tables = () => {
       toast.error("رجاء تسجيل الدخول مره اخري");
       return;
     }
-  
+
     const generateTableCode = () => {
       return [...Array(20)]
-        .map(() =>
-          Math.random().toString(36).charAt(2)
-        )
-        .join(''); 
+        .map(() => Math.random().toString(36).charAt(2))
+        .join("");
     };
-  
+
     try {
       const tableCode = generateTableCode();
       const response = await axios.put(
@@ -173,12 +226,12 @@ const Tables = () => {
         { tableCode },
         config
       );
-      if(response) {
+      if (response) {
         toast.success("تم تغير كود الطاوله بنجاح!", {
           position: toast.POSITION.TOP_CENTER,
           autoClose: 3000,
         });
-        getAllTable()
+        getAllTable();
       }
     } catch (error) {
       console.error("حدث خطأ أثناء إنشاء كود الطاوله", error);
@@ -188,7 +241,7 @@ const Tables = () => {
       });
     }
   };
-  
+
   const createwebQR = async (e) => {
     e.preventDefault();
     if (!token) {
@@ -227,12 +280,17 @@ const Tables = () => {
       toast.error("رجاء تسجيل الدخول مره اخري");
       return;
     }
+    if (tablePermission && !tablePermission.read) {
+      toast.warn("ليس لك صلاحية لعرض بيانات الطاولات");
+      return;
+    }
+
     try {
       const response = await axios.get(apiUrl + "/api/table");
-      if(response.status === 200) {
+      if (response.status === 200) {
         const tables = response.data;
         setlistoftable(tables);
-        console.log({tables})
+        console.log({ tables });
       }
     } catch (error) {
       console.error("Error getting all tables:", error);
@@ -245,6 +303,10 @@ const Tables = () => {
     if (!token) {
       // Handle case where token is not available
       toast.error("رجاء تسجيل الدخول مره اخري");
+      return;
+    }
+    if (tablePermission && !tablePermission.delete) {
+      toast.warn("ليس لك صلاحية لحذف طاوله ");
       return;
     }
     try {
@@ -311,6 +373,10 @@ const Tables = () => {
     if (!token) {
       // Handle case where token is not available
       toast.error("رجاء تسجيل الدخول مره اخري");
+      return;
+    }
+    if (tablePermission && !tablePermission.delete) {
+      toast.warn("ليس لك صلاحية لحذف طاوله ");
       return;
     }
     try {
@@ -458,96 +524,101 @@ const Tables = () => {
               </tr>
             </thead>
             <tbody>
-              {listoftable && listoftable.map((table, i) => {
-                if ((i >= startpagination) & (i < endpagination)) {
-                  return (
-                    <tr key={i}>
-                      <td>
-                        <span className="custom-checkbox">
-                          <input
-                            type="checkbox"
-                            id={`checkbox${i}`}
-                            name="options[]"
-                            value={table._id}
-                            onChange={handleCheckboxChange}
-                          />
-                          <label htmlFor={`checkbox${i}`}></label>
-                        </span>
-                      </td>
-                      <td>{i + 1}</td>
-                      <td>{table.tableNumber}</td>
-                      <td>{table.chairs}</td>
-                      <td>{table.sectionNumber}</td>
-                      <td>{table.location}</td>
-                      <td>{table.status}</td>
-                      <td>{table.isValid ? "متاح" : "غير متاح"}</td>
-                      <td><button className="btn btn-success" onClick={(e)=>changeCode(e, table._id)}>
-                        تغير الكود
-                        </button>
-                        </td>
-                      <td>{table.tableCode}</td>
-                      <td>
-                        <a
-                          href="#qrTableModal"
-                          className="edit"
-                          data-toggle="modal"
-                          onClick={() => {
-                            settableid(table._id);
-                            settableNumber(table.tableNumber);
-                            settableCode(table.tableCode);
-                            setqrimage("");
-                          }}
-                        >
-                          <span
-                            className="material-symbols-outlined"
-                            data-toggle="tooltip"
-                            title="QR"
-                          >
-                            qr_code_2_add
+              {listoftable &&
+                listoftable.map((table, i) => {
+                  if ((i >= startpagination) & (i < endpagination)) {
+                    return (
+                      <tr key={i}>
+                        <td>
+                          <span className="custom-checkbox">
+                            <input
+                              type="checkbox"
+                              id={`checkbox${i}`}
+                              name="options[]"
+                              value={table._id}
+                              onChange={handleCheckboxChange}
+                            />
+                            <label htmlFor={`checkbox${i}`}></label>
                           </span>
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          href="#editTableModal"
-                          className="edit"
-                          data-toggle="modal"
-                          onClick={() => {
-                            settableid(table._id);
-                            settableNumber(table.tableNumber);
-                            setchairs(table.chairs);
-                            setlocation(table.location);
-                            setisValid(table.isValid);
-                          }}
-                        >
-                          <i
-                            className="material-icons"
-                            data-toggle="tooltip"
-                            title="Edit"
+                        </td>
+                        <td>{i + 1}</td>
+                        <td>{table.tableNumber}</td>
+                        <td>{table.chairs}</td>
+                        <td>{table.sectionNumber}</td>
+                        <td>{table.location}</td>
+                        <td>{table.status}</td>
+                        <td>{table.isValid ? "متاح" : "غير متاح"}</td>
+                        <td>
+                          <button
+                            className="btn btn-success"
+                            onClick={(e) => changeCode(e, table._id)}
                           >
-                            &#xE254;
-                          </i>
-                        </a>
+                            تغير الكود
+                          </button>
+                        </td>
+                        <td>{table.tableCode}</td>
+                        <td>
+                          <a
+                            href="#qrTableModal"
+                            className="edit"
+                            data-toggle="modal"
+                            onClick={() => {
+                              settableid(table._id);
+                              settableNumber(table.tableNumber);
+                              settableCode(table.tableCode);
+                              setqrimage("");
+                            }}
+                          >
+                            <span
+                              className="material-symbols-outlined"
+                              data-toggle="tooltip"
+                              title="QR"
+                            >
+                              qr_code_2_add
+                            </span>
+                          </a>
+                        </td>
+                        <td>
+                          <a
+                            href="#editTableModal"
+                            className="edit"
+                            data-toggle="modal"
+                            onClick={() => {
+                              settableid(table._id);
+                              settableNumber(table.tableNumber);
+                              setchairs(table.chairs);
+                              setlocation(table.location);
+                              setisValid(table.isValid);
+                            }}
+                          >
+                            <i
+                              className="material-icons"
+                              data-toggle="tooltip"
+                              title="Edit"
+                            >
+                              &#xE254;
+                            </i>
+                          </a>
 
-                        <a
-                          href="#deleteTableModal"
-                          className="delete"
-                          data-toggle="modal"
-                          onClick={() => settableid(table._id)}
-                        >
-                          <i
-                            className="material-icons"
-                            data-toggle="tooltip"
-                            title="Delete"
+                          <a
+                            href="#deleteTableModal"
+                            className="delete"
+                            data-toggle="modal"
+                            onClick={() => settableid(table._id)}
                           >
-                            &#xE872;
-                          </i>
-                        </a>
-                      </td>
-                    </tr>
-                  );
-                }
-              })}
+                            <i
+                              className="material-icons"
+                              data-toggle="tooltip"
+                              title="Delete"
+                            >
+                              &#xE872;
+                            </i>
+                          </a>
+                        </td>
+                      </tr>
+                    );
+                  }
+                })}
             </tbody>
           </table>
           <div className="clearfix">
@@ -675,35 +746,35 @@ const Tables = () => {
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
                     المكان
                   </label>
-                  <input type="text"
+                  <input
+                    type="text"
                     className="form-control border-primary m-0 p-2 h-auto"
                     required
                     onChange={(e) => setlocation(e.target.value)}
                   ></input>
                 </div>
                 <div className="form-group col-12 col-md-6">
-                    <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
-                      متاح
-                    </label>
-                    <select
-                      className="form-control border-primary m-0 p-2 h-auto"
-                      name="category"
-                      id="category"
-                      form="carform"
-                      onChange={(e) => setisValid(e.target.value)}
-                    >
-                      <option value="">اختر</option>
-                      <option value={true}>متاح</option>
-                      <option value={false}>غير متاح</option>
-                    </select>
-                  </div>
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    متاح
+                  </label>
+                  <select
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    name="category"
+                    id="category"
+                    form="carform"
+                    onChange={(e) => setisValid(e.target.value)}
+                  >
+                    <option value="">اختر</option>
+                    <option value={true}>متاح</option>
+                    <option value={false}>غير متاح</option>
+                  </select>
+                </div>
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
                     ملاحظات
                   </label>
                   <textarea
                     className="form-control border-primary m-0 p-2 h-auto"
-                    required
                     onChange={(e) => setnotes(e.target.value)}
                   ></textarea>
                 </div>

@@ -833,7 +833,7 @@ function App() {
         let newItem = {
           productid: cartItem._id,
           name: cartItem.name,
-          quantity: 0, // Default to adding one item
+          quantity: 0,
           notes: "",
           price: 0,
           priceAfterDiscount: 0,

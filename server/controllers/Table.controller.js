@@ -13,9 +13,21 @@ const createTable = async (req, res) => {
     location,
     notes,
   } = req.body;
+
   const createdBy = req.employee.id;
+
   try {
-    // Create a new table document in the database
+    const existingTable = await TableModel.findOne({
+      tableNumber,
+      sectionNumber,
+    }).exec();
+
+    if (existingTable) {
+      return res.status(400).json({
+        message: `Table number ${tableNumber} already exists in section ${sectionNumber}`,
+      });
+    }
+
     const tableCreated = await TableModel.create({
       tableNumber,
       tableCode,
@@ -40,6 +52,7 @@ const createTable = async (req, res) => {
     });
   }
 };
+
 
 // Generate a QR code for a table
 const createQR = async (req, res) => {
@@ -99,8 +112,8 @@ const showOneTable = async (req, res) => {
 
 // Update a table by ID
 const updateTable = async (req, res) => {
-  const id = req.params.tableid;
-  const updatedBy = req.employee.id;
+  const tableId = req.params.tableid; // The ID of the table to be updated
+  const updatedBy = req.employee.id; // The ID of the employee performing the update
 
   const {
     tableNumber,
@@ -114,8 +127,37 @@ const updateTable = async (req, res) => {
   } = req.body;
 
   try {
+    // Check if the table to be updated exists
+    const currentTable = await TableModel.findById(tableId).exec();
+
+    if (!currentTable) {
+      return res.status(404).json({ message: "Table not found." });
+    }
+
+    // If the new table number is different from the current one, check for duplicates
+    if (tableNumber !== currentTable.tableNumber) {
+      const existingTable = await TableModel.findOne({
+        tableNumber,
+        sectionNumber,
+      }).exec();
+
+      if (existingTable) {
+        return res.status(400).json({
+          message: `Table number ${tableNumber} already exists in section ${sectionNumber}.`,
+        });
+      }
+    }
+
+    // Validate required fields
+    if (!tableNumber || !chairs) {
+      return res.status(400).json({
+        message: "Table number and chairs are required fields.",
+      });
+    }
+
+    // Update the table data
     const updatedTable = await TableModel.findByIdAndUpdate(
-      id,
+      tableId,
       {
         $set: {
           tableNumber,
@@ -132,22 +174,21 @@ const updateTable = async (req, res) => {
       { new: true } // Return the updated document
     ).exec();
 
-    if (!updatedTable) {
-      return res.status(404).json({ message: "Table not found" });
-    }
-
     return res.status(200).json({
-      message: "Table updated successfully",
+      message: "Table updated successfully.",
       data: updatedTable,
     });
   } catch (err) {
     console.error("Error updating table:", err.message);
-    return res.status(400).json({
-      message: "Error updating table",
+
+    return res.status(500).json({
+      message: "An error occurred while updating the table.",
       error: err.message,
     });
   }
 };
+
+
 
 // Delete a table by ID
 const deleteTable = async (req, res) => {
