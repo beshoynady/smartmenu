@@ -50,7 +50,6 @@ const Kitchen = () => {
     }
   };
 
-  const [selectSection, setselectSection] = useState("");
   const [PreparationTicketActive, setPreparationTicketActive] = useState([]); // State for active Tickets
   const [
     consumptionPreparationTicketActive,
@@ -78,7 +77,7 @@ const Kitchen = () => {
     }
   };
 
-  const getAllPreparationTicket = async () => {
+  const getAllPreparationTicket = async (Section) => {
     try {
       if (!token) {
         // Handle case where token is not available
@@ -99,7 +98,7 @@ const Kitchen = () => {
       setAllPreparationTicket(PreparationTicket);
       const kitchenPreparationTicket = PreparationTicket.filter(
         (ticket) =>
-          ticket.preparationSection._id === selectSection &&
+          ticket.preparationSection._id === Section &&
           ticket.isActive === true
       );
       // Filter active Tickets based on certain conditions
@@ -593,7 +592,7 @@ const Kitchen = () => {
     getAllWaiters();
     getAllPreparationTicket();
     getKitchenConsumption();
-    getAllPreparationSections();
+    // getAllPreparationSections();
   }, []);
 
   useEffect(() => {
@@ -614,18 +613,17 @@ const Kitchen = () => {
         <div className="d-flex flex-column align-items-start bg-white shadow-sm rounded p-2 me-3">
           <label
             htmlFor="section-select"
-            className="mb-1 fw-bold"
-            style={{ fontSize: "1.1rem" }}
+            className="fw-bold text-dark" style={{ fontSize: "1.2rem" }}
           >
             اختر القسم:
           </label>
           <select
             id="section-select"
             className="form-select"
-            onChange={(e) => setselectSection(e.target.value)} // Updates the selected section state
+            onChange={(e) => getAllPreparationTicket(e.target.value)} // Updates the selected section state
           >
             <option value="" disabled selected>
-              Select a section
+              اختر القسم
             </option>
             {allPreparationSections &&
               allPreparationSections.map((section) => (
