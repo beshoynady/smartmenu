@@ -739,9 +739,9 @@ const Kitchen = () => {
                         <p className="card-text">
                           {" "}
                           {Ticket.table != null
-                            ? `طاولة: ${Ticket.table.tableNumber}`
+                            ? `طاولة: ${Ticket.table?.tableNumber}`
                             : Ticket.user
-                            ? `العميل: ${Ticket.user.username}`
+                            ? `العميل: ${Ticket.user?.username}`
                             : ""}
                         </p>
                         <p className="card-text">
