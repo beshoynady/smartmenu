@@ -590,15 +590,15 @@ const Kitchen = () => {
   useEffect(() => {
     getAllRecipe();
     getAllWaiters();
-    getAllPreparationTicket();
+    // getAllPreparationTicket();
     getKitchenConsumption();
-    // getAllPreparationSections();
+    getAllPreparationSections();
   }, []);
 
   useEffect(() => {
     getAllRecipe();
     getAllWaiters();
-    getAllPreparationTicket();
+    // getAllPreparationTicket();
     getKitchenConsumption();
   }, [isRefresh]);
 
