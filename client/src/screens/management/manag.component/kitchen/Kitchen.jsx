@@ -591,7 +591,7 @@ const Kitchen = () => {
     getAllWaiters();
     getAllPreparationTicket();
     getKitchenConsumption();
-    getAllPreparationSections
+    getAllPreparationSections();
   }, []);
 
   useEffect(() => {
