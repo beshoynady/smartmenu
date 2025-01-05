@@ -74,7 +74,7 @@ const Kitchen = () => {
       setAllPreparationTicket(PreparationTicket);
       const kitchenPreparationTicket = PreparationTicket.filter(
         (ticket) =>
-          ticket.preparationSection === "Kitchen" && ticket.isActive === true
+          ticket.preparationSection === "6777a24a425890aaa2e11f31" && ticket.isActive === true
       );
       // Filter active Tickets based on certain conditions
       // const activePreparationTicket = kitchenPreparationTicket.filter(
