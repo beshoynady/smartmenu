@@ -50,12 +50,13 @@ const Kitchen = () => {
     }
   };
 
+  const [selectSection, setselectSection] = useState("");
   const [PreparationTicketActive, setPreparationTicketActive] = useState([]); // State for active Tickets
   const [
     consumptionPreparationTicketActive,
     setConsumptionPreparationTicketActive,
   ] = useState([]); // State for active Tickets
-  
+
   const [AllPreparationTicket, setAllPreparationTicket] = useState([]); // State for all Tickets
 
   const [allRecipe, setallRecipe] = useState([]); // State for all Tickets
@@ -90,7 +91,7 @@ const Kitchen = () => {
         `${apiUrl}/api/preparationticket`,
         config
       );
-      
+
       const PreparationTicket = Response.data.data;
       console.log({ Response, PreparationTicket });
       // console.log({ kitchenTickets })
@@ -98,7 +99,8 @@ const Kitchen = () => {
       setAllPreparationTicket(PreparationTicket);
       const kitchenPreparationTicket = PreparationTicket.filter(
         (ticket) =>
-          ticket.preparationSection._id === "6777a23c425890aaa2e11f10" && ticket.isActive === true
+          ticket.preparationSection._id === selectSection &&
+          ticket.isActive === true
       );
       // Filter active Tickets based on certain conditions
       // const activePreparationTicket = kitchenPreparationTicket.filter(
@@ -448,7 +450,7 @@ const Kitchen = () => {
           },
           config
         );
-        console.log({updateTicket})
+        console.log({ updateTicket });
         waiterSocket.emit("orderready", `أورد جاهز في المطبخ-${waiter}`);
       } else {
         await axios.put(
@@ -602,42 +604,74 @@ const Kitchen = () => {
   }, [isRefresh]);
 
   return (
-<div
-  className="w-100 h-100 d-flex flex-wrap align-content-start justify-content-around align-items-start overflow-auto bg-transparent p-1"
-  style={{ backgroundColor: "rgba(0, 0, 255, 0.1)" }}
->
-  {/* اختيار القسم */}
-  <div className="w-100 p-2 d-flex flex-column align-items-start bg-white shadow-sm rounded mb-3">
-    <label htmlFor="section-select" className="mb-1">
-      اختيار القسم:
-    </label>
-    <select id="section-select" className="form-select">
-    {allPreparationSections.map((section) => {
-      <option value="section._id">{section.name}</option>
-      })}
-    </select>
-  </div>
+    <div
+      className="w-100 h-100 d-flex flex-column align-items-start overflow-auto bg-transparent p-1"
+      style={{ backgroundColor: "rgba(0, 0, 255, 0.1)" }}
+    >
+      {/* Row containing section selection and ticket data boxes */}
+      <div className="w-100 d-flex align-items-start justify-content-between bg-transparent mb-3">
+        {/* Section selection dropdown */}
+        <div className="d-flex flex-column align-items-start bg-white shadow-sm rounded p-2 me-3">
+          <label
+            htmlFor="section-select"
+            className="mb-1 fw-bold"
+            style={{ fontSize: "1.1rem" }}
+          >
+            اختر القسم:
+          </label>
+          <select
+            id="section-select"
+            className="form-select"
+            onChange={(e) => setselectSection(e.target.value)} // Updates the selected section state
+          >
+            <option value="" disabled selected>
+              Select a section
+            </option>
+            {allPreparationSections &&
+              allPreparationSections.map((section) => (
+                <option key={section._id} value={section._id}>
+                  {section.name}
+                </option>
+              ))}
+          </select>
+        </div>
 
-  {/* عرض بيانات التذاكر */}
-  <div className="w-100 p-2 d-flex flex-wrap justify-content-between bg-white shadow-sm rounded">
-    {/* عدد التذاكر في الانتظار */}
-    <div className="ticket-box text-center p-3 bg-light rounded shadow-sm m-1">
-      <h5>تذاكر الانتظار</h5>
-      <p className="display-6 text-primary">5</p>
-    </div>
+        {/* Ticket data boxes */}
+        <div className="d-flex flex-wrap justify-content-start">
+          {/* Waiting tickets box */}
+          <div
+            className="ticket-box text-center p-3 bg-light rounded shadow-sm m-1"
+            style={{ width: "200px" }}
+          >
+            <h5 className="fw-bold text-dark" style={{ fontSize: "1.2rem" }}>
+              انتظار الموافقة
+            </h5>
+            <p className="display-6 text-primary">5</p>
+          </div>
 
-    {/* عدد التذاكر الجارية */}
-    <div className="ticket-box text-center p-3 bg-light rounded shadow-sm m-1">
-      <h5>تذاكر جاري التنفيذ</h5>
-      <p className="display-6 text-warning">3</p>
-    </div>
+          {/* In-progress tickets box */}
+          <div
+            className="ticket-box text-center p-3 bg-light rounded shadow-sm m-1"
+            style={{ width: "200px" }}
+          >
+            <h5 className="fw-bold text-dark" style={{ fontSize: "1.2rem" }}>
+              جاري التنفيذ
+            </h5>
+            <p className="display-6 text-warning">3</p>
+          </div>
 
-    {/* عدد التذاكر المنفذة */}
-    <div className="ticket-box text-center p-3 bg-light rounded shadow-sm m-1">
-      <h5>تذاكر منفذة</h5>
-      <p className="display-6 text-success">10</p>
-    </div>
-  </div>
+          {/* Completed tickets box */}
+          <div
+            className="ticket-box text-center p-3 bg-light rounded shadow-sm m-1"
+            style={{ width: "200px" }}
+          >
+            <h5 className="fw-bold text-dark" style={{ fontSize: "1.2rem" }}>
+              تم التنفيذ
+            </h5>
+            <p className="display-6 text-success">10</p>
+          </div>
+        </div>
+      </div>
 
       <div
         className="col-12 h-auto mb-1 pb-1 d-flex flex-wrap justify-content-around align-items-start"
