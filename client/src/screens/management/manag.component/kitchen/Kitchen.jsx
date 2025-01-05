@@ -92,7 +92,7 @@ const Kitchen = () => {
       );
 
       const PreparationTicket = Response.data.data;
-      console.log({ Response, PreparationTicket });
+      console.log({ Response, Section, PreparationTicket });
       // console.log({ kitchenTickets })
       // Set all Tickets state
       setAllPreparationTicket(PreparationTicket);
@@ -776,11 +776,11 @@ const Kitchen = () => {
                     </div>
                     <ul className="list-group list-group-flush">
                       {Ticket.products
-                        .filter(
-                          (product) =>
-                            product.isDone === false &&
-                            product.productid?.preparationSection === "Kitchen"
-                        )
+                        // .filter(
+                        //   (product) =>
+                        //     product.isDone === false &&
+                        //     product.productid?.preparationSection === "Kitchen"
+                        // )
                         .map((product, i) => {
                           return (
                             <>
