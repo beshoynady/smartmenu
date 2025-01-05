@@ -27,11 +27,35 @@ const Kitchen = () => {
   const start = useRef();
   const ready = useRef();
 
+  const [allPreparationSections, setallPreparationSections] = useState([]);
+
+  const getAllPreparationSections = async () => {
+    if (!token) {
+      toast.error("رجاء تسجيل الدخول مره اخرى");
+      return;
+    }
+
+    try {
+      const res = await axios.get(`${apiUrl}/api/preparationsection`, config);
+      if (res.status === 200) {
+        const PreparationSections = res.data.data;
+        console.log({ PreparationSections });
+        setallPreparationSections(PreparationSections);
+      } else {
+        throw new Error("Failed to fetch data");
+      }
+    } catch (error) {
+      console.error("حدث خطأ أثناء استلام البيانات:", error);
+      toast.error("حدث خطأ أثناء جلب البيانات، يرجى المحاولة مرة أخرى لاحقًا.");
+    }
+  };
+
   const [PreparationTicketActive, setPreparationTicketActive] = useState([]); // State for active Tickets
   const [
     consumptionPreparationTicketActive,
     setConsumptionPreparationTicketActive,
   ] = useState([]); // State for active Tickets
+  
   const [AllPreparationTicket, setAllPreparationTicket] = useState([]); // State for all Tickets
 
   const [allRecipe, setallRecipe] = useState([]); // State for all Tickets
@@ -567,6 +591,7 @@ const Kitchen = () => {
     getAllWaiters();
     getAllPreparationTicket();
     getKitchenConsumption();
+    getAllPreparationSections
   }, []);
 
   useEffect(() => {
@@ -577,10 +602,43 @@ const Kitchen = () => {
   }, [isRefresh]);
 
   return (
-    <div
-      className="w-100 h-100 d-flex flex-wrap align-content-start justify-content-around align-items-start  overflowY-auto bg-transparent p-1"
-      style={{ backgroundColor: "rgba(0, 0, 255, 0.1)" }}
-    >
+<div
+  className="w-100 h-100 d-flex flex-wrap align-content-start justify-content-around align-items-start overflow-auto bg-transparent p-1"
+  style={{ backgroundColor: "rgba(0, 0, 255, 0.1)" }}
+>
+  {/* اختيار القسم */}
+  <div className="w-100 p-2 d-flex flex-column align-items-start bg-white shadow-sm rounded mb-3">
+    <label htmlFor="section-select" className="mb-1">
+      اختيار القسم:
+    </label>
+    <select id="section-select" className="form-select">
+    {allPreparationSections.map((section) => {
+      <option value="section._id">{section.name}</option>
+      })}
+    </select>
+  </div>
+
+  {/* عرض بيانات التذاكر */}
+  <div className="w-100 p-2 d-flex flex-wrap justify-content-between bg-white shadow-sm rounded">
+    {/* عدد التذاكر في الانتظار */}
+    <div className="ticket-box text-center p-3 bg-light rounded shadow-sm m-1">
+      <h5>تذاكر الانتظار</h5>
+      <p className="display-6 text-primary">5</p>
+    </div>
+
+    {/* عدد التذاكر الجارية */}
+    <div className="ticket-box text-center p-3 bg-light rounded shadow-sm m-1">
+      <h5>تذاكر جاري التنفيذ</h5>
+      <p className="display-6 text-warning">3</p>
+    </div>
+
+    {/* عدد التذاكر المنفذة */}
+    <div className="ticket-box text-center p-3 bg-light rounded shadow-sm m-1">
+      <h5>تذاكر منفذة</h5>
+      <p className="display-6 text-success">10</p>
+    </div>
+  </div>
+
       <div
         className="col-12 h-auto mb-1 pb-1 d-flex flex-wrap justify-content-around align-items-start"
         style={{ bTicketBottom: "1px solid red" }}
