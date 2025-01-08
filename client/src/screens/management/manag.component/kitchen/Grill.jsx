@@ -27,11 +27,38 @@ const Grill = () => {
   const start = useRef();
   const ready = useRef();
 
-  const [orderactive, setOrderActive] = useState([]); // State for active orders
-  const [consumptionOrderActive, setConsumptionOrderActive] = useState([]); // State for active orders
-  const [allOrders, setAllOrders] = useState([]); // State for all orders
+  const [allPreparationSections, setallPreparationSections] = useState([]);
 
-  const [allRecipe, setallRecipe] = useState([]); // State for all orders
+  const getAllPreparationSections = async () => {
+    if (!token) {
+      toast.error("رجاء تسجيل الدخول مره اخرى");
+      return;
+    }
+
+    try {
+      const res = await axios.get(`${apiUrl}/api/preparationsection`, config);
+      if (res.status === 200) {
+        const PreparationSections = res.data.data;
+        console.log({ PreparationSections });
+        setallPreparationSections(PreparationSections);
+      } else {
+        throw new Error("Failed to fetch data");
+      }
+    } catch (error) {
+      console.error("حدث خطأ أثناء استلام البيانات:", error);
+      toast.error("حدث خطأ أثناء جلب البيانات، يرجى المحاولة مرة أخرى لاحقًا.");
+    }
+  };
+
+  const [PreparationTicketActive, setPreparationTicketActive] = useState([]); // State for active Tickets
+  const [
+    consumptionPreparationTicketActive,
+    setConsumptionPreparationTicketActive,
+  ] = useState([]); // State for active Tickets
+
+  const [AllPreparationTicket, setAllPreparationTicket] = useState([]); // State for all Tickets
+
+  const [allRecipe, setallRecipe] = useState([]); // State for all Tickets
 
   const getAllRecipe = async () => {
     try {
@@ -50,7 +77,7 @@ const Grill = () => {
     }
   };
 
-  const getAllOrders = async () => {
+  const getAllPreparationTicket = async (Section) => {
     try {
       if (!token) {
         // Handle case where token is not available
@@ -58,38 +85,39 @@ const Grill = () => {
         return;
       }
 
-      // Fetch orders from the API
-      const ordersResponse = await axios.get(`${apiUrl}/api/order/limit/50`);
-      const GrillOrders = ordersResponse.data;
-      // console.log({ GrillOrders })
-      // Set all orders state
-      setAllOrders(GrillOrders);
-
-      // Filter active orders based on certain conditions
-      const activeOrders = GrillOrders.filter(
-        (order) =>
-          order.isActive &&
-          order.status === "Approved" &&
-          (order.preparationStatus.Grill === "Pending" ||
-            order.preparationStatus.Grill === "Preparing" ||
-            order.preparationStatus.Grill === "Prepared")
+      // Fetch Tickets from the API
+      const Response = await axios.get(
+        `${apiUrl}/api/preparationticket`,
+        config
       );
 
-      // Set active orders state
-      setOrderActive(activeOrders);
+      const PreparationTicket = Response.data.data;
+      console.log({ Response, Section, PreparationTicket });
+      // console.log({ kitchenTickets })
+      // Set all Tickets state
+      setAllPreparationTicket(PreparationTicket);
+      const kitchenPreparationTicket = PreparationTicket.filter(
+        (ticket) =>
+          ticket.preparationSection._id === Section &&
+          ticket.isActive === true
+      );
+
+      console.log({ kitchenPreparationTicket });
+      // Set active Tickets state
+      setPreparationTicketActive(kitchenPreparationTicket);
+
+
       const getAllRecipe = await axios.get(`${apiUrl}/api/recipe`, config);
       const allRecipeData = await getAllRecipe.data;
-
       const allRecipe = allRecipeData;
+      const updatedConsumptionPreparationTicketActive = [];
 
-      const updatedConsumptionOrderActive = [];
-
-      // console.log({ allRecipe, activeOrders })
-      activeOrders &&
-        activeOrders.forEach((order) => {
-          order.products.forEach((product) => {
+      // console.log({ allRecipe, activeTickets })
+      kitchenPreparationTicket &&
+        kitchenPreparationTicket.forEach((ticket) => {
+          ticket.products.forEach((product) => {
             if (!product.isDone) {
-              // console.log({ order, product })
+              // console.log({ Ticket, product })
               const productIngredients = product.sizeId
                 ? allRecipe.find(
                     (recipe) =>
@@ -102,22 +130,23 @@ const Grill = () => {
 
               // console.log({ productIngredients })
 
-              // Update consumptionOrderActive
+              // Update consumptionPreparationTicketActive
               productIngredients &&
                 productIngredients.forEach((item) => {
                   const existingItemIndex =
-                    updatedConsumptionOrderActive.findIndex(
+                    updatedConsumptionPreparationTicketActive.findIndex(
                       (con) => con.itemId?._id === item.itemId?._id
                     );
                   const amount = item.amount * product.quantity;
 
                   if (existingItemIndex !== -1) {
                     // If the item already exists, update the amount
-                    updatedConsumptionOrderActive[existingItemIndex].amount +=
-                      amount;
+                    updatedConsumptionPreparationTicketActive[
+                      existingItemIndex
+                    ].amount += amount;
                   } else {
                     // If the item does not exist, add it to the array
-                    updatedConsumptionOrderActive.push({
+                    updatedConsumptionPreparationTicketActive.push({
                       itemId: item.itemId,
                       name: item.name,
                       unit: item.unit,
@@ -136,23 +165,23 @@ const Grill = () => {
 
                     // console.log({ extraIngredients })
 
-                    // Update consumptionOrderActive
+                    // Update consumptionPreparationTicketActive
                     extraIngredients &&
                       extraIngredients.forEach((item) => {
                         const existingItemIndex =
-                          updatedConsumptionOrderActive.findIndex(
+                          updatedConsumptionPreparationTicketActive.findIndex(
                             (con) => con.itemId?._id === item.itemId?._id
                           );
                         const amount = item.amount;
 
                         if (existingItemIndex !== -1) {
                           // If the item already exists, update the amount
-                          updatedConsumptionOrderActive[
+                          updatedConsumptionPreparationTicketActive[
                             existingItemIndex
                           ].amount += amount;
                         } else {
                           // If the item does not exist, add it to the array
-                          updatedConsumptionOrderActive.push({
+                          updatedConsumptionPreparationTicketActive.push({
                             itemId: item.itemId,
                             name: item.name,
                             unit: item.unit,
@@ -165,23 +194,24 @@ const Grill = () => {
             }
           });
         });
-      console.log({ updatedConsumptionOrderActive });
+      console.log({ updatedConsumptionPreparationTicketActive });
 
-      // Set updated consumptionOrderActive state
-      setConsumptionOrderActive(updatedConsumptionOrderActive);
+      // Set updated consumptionPreparationTicketActive state
+      setConsumptionPreparationTicketActive(
+        updatedConsumptionPreparationTicketActive
+      );
     } catch (error) {
       // Handle errors
-      console.error("Error fetching orders:", error);
+      console.error("Error fetching Tickets:", error);
     }
   };
-
   const today = formatDate(new Date());
   const [date, setDate] = useState(today);
-  const [allGrillConsumption, setAllGrillConsumption] = useState([]);
-  const [filteredGrillConsumptionToday, setFilteredGrillConsumptionToday] =
+  const [allKitchenConsumption, setAllKitchenConsumption] = useState([]);
+  const [filteredKitchenConsumptionToday, setFilteredKitchenConsumptionToday] =
     useState([]);
 
-  const getGrillConsumption = async () => {
+  const getKitchenConsumption = async () => {
     try {
       if (!token) {
         // Handle case where token is not available
@@ -189,49 +219,52 @@ const Grill = () => {
         return;
       }
 
-      setFilteredGrillConsumptionToday([]);
-      console.log("Fetching Grill consumption...");
+      setFilteredKitchenConsumptionToday([]);
+      // console.log("Fetching kitchen consumption...");
 
       const response = await axios.get(`${apiUrl}/api/consumption`, config);
 
       if (response && response.data) {
-        const GrillConsumptions = response.data.data || [];
-        setAllGrillConsumption(GrillConsumptions);
+        const kitchenConsumptions = response.data.data || [];
+        setAllKitchenConsumption(kitchenConsumptions);
 
-        const GrillConsumptionsToday = GrillConsumptions.filter((kitItem) => {
-          const itemDate = formatDate(kitItem.createdAt);
-          return itemDate === date;
-        });
+        const kitchenConsumptionsToday = kitchenConsumptions.filter(
+          (kitItem) => {
+            const itemDate = formatDate(kitItem.createdAt);
+            return itemDate === date;
+          }
+        );
 
-        console.log({ GrillConsumptionsToday, GrillConsumptions });
-        setFilteredGrillConsumptionToday(GrillConsumptionsToday);
+        // console.log({ kitchenConsumptionsToday, kitchenConsumptions });
+        setFilteredKitchenConsumptionToday(kitchenConsumptionsToday);
       } else {
         console.error("Unexpected response or empty data");
       }
     } catch (error) {
-      console.error("Error fetching Grill consumption:", error);
-      toast.error("حدث خطأ أثناء جلب استهلاك الشوايه");
+      console.error("Error fetching kitchen consumption:", error);
+      toast.error("حدث خطأ أثناء جلب استهلاك المطبخ");
     }
   };
 
-  // Updates an order status to 'Preparing'
+  // Updates an Ticket status to 'Preparing'
 
-  const orderInProgress = async (id) => {
+  const TicketInProgress = async (id) => {
     try {
       if (!token) {
         // Handle case where token is not available
         toast.error("رجاء تسجيل الدخول مره اخري");
         return;
       }
-      const preparationStatus = { "preparationStatus.Grill": "Preparing" };
+      const preparationStatus = "Preparing";
       const response = await axios.put(
-        `${apiUrl}/api/order/${id}`,
-        preparationStatus,
+        `${apiUrl}/api/preparationticket/${id}`,
+        { preparationStatus },
         config
       );
+      console.log({ id, preparationStatus, response });
       if (response.status === 200) {
-        // Fetch orders from the API
-        await getAllOrders();
+        // Fetch Tickets from the API
+        getAllPreparationTicket();
         toast.success("الاوردر يجهز!");
       } else {
         toast.error("حدث خطأ اثناء قبول الاوردر ! حاول مره اهري");
@@ -242,43 +275,43 @@ const Grill = () => {
     }
   };
 
-  const updateOrderDone = async (id, type) => {
+  const updateTicketDone = async (id, type) => {
     if (!token) {
       toast.error("رجاء تسجيل الدخول مره أخرى");
       return;
     }
 
     try {
-      // 1. Fetch order and product data
-      const { data: orderData } = await axios.get(
-        `${apiUrl}/api/order/${id}`,
+      // 1. Fetch Ticket and product data
+      const preparationticketData = await axios.get(
+        `${apiUrl}/api/preparationticket/${id}`,
         config
       );
-      const { products: orderProducts } = orderData;
-      const GrillProducts = orderProducts.filter(
-        (product) => product.productid?.preparationSection === "Grill"
-      );
+      const { products: kitchenProducts } = preparationticketData.data.data;
+      const orderId = await preparationticketData.data.data?.order._id;
+      const orderProducts = preparationticketData.data.data.order?.products;
+      // console.log({preparationticketData:preparationticketData.data.data, orderId, orderProducts,  kitchenProducts});
 
-      if (!GrillProducts.length) {
-        toast.warn("لا توجد منتجات بحاجة إلى تجهيز في الشوايه");
+      if (!kitchenProducts.length) {
+        toast.warn("لا توجد منتجات بحاجة إلى تجهيز في المطبخ");
         return;
       }
 
-      // 2. Fetch today's Grill consumption data
+      // 2. Fetch today's kitchen consumption data
       const { data: consumptionData } = await axios.get(
         `${apiUrl}/api/consumption`,
         config
       );
-      const allGrillConsumption = consumptionData.data;
-      const GrillConsumptionsToday = allGrillConsumption.filter((item) => {
+      const allKitchenConsumption = consumptionData.data;
+      const kitchenConsumptionsToday = allKitchenConsumption.filter((item) => {
         const itemDate = formatDate(item.createdAt);
         return itemDate === date;
       });
 
-      // 3. Prepare total consumption order
-      const totalConsumptionOrder = [];
+      // 3. Prepare total consumption Ticket
+      const totalConsumptionTicket = [];
 
-      for (const product of GrillProducts) {
+      for (const product of kitchenProducts) {
         if (product.isDone) continue;
 
         // Fetch product ingredients from recipes
@@ -294,24 +327,24 @@ const Grill = () => {
 
         // Process ingredients
         for (const ingredient of productIngredients || []) {
-          const existingItemIndex = totalConsumptionOrder.findIndex(
+          const existingItemIndex = totalConsumptionTicket.findIndex(
             (item) => item.itemId?._id === ingredient.itemId?._id
           );
 
           const amount = ingredient.amount * product.quantity;
 
           if (existingItemIndex !== -1) {
-            totalConsumptionOrder[existingItemIndex].amount += amount;
+            totalConsumptionTicket[existingItemIndex].amount += amount;
           } else {
-            const GrillConsumption = GrillConsumptionsToday.find(
+            const kitchenConsumption = kitchenConsumptionsToday.find(
               (kitItem) => kitItem.stockItemId._id === ingredient.itemId?._id
             );
 
-            totalConsumptionOrder.push({
+            totalConsumptionTicket.push({
               itemId: ingredient.itemId,
               amount,
-              productsProduced: GrillConsumption
-                ? [...GrillConsumption.productsProduced]
+              productsProduced: kitchenConsumption
+                ? [...kitchenConsumption.productsProduced]
                 : [],
             });
           }
@@ -326,15 +359,15 @@ const Grill = () => {
               )?.ingredients || [];
 
             for (const ingredient of extraIngredients) {
-              const existingItemIndex = totalConsumptionOrder.findIndex(
+              const existingItemIndex = totalConsumptionTicket.findIndex(
                 (item) => item.itemId?._id === ingredient.itemId?._id
               );
               const amount = ingredient.amount;
 
               if (existingItemIndex !== -1) {
-                totalConsumptionOrder[existingItemIndex].amount += amount;
+                totalConsumptionTicket[existingItemIndex].amount += amount;
               } else {
-                totalConsumptionOrder.push({
+                totalConsumptionTicket.push({
                   itemId: ingredient.itemId,
                   amount,
                 });
@@ -344,19 +377,19 @@ const Grill = () => {
         }
       }
 
-      // 4. Update consumption data in the Grill
-      for (const item of totalConsumptionOrder) {
-        const GrillConsumption = GrillConsumptionsToday.find(
+      // 4. Update consumption data in the kitchen
+      for (const item of totalConsumptionTicket) {
+        const kitchenConsumption = kitchenConsumptionsToday.find(
           (kitItem) => kitItem.stockItemId._id === item.itemId?._id
         );
 
-        if (GrillConsumption) {
+        if (kitchenConsumption) {
           const consumptionQuantity =
-            GrillConsumption.consumptionQuantity + item.amount;
-          const bookBalance = GrillConsumption.bookBalance - item.amount;
+            kitchenConsumption.consumptionQuantity + item.amount;
+          const bookBalance = kitchenConsumption.bookBalance - item.amount;
 
           await axios.put(
-            `${apiUrl}/api/consumption/${GrillConsumption._id}`,
+            `${apiUrl}/api/consumption/${kitchenConsumption._id}`,
             {
               consumptionQuantity,
               bookBalance,
@@ -367,61 +400,73 @@ const Grill = () => {
         }
       }
 
-      // 5. Update order status
-      const updatedProducts = orderProducts.map((product) => {
-        if (
-          GrillProducts.some(
-            (GrillProduct) =>
-              GrillProduct.productid?._id === product.productid._id
-          )
-        ) {
-          return { ...product, isDone: true };
-        } else {
-          return product;
-        }
+      const updateTicketProducts = kitchenProducts.map((product) => {
+        return { ...product, isDone: true };
       });
-      console.log({updatedProducts})
 
-      // const preparationStatus = { "preparationStatus.Grill": "Prepared" };
+      // 5. Update Ticket Products
+      const updatedOrderProducts = orderProducts.map((product) =>
+        kitchenProducts.some(
+          (kitchenProduct) =>
+            kitchenProduct.productid?._id === product.productid?._id
+        )
+          ? { ...product, isDone: true }
+          : product
+      );
+
+      // console.log({updatedOrderProducts, updateTicketProducts, updateTicket})
 
       if (type === "Internal") {
         const waiter = await specifiedWaiter(id);
+        console.log({ waiter });
         if (!waiter) {
           toast.warn("لا يوجد نادل متاح لتسليم الطلب. يرجى مراجعة الإدارة!");
           return;
         }
         const response = await axios.put(
-          `${apiUrl}/api/order/${id}`,
+          `${apiUrl}/api/order/${orderId}`,
           {
-            "preparationStatus.Grill": "Prepared",
-            products: updatedProducts,
+            products: updatedOrderProducts,
             waiter,
           },
           config
         );
-        if (response) {
-          GrillSocket.emit("orderready", `أورد جاهز في الشوايه - ${waiter}`);
-        }
-      } else {
-        await axios.put(
-          `${apiUrl}/api/order/${id}`,
-          { products: updatedProducts, "preparationStatus.Grill": "Prepared" },
+        const updateTicket = axios.put(
+          `${apiUrl}/api/preparationticket/${id}`,
+          {
+            products: updateTicketProducts,
+            preparationStatus: "Prepared",
+            waiter,
+          },
           config
         );
-        GrillSocket.emit("orderready", "أورد جاهز في الشوايه");
+        console.log({ updateTicket });
+        waiterSocket.emit("orderready", `أورد جاهز في المطبخ-${waiter}`);
+      } else {
+        await axios.put(
+          `${apiUrl}/api/order/${orderId}`,
+          {
+            products: updatedOrderProducts,
+          },
+          config
+        );
+        const updateTicket = axios.put(
+          `${apiUrl}/api/preparationticket/${id}`,
+          { products: updateTicketProducts, preparationStatus: "Prepared" },
+          config
+        );
+        waiterSocket.emit("orderready", "أورد جاهز في المطبخ");
       }
 
       // 6. Refresh state
-      getAllOrders();
-      getGrillConsumption();
+      // getAllPreparationTicket();
+      getKitchenConsumption();
       toast.success("تم تجهيز الطلب بنجاح!");
     } catch (error) {
-      console.error("Error in updating order:", error);
+      console.error("Error in updating Ticket:", error);
       toast.error("حدث خطأ أثناء تعديل حالة الطلب. يرجى إعادة المحاولة.");
     }
   };
-
-  // Fetches all active waiters from the API
 
   const [AllWaiters, setAllWaiters] = useState([]); // State for active waiters
 
@@ -449,7 +494,7 @@ const Grill = () => {
     }
   };
 
-  // Determines the next available waiter to take an order
+  // Determines the next available waiter to take an Ticket
   const specifiedWaiter = async (id) => {
     try {
       if (!token) {
@@ -465,14 +510,19 @@ const Grill = () => {
         return;
       }
       // البحث عن الطلب بالمعرف المحدد
-      const getorder = allOrders.find((order) => order._id === id);
-      if (!getorder) {
-        throw new Error("Order not found");
+      const getTicket = AllPreparationTicket.find(
+        (Ticket) => Ticket._id === id
+      );
+      if (!getTicket) {
+        throw new Error("Ticket not found");
       }
+      // console.log({AllPreparationTicket, getTicket})
 
+      if (getTicket.status) {
+      }
       // استخراج رقم القسم من بيانات الطاولة المرتبطة بالطلب
       const tablesectionNumber =
-        getorder.table && getorder.table?.sectionNumber;
+        getTicket.order?.table && getTicket.order?.table?.sectionNumber;
       if (!tablesectionNumber) {
         throw new Error("Table section number not found");
       }
@@ -485,21 +535,19 @@ const Grill = () => {
         throw new Error("No waiters found in the specified section");
       }
 
-      const OrderSection = allOrders
-        .filter(
-          (order) =>
-            order.waiter && order.waiter.sectionNumber === tablesectionNumber
-        )
-        .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+      const TicketSection = AllPreparationTicket.filter(
+        (Ticket) =>
+          Ticket.waiter && Ticket.waiter?.sectionNumber === tablesectionNumber
+      ).sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
 
       let waiterId = "";
 
-      if (OrderSection.length > 0) {
-        const lastWaiterId = OrderSection[0]?.waiter?._id;
+      if (TicketSection.length > 0) {
+        const lastWaiterId = TicketSection[0]?.waiter?._id;
         const lastWaiterIndex = sectionWaiters.findIndex(
           (waiter) => waiter._id === lastWaiterId
         );
-        console.log({ lastWaiterId, lastWaiterIndex });
+        // console.log({ lastWaiterId, lastWaiterIndex });
 
         waiterId =
           lastWaiterIndex !== -1 && lastWaiterIndex < sectionWaiters.length - 1
@@ -510,7 +558,7 @@ const Grill = () => {
         waiterId = sectionWaiters[0]._id;
       }
 
-      console.log({ waiterId });
+      // console.log({ waiterId });
 
       return waiterId;
     } catch (error) {
@@ -519,7 +567,7 @@ const Grill = () => {
     }
   };
 
-  // Calculates the waiting time for an order
+  // Calculates the waiting time for an Ticket
   const waitingTime = (t) => {
     const t1 = new Date(t).getTime();
     const t2 = new Date().getTime();
@@ -529,33 +577,98 @@ const Grill = () => {
     return minutesPassed;
   };
 
-  // Fetches orders and active waiters on initial render
+  // Fetches Tickets and active waiters on initial render
   useEffect(() => {
     getAllRecipe();
     getAllWaiters();
-    getAllOrders();
-    getGrillConsumption();
+    // getAllPreparationTicket();
+    getKitchenConsumption();
+    getAllPreparationSections();
   }, []);
 
   useEffect(() => {
     getAllRecipe();
     getAllWaiters();
-    getAllOrders();
-    getGrillConsumption();
+    // getAllPreparationTicket();
+    getKitchenConsumption();
   }, [isRefresh]);
 
   return (
     <div
-      className="w-100 h-100 d-flex flex-wrap align-content-start justify-content-around align-items-start  overflowY-auto bg-transparent p-1"
+      className="w-100 h-100 d-flex flex-column align-items-start overflow-auto bg-transparent p-1"
       style={{ backgroundColor: "rgba(0, 0, 255, 0.1)" }}
     >
+      {/* Row containing section selection and ticket data boxes */}
+      <div className="w-100 d-flex align-items-start justify-content-between bg-transparent mb-3">
+        {/* Section selection dropdown */}
+        <div className="d-flex flex-column align-items-start bg-white shadow-sm rounded p-2 me-3">
+          <label
+            htmlFor="section-select"
+            className="fw-bold text-dark" style={{ fontSize: "1.2rem" }}
+          >
+            اختر القسم:
+          </label>
+          <select
+            id="section-select"
+            className="form-select"
+            onChange={(e) => getAllPreparationTicket(e.target.value)} 
+          >
+            <option value="" disabled selected>
+              اختر القسم
+            </option>
+            {allPreparationSections &&
+              allPreparationSections.map((section) => (
+                <option key={section._id} value={section._id}>
+                  {section.name}
+                </option>
+              ))}
+          </select>
+        </div>
+
+        {/* Ticket data boxes */}
+        <div className="d-flex flex-wrap justify-content-start">
+          {/* Waiting tickets box */}
+          <div
+            className="ticket-box text-center p-3 bg-light rounded shadow-sm m-1"
+            style={{ width: "200px" }}
+          >
+            <h5 className="fw-bold text-dark" style={{ fontSize: "1.2rem" }}>
+              انتظار الموافقة
+            </h5>
+            <p className="display-6 text-primary">5</p>
+          </div>
+
+          {/* In-progress tickets box */}
+          <div
+            className="ticket-box text-center p-3 bg-light rounded shadow-sm m-1"
+            style={{ width: "200px" }}
+          >
+            <h5 className="fw-bold text-dark" style={{ fontSize: "1.2rem" }}>
+              جاري التنفيذ
+            </h5>
+            <p className="display-6 text-warning">3</p>
+          </div>
+
+          {/* Completed tickets box */}
+          <div
+            className="ticket-box text-center p-3 bg-light rounded shadow-sm m-1"
+            style={{ width: "200px" }}
+          >
+            <h5 className="fw-bold text-dark" style={{ fontSize: "1.2rem" }}>
+              تم التنفيذ
+            </h5>
+            <p className="display-6 text-success">10</p>
+          </div>
+        </div>
+      </div>
+
       <div
         className="col-12 h-auto mb-1 pb-1 d-flex flex-wrap justify-content-around align-items-start"
-        style={{ borderBottom: "1px solid red" }}
+        style={{ bTicketBottom: "1px solid red" }}
       >
-        {orderactive &&
-          consumptionOrderActive &&
-          consumptionOrderActive.map((item, index) => (
+        {PreparationTicketActive &&
+          consumptionPreparationTicketActive &&
+          consumptionPreparationTicketActive.map((item, index) => (
             <div
               className="card bg-primary text-white"
               style={{ height: "100px", width: "130px" }}
@@ -576,10 +689,10 @@ const Grill = () => {
                   style={{ fontSize: "14px", fontWeight: "500" }}
                 >
                   الرصيد:{" "}
-                  {filteredGrillConsumptionToday.find(
+                  {filteredKitchenConsumptionToday.find(
                     (cons) => cons.stockItemId._id === item.itemId?._id
                   )
-                    ? filteredGrillConsumptionToday.find(
+                    ? filteredKitchenConsumptionToday.find(
                         (cons) => cons.stockItemId._id === item.itemId?._id
                       ).bookBalance
                     : "0"}{" "}
@@ -597,14 +710,11 @@ const Grill = () => {
       </div>
 
       <div className="col-12 d-flex flex-wrap justify-content-around align-items-start">
-        {orderactive &&
-          orderactive.map((order, i) => {
+        {PreparationTicketActive &&
+          PreparationTicketActive.map((Ticket, i) => {
             if (
-              order.products.filter(
-                (product) =>
-                  product.isDone === false &&
-                  product.productid?.preparationSection === "Grill"
-              ).length > 0
+              Ticket.products.filter((product) => product.isDone === false)
+                .length > 0
             ) {
               return (
                 <div className="col-lg-3 col-md-4 col-sm-6 col-12 mb-4" key={i}>
@@ -619,46 +729,49 @@ const Grill = () => {
                       <div className="col-6 p-0">
                         <p className="card-text">
                           {" "}
-                          {order.table != null
-                            ? `طاولة: ${order.table.tableNumber}`
-                            : order.user
-                            ? `العميل: ${order.user.username}`
+                          {Ticket.table != null
+                            ? `طاولة: ${Ticket.table?.tableNumber}`
+                            : Ticket.user
+                            ? `العميل: ${Ticket.user?.username}`
                             : ""}
                         </p>
                         <p className="card-text">
-                          رقم الطلب: {order.orderNum ? order.orderNum : ""}
+                          رقم الطلب: {Ticket.TicketNum ? Ticket.TicketNum : ""}
                         </p>
-                        <p className="card-text">الفاتورة: {order.serial}</p>
+                        <p className="card-text">الفاتورة: {Ticket.serial}</p>
                         <p className="card-text">
-                          نوع الطلب: {order.orderType}
+                          نوع الطلب: {Ticket.TicketType}
                         </p>
                       </div>
 
                       <div className="col-6 p-0">
-                        {order.waiter ? (
+                        {Ticket.waiter ? (
                           <p className="card-text">
-                            الويتر: {order.waiter && order.waiter?.username}
+                            الويتر: {Ticket.waiter && Ticket.waiter?.username}
                           </p>
                         ) : (
                           ""
                         )}
                         <p className="card-text">
-                          الاستلام: {formatTime(order.createdAt)}
+                          الاستلام: {formatTime(Ticket.createdAt)}
                         </p>
                         <p className="card-text">
                           الانتظار:{" "}
-                          {setTimeout(() => waitingTime(order.updateAt), 60000)}{" "}
+                          {setTimeout(
+                            () => waitingTime(Ticket.updateAt),
+                            60000
+                          )}{" "}
                           دقيقه
                         </p>
                       </div>
                     </div>
                     <ul className="list-group list-group-flush">
-                      {order.products
-                        .filter(
-                          (product) =>
-                            product.isDone === false &&
-                            product.productid?.preparationSection === "Grill"
-                        )
+                      {Ticket.products
+                        // .filter(
+                        //   (product) =>
+                        //     product.isDone === false &&
+                        //     product.productid?.preparationSection === "Kitchen"
+                        // )
                         .map((product, i) => {
                           return (
                             <>
@@ -736,19 +849,22 @@ const Grill = () => {
                         })}
                     </ul>
                     <div className="card-footer text-center w-100 d-flex flex-row">
-                      {order.preparationStatus.Grill === "Preparing" ? (
+                      {Ticket.preparationStatus === "Preparing" ? (
                         <button
                           className="btn w-100 btn-warning h-100 btn btn-lg"
                           onClick={() => {
-                            updateOrderDone(order._id, order.orderType);
+                            updateTicketDone(
+                              Ticket._id,
+                              Ticket.order.orderType
+                            );
                           }}
                         >
                           تم التنفيذ
                         </button>
-                      ) : order.status === "Approved" ? (
+                      ) : Ticket.preparationStatus === "Pending" ? (
                         <button
                           className="btn w-100 btn-primary h-100 btn btn-lg"
-                          onClick={() => orderInProgress(order._id)}
+                          onClick={() => TicketInProgress(Ticket._id)}
                         >
                           بدء التنفيذ
                         </button>
@@ -760,8 +876,8 @@ const Grill = () => {
                 </div>
               );
             } else if (
-              order.preparationStatus.Grill === "Prepared" &&
-              order.products.filter(
+              Ticket.preparationStatus === "Prepared" &&
+              Ticket.products.filter(
                 (pr) => pr.isDone === true && pr.isDeleverd === false
               ).length > 0
             ) {
@@ -778,41 +894,44 @@ const Grill = () => {
                       <div className="col-6 p-0">
                         <p className="card-text">
                           {" "}
-                          {order.table != null
-                            ? `طاولة: ${order.table.tableNumber}`
-                            : order.user
-                            ? `العميل: ${order.user.username}`
+                          {Ticket.table != null
+                            ? `طاولة: ${Ticket.table.tableNumber}`
+                            : Ticket.user
+                            ? `العميل: ${Ticket.user.username}`
                             : ""}
                         </p>
                         <p className="card-text">
-                          رقم الطلب: {order.orderNum ? order.orderNum : ""}
+                          رقم الطلب: {Ticket.TicketNum ? Ticket.TicketNum : ""}
                         </p>
-                        <p className="card-text">الفاتورة: {order.serial}</p>
+                        <p className="card-text">الفاتورة: {Ticket.serial}</p>
                         <p className="card-text">
-                          نوع الطلب: {order.orderType}
+                          نوع الطلب: {Ticket.TicketType}
                         </p>
                       </div>
 
                       <div className="col-6 p-0">
-                        {order.waiter ? (
+                        {Ticket.waiter ? (
                           <p className="card-text">
-                            الويتر: {order.waiter && order.waiter.username}
+                            الويتر: {Ticket.waiter && Ticket.waiter.username}
                           </p>
                         ) : (
                           ""
                         )}
                         <p className="card-text">
-                          الاستلام: {formatTime(order.createdAt)}
+                          الاستلام: {formatTime(Ticket.createdAt)}
                         </p>
                         <p className="card-text">
                           الانتظار:{" "}
-                          {setTimeout(() => waitingTime(order.updateAt), 60000)}{" "}
+                          {setTimeout(
+                            () => waitingTime(Ticket.updateAt),
+                            60000
+                          )}{" "}
                           دقيقه
                         </p>
                       </div>
                     </div>
                     <ul className="list-group list-group-flush">
-                      {order.products
+                      {Ticket.products
                         .filter(
                           (pr) => pr.isDone === true && pr.isDeleverd === false
                         )
