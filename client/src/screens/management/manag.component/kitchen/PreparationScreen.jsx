@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { detacontext } from "../../../../App";
 import { toast } from "react-toastify";
@@ -12,7 +12,7 @@ const PreparationScreen = () => {
     },
   };
 
-  const { formatDate, formatTime, isRefresh, setisRefresh, waiterSocket } =
+  const { formatTime, isRefresh, setisRefresh, waiterSocket } =
     useContext(detacontext);
 
   const [preparationSections, setPreparationSections] = useState([]);
@@ -154,7 +154,7 @@ const PreparationScreen = () => {
     }
   };
 
-  const [activeTab, setActiveTab] = useState("newTickets"); // قيمة مبدئية للزر النشط
+  const [activeTab, setActiveTab] = useState("newTickets");
   const handleTabChange = (tab) => {
     setActiveTab(tab);
   };
@@ -272,172 +272,78 @@ const PreparationScreen = () => {
           </button>
         </div>
 
-        {/* عرض التذاكر بناءً على الزر النشط */}
-        {activeTab === "newTickets" && (
-          <div className="row">
-            {PreparationTicketActive &&
-              PreparationTicketActive.map((Ticket, i) => {
-                if (
-                  Ticket.products.filter((product) => product.isDone === false)
-                    .length > 0
-                ) {
-                  return (
-                    <div
-                      className="col-lg-3 col-md-4 col-sm-6 col-12 mb-4"
-                      key={i}
+        {/* عرض التذاكر والمخزن حسب التبويب */}
+        <div className="w-100">
+          {activeTab === "newTickets" && (
+            <div>
+              <h5>التذاكر الجديدة</h5>
+              {activeTickets.length === 0 ? (
+                <p>لا توجد تذاكر جديدة.</p>
+              ) : (
+                activeTickets.map((ticket) => (
+                  <div key={ticket._id} className="ticket-card mb-3">
+                    <h6>{ticket.productName}</h6>
+                    <p>{ticket.details}</p>
+                    <button
+                      className="btn btn-warning"
+                      onClick={() => updateTicketStatus(ticket._id, "Preparing")}
                     >
-                      {/* محتوى التذاكر الجديدة */}
-                      <div
-                        className="card text-white bg-success"
-                        style={{ width: "260px" }}
-                      >
-                        <div className="card-body text-right d-flex justify-content-between p-0 m-1">
-                          <div className="col-6 p-0">
-                            <p className="card-text">
-                              {Ticket.table != null
-                                ? `طاولة: ${Ticket.table.tableNumber}`
-                                : Ticket.user
-                                ? `العميل: ${Ticket.user.username}`
-                                : ""}
-                            </p>
-                            <p className="card-text">
-                              رقم الطلب:{" "}
-                              {Ticket.TicketNum ? Ticket.TicketNum : ""}
-                            </p>
-                            <p className="card-text">
-                              الفاتورة: {Ticket.serial}
-                            </p>
-                            <p className="card-text">
-                              نوع الطلب: {Ticket.TicketType}
-                            </p>
-                          </div>
-                          <div className="col-6 p-0">
-                            {Ticket.waiter ? (
-                              <p className="card-text">
-                                الويتر:{" "}
-                                {Ticket.waiter && Ticket.waiter.username}
-                              </p>
-                            ) : (
-                              ""
-                            )}
-                            <p className="card-text">
-                              الاستلام: {formatTime(Ticket.createdAt)}
-                            </p>
-                            <p className="card-text">
-                              الانتظار:{" "}
-                              {setTimeout(
-                                () => waitingTime(Ticket.updateAt),
-                                60000
-                              )}{" "}
-                              دقيقه
-                            </p>
-                          </div>
-                        </div>
-                        {/* المزيد من المحتوى الخاص بالمنتجات */}
-                      </div>
-                    </div>
-                  );
-                }
-              })}
-          </div>
-        )}
-
-        {activeTab === "completedTickets" && (
-          <div className="row">
-            {PreparationTicketActive &&
-              PreparationTicketActive.map((Ticket, i) => {
-                if (
-                  Ticket.preparationStatus === "Prepared" &&
-                  Ticket.products.filter(
-                    (pr) => pr.isDone === true && pr.isDeleverd === false
-                  ).length > 0
-                ) {
-                  return (
-                    <div className="col-md-4 mb-4" key={i}>
-                      {/* محتوى التذاكر المنفذة */}
-                      <div
-                        className="card text-white bg-success"
-                        style={{ width: "260px" }}
-                      >
-                        <div className="card-body text-right d-flex justify-content-between p-0 m-1">
-                          {/* محتوى البيانات مثل "طاولة"، "رقم الطلب" */}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                }
-              })}
-          </div>
-        )}
-
-        {activeTab === "cancelledTickets" && (
-          <div className="row">
-            {PreparationTicketActive &&
-              PreparationTicketActive.map((Ticket, i) => {
-                if (Ticket.preparationStatus === "Rejected") {
-                  return (
-                    <div className="col-md-4 mb-4" key={i}>
-                      {/* محتوى التذاكر الملغاة */}
-                      <div
-                        className="card text-white bg-danger"
-                        style={{ width: "260px" }}
-                      >
-                        <div className="card-body text-right d-flex justify-content-between p-0 m-1">
-                          {/* محتوى البيانات مثل "طاولة"، "رقم الطلب" */}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                }
-              })}
-          </div>
-        )}
-
-        {activeTab === "storeConsumption" && (
-          <div className="row">
-            {PreparationTicketActive &&
-              consumptionPreparationTicketActive &&
-              consumptionPreparationTicketActive.map((item, index) => (
-                <div
-                  className="card bg-primary text-white"
-                  style={{ height: "100px", width: "130px" }}
-                  key={index}
-                >
-                  <div
-                    className="card-body d-flex flex-column justify-content-center text-center"
-                    style={{ padding: "5px" }}
-                  >
-                    <h5
-                      className="card-title text-center"
-                      style={{ fontSize: "16px", fontWeight: "600" }}
-                    >
-                      {item.name}
-                    </h5>
-                    <p
-                      className="card-text text-center"
-                      style={{ fontSize: "14px", fontWeight: "500" }}
-                    >
-                      الرصيد:{" "}
-                      {filteredKitchenConsumptionToday.find(
-                        (cons) => cons.stockItemId._id === item.itemId?._id
-                      )
-                        ? filteredKitchenConsumptionToday.find(
-                            (cons) => cons.stockItemId._id === item.itemId?._id
-                          ).bookBalance
-                        : "0"}{" "}
-                      {item.unit}
-                    </p>
-                    <p
-                      className="card-text text-center"
-                      style={{ fontSize: "14px", fontWeight: "500" }}
-                    >
-                      المطلوب: {item.amount}
-                    </p>
+                      بدأ التنفيذ
+                    </button>
                   </div>
-                </div>
-              ))}
-          </div>
-        )}
+                ))
+              )}
+            </div>
+          )}
+
+          {activeTab === "completedTickets" && (
+            <div>
+              <h5>التذاكر المنفذة</h5>
+              {activeTickets.filter(ticket => ticket.preparationStatus === "Prepared").length === 0 ? (
+                <p>لا توجد تذاكر تم تنفيذها.</p>
+              ) : (
+                activeTickets.filter(ticket => ticket.preparationStatus === "Prepared").map((ticket) => (
+                  <div key={ticket._id} className="ticket-card mb-3">
+                    <h6>{ticket.productName}</h6>
+                    <p>{ticket.details}</p>
+                  </div>
+                ))
+              )}
+            </div>
+          )}
+
+          {activeTab === "cancelledTickets" && (
+            <div>
+              <h5>التذاكر الملغاة</h5>
+              {activeTickets.filter(ticket => ticket.preparationStatus === "Rejected").length === 0 ? (
+                <p>لا توجد تذاكر ملغاة.</p>
+              ) : (
+                activeTickets.filter(ticket => ticket.preparationStatus === "Rejected").map((ticket) => (
+                  <div key={ticket._id} className="ticket-card mb-3">
+                    <h6>{ticket.productName}</h6>
+                    <p>{ticket.details}</p>
+                  </div>
+                ))
+              )}
+            </div>
+          )}
+
+          {activeTab === "storeConsumption" && (
+            <div>
+              <h5>عناصر المخزن الاستهلاك</h5>
+              {consumptionItems.length === 0 ? (
+                <p>لا توجد عناصر مخزن استهلاك.</p>
+              ) : (
+                consumptionItems.map((item, index) => (
+                  <div key={index} className="consumption-item mb-3">
+                    <h6>{item.name}</h6>
+                    <p>الكمية: {item.amount} {item.unit}</p>
+                  </div>
+                ))
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
