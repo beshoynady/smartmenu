@@ -144,16 +144,16 @@ const SideBar = () => {
                   role === "manager" ||
                   role === "owner") && (
                   <li className="list">
-                    <Link to="kitchen">
+                    <Link to="preparationscreen">
                       <span className="material-symbols-outlined list-icon ml-2">
                         cooking
                       </span>
-                      <span className="linkname">المطبخ</span>
+                      <span className="linkname">قسم الاعداد</span>
                     </Link>
                     <ul className="submenu blank">
                       <li className="list">
-                        <Link to="kitchen" className="linkname">
-                          المطبخ
+                        <Link to="preparationscreen" className="linkname">
+                          قسم الاعداد
                         </Link>
                       </li>
                     </ul>

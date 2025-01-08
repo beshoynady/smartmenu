@@ -66,8 +66,8 @@ const AttendanceManagement = React.lazy(() =>
 const MenuCategory = React.lazy(() =>
   import("./screens/management/manag.component/products/MenuCategory")
 );
-const Kitchen = React.lazy(() =>
-  import("./screens/management/manag.component/kitchen/Kitchen")
+const PreparationScreen = React.lazy(() =>
+  import("./screens/management/manag.component/kitchen/PreparationScreen.jsx")
 );
 const Bar = React.lazy(() =>
   import("./screens/management/manag.component/kitchen/Bar")
@@ -2555,10 +2555,10 @@ function App() {
               }
             />
             <Route
-              path="kitchen"
+              path="preparationscreen"
               element={
                 <Suspense fallback={<LoadingPage />}>
-                  <Kitchen />
+                  <PreparationScreen />
                 </Suspense>
               }
             />
