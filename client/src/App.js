@@ -2,7 +2,7 @@ import React, { createContext, useState, useEffect, Suspense } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import axios from "axios";
 
-import jwt_decode from 'jwt-decode';
+import jwt_decode from "jwt-decode";
 
 import io from "socket.io-client";
 
@@ -144,8 +144,6 @@ const CustomerMessage = React.lazy(() =>
 const ProfitLoss = React.lazy(() =>
   import("./screens/management/manag.component/reports/ProfitAndLoss.jsx")
 );
-
-
 
 const cashierSocket = io(`${process.env.REACT_APP_API_URL}/cashier`, {
   reconnection: true,
@@ -2397,7 +2395,7 @@ function App() {
         kitchenSocket,
         BarSocket,
         GrillSocket,
-        waiterSocket
+        waiterSocket,
       }}
     >
       {isLoading && <LoadingPage />}
@@ -2410,7 +2408,6 @@ function App() {
 
           <Route
             path="/management/*"
-            
             element={
               <Suspense fallback={<LoadingPage />}>
                 <ManagLayout />
@@ -2422,7 +2419,7 @@ function App() {
               element={
                 <Suspense fallback={<LoadingPage />}>
                   {employeeLoginInfo?.role === "chef" ? (
-                    <Kitchen />
+                    <PreparationScreen />
                   ) : employeeLoginInfo?.role === "waiter" ? (
                     <Waiter />
                   ) : employeeLoginInfo?.role === "deliveryMan" ? (
