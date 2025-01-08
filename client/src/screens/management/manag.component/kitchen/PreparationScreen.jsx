@@ -159,6 +159,15 @@ const PreparationScreen = () => {
     setActiveTab(tab);
   };
 
+  const waitingTime = (t) => {
+    const t1 = new Date(t).getTime();
+    const t2 = new Date().getTime();
+    const elapsedTime = t2 - t1;
+
+    const minutesPassed = Math.floor(elapsedTime / (1000 * 60));
+    return minutesPassed;
+  };
+
   useEffect(() => {
     fetchPreparationSections();
   }, []);
@@ -422,9 +431,9 @@ const PreparationScreen = () => {
                               <button
                                 className="btn w-100 btn-warning h-100 btn btn-lg"
                                 onClick={() => {
-                                  updateTicketDone(
+                                  updateTicketStatus(
                                     Ticket._id,
-                                    Ticket.order.orderType
+                                     "Prepared"
                                   );
                                 }}
                               >
@@ -433,7 +442,7 @@ const PreparationScreen = () => {
                             ) : Ticket.preparationStatus === "Pending" ? (
                               <button
                                 className="btn w-100 btn-primary h-100 btn btn-lg"
-                                onClick={() => TicketInProgress(Ticket._id)}
+                                onClick={() => updateTicketStatus(Ticket._id, "Preparing")}
                               >
                                 بدء التنفيذ
                               </button>
