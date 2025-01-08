@@ -12,13 +12,8 @@ const PreparationScreen = () => {
     },
   };
 
-  const {
-    formatDate,
-    formatTime,
-    isRefresh,
-    setisRefresh,
-    waiterSocket,
-  } = useContext(detacontext);
+  const { formatDate, formatTime, isRefresh, setisRefresh, waiterSocket } =
+    useContext(detacontext);
 
   const [preparationSections, setPreparationSections] = useState([]);
   const [selectedSectionId, setSelectedSectionId] = useState(null);
@@ -39,7 +34,10 @@ const PreparationScreen = () => {
     }
 
     try {
-      const response = await axios.get(`${apiUrl}/api/preparationsection`, config);
+      const response = await axios.get(
+        `${apiUrl}/api/preparationsection`,
+        config
+      );
       if (response.status === 200) {
         setPreparationSections(response.data.data);
       } else {
@@ -47,7 +45,9 @@ const PreparationScreen = () => {
       }
     } catch (error) {
       console.error("Error fetching preparation sections:", error);
-      toast.error("An error occurred while fetching sections. Please try again later.");
+      toast.error(
+        "An error occurred while fetching sections. Please try again later."
+      );
     }
   };
 
@@ -59,10 +59,14 @@ const PreparationScreen = () => {
     }
 
     try {
-      const response = await axios.get(`${apiUrl}/api/preparationticket`, config);
+      const response = await axios.get(
+        `${apiUrl}/api/preparationticket`,
+        config
+      );
       const tickets = response.data.data;
       const filteredTickets = tickets.filter(
-        (ticket) => ticket.preparationSection._id === sectionId && ticket.isActive
+        (ticket) =>
+          ticket.preparationSection._id === sectionId && ticket.isActive
       );
 
       setActiveTickets(filteredTickets);
@@ -92,9 +96,10 @@ const PreparationScreen = () => {
       filteredTickets.forEach((ticket) => {
         ticket.products.forEach((product) => {
           if (!product.isDone) {
-            const ingredients = recipes.find(
-              (recipe) => recipe.productId._id === product.productid?._id
-            )?.ingredients || [];
+            const ingredients =
+              recipes.find(
+                (recipe) => recipe.productId._id === product.productid?._id
+              )?.ingredients || [];
 
             ingredients.forEach((ingredient) => {
               const existingItemIndex = updatedConsumptionItems.findIndex(
@@ -149,6 +154,11 @@ const PreparationScreen = () => {
     }
   };
 
+  const [activeTab, setActiveTab] = useState("newTickets"); // قيمة مبدئية للزر النشط
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+  };
+
   useEffect(() => {
     fetchPreparationSections();
   }, []);
@@ -160,11 +170,26 @@ const PreparationScreen = () => {
   }, [selectedSectionId, isRefresh]);
 
   return (
-    <div className="w-100 h-100 d-flex flex-column align-items-start overflow-auto bg-light p-3">
-      <div className="w-100 d-flex justify-content-between align-items-center mb-3">
-        <div className="d-flex flex-column align-items-start bg-white shadow-sm rounded p-2">
-          <label htmlFor="section-select" className="fw-bold text-dark">
-            Select Section:
+    <div
+      className="w-100 d-flex flex-column align-items-end overflow-auto bg-transparent p-3"
+      style={{ backgroundColor: "rgba(0, 0, 255, 0.1)" }}
+    >
+      {/* Section selection and ticket stats */}
+      <div
+        className="w-100 d-flex flex-column align-items-start justify-content-between mb-3"
+        style={{ alignItems: "flex-end" }}
+      >
+        {/* Section selection */}
+        <div
+          className="d-flex flex-column align-items-end bg-white shadow-sm rounded p-2 mb-3 w-100"
+          style={{ maxWidth: "300px" }}
+        >
+          <label
+            htmlFor="section-select"
+            className="fw-bold text-dark"
+            style={{ fontSize: "1.2rem" }}
+          >
+            اختر القسم:
           </label>
           <select
             id="section-select"
@@ -172,7 +197,7 @@ const PreparationScreen = () => {
             onChange={(e) => setSelectedSectionId(e.target.value)}
           >
             <option value="" disabled selected>
-              Choose a section
+              اختر القسم
             </option>
             {preparationSections.map((section) => (
               <option key={section._id} value={section._id}>
@@ -182,80 +207,240 @@ const PreparationScreen = () => {
           </select>
         </div>
 
-        <div className="d-flex flex-wrap justify-content-around w-50">
-          <div className="ticket-box text-center bg-light shadow-sm rounded p-3">
-            <h6 className="text-dark">Waiting Approval</h6>
+        {/* Ticket stats */}
+        <div
+          className="w-100 d-flex flex-column align-items-end justify-content-between flex-wrap"
+          style={{ maxWidth: "400px" }}
+        >
+          <div
+            className="ticket-box text-center bg-light shadow-sm rounded p-3 mb-2"
+            style={{ width: "100%" }}
+          >
+            <h6 className="text-dark">انتظار الموافقة</h6>
             <p className="text-primary">{sectionStats.waitingApproval}</p>
           </div>
-          <div className="ticket-box text-center bg-light shadow-sm rounded p-3">
-            <h6 className="text-dark">In Progress</h6>
+          <div
+            className="ticket-box text-center bg-light shadow-sm rounded p-3 mb-2"
+            style={{ width: "100%" }}
+          >
+            <h6 className="text-dark">جاري التنفيذ</h6>
             <p className="text-warning">{sectionStats.inProgress}</p>
           </div>
-          <div className="ticket-box text-center bg-light shadow-sm rounded p-3">
-            <h6 className="text-dark">Completed</h6>
+          <div
+            className="ticket-box text-center bg-light shadow-sm rounded p-3 mb-2"
+            style={{ width: "100%" }}
+          >
+            <h6 className="text-dark">تم التنفيذ</h6>
             <p className="text-success">{sectionStats.completed}</p>
           </div>
-          <div className="ticket-box text-center bg-light shadow-sm rounded p-3">
-            <h6 className="text-dark">Rejected</h6>
+          <div
+            className="ticket-box text-center bg-light shadow-sm rounded p-3"
+            style={{ width: "100%" }}
+          >
+            <h6 className="text-dark">مرفوض</h6>
             <p className="text-danger">{sectionStats.rejected}</p>
           </div>
         </div>
       </div>
 
-      <div className="d-flex flex-wrap justify-content-start">
-        {consumptionItems.map((item, index) => (
-          <div key={index} className="card bg-primary text-white m-2" style={{ width: "150px" }}>
-            <div className="card-body text-center">
-              <h6>{item.name}</h6>
-              <p>Stock: {item.amount}</p>
-              <p>Unit: {item.unit}</p>
-            </div>
-          </div>
-        ))}
-      </div>
+      {/* Preparation Ticket Details */}
+      <div className="w-100 d-flex flex-column justify-content-between align-items-start">
+        <div className="w-100 d-flex justify-content-between align-items-center bg-transparent p-3 mb-3">
+          <button
+            className="btn btn-primary w-100 w-sm-auto mb-2 mb-sm-0"
+            onClick={() => handleTabChange("newTickets")}
+          >
+            التذاكر الجديدة
+          </button>
+          <button
+            className="btn btn-success w-100 w-sm-auto mb-2 mb-sm-0"
+            onClick={() => handleTabChange("completedTickets")}
+          >
+            التذاكر المنفذة
+          </button>
+          <button
+            className="btn btn-danger w-100 w-sm-auto mb-2 mb-sm-0"
+            onClick={() => handleTabChange("cancelledTickets")}
+          >
+            التذاكر الملغاة
+          </button>
+          <button
+            className="btn btn-info w-100 w-sm-auto mb-2 mb-sm-0"
+            onClick={() => handleTabChange("storeConsumption")}
+          >
+            عناصر المخزن الاستهلاك
+          </button>
+        </div>
 
-      <div className="d-flex flex-wrap justify-content-start">
-        {activeTickets.map((ticket, index) => (
-          <div key={index} className="card bg-light m-2" style={{ width: "250px" }}>
-            <div className="card-header">
-              <h6>Order #{ticket.TicketNum}</h6>
-            </div>
-            <div className="card-body">
-              <p>Status: {ticket.preparationStatus}</p>
-              <p>Created At: {formatTime(ticket.createdAt)}</p>
-            </div>
-            <div className="card-footer d-flex justify-content-between">
-              {ticket
-.preparationStatus === "Pending" && (
-  <button
-    className="btn btn-primary"
-    onClick={() => updateTicketStatus(ticket._id, "Preparing")}
-  >
-    Start Preparing
-  </button>
-)}
-{ticket.preparationStatus === "Preparing" && (
-  <button
-    className="btn btn-success"
-    onClick={() => updateTicketStatus(ticket._id, "Prepared")}
-  >
-    Mark as Completed
-  </button>
-)}
-{ticket.preparationStatus === "Prepared" && (
-  <button
-    className="btn btn-info"
-    onClick={() => toast.info("Waiting for waiter pickup.")}
-  >
-    Waiting Pickup
-  </button>
-)}
-</div>
-</div>
-))}
-</div>
-</div>
-);
+        {/* عرض التذاكر بناءً على الزر النشط */}
+        {activeTab === "newTickets" && (
+          <div className="row">
+            {PreparationTicketActive &&
+              PreparationTicketActive.map((Ticket, i) => {
+                if (
+                  Ticket.products.filter((product) => product.isDone === false)
+                    .length > 0
+                ) {
+                  return (
+                    <div
+                      className="col-lg-3 col-md-4 col-sm-6 col-12 mb-4"
+                      key={i}
+                    >
+                      {/* محتوى التذاكر الجديدة */}
+                      <div
+                        className="card text-white bg-success"
+                        style={{ width: "260px" }}
+                      >
+                        <div className="card-body text-right d-flex justify-content-between p-0 m-1">
+                          <div className="col-6 p-0">
+                            <p className="card-text">
+                              {Ticket.table != null
+                                ? `طاولة: ${Ticket.table.tableNumber}`
+                                : Ticket.user
+                                ? `العميل: ${Ticket.user.username}`
+                                : ""}
+                            </p>
+                            <p className="card-text">
+                              رقم الطلب:{" "}
+                              {Ticket.TicketNum ? Ticket.TicketNum : ""}
+                            </p>
+                            <p className="card-text">
+                              الفاتورة: {Ticket.serial}
+                            </p>
+                            <p className="card-text">
+                              نوع الطلب: {Ticket.TicketType}
+                            </p>
+                          </div>
+                          <div className="col-6 p-0">
+                            {Ticket.waiter ? (
+                              <p className="card-text">
+                                الويتر:{" "}
+                                {Ticket.waiter && Ticket.waiter.username}
+                              </p>
+                            ) : (
+                              ""
+                            )}
+                            <p className="card-text">
+                              الاستلام: {formatTime(Ticket.createdAt)}
+                            </p>
+                            <p className="card-text">
+                              الانتظار:{" "}
+                              {setTimeout(
+                                () => waitingTime(Ticket.updateAt),
+                                60000
+                              )}{" "}
+                              دقيقه
+                            </p>
+                          </div>
+                        </div>
+                        {/* المزيد من المحتوى الخاص بالمنتجات */}
+                      </div>
+                    </div>
+                  );
+                }
+              })}
+          </div>
+        )}
+
+        {activeTab === "completedTickets" && (
+          <div className="row">
+            {PreparationTicketActive &&
+              PreparationTicketActive.map((Ticket, i) => {
+                if (
+                  Ticket.preparationStatus === "Prepared" &&
+                  Ticket.products.filter(
+                    (pr) => pr.isDone === true && pr.isDeleverd === false
+                  ).length > 0
+                ) {
+                  return (
+                    <div className="col-md-4 mb-4" key={i}>
+                      {/* محتوى التذاكر المنفذة */}
+                      <div
+                        className="card text-white bg-success"
+                        style={{ width: "260px" }}
+                      >
+                        <div className="card-body text-right d-flex justify-content-between p-0 m-1">
+                          {/* محتوى البيانات مثل "طاولة"، "رقم الطلب" */}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
+              })}
+          </div>
+        )}
+
+        {activeTab === "cancelledTickets" && (
+          <div className="row">
+            {PreparationTicketActive &&
+              PreparationTicketActive.map((Ticket, i) => {
+                if (Ticket.preparationStatus === "Rejected") {
+                  return (
+                    <div className="col-md-4 mb-4" key={i}>
+                      {/* محتوى التذاكر الملغاة */}
+                      <div
+                        className="card text-white bg-danger"
+                        style={{ width: "260px" }}
+                      >
+                        <div className="card-body text-right d-flex justify-content-between p-0 m-1">
+                          {/* محتوى البيانات مثل "طاولة"، "رقم الطلب" */}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
+              })}
+          </div>
+        )}
+
+        {activeTab === "storeConsumption" && (
+          <div className="row">
+            {PreparationTicketActive &&
+              consumptionPreparationTicketActive &&
+              consumptionPreparationTicketActive.map((item, index) => (
+                <div
+                  className="card bg-primary text-white"
+                  style={{ height: "100px", width: "130px" }}
+                  key={index}
+                >
+                  <div
+                    className="card-body d-flex flex-column justify-content-center text-center"
+                    style={{ padding: "5px" }}
+                  >
+                    <h5
+                      className="card-title text-center"
+                      style={{ fontSize: "16px", fontWeight: "600" }}
+                    >
+                      {item.name}
+                    </h5>
+                    <p
+                      className="card-text text-center"
+                      style={{ fontSize: "14px", fontWeight: "500" }}
+                    >
+                      الرصيد:{" "}
+                      {filteredKitchenConsumptionToday.find(
+                        (cons) => cons.stockItemId._id === item.itemId?._id
+                      )
+                        ? filteredKitchenConsumptionToday.find(
+                            (cons) => cons.stockItemId._id === item.itemId?._id
+                          ).bookBalance
+                        : "0"}{" "}
+                      {item.unit}
+                    </p>
+                    <p
+                      className="card-text text-center"
+                      style={{ fontSize: "14px", fontWeight: "500" }}
+                    >
+                      المطلوب: {item.amount}
+                    </p>
+                  </div>
+                </div>
+              ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default PreparationScreen;
