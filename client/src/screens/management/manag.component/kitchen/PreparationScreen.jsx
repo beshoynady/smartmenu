@@ -298,7 +298,7 @@ const PreparationScreen = () => {
                     ) {
                       return (
                         <div
-                          className="col-lg-3 col-md-4 col-sm-6 col-12 mb-4 card text-white bg-success"
+                          className="col-lg-4 col-md-4 col-sm-6 col-12 mb-4 ml-2 card text-white bg-success"
                           key={i}
                         >
                           <div
@@ -370,7 +370,7 @@ const PreparationScreen = () => {
                                           : { color: "black" }
                                       }
                                     >
-                                      <div className="d-flex justify-content-between align-items-center w-100">
+                                      <div className="d-flex justify-content-between align-items-center w-100 p-1">
                                         <p
                                           style={{
                                             fontSize: "1.2em",
@@ -416,7 +416,7 @@ const PreparationScreen = () => {
                                                   : { color: "black" }
                                               }
                                             >
-                                              <div className="d-flex justify-content-between align-items-center w-100">
+                                              <div className="d-flex justify-content-between align-items-center w-100 p-1">
                                                 {extra.extraDetails.map(
                                                   (detail) => (
                                                     <p
@@ -436,7 +436,7 @@ const PreparationScreen = () => {
                                 );
                               })}
                           </ul>
-                          <div className="card-footer text-center w-100 d-flex flex-row">
+                          <div className="text-center w-100 d-flex flex-row">
                             {Ticket.preparationStatus === "Preparing" ? (
                               <button
                                 className="btn w-100 btn-warning h-100 btn btn-lg"
@@ -469,7 +469,7 @@ const PreparationScreen = () => {
                     ) {
                       return (
                         <div
-                          className="col-lg-3 col-md-4 col-sm-6 col-12 mb-4 card text-white bg-success"
+                          className="col-lg-4 col-md-4 col-sm-6 col-12 mb-4 ml-2 card text-white bg-success"
                           key={i}
                         >
                           <div
@@ -540,7 +540,7 @@ const PreparationScreen = () => {
                                           : { color: "black" }
                                       }
                                     >
-                                      <div className="d-flex justify-content-between align-items-center w-100">
+                                      <div className="d-flex justify-content-between align-items-center w-100 p-1">
                                         <p
                                           style={{
                                             fontSize: "1.2em",
@@ -586,7 +586,7 @@ const PreparationScreen = () => {
                                                   : { color: "black" }
                                               }
                                             >
-                                              <div className="d-flex justify-content-between align-items-center w-100">
+                                              <div className="d-flex justify-content-between align-items-center w-100 p-1">
                                                 {extra.extraDetails.map(
                                                   (detail) => (
                                                     <p
@@ -606,7 +606,7 @@ const PreparationScreen = () => {
                                 );
                               })}
                           </ul>
-                          <div className="card-footer text-center w-100 d-flex flex-row">
+                          <div className="text-center w-100 d-flex flex-row">
                             <button className="btn w-100 btn-info h-100 btn btn-lg">
                               انتظار الاستلام
                             </button>
