@@ -285,18 +285,21 @@ const PreparationScreen = () => {
         <div className="w-100 h-auto p-0 m-0 text-right">
           {activeTab === "newTickets" && (
             <>
-              <h5 calssName="text-right text-dark font-weight-bold mb-4">التذاكر الجديدة</h5>
+              <h5 calssName="text-right text-dark font-weight-bold mb-4">
+                التذاكر الجديدة
+              </h5>
               <div className="d-flex flex-wrap ">
                 {activeTickets.length === 0 ? (
                   <p>لا توجد تذاكر جديدة.</p>
                 ) : (
                   activeTickets.map((Ticket, i) => {
                     if (
-                      Ticket.preparationStatus === "Pending" || Ticket.preparationStatus === "Preparing"
+                      Ticket.preparationStatus === "Pending" ||
+                      Ticket.preparationStatus === "Preparing"
                     ) {
                       return (
                         <div
-                          className="col-lg-4 col-md-4 col-sm-6 col-12 mb-4 ml-2 card text-white bg-success p-0 m-0"
+                          className="col-lg-3 col-md-4 col-sm-6 col-12 mb-4 ml-2 card text-white bg-success p-0 m-0"
                           key={i}
                         >
                           <div
@@ -455,12 +458,10 @@ const PreparationScreen = () => {
                           </div>
                         </div>
                       );
-                    } else if (
-                      Ticket.preparationStatus === "Prepared"
-                    ) {
+                    } else if (Ticket.preparationStatus === "Prepared") {
                       return (
                         <div
-                          className="col-lg-4 col-md-4 col-sm-6 col-12 mb-4 ml-2 card text-white bg-success p-0 m-0"
+                          className="col-lg-3 col-md-4 col-sm-6 col-12 mb-4 ml-2 card text-white bg-success p-0 m-0"
                           key={i}
                         >
                           <div
@@ -514,85 +515,85 @@ const PreparationScreen = () => {
                           </div>
                           <ul className="list-group list-group-flush">
                             {Ticket.products.map((product, i) => {
-                                return (
-                                  <>
-                                    <li
-                                      className="list-group-item d-flex flex-column justify-content-between align-items-center p-1"
-                                      key={i}
-                                      style={
-                                        product.isAdd
-                                          ? {
-                                              backgroundColor: "red",
-                                              color: "white",
-                                            }
-                                          : { color: "black" }
-                                      }
-                                    >
-                                      <div className="d-flex justify-content-between align-items-center w-100 p-1">
-                                        <p
-                                          style={{
-                                            fontSize: "1.2em",
-                                            fontWeight: "bold",
-                                          }}
-                                        >
-                                          {i + 1}- {product.name}{" "}
-                                          {product.size ? product.size : ""}
-                                        </p>
-                                        <span
-                                          style={{
-                                            fontSize: "1.2em",
-                                            fontWeight: "bold",
-                                          }}
-                                        >
-                                          {" "}
-                                          × {product.quantity}
-                                        </span>
-                                      </div>
-                                      <div
+                              return (
+                                <>
+                                  <li
+                                    className="list-group-item d-flex flex-column justify-content-between align-items-center p-1"
+                                    key={i}
+                                    style={
+                                      product.isAdd
+                                        ? {
+                                            backgroundColor: "red",
+                                            color: "white",
+                                          }
+                                        : { color: "black" }
+                                    }
+                                  >
+                                    <div className="d-flex justify-content-between align-items-center w-100 p-1">
+                                      <p
                                         style={{
                                           fontSize: "1.2em",
                                           fontWeight: "bold",
                                         }}
                                       >
-                                        {product.notes}
-                                      </div>
-                                    </li>
-                                    {product.extras &&
-                                      product.extras.length > 0 &&
-                                      product.extras.map((extra, j) => {
-                                        if (extra && extra.isDone === false) {
-                                          return (
-                                            <li
-                                              className="list-group-item d-flex flex-column justify-content-between align-items-center p-1"
-                                              key={`${i}-${j}`}
-                                              style={
-                                                product.isAdd
-                                                  ? {
-                                                      backgroundColor: "red",
-                                                      color: "white",
-                                                    }
-                                                  : { color: "black" }
-                                              }
-                                            >
-                                              <div className="d-flex justify-content-between align-items-center w-100 p-1">
-                                                {extra.extraDetails.map(
-                                                  (detail) => (
-                                                    <p
-                                                      className="badge badge-secondary m-1"
-                                                      key={detail.extraid}
-                                                    >{`${detail.name}`}</p>
-                                                  )
-                                                )}
-                                              </div>
-                                            </li>
-                                          );
-                                        } else {
-                                          return null;
-                                        }
-                                      })}
-                                  </>
-                                );
-                              })}
+                                        {i + 1}- {product.name}{" "}
+                                        {product.size ? product.size : ""}
+                                      </p>
+                                      <span
+                                        style={{
+                                          fontSize: "1.2em",
+                                          fontWeight: "bold",
+                                        }}
+                                      >
+                                        {" "}
+                                        × {product.quantity}
+                                      </span>
+                                    </div>
+                                    <div
+                                      style={{
+                                        fontSize: "1.2em",
+                                        fontWeight: "bold",
+                                      }}
+                                    >
+                                      {product.notes}
+                                    </div>
+                                  </li>
+                                  {product.extras &&
+                                    product.extras.length > 0 &&
+                                    product.extras.map((extra, j) => {
+                                      if (extra && extra.isDone === false) {
+                                        return (
+                                          <li
+                                            className="list-group-item d-flex flex-column justify-content-between align-items-center p-1"
+                                            key={`${i}-${j}`}
+                                            style={
+                                              product.isAdd
+                                                ? {
+                                                    backgroundColor: "red",
+                                                    color: "white",
+                                                  }
+                                                : { color: "black" }
+                                            }
+                                          >
+                                            <div className="d-flex justify-content-between align-items-center w-100 p-1">
+                                              {extra.extraDetails.map(
+                                                (detail) => (
+                                                  <p
+                                                    className="badge badge-secondary m-1"
+                                                    key={detail.extraid}
+                                                  >{`${detail.name}`}</p>
+                                                )
+                                              )}
+                                            </div>
+                                          </li>
+                                        );
+                                      } else {
+                                        return null;
+                                      }
+                                    })}
+                                </>
+                              );
+                            })}
                           </ul>
                           <div className="text-center w-100 d-flex flex-row">
                             <button className="btn w-100 btn-info h-100 btn btn-lg">
@@ -610,21 +611,146 @@ const PreparationScreen = () => {
 
           {activeTab === "completedTickets" && (
             <>
-              <h5 calssName="text-right text-dark font-weight-bold mb-4">التذاكر المنفذة</h5>
+              <h5 className="text-right text-dark font-weight-bold mb-4">
+                التذاكر المنفذة
+              </h5>
               <div>
                 {activeTickets.filter(
                   (ticket) => ticket.preparationStatus === "Delivered"
                 ).length === 0 ? (
                   <p>لا توجد تذاكر تم تنفيذها.</p>
                 ) : (
-                  activeTickets
-                    .filter((ticket) => ticket.preparationStatus === "Delivered")
-                    .map((ticket) => (
-                      <div key={ticket._id} className="ticket-card mb-3">
-                        <h6>{ticket.productName}</h6>
-                        <p>{ticket.details}</p>
-                      </div>
-                    ))
+                  activeTickets.map((ticket, index) => {
+                    if (ticket.preparationStatus === "Completed") {
+                      return (
+                        <div
+                          className="col-lg-3 col-md-4 col-sm-6 col-12 mb-4 ml-2 card text-white bg-success p-0 m-0"
+                          key={index}
+                        >
+                          <div
+                            className="card-body text-right d-flex justify-content-between p-0 m-1"
+                            style={{ fontSize: "14px", fontWeight: "500" }}
+                          >
+                            {/* معلومات الطاولة والطلب */}
+                            <div className="col-6 p-0">
+                              <p className="card-text">
+                                {ticket.table
+                                  ? `طاولة: ${ticket.table.tableNumber}`
+                                  : ticket.user
+                                  ? `العميل: ${ticket.user.username}`
+                                  : ""}
+                              </p>
+                              <p className="card-text">
+                                رقم الطلب: {ticket.order?.TicketNum || ""}
+                              </p>
+                              <p className="card-text">
+                                الفاتورة: {ticket.order?.serial || ""}
+                              </p>
+                              <p className="card-text">
+                                نوع الطلب: {ticket.order?.orderType || ""}
+                              </p>
+                            </div>
+
+                            {/* معلومات الويتر والتوقيت */}
+                            <div className="col-6 p-0">
+                              {ticket.waiter && (
+                                <p className="card-text">
+                                  الويتر: {ticket.waiter.username}
+                                </p>
+                              )}
+                              <p className="card-text">
+                                الاستلام: {formatTime(ticket.createdAt)}
+                              </p>
+                              <p className="card-text">
+                                الانتظار: {waitingTime(ticket.updateAt)} دقيقة
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* قائمة المنتجات */}
+                          <ul className="list-group list-group-flush">
+                            {ticket.products.map((product, i) => (
+                              <li
+                                className="list-group-item d-flex flex-column justify-content-between align-items-center p-1"
+                                key={i}
+                                style={
+                                  product.isAdd
+                                    ? { backgroundColor: "red", color: "white" }
+                                    : { color: "black" }
+                                }
+                              >
+                                <div className="d-flex justify-content-between align-items-center w-100 p-1">
+                                  <p
+                                    style={{
+                                      fontSize: "1.2em",
+                                      fontWeight: "bold",
+                                    }}
+                                  >
+                                    {i + 1}- {product.name} {product.size || ""}
+                                  </p>
+                                  <span
+                                    style={{
+                                      fontSize: "1.2em",
+                                      fontWeight: "bold",
+                                    }}
+                                  >
+                                    × {product.quantity}
+                                  </span>
+                                </div>
+                                <div
+                                  style={{
+                                    fontSize: "1.2em",
+                                    fontWeight: "bold",
+                                  }}
+                                >
+                                  {product.notes}
+                                </div>
+
+                                {/* الإضافات الخاصة بالمنتج */}
+                                {product.extras &&
+                                  product.extras.length > 0 &&
+                                  product.extras.map((extra, j) =>
+                                    !extra.isDone ? (
+                                      <li
+                                        className="list-group-item d-flex flex-column justify-content-between align-items-center p-1"
+                                        key={`${i}-${j}`}
+                                        style={
+                                          product.isAdd
+                                            ? {
+                                                backgroundColor: "red",
+                                                color: "white",
+                                              }
+                                            : { color: "black" }
+                                        }
+                                      >
+                                        <div className="d-flex justify-content-between align-items-center w-100 p-1">
+                                          {extra.extraDetails.map((detail) => (
+                                            <p
+                                              className="badge badge-secondary m-1"
+                                              key={detail.extraid}
+                                            >
+                                              {detail.name}
+                                            </p>
+                                          ))}
+                                        </div>
+                                      </li>
+                                    ) : null
+                                  )}
+                              </li>
+                            ))}
+                          </ul>
+
+                          {/* زر الرفض */}
+                          <div className="text-center w-100 d-flex flex-row">
+                            <button className="btn w-100 btn-warning h-100 btn-lg">
+                              تم التنفيذ
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    }
+                    return null;
+                  })
                 )}
               </div>
             </>
@@ -632,27 +758,154 @@ const PreparationScreen = () => {
 
           {activeTab === "cancelledTickets" && (
             <div>
-              <h5 calssName="text-right text-dark font-weight-bold mb-4">التذاكر الملغاة</h5>
+              <h5 className="text-right text-dark font-weight-bold mb-4">
+                التذاكر الملغاة
+              </h5>
               {activeTickets.filter(
                 (ticket) => ticket.preparationStatus === "Rejected"
               ).length === 0 ? (
                 <p>لا توجد تذاكر ملغاة.</p>
               ) : (
-                activeTickets
-                  .filter((ticket) => ticket.preparationStatus === "Rejected")
-                  .map((ticket) => (
-                    <div key={ticket._id} className="ticket-card mb-3">
-                      <h6>{ticket.productName}</h6>
-                      <p>{ticket.details}</p>
-                    </div>
-                  ))
+                activeTickets.map((ticket, index) => {
+                  if (ticket.preparationStatus === "Rejected") {
+                    return (
+                      <div
+                        className="col-lg-3 col-md-4 col-sm-6 col-12 mb-4 ml-2 card text-white bg-success p-0 m-0"
+                        key={index}
+                      >
+                        <div
+                          className="card-body text-right d-flex justify-content-between p-0 m-1"
+                          style={{ fontSize: "14px", fontWeight: "500" }}
+                        >
+                          {/* معلومات الطاولة والطلب */}
+                          <div className="col-6 p-0">
+                            <p className="card-text">
+                              {ticket.table
+                                ? `طاولة: ${ticket.table.tableNumber}`
+                                : ticket.user
+                                ? `العميل: ${ticket.user.username}`
+                                : ""}
+                            </p>
+                            <p className="card-text">
+                              رقم الطلب: {ticket.order?.TicketNum || ""}
+                            </p>
+                            <p className="card-text">
+                              الفاتورة: {ticket.order?.serial || ""}
+                            </p>
+                            <p className="card-text">
+                              نوع الطلب: {ticket.order?.orderType || ""}
+                            </p>
+                          </div>
+
+                          {/* معلومات الويتر والتوقيت */}
+                          <div className="col-6 p-0">
+                            {ticket.waiter && (
+                              <p className="card-text">
+                                الويتر: {ticket.waiter.username}
+                              </p>
+                            )}
+                            <p className="card-text">
+                              الاستلام: {formatTime(ticket.createdAt)}
+                            </p>
+                            <p className="card-text">
+                              الانتظار: {waitingTime(ticket.updateAt)} دقيقة
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* قائمة المنتجات */}
+                        <ul className="list-group list-group-flush">
+                          {ticket.products.map((product, i) => (
+                            <li
+                              className="list-group-item d-flex flex-column justify-content-between align-items-center p-1"
+                              key={i}
+                              style={
+                                product.isAdd
+                                  ? { backgroundColor: "red", color: "white" }
+                                  : { color: "black" }
+                              }
+                            >
+                              <div className="d-flex justify-content-between align-items-center w-100 p-1">
+                                <p
+                                  style={{
+                                    fontSize: "1.2em",
+                                    fontWeight: "bold",
+                                  }}
+                                >
+                                  {i + 1}- {product.name} {product.size || ""}
+                                </p>
+                                <span
+                                  style={{
+                                    fontSize: "1.2em",
+                                    fontWeight: "bold",
+                                  }}
+                                >
+                                  × {product.quantity}
+                                </span>
+                              </div>
+                              <div
+                                style={{
+                                  fontSize: "1.2em",
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                {product.notes}
+                              </div>
+
+                              {/* الإضافات الخاصة بالمنتج */}
+                              {product.extras &&
+                                product.extras.length > 0 &&
+                                product.extras.map((extra, j) =>
+                                  !extra.isDone ? (
+                                    <li
+                                      className="list-group-item d-flex flex-column justify-content-between align-items-center p-1"
+                                      key={`${i}-${j}`}
+                                      style={
+                                        product.isAdd
+                                          ? {
+                                              backgroundColor: "red",
+                                              color: "white",
+                                            }
+                                          : { color: "black" }
+                                      }
+                                    >
+                                      <div className="d-flex justify-content-between align-items-center w-100 p-1">
+                                        {extra.extraDetails.map((detail) => (
+                                          <p
+                                            className="badge badge-secondary m-1"
+                                            key={detail.extraid}
+                                          >
+                                            {detail.name}
+                                          </p>
+                                        ))}
+                                      </div>
+                                    </li>
+                                  ) : null
+                                )}
+                            </li>
+                          ))}
+                        </ul>
+
+                        {/* زر الرفض */}
+                        <div className="text-center w-100 d-flex flex-row">
+                          <button className="btn w-100 btn-warning h-100 btn-lg">
+                            مرفوض
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  }
+                  return null;
+                })
               )}
             </div>
           )}
 
           {activeTab === "storeConsumption" && (
             <div>
-              <h5 calssName="text-right text-dark font-weight-bold mb-4">عناصر المخزن الاستهلاك</h5>
+              <h5 calssName="text-right text-dark font-weight-bold mb-4">
+                عناصر المخزن الاستهلاك
+              </h5>
               {consumptionItems.length === 0 ? (
                 <p>لا توجد عناصر مخزن استهلاك.</p>
               ) : (
