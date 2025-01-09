@@ -514,10 +514,11 @@ const PreparationScreen = () => {
                           </div>
                           <ul className="list-group list-group-flush">
                             {Ticket.products
-                              .filter(
-                                (pr) =>
-                                  pr.isDone === true && pr.isDeleverd === false
-                              )
+                              // .filter(
+                              //   (pr) =>
+                              //     pr.isDone === true && pr.isDeleverd === false
+                              // )
+                              // 
                               .map((product, i) => {
                                 return (
                                   <>
