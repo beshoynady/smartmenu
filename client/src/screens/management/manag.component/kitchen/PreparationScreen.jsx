@@ -285,13 +285,14 @@ const PreparationScreen = () => {
         <div className="w-100 h-auto">
           {activeTab === "newTickets" && (
             <>
-              <h5 calssName="text-justify text-dark">التذاكر الجديدة</h5>
+              <h5 calssName="text-right text-dark font-weight-bold mb-4">التذاكر الجديدة</h5>
               <div className="d-flex flex-wrap ">
                 {activeTickets.length === 0 ? (
                   <p>لا توجد تذاكر جديدة.</p>
                 ) : (
                   activeTickets.map((Ticket, i) => {
                     if (
+                      Ticket.preparationStatus === "Pending" &&
                       Ticket.products.filter(
                         (product) => product.isDone === false
                       ).length > 0
@@ -620,7 +621,7 @@ const PreparationScreen = () => {
 
           {activeTab === "completedTickets" && (
             <>
-              <h5 calssName="text-justify text-dark">التذاكر المنفذة</h5>
+              <h5 calssName="text-right text-dark font-weight-bold mb-4">التذاكر المنفذة</h5>
               <div>
                 {activeTickets.filter(
                   (ticket) => ticket.preparationStatus === "Prepared"
@@ -642,7 +643,7 @@ const PreparationScreen = () => {
 
           {activeTab === "cancelledTickets" && (
             <div>
-              <h5 calssName="text-justify text-dark">التذاكر الملغاة</h5>
+              <h5 calssName="text-right text-dark font-weight-bold mb-4">التذاكر الملغاة</h5>
               {activeTickets.filter(
                 (ticket) => ticket.preparationStatus === "Rejected"
               ).length === 0 ? (
@@ -662,7 +663,7 @@ const PreparationScreen = () => {
 
           {activeTab === "storeConsumption" && (
             <div>
-              <h5 calssName="text-justify text-dark">عناصر المخزن الاستهلاك</h5>
+              <h5 calssName="text-right text-dark font-weight-bold mb-4">عناصر المخزن الاستهلاك</h5>
               {consumptionItems.length === 0 ? (
                 <p>لا توجد عناصر مخزن استهلاك.</p>
               ) : (
