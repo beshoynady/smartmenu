@@ -180,11 +180,12 @@ const PreparationScreen = () => {
 
   return (
     <div
-      className="w-100 d-flex align-items-end overflow-auto bg-transparent p-3"
+      className="w-100 d-flex align-items-start overflow-auto bg-transparent p-3"
       style={{ backgroundColor: "rgba(0, 0, 255, 0.1)" }}
     >
       {/* Section selection and ticket stats */}
-      <div className=" d-flex col-3 flex-column align-items-start justify-content-between mb-3"
+      <div
+        className=" d-flex col-lg-2 col-sm-3 flex-column align-items-start justify-content-between mb-3"
         style={{ alignItems: "flex-end" }}
       >
         {/* Section selection */}
@@ -252,8 +253,8 @@ const PreparationScreen = () => {
       </div>
 
       {/* Preparation Ticket Details */}
-      <div className=" d-flex col-9 flex-column justify-content-between align-items-start">
-        <div className="w-100 d-flex justify-content-between align-items-center bg-transparent p-3 mb-3">
+      <div className=" d-flex col-lg-10 col-sm-9 flex-column justify-content-between align-items-start">
+        <div className="w-100 d-flex justify-content-between align-items-center bg-transparent p-1 mb-3">
           <button
             className="btn btn-primary w-100 w-sm-auto mb-2 mb-sm-0"
             onClick={() => handleTabChange("newTickets")}
@@ -276,346 +277,365 @@ const PreparationScreen = () => {
             className="btn btn-info w-100 w-sm-auto mb-2 mb-sm-0"
             onClick={() => handleTabChange("storeConsumption")}
           >
-            عناصر المخزن الاستهلاك
+            المخزن الاستهلاك
           </button>
         </div>
 
         {/* عرض التذاكر والمخزن حسب التبويب */}
-        <div className="w-100">
+        <div className="w-100 h-auto">
           {activeTab === "newTickets" && (
-            <div>
+            <>
               <h5>التذاكر الجديدة</h5>
-              {activeTickets.length === 0 ? (
-                <p>لا توجد تذاكر جديدة.</p>
-              ) : (
-                
-                activeTickets.map((Ticket, i) => {
-                  if (
-                    Ticket.products.filter((product) => product.isDone === false)
-                      .length > 0
-                  ) {
-                    return (
-                      <div className="col-lg-3 col-md-4 col-sm-6 col-12 mb-4" key={i}>
+              <div className="d-flex flex-wrap "
+              >
+                {activeTickets.length === 0 ? (
+                  <p>لا توجد تذاكر جديدة.</p>
+                ) : (
+                  activeTickets.map((Ticket, i) => {
+                    if (
+                      Ticket.products.filter(
+                        (product) => product.isDone === false
+                      ).length > 0
+                    ) {
+                      return (
                         <div
-                          className="card text-white bg-success"
-                          style={{ width: "260px" }}
+                          className="col-lg-3 col-md-4 col-sm-6 col-12 mb-4 card text-white bg-success"
+                          key={i}
                         >
-                          <div
-                            className="card-body text-right d-flex justify-content-between p-0 m-1"
-                            style={{ fontSize: "14px", fontWeight: "500" }}
-                          >
-                            <div className="col-6 p-0">
-                              <p className="card-text">
-                                {" "}
-                                {Ticket.table != null
-                                  ? `طاولة: ${Ticket.table?.tableNumber}`
-                                  : Ticket.user
-                                  ? `العميل: ${Ticket.user?.username}`
-                                  : ""}
-                              </p>
-                              <p className="card-text">
-                                رقم الطلب: {Ticket.TicketNum ? Ticket.TicketNum : ""}
-                              </p>
-                              <p className="card-text">الفاتورة: {Ticket.serial}</p>
-                              <p className="card-text">
-                                نوع الطلب: {Ticket.TicketType}
-                              </p>
-                            </div>
-      
-                            <div className="col-6 p-0">
-                              {Ticket.waiter ? (
-                                <p className="card-text">
-                                  الويتر: {Ticket.waiter && Ticket.waiter?.username}
-                                </p>
-                              ) : (
-                                ""
-                              )}
-                              <p className="card-text">
-                                الاستلام: {formatTime(Ticket.createdAt)}
-                              </p>
-                              <p className="card-text">
-                                الانتظار:{" "}
-                                {setTimeout(
-                                  () => waitingTime(Ticket.updateAt),
-                                  60000
-                                )}{" "}
-                                دقيقه
-                              </p>
-                            </div>
-                          </div>
-                          <ul className="list-group list-group-flush">
-                            {Ticket.products
-                              // .filter(
-                              //   (product) =>
-                              //     product.isDone === false &&
-                              //     product.productid?.preparationSection === "Kitchen"
-                              // )
-                              .map((product, i) => {
-                                return (
-                                  <>
-                                    <li
-                                      className="list-group-item d-flex flex-column justify-content-between align-items-center"
-                                      key={i}
-                                      style={
-                                        product.isAdd
-                                          ? { backgroundColor: "red", color: "white" }
-                                          : { color: "black" }
-                                      }
-                                    >
-                                      <div className="d-flex justify-content-between align-items-center w-100">
-                                        <p
-                                          style={{
-                                            fontSize: "1.2em",
-                                            fontWeight: "bold",
-                                          }}
-                                        >
-                                          {i + 1}- {product.name}{" "}
-                                          {product.size ? product.size : ""}
-                                        </p>
-                                        <span
-                                          style={{
-                                            fontSize: "1.2em",
-                                            fontWeight: "bold",
-                                          }}
-                                        >
-                                          {" "}
-                                          × {product.quantity}
-                                        </span>
-                                      </div>
-                                      <div
-                                        style={{
-                                          fontSize: "1.2em",
-                                          fontWeight: "bold",
-                                        }}
-                                      >
-                                        {product.notes}
-                                      </div>
-                                    </li>
-                                    {product.extras &&
-                                      product.extras.length > 0 &&
-                                      product.extras.map((extra, j) => {
-                                        if (extra && extra.isDone === false) {
-                                          return (
-                                            <li
-                                              className="list-group-item d-flex flex-column justify-content-between align-items-center"
-                                              key={`${i}-${j}`}
-                                              style={
-                                                product.isAdd
-                                                  ? {
-                                                      backgroundColor: "red",
-                                                      color: "white",
-                                                    }
-                                                  : { color: "black" }
-                                              }
-                                            >
-                                              <div className="d-flex justify-content-between align-items-center w-100">
-                                                {extra.extraDetails.map((detail) => (
-                                                  <p
-                                                    className="badge badge-secondary m-1"
-                                                    key={detail.extraid}
-                                                  >{`${detail.name}`}</p>
-                                                ))}
-                                              </div>
-                                            </li>
-                                          );
-                                        } else {
-                                          return null;
-                                        }
-                                      })}
-                                  </>
-                                );
-                              })}
-                          </ul>
-                          <div className="card-footer text-center w-100 d-flex flex-row">
-                            {Ticket.preparationStatus === "Preparing" ? (
-                              <button
-                                className="btn w-100 btn-warning h-100 btn btn-lg"
-                                onClick={() => {
-                                  updateTicketStatus(
-                                    Ticket._id,
-                                     "Prepared"
-                                  );
-                                }}
-                              >
-                                تم التنفيذ
-                              </button>
-                            ) : Ticket.preparationStatus === "Pending" ? (
-                              <button
-                                className="btn w-100 btn-primary h-100 btn btn-lg"
-                                onClick={() => updateTicketStatus(Ticket._id, "Preparing")}
-                              >
-                                بدء التنفيذ
-                              </button>
-                            ) : (
-                              ""
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  } else if (
-                    Ticket.preparationStatus === "Prepared" &&
-                    Ticket.products.filter(
-                      (pr) => pr.isDone === true && pr.isDeleverd === false
-                    ).length > 0
-                  ) {
-                    return (
-                      <div className="col-md-4 mb-4" key={i}>
-                        <div
-                          className="card text-white bg-success"
-                          style={{ width: "260px" }}
-                        >
-                          <div
-                            className="card-body text-right d-flex justify-content-between p-0 m-1"
-                            style={{ fontSize: "14px", fontWeight: "500" }}
-                          >
-                            <div className="col-6 p-0">
-                              <p className="card-text">
-                                {" "}
-                                {Ticket.table != null
-                                  ? `طاولة: ${Ticket.table.tableNumber}`
-                                  : Ticket.user
-                                  ? `العميل: ${Ticket.user.username}`
-                                  : ""}
-                              </p>
-                              <p className="card-text">
-                                رقم الطلب: {Ticket.TicketNum ? Ticket.TicketNum : ""}
-                              </p>
-                              <p className="card-text">الفاتورة: {Ticket.serial}</p>
-                              <p className="card-text">
-                                نوع الطلب: {Ticket.TicketType}
-                              </p>
-                            </div>
-      
-                            <div className="col-6 p-0">
-                              {Ticket.waiter ? (
-                                <p className="card-text">
-                                  الويتر: {Ticket.waiter && Ticket.waiter.username}
-                                </p>
-                              ) : (
-                                ""
-                              )}
-                              <p className="card-text">
-                                الاستلام: {formatTime(Ticket.createdAt)}
-                              </p>
-                              <p className="card-text">
-                                الانتظار:{" "}
-                                {setTimeout(
-                                  () => waitingTime(Ticket.updateAt),
-                                  60000
-                                )}{" "}
-                                دقيقه
-                              </p>
-                            </div>
-                          </div>
-                          <ul className="list-group list-group-flush">
-                            {Ticket.products
-                              .filter(
-                                (pr) => pr.isDone === true && pr.isDeleverd === false
-                              )
-                              .map((product, i) => {
-                                return (
-                                  <>
-                                    <li
-                                      className="list-group-item d-flex flex-column justify-content-between align-items-center"
-                                      key={i}
-                                      style={
-                                        product.isAdd
-                                          ? { backgroundColor: "red", color: "white" }
-                                          : { color: "black" }
-                                      }
-                                    >
-                                      <div className="d-flex justify-content-between align-items-center w-100">
-                                        <p
-                                          style={{
-                                            fontSize: "1.2em",
-                                            fontWeight: "bold",
-                                          }}
-                                        >
-                                          {i + 1}- {product.name}{" "}
-                                          {product.size ? product.size : ""}
-                                        </p>
-                                        <span
-                                          style={{
-                                            fontSize: "1.2em",
-                                            fontWeight: "bold",
-                                          }}
-                                        >
-                                          {" "}
-                                          × {product.quantity}
-                                        </span>
-                                      </div>
-                                      <div
-                                        style={{
-                                          fontSize: "1.2em",
-                                          fontWeight: "bold",
-                                        }}
-                                      >
-                                        {product.notes}
-                                      </div>
-                                    </li>
-                                    {product.extras &&
-                                      product.extras.length > 0 &&
-                                      product.extras.map((extra, j) => {
-                                        if (extra && extra.isDone === false) {
-                                          return (
-                                            <li
-                                              className="list-group-item d-flex flex-column justify-content-between align-items-center"
-                                              key={`${i}-${j}`}
-                                              style={
-                                                product.isAdd
-                                                  ? {
-                                                      backgroundColor: "red",
-                                                      color: "white",
-                                                    }
-                                                  : { color: "black" }
-                                              }
-                                            >
-                                              <div className="d-flex justify-content-between align-items-center w-100">
-                                                {extra.extraDetails.map((detail) => (
-                                                  <p
-                                                    className="badge badge-secondary m-1"
-                                                    key={detail.extraid}
-                                                  >{`${detail.name}`}</p>
-                                                ))}
-                                              </div>
-                                            </li>
-                                          );
-                                        } else {
-                                          return null;
-                                        }
-                                      })}
-                                  </>
-                                );
-                              })}
-                          </ul>
-                          <div className="card-footer text-center w-100 d-flex flex-row">
-                            <button className="btn w-100 btn-info h-100 btn btn-lg">
-                              انتظار الاستلام
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  }
-                })
 
-              )}
-            </div>
+                            <div
+                              className="card-body text-right d-flex justify-content-between p-0 m-1"
+                              style={{ fontSize: "14px", fontWeight: "500" }}
+                            >
+                              <div className="col-6 p-0">
+                                <p className="card-text">
+                                  {" "}
+                                  {Ticket.table != null
+                                    ? `طاولة: ${Ticket.table?.tableNumber}`
+                                    : Ticket.user
+                                    ? `العميل: ${Ticket.user?.username}`
+                                    : ""}
+                                </p>
+                                <p className="card-text">
+                                  رقم الطلب:{" "}
+                                  {Ticket.TicketNum ? Ticket.TicketNum : ""}
+                                </p>
+                                <p className="card-text">
+                                  الفاتورة: {Ticket.serial}
+                                </p>
+                                <p className="card-text">
+                                  نوع الطلب: {Ticket.TicketType}
+                                </p>
+                              </div>
+
+                              <div className="col-6 p-0">
+                                {Ticket.waiter ? (
+                                  <p className="card-text">
+                                    الويتر:{" "}
+                                    {Ticket.waiter && Ticket.waiter?.username}
+                                  </p>
+                                ) : (
+                                  ""
+                                )}
+                                <p className="card-text">
+                                  الاستلام: {formatTime(Ticket.createdAt)}
+                                </p>
+                                <p className="card-text">
+                                  الانتظار:{" "}
+                                  {setTimeout(
+                                    () => waitingTime(Ticket.updateAt),
+                                    60000
+                                  )}{" "}
+                                  دقيقه
+                                </p>
+                              </div>
+                            </div>
+                            <ul className="list-group list-group-flush">
+                              {Ticket.products
+                                // .filter(
+                                //   (product) =>
+                                //     product.isDone === false &&
+                                //     product.productid?.preparationSection === "Kitchen"
+                                // )
+                                .map((product, i) => {
+                                  return (
+                                    <>
+                                      <li
+                                        className="list-group-item d-flex flex-column justify-content-between align-items-center"
+                                        key={i}
+                                        style={
+                                          product.isAdd
+                                            ? {
+                                                backgroundColor: "red",
+                                                color: "white",
+                                              }
+                                            : { color: "black" }
+                                        }
+                                      >
+                                        <div className="d-flex justify-content-between align-items-center w-100">
+                                          <p
+                                            style={{
+                                              fontSize: "1.2em",
+                                              fontWeight: "bold",
+                                            }}
+                                          >
+                                            {i + 1}- {product.name}{" "}
+                                            {product.size ? product.size : ""}
+                                          </p>
+                                          <span
+                                            style={{
+                                              fontSize: "1.2em",
+                                              fontWeight: "bold",
+                                            }}
+                                          >
+                                            {" "}
+                                            × {product.quantity}
+                                          </span>
+                                        </div>
+                                        <div
+                                          style={{
+                                            fontSize: "1.2em",
+                                            fontWeight: "bold",
+                                          }}
+                                        >
+                                          {product.notes}
+                                        </div>
+                                      </li>
+                                      {product.extras &&
+                                        product.extras.length > 0 &&
+                                        product.extras.map((extra, j) => {
+                                          if (extra && extra.isDone === false) {
+                                            return (
+                                              <li
+                                                className="list-group-item d-flex flex-column justify-content-between align-items-center"
+                                                key={`${i}-${j}`}
+                                                style={
+                                                  product.isAdd
+                                                    ? {
+                                                        backgroundColor: "red",
+                                                        color: "white",
+                                                      }
+                                                    : { color: "black" }
+                                                }
+                                              >
+                                                <div className="d-flex justify-content-between align-items-center w-100">
+                                                  {extra.extraDetails.map(
+                                                    (detail) => (
+                                                      <p
+                                                        className="badge badge-secondary m-1"
+                                                        key={detail.extraid}
+                                                      >{`${detail.name}`}</p>
+                                                    )
+                                                  )}
+                                                </div>
+                                              </li>
+                                            );
+                                          } else {
+                                            return null;
+                                          }
+                                        })}
+                                    </>
+                                  );
+                                })}
+                            </ul>
+                            <div className="card-footer text-center w-100 d-flex flex-row">
+                              {Ticket.preparationStatus === "Preparing" ? (
+                                <button
+                                  className="btn w-100 btn-warning h-100 btn btn-lg"
+                                  onClick={() => {
+                                    updateTicketStatus(Ticket._id, "Prepared");
+                                  }}
+                                >
+                                  تم التنفيذ
+                                </button>
+                              ) : Ticket.preparationStatus === "Pending" ? (
+                                <button
+                                  className="btn w-100 btn-primary h-100 btn btn-lg"
+                                  onClick={() =>
+                                    updateTicketStatus(Ticket._id, "Preparing")
+                                  }
+                                >
+                                  بدء التنفيذ
+                                </button>
+                              ) : (
+                                ""
+                              )}
+                            </div>
+                          </div>
+                      );
+                    } else if (
+                      Ticket.preparationStatus === "Prepared" &&
+                      Ticket.products.filter(
+                        (pr) => pr.isDone === true && pr.isDeleverd === false
+                      ).length > 0
+                    ) {
+                      return (
+                        <div className="col-lg-3 col-md-4 col-sm-6 col-12 mb-4 card text-white bg-success" key={i}>
+                            <div
+                              className="card-body text-right d-flex justify-content-between p-0 m-1"
+                              style={{ fontSize: "14px", fontWeight: "500" }}
+                            >
+                              <div className="col-6 p-0">
+                                <p className="card-text">
+                                  {" "}
+                                  {Ticket.table != null
+                                    ? `طاولة: ${Ticket.table.tableNumber}`
+                                    : Ticket.user
+                                    ? `العميل: ${Ticket.user.username}`
+                                    : ""}
+                                </p>
+                                <p className="card-text">
+                                  رقم الطلب:{" "}
+                                  {Ticket.TicketNum ? Ticket.TicketNum : ""}
+                                </p>
+                                <p className="card-text">
+                                  الفاتورة: {Ticket.serial}
+                                </p>
+                                <p className="card-text">
+                                  نوع الطلب: {Ticket.TicketType}
+                                </p>
+                              </div>
+
+                              <div className="col-6 p-0">
+                                {Ticket.waiter ? (
+                                  <p className="card-text">
+                                    الويتر:{" "}
+                                    {Ticket.waiter && Ticket.waiter.username}
+                                  </p>
+                                ) : (
+                                  ""
+                                )}
+                                <p className="card-text">
+                                  الاستلام: {formatTime(Ticket.createdAt)}
+                                </p>
+                                <p className="card-text">
+                                  الانتظار:{" "}
+                                  {setTimeout(
+                                    () => waitingTime(Ticket.updateAt),
+                                    60000
+                                  )}{" "}
+                                  دقيقه
+                                </p>
+                              </div>
+                            </div>
+                            <ul className="list-group list-group-flush">
+                              {Ticket.products
+                                .filter(
+                                  (pr) =>
+                                    pr.isDone === true &&
+                                    pr.isDeleverd === false
+                                )
+                                .map((product, i) => {
+                                  return (
+                                    <>
+                                      <li
+                                        className="list-group-item d-flex flex-column justify-content-between align-items-center"
+                                        key={i}
+                                        style={
+                                          product.isAdd
+                                            ? {
+                                                backgroundColor: "red",
+                                                color: "white",
+                                              }
+                                            : { color: "black" }
+                                        }
+                                      >
+                                        <div className="d-flex justify-content-between align-items-center w-100">
+                                          <p
+                                            style={{
+                                              fontSize: "1.2em",
+                                              fontWeight: "bold",
+                                            }}
+                                          >
+                                            {i + 1}- {product.name}{" "}
+                                            {product.size ? product.size : ""}
+                                          </p>
+                                          <span
+                                            style={{
+                                              fontSize: "1.2em",
+                                              fontWeight: "bold",
+                                            }}
+                                          >
+                                            {" "}
+                                            × {product.quantity}
+                                          </span>
+                                        </div>
+                                        <div
+                                          style={{
+                                            fontSize: "1.2em",
+                                            fontWeight: "bold",
+                                          }}
+                                        >
+                                          {product.notes}
+                                        </div>
+                                      </li>
+                                      {product.extras &&
+                                        product.extras.length > 0 &&
+                                        product.extras.map((extra, j) => {
+                                          if (extra && extra.isDone === false) {
+                                            return (
+                                              <li
+                                                className="list-group-item d-flex flex-column justify-content-between align-items-center"
+                                                key={`${i}-${j}`}
+                                                style={
+                                                  product.isAdd
+                                                    ? {
+                                                        backgroundColor: "red",
+                                                        color: "white",
+                                                      }
+                                                    : { color: "black" }
+                                                }
+                                              >
+                                                <div className="d-flex justify-content-between align-items-center w-100">
+                                                  {extra.extraDetails.map(
+                                                    (detail) => (
+                                                      <p
+                                                        className="badge badge-secondary m-1"
+                                                        key={detail.extraid}
+                                                      >{`${detail.name}`}</p>
+                                                    )
+                                                  )}
+                                                </div>
+                                              </li>
+                                            );
+                                          } else {
+                                            return null;
+                                          }
+                                        })}
+                                    </>
+                                  );
+                                })}
+                            </ul>
+                            <div className="card-footer text-center w-100 d-flex flex-row">
+                              <button className="btn w-100 btn-info h-100 btn btn-lg">
+                                انتظار الاستلام
+                              </button>
+                            </div>
+                          </div>
+                      );
+                    }
+                  })
+                )}
+              </div>
+            </>
           )}
 
           {activeTab === "completedTickets" && (
             <div>
               <h5>التذاكر المنفذة</h5>
-              {activeTickets.filter(ticket => ticket.preparationStatus === "Prepared").length === 0 ? (
+              {activeTickets.filter(
+                (ticket) => ticket.preparationStatus === "Prepared"
+              ).length === 0 ? (
                 <p>لا توجد تذاكر تم تنفيذها.</p>
               ) : (
-                activeTickets.filter(ticket => ticket.preparationStatus === "Prepared").map((ticket) => (
-                  <div key={ticket._id} className="ticket-card mb-3">
-                    <h6>{ticket.productName}</h6>
-                    <p>{ticket.details}</p>
-                  </div>
-                ))
+                activeTickets
+                  .filter((ticket) => ticket.preparationStatus === "Prepared")
+                  .map((ticket) => (
+                    <div key={ticket._id} className="ticket-card mb-3">
+                      <h6>{ticket.productName}</h6>
+                      <p>{ticket.details}</p>
+                    </div>
+                  ))
               )}
             </div>
           )}
@@ -623,15 +643,19 @@ const PreparationScreen = () => {
           {activeTab === "cancelledTickets" && (
             <div>
               <h5>التذاكر الملغاة</h5>
-              {activeTickets.filter(ticket => ticket.preparationStatus === "Rejected").length === 0 ? (
+              {activeTickets.filter(
+                (ticket) => ticket.preparationStatus === "Rejected"
+              ).length === 0 ? (
                 <p>لا توجد تذاكر ملغاة.</p>
               ) : (
-                activeTickets.filter(ticket => ticket.preparationStatus === "Rejected").map((ticket) => (
-                  <div key={ticket._id} className="ticket-card mb-3">
-                    <h6>{ticket.productName}</h6>
-                    <p>{ticket.details}</p>
-                  </div>
-                ))
+                activeTickets
+                  .filter((ticket) => ticket.preparationStatus === "Rejected")
+                  .map((ticket) => (
+                    <div key={ticket._id} className="ticket-card mb-3">
+                      <h6>{ticket.productName}</h6>
+                      <p>{ticket.details}</p>
+                    </div>
+                  ))
               )}
             </div>
           )}
@@ -645,7 +669,9 @@ const PreparationScreen = () => {
                 consumptionItems.map((item, index) => (
                   <div key={index} className="consumption-item mb-3">
                     <h6>{item.name}</h6>
-                    <p>الكمية: {item.amount} {item.unit}</p>
+                    <p>
+                      الكمية: {item.amount} {item.unit}
+                    </p>
                   </div>
                 ))
               )}
