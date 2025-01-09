@@ -286,8 +286,7 @@ const PreparationScreen = () => {
           {activeTab === "newTickets" && (
             <>
               <h5>التذاكر الجديدة</h5>
-              <div className="d-flex flex-wrap "
-              >
+              <div className="d-flex flex-wrap ">
                 {activeTickets.length === 0 ? (
                   <p>لا توجد تذاكر جديدة.</p>
                 ) : (
@@ -302,166 +301,165 @@ const PreparationScreen = () => {
                           className="col-lg-3 col-md-4 col-sm-6 col-12 mb-4 card text-white bg-success"
                           key={i}
                         >
-
-                            <div
-                              className="card-body text-right d-flex justify-content-between p-0 m-1"
-                              style={{ fontSize: "14px", fontWeight: "500" }}
-                            >
-                              <div className="col-6 p-0">
-                                <p className="card-text">
-                                  {" "}
-                                  {Ticket.table != null
-                                    ? `طاولة: ${Ticket.table?.tableNumber}`
-                                    : Ticket.user
-                                    ? `العميل: ${Ticket.user?.username}`
-                                    : ""}
-                                </p>
-                                <p className="card-text">
-                                  رقم الطلب:{" "}
-                                  {Ticket.TicketNum ? Ticket.TicketNum : ""}
-                                </p>
-                                <p className="card-text">
-                                  الفاتورة: {Ticket.serial}
-                                </p>
-                                <p className="card-text">
-                                  نوع الطلب: {Ticket.TicketType}
-                                </p>
-                              </div>
-
-                              <div className="col-6 p-0">
-                                {Ticket.waiter ? (
-                                  <p className="card-text">
-                                    الويتر:{" "}
-                                    {Ticket.waiter && Ticket.waiter?.username}
-                                  </p>
-                                ) : (
-                                  ""
-                                )}
-                                <p className="card-text">
-                                  الاستلام: {formatTime(Ticket.createdAt)}
-                                </p>
-                                <p className="card-text">
-                                  الانتظار:{" "}
-                                  {setTimeout(
-                                    () => waitingTime(Ticket.updateAt),
-                                    60000
-                                  )}{" "}
-                                  دقيقه
-                                </p>
-                              </div>
+                          <div
+                            className="card-body text-right d-flex justify-content-between p-0 m-1"
+                            style={{ fontSize: "14px", fontWeight: "500" }}
+                          >
+                            <div className="col-6 p-0">
+                              <p className="card-text">
+                                {" "}
+                                {Ticket.table != null
+                                  ? `طاولة: ${Ticket.table?.tableNumber}`
+                                  : Ticket.user
+                                  ? `العميل: ${Ticket.user?.username}`
+                                  : ""}
+                              </p>
+                              <p className="card-text">
+                                رقم الطلب:{" "}
+                                {Ticket.TicketNum ? Ticket.TicketNum : ""}
+                              </p>
+                              <p className="card-text">
+                                الفاتورة: {Ticket.serial}
+                              </p>
+                              <p className="card-text">
+                                نوع الطلب: {Ticket.TicketType}
+                              </p>
                             </div>
-                            <ul className="list-group list-group-flush">
-                              {Ticket.products
-                                // .filter(
-                                //   (product) =>
-                                //     product.isDone === false &&
-                                //     product.productid?.preparationSection === "Kitchen"
-                                // )
-                                .map((product, i) => {
-                                  return (
-                                    <>
-                                      <li
-                                        className="list-group-item d-flex flex-column justify-content-between align-items-center"
-                                        key={i}
-                                        style={
-                                          product.isAdd
-                                            ? {
-                                                backgroundColor: "red",
-                                                color: "white",
-                                              }
-                                            : { color: "black" }
-                                        }
-                                      >
-                                        <div className="d-flex justify-content-between align-items-center w-100">
-                                          <p
-                                            style={{
-                                              fontSize: "1.2em",
-                                              fontWeight: "bold",
-                                            }}
-                                          >
-                                            {i + 1}- {product.name}{" "}
-                                            {product.size ? product.size : ""}
-                                          </p>
-                                          <span
-                                            style={{
-                                              fontSize: "1.2em",
-                                              fontWeight: "bold",
-                                            }}
-                                          >
-                                            {" "}
-                                            × {product.quantity}
-                                          </span>
-                                        </div>
-                                        <div
+
+                            <div className="col-6 p-0">
+                              {Ticket.waiter ? (
+                                <p className="card-text">
+                                  الويتر:{" "}
+                                  {Ticket.waiter && Ticket.waiter?.username}
+                                </p>
+                              ) : (
+                                ""
+                              )}
+                              <p className="card-text">
+                                الاستلام: {formatTime(Ticket.createdAt)}
+                              </p>
+                              <p className="card-text">
+                                الانتظار:{" "}
+                                {setTimeout(
+                                  () => waitingTime(Ticket.updateAt),
+                                  60000
+                                )}{" "}
+                                دقيقه
+                              </p>
+                            </div>
+                          </div>
+                          <ul className="list-group list-group-flush">
+                            {Ticket.products
+                              // .filter(
+                              //   (product) =>
+                              //     product.isDone === false &&
+                              //     product.productid?.preparationSection === "Kitchen"
+                              // )
+                              .map((product, i) => {
+                                return (
+                                  <>
+                                    <li
+                                      className="list-group-item d-flex flex-column justify-content-between align-items-center"
+                                      key={i}
+                                      style={
+                                        product.isAdd
+                                          ? {
+                                              backgroundColor: "red",
+                                              color: "white",
+                                            }
+                                          : { color: "black" }
+                                      }
+                                    >
+                                      <div className="d-flex justify-content-between align-items-center w-100">
+                                        <p
                                           style={{
                                             fontSize: "1.2em",
                                             fontWeight: "bold",
                                           }}
                                         >
-                                          {product.notes}
-                                        </div>
-                                      </li>
-                                      {product.extras &&
-                                        product.extras.length > 0 &&
-                                        product.extras.map((extra, j) => {
-                                          if (extra && extra.isDone === false) {
-                                            return (
-                                              <li
-                                                className="list-group-item d-flex flex-column justify-content-between align-items-center"
-                                                key={`${i}-${j}`}
-                                                style={
-                                                  product.isAdd
-                                                    ? {
-                                                        backgroundColor: "red",
-                                                        color: "white",
-                                                      }
-                                                    : { color: "black" }
-                                                }
-                                              >
-                                                <div className="d-flex justify-content-between align-items-center w-100">
-                                                  {extra.extraDetails.map(
-                                                    (detail) => (
-                                                      <p
-                                                        className="badge badge-secondary m-1"
-                                                        key={detail.extraid}
-                                                      >{`${detail.name}`}</p>
-                                                    )
-                                                  )}
-                                                </div>
-                                              </li>
-                                            );
-                                          } else {
-                                            return null;
-                                          }
-                                        })}
-                                    </>
-                                  );
-                                })}
-                            </ul>
-                            <div className="card-footer text-center w-100 d-flex flex-row">
-                              {Ticket.preparationStatus === "Preparing" ? (
-                                <button
-                                  className="btn w-100 btn-warning h-100 btn btn-lg"
-                                  onClick={() => {
-                                    updateTicketStatus(Ticket._id, "Prepared");
-                                  }}
-                                >
-                                  تم التنفيذ
-                                </button>
-                              ) : Ticket.preparationStatus === "Pending" ? (
-                                <button
-                                  className="btn w-100 btn-primary h-100 btn btn-lg"
-                                  onClick={() =>
-                                    updateTicketStatus(Ticket._id, "Preparing")
-                                  }
-                                >
-                                  بدء التنفيذ
-                                </button>
-                              ) : (
-                                ""
-                              )}
-                            </div>
+                                          {i + 1}- {product.name}{" "}
+                                          {product.size ? product.size : ""}
+                                        </p>
+                                        <span
+                                          style={{
+                                            fontSize: "1.2em",
+                                            fontWeight: "bold",
+                                          }}
+                                        >
+                                          {" "}
+                                          × {product.quantity}
+                                        </span>
+                                      </div>
+                                      <div
+                                        style={{
+                                          fontSize: "1.2em",
+                                          fontWeight: "bold",
+                                        }}
+                                      >
+                                        {product.notes}
+                                      </div>
+                                    </li>
+                                    {product.extras &&
+                                      product.extras.length > 0 &&
+                                      product.extras.map((extra, j) => {
+                                        if (extra && extra.isDone === false) {
+                                          return (
+                                            <li
+                                              className="list-group-item d-flex flex-column justify-content-between align-items-center"
+                                              key={`${i}-${j}`}
+                                              style={
+                                                product.isAdd
+                                                  ? {
+                                                      backgroundColor: "red",
+                                                      color: "white",
+                                                    }
+                                                  : { color: "black" }
+                                              }
+                                            >
+                                              <div className="d-flex justify-content-between align-items-center w-100">
+                                                {extra.extraDetails.map(
+                                                  (detail) => (
+                                                    <p
+                                                      className="badge badge-secondary m-1"
+                                                      key={detail.extraid}
+                                                    >{`${detail.name}`}</p>
+                                                  )
+                                                )}
+                                              </div>
+                                            </li>
+                                          );
+                                        } else {
+                                          return null;
+                                        }
+                                      })}
+                                  </>
+                                );
+                              })}
+                          </ul>
+                          <div className="card-footer text-center w-100 d-flex flex-row">
+                            {Ticket.preparationStatus === "Preparing" ? (
+                              <button
+                                className="btn w-100 btn-warning h-100 btn btn-lg"
+                                onClick={() => {
+                                  updateTicketStatus(Ticket._id, "Prepared");
+                                }}
+                              >
+                                تم التنفيذ
+                              </button>
+                            ) : Ticket.preparationStatus === "Pending" ? (
+                              <button
+                                className="btn w-100 btn-primary h-100 btn btn-lg"
+                                onClick={() =>
+                                  updateTicketStatus(Ticket._id, "Preparing")
+                                }
+                              >
+                                بدء التنفيذ
+                              </button>
+                            ) : (
+                              ""
+                            )}
                           </div>
+                        </div>
                       );
                     } else if (
                       Ticket.preparationStatus === "Prepared" &&
@@ -470,148 +468,150 @@ const PreparationScreen = () => {
                       ).length > 0
                     ) {
                       return (
-                        <div className="col-lg-3 col-md-4 col-sm-6 col-12 mb-4 card text-white bg-success" key={i}>
-                            <div
-                              className="card-body text-right d-flex justify-content-between p-0 m-1"
-                              style={{ fontSize: "14px", fontWeight: "500" }}
-                            >
-                              <div className="col-6 p-0">
-                                <p className="card-text">
-                                  {" "}
-                                  {Ticket.table != null
-                                    ? `طاولة: ${Ticket.table.tableNumber}`
-                                    : Ticket.user
-                                    ? `العميل: ${Ticket.user.username}`
-                                    : ""}
-                                </p>
-                                <p className="card-text">
-                                  رقم الطلب:{" "}
-                                  {Ticket.TicketNum ? Ticket.TicketNum : ""}
-                                </p>
-                                <p className="card-text">
-                                  الفاتورة: {Ticket.serial}
-                                </p>
-                                <p className="card-text">
-                                  نوع الطلب: {Ticket.TicketType}
-                                </p>
-                              </div>
-
-                              <div className="col-6 p-0">
-                                {Ticket.waiter ? (
-                                  <p className="card-text">
-                                    الويتر:{" "}
-                                    {Ticket.waiter && Ticket.waiter.username}
-                                  </p>
-                                ) : (
-                                  ""
-                                )}
-                                <p className="card-text">
-                                  الاستلام: {formatTime(Ticket.createdAt)}
-                                </p>
-                                <p className="card-text">
-                                  الانتظار:{" "}
-                                  {setTimeout(
-                                    () => waitingTime(Ticket.updateAt),
-                                    60000
-                                  )}{" "}
-                                  دقيقه
-                                </p>
-                              </div>
+                        <div
+                          className="col-lg-3 col-md-4 col-sm-6 col-12 mb-4 card text-white bg-success"
+                          key={i}
+                        >
+                          <div
+                            className="card-body text-right d-flex justify-content-between p-0 m-1"
+                            style={{ fontSize: "14px", fontWeight: "500" }}
+                          >
+                            <div className="col-6 p-0">
+                              <p className="card-text">
+                                {" "}
+                                {Ticket.table != null
+                                  ? `طاولة: ${Ticket.table.tableNumber}`
+                                  : Ticket.user
+                                  ? `العميل: ${Ticket.user.username}`
+                                  : ""}
+                              </p>
+                              <p className="card-text">
+                                رقم الطلب:{" "}
+                                {Ticket.TicketNum ? Ticket.TicketNum : ""}
+                              </p>
+                              <p className="card-text">
+                                الفاتورة: {Ticket.serial}
+                              </p>
+                              <p className="card-text">
+                                نوع الطلب: {Ticket.TicketType}
+                              </p>
                             </div>
-                            <ul className="list-group list-group-flush">
-                              {Ticket.products
-                                .filter(
-                                  (pr) =>
-                                    pr.isDone === true &&
-                                    pr.isDeleverd === false
-                                )
-                                .map((product, i) => {
-                                  return (
-                                    <>
-                                      <li
-                                        className="list-group-item d-flex flex-column justify-content-between align-items-center"
-                                        key={i}
-                                        style={
-                                          product.isAdd
-                                            ? {
-                                                backgroundColor: "red",
-                                                color: "white",
-                                              }
-                                            : { color: "black" }
-                                        }
-                                      >
-                                        <div className="d-flex justify-content-between align-items-center w-100">
-                                          <p
-                                            style={{
-                                              fontSize: "1.2em",
-                                              fontWeight: "bold",
-                                            }}
-                                          >
-                                            {i + 1}- {product.name}{" "}
-                                            {product.size ? product.size : ""}
-                                          </p>
-                                          <span
-                                            style={{
-                                              fontSize: "1.2em",
-                                              fontWeight: "bold",
-                                            }}
-                                          >
-                                            {" "}
-                                            × {product.quantity}
-                                          </span>
-                                        </div>
-                                        <div
+
+                            <div className="col-6 p-0">
+                              {Ticket.waiter ? (
+                                <p className="card-text">
+                                  الويتر:{" "}
+                                  {Ticket.waiter && Ticket.waiter.username}
+                                </p>
+                              ) : (
+                                ""
+                              )}
+                              <p className="card-text">
+                                الاستلام: {formatTime(Ticket.createdAt)}
+                              </p>
+                              <p className="card-text">
+                                الانتظار:{" "}
+                                {setTimeout(
+                                  () => waitingTime(Ticket.updateAt),
+                                  60000
+                                )}{" "}
+                                دقيقه
+                              </p>
+                            </div>
+                          </div>
+                          <ul className="list-group list-group-flush">
+                            {Ticket.products
+                              .filter(
+                                (pr) =>
+                                  pr.isDone === true && pr.isDeleverd === false
+                              )
+                              .map((product, i) => {
+                                return (
+                                  <>
+                                    <li
+                                      className="list-group-item d-flex flex-column justify-content-between align-items-center"
+                                      key={i}
+                                      style={
+                                        product.isAdd
+                                          ? {
+                                              backgroundColor: "red",
+                                              color: "white",
+                                            }
+                                          : { color: "black" }
+                                      }
+                                    >
+                                      <div className="d-flex justify-content-between align-items-center w-100">
+                                        <p
                                           style={{
                                             fontSize: "1.2em",
                                             fontWeight: "bold",
                                           }}
                                         >
-                                          {product.notes}
-                                        </div>
-                                      </li>
-                                      {product.extras &&
-                                        product.extras.length > 0 &&
-                                        product.extras.map((extra, j) => {
-                                          if (extra && extra.isDone === false) {
-                                            return (
-                                              <li
-                                                className="list-group-item d-flex flex-column justify-content-between align-items-center"
-                                                key={`${i}-${j}`}
-                                                style={
-                                                  product.isAdd
-                                                    ? {
-                                                        backgroundColor: "red",
-                                                        color: "white",
-                                                      }
-                                                    : { color: "black" }
-                                                }
-                                              >
-                                                <div className="d-flex justify-content-between align-items-center w-100">
-                                                  {extra.extraDetails.map(
-                                                    (detail) => (
-                                                      <p
-                                                        className="badge badge-secondary m-1"
-                                                        key={detail.extraid}
-                                                      >{`${detail.name}`}</p>
-                                                    )
-                                                  )}
-                                                </div>
-                                              </li>
-                                            );
-                                          } else {
-                                            return null;
-                                          }
-                                        })}
-                                    </>
-                                  );
-                                })}
-                            </ul>
-                            <div className="card-footer text-center w-100 d-flex flex-row">
-                              <button className="btn w-100 btn-info h-100 btn btn-lg">
-                                انتظار الاستلام
-                              </button>
-                            </div>
+                                          {i + 1}- {product.name}{" "}
+                                          {product.size ? product.size : ""}
+                                        </p>
+                                        <span
+                                          style={{
+                                            fontSize: "1.2em",
+                                            fontWeight: "bold",
+                                          }}
+                                        >
+                                          {" "}
+                                          × {product.quantity}
+                                        </span>
+                                      </div>
+                                      <div
+                                        style={{
+                                          fontSize: "1.2em",
+                                          fontWeight: "bold",
+                                        }}
+                                      >
+                                        {product.notes}
+                                      </div>
+                                    </li>
+                                    {product.extras &&
+                                      product.extras.length > 0 &&
+                                      product.extras.map((extra, j) => {
+                                        if (extra && extra.isDone === false) {
+                                          return (
+                                            <li
+                                              className="list-group-item d-flex flex-column justify-content-between align-items-center"
+                                              key={`${i}-${j}`}
+                                              style={
+                                                product.isAdd
+                                                  ? {
+                                                      backgroundColor: "red",
+                                                      color: "white",
+                                                    }
+                                                  : { color: "black" }
+                                              }
+                                            >
+                                              <div className="d-flex justify-content-between align-items-center w-100">
+                                                {extra.extraDetails.map(
+                                                  (detail) => (
+                                                    <p
+                                                      className="badge badge-secondary m-1"
+                                                      key={detail.extraid}
+                                                    >{`${detail.name}`}</p>
+                                                  )
+                                                )}
+                                              </div>
+                                            </li>
+                                          );
+                                        } else {
+                                          return null;
+                                        }
+                                      })}
+                                  </>
+                                );
+                              })}
+                          </ul>
+                          <div className="card-footer text-center w-100 d-flex flex-row">
+                            <button className="btn w-100 btn-info h-100 btn btn-lg">
+                              انتظار الاستلام
+                            </button>
                           </div>
+                        </div>
                       );
                     }
                   })
