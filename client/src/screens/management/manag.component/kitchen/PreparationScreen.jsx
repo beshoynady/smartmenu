@@ -621,23 +621,25 @@ const PreparationScreen = () => {
           )}
 
           {activeTab === "completedTickets" && (
-            <div>
+            <>
               <h5>التذاكر المنفذة</h5>
-              {activeTickets.filter(
-                (ticket) => ticket.preparationStatus === "Prepared"
-              ).length === 0 ? (
-                <p>لا توجد تذاكر تم تنفيذها.</p>
-              ) : (
-                activeTickets
-                  .filter((ticket) => ticket.preparationStatus === "Prepared")
-                  .map((ticket) => (
-                    <div key={ticket._id} className="ticket-card mb-3">
-                      <h6>{ticket.productName}</h6>
-                      <p>{ticket.details}</p>
-                    </div>
-                  ))
-              )}
-            </div>
+              <div>
+                {activeTickets.filter(
+                  (ticket) => ticket.preparationStatus === "Prepared"
+                ).length === 0 ? (
+                  <p>لا توجد تذاكر تم تنفيذها.</p>
+                ) : (
+                  activeTickets
+                    .filter((ticket) => ticket.preparationStatus === "Prepared")
+                    .map((ticket) => (
+                      <div key={ticket._id} className="ticket-card mb-3">
+                        <h6>{ticket.productName}</h6>
+                        <p>{ticket.details}</p>
+                      </div>
+                    ))
+                )}
+              </div>
+            </>
           )}
 
           {activeTab === "cancelledTickets" && (
