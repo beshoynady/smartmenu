@@ -180,7 +180,7 @@ const PreparationScreen = () => {
 
   return (
     <div
-      className="w-100 d-flex align-items-start overflow-auto bg-transparent p-3"
+      className="w-100 d-flex align-items-start overflow-auto bg-transparent p-2"
       style={{ backgroundColor: "rgba(0, 0, 255, 0.1)" }}
     >
       {/* Section selection and ticket stats */}
@@ -253,7 +253,7 @@ const PreparationScreen = () => {
       </div>
 
       {/* Preparation Ticket Details */}
-      <div className=" d-flex col-lg-10 col-sm-9 flex-column justify-content-between align-items-start">
+      <div className=" d-flex col-lg-10 col-sm-9 flex-column justify-content-between align-items-start p-0 m-0">
         <div className="w-100 d-flex justify-content-between align-items-center bg-transparent p-1 mb-3">
           <button
             className="btn btn-primary w-100 w-sm-auto mb-2 mb-sm-0"
@@ -282,7 +282,7 @@ const PreparationScreen = () => {
         </div>
 
         {/* عرض التذاكر والمخزن حسب التبويب */}
-        <div className="w-100 h-auto">
+        <div className="w-100 h-auto p-0 m-0 text-right">
           {activeTab === "newTickets" && (
             <>
               <h5 calssName="text-right text-dark font-weight-bold mb-4">التذاكر الجديدة</h5>
@@ -292,11 +292,11 @@ const PreparationScreen = () => {
                 ) : (
                   activeTickets.map((Ticket, i) => {
                     if (
-                      Ticket.preparationStatus === "Pending"||Ticket.preparationStatus === "preparing"
+                      Ticket.preparationStatus === "Pending" || Ticket.preparationStatus === "Preparing"
                     ) {
                       return (
                         <div
-                          className="col-lg-4 col-md-4 col-sm-6 col-12 mb-4 ml-2 card text-white bg-success"
+                          className="col-lg-4 col-md-4 col-sm-6 col-12 mb-4 ml-2 card text-white bg-success p-0 m-0"
                           key={i}
                         >
                           <div
@@ -460,7 +460,7 @@ const PreparationScreen = () => {
                     ) {
                       return (
                         <div
-                          className="col-lg-4 col-md-4 col-sm-6 col-12 mb-4 ml-2 card text-white bg-success"
+                          className="col-lg-4 col-md-4 col-sm-6 col-12 mb-4 ml-2 card text-white bg-success p-0 m-0"
                           key={i}
                         >
                           <div
@@ -513,13 +513,7 @@ const PreparationScreen = () => {
                             </div>
                           </div>
                           <ul className="list-group list-group-flush">
-                            {Ticket.products
-                              // .filter(
-                              //   (pr) =>
-                              //     pr.isDone === true && pr.isDeleverd === false
-                              // )
-                              // 
-                              .map((product, i) => {
+                            {Ticket.products.map((product, i) => {
                                 return (
                                   <>
                                     <li
