@@ -292,10 +292,7 @@ const PreparationScreen = () => {
                 ) : (
                   activeTickets.map((Ticket, i) => {
                     if (
-                      Ticket.preparationStatus === "Pending" &&
-                      Ticket.products.filter(
-                        (product) => product.isDone === false
-                      ).length > 0
+                      Ticket.preparationStatus === "Pending"||Ticket.preparationStatus === "preparing"
                     ) {
                       return (
                         <div
@@ -459,10 +456,7 @@ const PreparationScreen = () => {
                         </div>
                       );
                     } else if (
-                      Ticket.preparationStatus === "Prepared" &&
-                      Ticket.products.filter(
-                        (pr) => pr.isDone === true && pr.isDeleverd === false
-                      ).length > 0
+                      Ticket.preparationStatus === "Prepared"
                     ) {
                       return (
                         <div
@@ -624,12 +618,12 @@ const PreparationScreen = () => {
               <h5 calssName="text-right text-dark font-weight-bold mb-4">التذاكر المنفذة</h5>
               <div>
                 {activeTickets.filter(
-                  (ticket) => ticket.preparationStatus === "Prepared"
+                  (ticket) => ticket.preparationStatus === "Delivered"
                 ).length === 0 ? (
                   <p>لا توجد تذاكر تم تنفيذها.</p>
                 ) : (
                   activeTickets
-                    .filter((ticket) => ticket.preparationStatus === "Prepared")
+                    .filter((ticket) => ticket.preparationStatus === "Delivered")
                     .map((ticket) => (
                       <div key={ticket._id} className="ticket-card mb-3">
                         <h6>{ticket.productName}</h6>

@@ -28,7 +28,7 @@ const PreparationTicketSchema = new mongoose.Schema(
         "Prepared",
         "On the way",
         "Delivered",
-        "Cancelled",
+        "Rejected",
       ],
     },
     responsibleEmployee: {
