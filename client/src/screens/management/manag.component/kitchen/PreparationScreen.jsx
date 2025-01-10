@@ -458,10 +458,10 @@ const PreparationScreen = () => {
           : product
       );
 
-      console.log({updatedOrderProducts, updateTicketProducts, updateTicket})
+      console.log({updatedOrderProducts, updateTicketProducts, updatedOrderProducts})
 
       if (orderType === "Internal") {
-        const waiter = await specifiedWaiter(id);
+        const waiter = await specifiedWaiter(ticketId);
         console.log({ waiter });
         if (!waiter) {
           toast.warn("لا يوجد نادل متاح لتسليم الطلب. يرجى مراجعة الإدارة!");
@@ -476,7 +476,7 @@ const PreparationScreen = () => {
           config
         );
         const updateTicket = axios.put(
-          `${apiUrl}/api/preparationticket/${id}`,
+          `${apiUrl}/api/preparationticket/${ticketId}`,
           {
             products: updateTicketProducts,
             preparationStatus: "Prepared",
@@ -495,7 +495,7 @@ const PreparationScreen = () => {
           config
         );
         const updateTicket = axios.put(
-          `${apiUrl}/api/preparationticket/${id}`,
+          `${apiUrl}/api/preparationticket/${ticketId}`,
           { products: updateTicketProducts, preparationStatus: "Prepared" },
           config
         );
