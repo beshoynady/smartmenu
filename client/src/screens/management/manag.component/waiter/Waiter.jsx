@@ -232,6 +232,15 @@ const Waiter = () => {
     }
   };
 
+  const waitingTime = (t) => {
+    const t1 = new Date(t).getTime();
+    const t2 = new Date().getTime();
+    const elapsedTime = t2 - t1;
+
+    const minutesPassed = Math.floor(elapsedTime / (1000 * 60));
+    return minutesPassed;
+  };
+
   // Fetch initial data on component mount
   useEffect(() => {
     fetchActivePreparationTickets();
