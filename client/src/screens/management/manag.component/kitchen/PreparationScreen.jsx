@@ -329,13 +329,13 @@ const PreparationScreen = () => {
         config
       );
       const preparationticketData = fetchPreparationTicketData.data.data
-      const { products: SectionProducts } = preparationticketData;
-      const orderType= preparationticketData.order?.type
+      const { products: ticketProducts } = preparationticketData;
+      const orderType= preparationticketData.order?.orderType
       const orderId = await preparationticketData?.order._id;
       const orderProducts = preparationticketData.order?.products;
-      console.log({preparationticketData:preparationticketData, orderId,orderType, orderProducts,  SectionProducts});
+      console.log({preparationticketData:preparationticketData, orderId,orderType, orderProducts,  ticketProducts});
 
-      if (!SectionProducts.length) {
+      if (!ticketProducts.length) {
         toast.warn("لا توجد منتجات بحاجة إلى تجهيز في المطبخ");
         return;
       }
@@ -354,7 +354,7 @@ const PreparationScreen = () => {
       // 3. Prepare total consumption Ticket
       const totalConsumptionTicket = [];
 
-      for (const product of SectionProducts) {
+      for (const product of ticketProducts) {
         if (product.isDone) continue;
 
         // Fetch product ingredients from recipes
@@ -444,15 +444,15 @@ const PreparationScreen = () => {
         }
       }
 
-      const updateTicketProducts = SectionProducts.map((product) => {
+      const updateTicketProducts = ticketProducts.map((product) => {
         return { ...product, isDone: true };
       });
 
       // 5. Update Ticket Products
       const updatedOrderProducts = orderProducts.map((product) =>
-        SectionProducts.some(
-          (SectionProduct) =>
-            SectionProduct.productid?._id === product.productid?._id
+        ticketProducts.some(
+          (ticketProduct) =>
+            ticketProduct.productid?._id === product.productid?._id
         )
           ? { ...product, isDone: true }
           : product
