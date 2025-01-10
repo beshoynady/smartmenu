@@ -122,7 +122,7 @@ const Waiter = () => {
       try {
         await axios.put(
           `${apiUrl}/api/preparationticket/${id}`,
-          preparationStatus,
+          {preparationStatus},
           config
         );
       } catch (error) {
