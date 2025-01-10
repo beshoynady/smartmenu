@@ -8,6 +8,8 @@ const Waiter = () => {
   const {
     employeeLoginInfo,
     isRefresh,
+    formatTime,
+    formatDate,
     setisRefresh,
     cashierSocket,
     kitchenSocket,
@@ -50,7 +52,10 @@ const Waiter = () => {
           (Ticket.preparationStatus === "Prepared" ||
             Ticket.preparationStatus === "On the way")
       );
-      console.log({activepreparationtickets:res.data.data,filterWaiterTickets})
+      console.log({
+        activepreparationtickets: res.data.data,
+        filterWaiterTickets,
+      });
       setActivePreparationTickets(filterWaiterTickets);
       // setPendingPayments(recentPaymentStatus);
     } catch (error) {
@@ -139,9 +144,9 @@ const Waiter = () => {
         `${apiUrl}/api/preparationticket/${ticketId}`,
         config
       );
-      const preparationticketData = fetchPreparationTicketData.data.data
+      const preparationticketData = fetchPreparationTicketData.data.data;
       const { products: ticketProducts } = preparationticketData;
-      const orderType= preparationticketData.order?.orderType
+      const orderType = preparationticketData.order?.orderType;
       const orderId = await preparationticketData?.order._id;
       const orderProducts = preparationticketData.order?.products;
 
@@ -330,167 +335,157 @@ const Waiter = () => {
           {
             return (
               <div
-              className="col-lg-3 col-md-4 col-sm-6 col-12 mb-4 ml-2 card text-white bg-success p-0 m-0"
-              key={i}
-            >
-              <div
-                className="card-body text-right d-flex justify-content-between p-0 m-1"
-                style={{ fontSize: "14px", fontWeight: "500" }}
+                className="col-lg-3 col-md-4 col-sm-6 col-12 mb-4 ml-2 card text-white bg-success p-0 m-0"
+                key={i}
               >
-                <div className="col-6 p-0">
-                  <p className="card-text">
-                    {" "}
-                    {Ticket.table != null
-                      ? `طاولة: ${Ticket.table?.tableNumber}`
-                      : Ticket.user
-                      ? `العميل: ${Ticket.user?.username}`
-                      : ""}
-                  </p>
-                  <p className="card-text">
-                    رقم الطلب:{" "}
-                    {Ticket.order?.TicketNum
-                      ? Ticket.order?.TicketNum
-                      : ""}
-                  </p>
-                  <p className="card-text">
-                    الفاتورة: {Ticket.order?.serial}
-                  </p>
-                  <p className="card-text">
-                    نوع الطلب: {Ticket.order?.orderType}
-                  </p>
-                  <p className="card-text">
-                    القسم: {Ticket.preparationSection?.name}
-                  </p>
-                </div>
-
-                <div className="col-6 p-0">
-                  {Ticket.waiter ? (
+                <div
+                  className="card-body text-right d-flex justify-content-between p-0 m-1"
+                  style={{ fontSize: "14px", fontWeight: "500" }}
+                >
+                  <div className="col-6 p-0">
                     <p className="card-text">
-                      الويتر:{" "}
-                      {Ticket.waiter && Ticket.waiter?.username}
+                      {" "}
+                      {Ticket.table != null
+                        ? `طاولة: ${Ticket.table?.tableNumber}`
+                        : Ticket.user
+                        ? `العميل: ${Ticket.user?.username}`
+                        : ""}
                     </p>
-                  ) : (
-                    ""
-                  )}
-                  <p className="card-text">
-                    الاستلام: {formatTime(Ticket.createdAt)}
-                  </p>
-                  <p className="card-text">
-                    الانتظار:{" "}
-                    {setTimeout(
-                      () => waitingTime(Ticket.updateAt),
-                      60000
-                    )}{" "}
-                    دقيقه
-                  </p>
+                    <p className="card-text">
+                      رقم الطلب:{" "}
+                      {Ticket.order?.TicketNum ? Ticket.order?.TicketNum : ""}
+                    </p>
+                    <p className="card-text">
+                      الفاتورة: {Ticket.order?.serial}
+                    </p>
+                    <p className="card-text">
+                      نوع الطلب: {Ticket.order?.orderType}
+                    </p>
+                    <p className="card-text">
+                      القسم: {Ticket.preparationSection?.name}
+                    </p>
+                  </div>
+
+                  <div className="col-6 p-0">
+                    {Ticket.waiter ? (
+                      <p className="card-text">
+                        الويتر: {Ticket.waiter && Ticket.waiter?.username}
+                      </p>
+                    ) : (
+                      ""
+                    )}
+                    <p className="card-text">
+                      الاستلام: {formatTime(Ticket.createdAt)}
+                    </p>
+                    <p className="card-text">
+                      الانتظار:{" "}
+                      {setTimeout(() => waitingTime(Ticket.updateAt), 60000)}{" "}
+                      دقيقه
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <ul className="list-group list-group-flush">
-                {Ticket.products.map((product, i) => {
-                  return (
-                    <>
-                      <li
-                        className="list-group-item d-flex flex-column justify-content-between align-items-center p-1"
-                        key={i}
-                        style={
-                          product.isAdd
-                            ? {
-                                backgroundColor: "red",
-                                color: "white",
-                              }
-                            : { color: "black" }
-                        }
-                      >
-                        <div className="d-flex justify-content-between align-items-center w-100 p-1">
-                          <p
-                            style={{
-                              fontSize: "1.2em",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            {i + 1}- {product.name}{" "}
-                            {product.size ? product.size : ""}
-                          </p>
-                          <span
-                            style={{
-                              fontSize: "1.2em",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            {" "}
-                            × {product.quantity}
-                          </span>
-                        </div>
-                        <div
-                          style={{
-                            fontSize: "1.2em",
-                            fontWeight: "bold",
-                          }}
-                        >
-                          {product.notes}
-                        </div>
-                      </li>
-                      {product.extras &&
-                        product.extras.length > 0 &&
-                        product.extras.map((extra, j) => {
-                          if (extra && extra.isDone === false) {
-                            return (
-                              <li
-                                className="list-group-item d-flex flex-column justify-content-between align-items-center p-1"
-                                key={`${i}-${j}`}
-                                style={
-                                  product.isAdd
-                                    ? {
-                                        backgroundColor: "red",
-                                        color: "white",
-                                      }
-                                    : { color: "black" }
+                <ul className="list-group list-group-flush">
+                  {Ticket.products.map((product, i) => {
+                    return (
+                      <>
+                        <li
+                          className="list-group-item d-flex flex-column justify-content-between align-items-center p-1"
+                          key={i}
+                          style={
+                            product.isAdd
+                              ? {
+                                  backgroundColor: "red",
+                                  color: "white",
                                 }
-                              >
-                                <div className="d-flex justify-content-between align-items-center w-100 p-1">
-                                  {extra.extraDetails.map(
-                                    (detail) => (
+                              : { color: "black" }
+                          }
+                        >
+                          <div className="d-flex justify-content-between align-items-center w-100 p-1">
+                            <p
+                              style={{
+                                fontSize: "1.2em",
+                                fontWeight: "bold",
+                              }}
+                            >
+                              {i + 1}- {product.name}{" "}
+                              {product.size ? product.size : ""}
+                            </p>
+                            <span
+                              style={{
+                                fontSize: "1.2em",
+                                fontWeight: "bold",
+                              }}
+                            >
+                              {" "}
+                              × {product.quantity}
+                            </span>
+                          </div>
+                          <div
+                            style={{
+                              fontSize: "1.2em",
+                              fontWeight: "bold",
+                            }}
+                          >
+                            {product.notes}
+                          </div>
+                        </li>
+                        {product.extras &&
+                          product.extras.length > 0 &&
+                          product.extras.map((extra, j) => {
+                            if (extra && extra.isDone === false) {
+                              return (
+                                <li
+                                  className="list-group-item d-flex flex-column justify-content-between align-items-center p-1"
+                                  key={`${i}-${j}`}
+                                  style={
+                                    product.isAdd
+                                      ? {
+                                          backgroundColor: "red",
+                                          color: "white",
+                                        }
+                                      : { color: "black" }
+                                  }
+                                >
+                                  <div className="d-flex justify-content-between align-items-center w-100 p-1">
+                                    {extra.extraDetails.map((detail) => (
                                       <p
                                         className="badge badge-secondary m-1"
                                         key={detail.extraid}
                                       >{`${detail.name}`}</p>
-                                    )
-                                  )}
-                                </div>
-                              </li>
-                            );
-                          } else {
-                            return null;
-                          }
-                        })}
-                    </>
-                  );
-                })}
-              </ul>
-              <div className="text-center w-100 d-flex flex-row">
-                {Ticket.preparationStatus === "Prepared" ? (
-                  <button
-                    className="btn w-100 btn-warning h-100 btn btn-lg"
-                    onClick={() => {
-                      updateOrderOnWay(Ticket._id);
-                    }}
-                  >
-                    جاري الاستلام
-                  </button>
-                ) : Ticket.preparationStatus === "On the way" ? (
-                  <button
-                    className="btn w-100 btn-primary h-100 btn btn-lg"
-                    onClick={() =>
-                      updateOrderDelivered(Ticket._id)
-                    }
-                  >
-                    تم التوصيل
-                  </button>
-                ) : (
-                  ""
-                )}
+                                    ))}
+                                  </div>
+                                </li>
+                              );
+                            } else {
+                              return null;
+                            }
+                          })}
+                      </>
+                    );
+                  })}
+                </ul>
+                <div className="text-center w-100 d-flex flex-row">
+                  {Ticket.preparationStatus === "Prepared" ? (
+                    <button
+                      className="btn w-100 btn-warning h-100 btn btn-lg"
+                      onClick={() => {
+                        updateOrderOnWay(Ticket._id);
+                      }}
+                    >
+                      جاري الاستلام
+                    </button>
+                  ) : Ticket.preparationStatus === "On the way" ? (
+                    <button
+                      className="btn w-100 btn-primary h-100 btn btn-lg"
+                      onClick={() => updateOrderDelivered(Ticket._id)}
+                    >
+                      تم التوصيل
+                    </button>
+                  ) : (
+                    ""
+                  )}
+                </div>
               </div>
-            </div>
             );
           }
         })}
