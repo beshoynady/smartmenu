@@ -18,6 +18,8 @@ const PreparationScreen = () => {
   const [preparationSections, setPreparationSections] = useState([]);
   const [selectedSectionId, setSelectedSectionId] = useState(null);
   const [activeTickets, setActiveTickets] = useState([]);
+  const [AllPreparationTicket, setAllPreparationTicket] = useState([]); // State for all Tickets
+
   const [consumptionItems, setConsumptionItems] = useState([]);
   const [sectionStats, setSectionStats] = useState({
     waitingApproval: 0,
@@ -25,6 +27,9 @@ const PreparationScreen = () => {
     completed: 0,
     rejected: 0,
   });
+
+  const today = formatDate(new Date());
+  const [date, setDate] = useState(today);
 
   // Fetch all preparation sections
   const fetchPreparationSections = async () => {
@@ -51,6 +56,25 @@ const PreparationScreen = () => {
     }
   };
 
+  const [allRecipe, setallRecipe] = useState([]); // State for all Tickets
+
+  const getAllRecipe = async () => {
+    try {
+      if (!token) {
+        // Handle case where token is not available
+        toast.error("رجاء تسجيل الدخول مره اخري");
+        return;
+      }
+
+      const getAllRecipe = await axios.get(`${apiUrl}/api/recipe`, config);
+      const allRecipeData = getAllRecipe.data;
+      setallRecipe(allRecipeData);
+      console.log({ getAllRecipe });
+    } catch (error) {
+      console.error("Error fetching product recipe:", error.message);
+    }
+  };
+
   // Fetch tickets and consumption items for the selected section
   const fetchSectionData = async (sectionId) => {
     if (!token) {
@@ -64,6 +88,7 @@ const PreparationScreen = () => {
         config
       );
       const tickets = response.data.data;
+      setAllPreparationTicket([...tickets])
       const filteredTickets = tickets.filter(
         (ticket) =>
           ticket.preparationSection._id === sectionId && ticket.isActive
