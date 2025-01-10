@@ -12,7 +12,7 @@ const PreparationScreen = () => {
     },
   };
 
-  const { formatTime, isRefresh, setisRefresh, waiterSocket } =
+  const { formatTime, formatDate, isRefresh, setisRefresh, waiterSocket } =
     useContext(detacontext);
 
   const [preparationSections, setPreparationSections] = useState([]);
@@ -129,7 +129,147 @@ const PreparationScreen = () => {
     }
   };
 
-  const updateTicketStatus = async (ticketId, status) => {
+  const [filteredSectionConsumptionToday, setFilteredSectionConsumptionToday] =
+  useState([]);
+
+
+  const getSectionConsumption = async () => {
+    try {
+      if (!token) {
+        // Handle case where token is not available
+        toast.error("رجاء تسجيل الدخول مرة أخرى");
+        return;
+      }
+
+      setFilteredSectionConsumptionToday([]);
+      // console.log("Fetching Section consumption...");
+
+      const response = await axios.get(`${apiUrl}/api/consumption`, config);
+
+      if (response && response.data) {
+        const SectionConsumptions = response.data.data || [];
+        setConsumptionItems(SectionConsumptions);
+
+        const SectionConsumptionsToday = SectionConsumptions.filter(
+          (sectionItem) => {
+            const itemDate = formatDate(sectionItem.createdAt);
+            return itemDate === date;
+          }
+        );
+
+        // console.log({ SectionConsumptionsToday, SectionConsumptions });
+        setFilteredSectionConsumptionToday(SectionConsumptionsToday);
+      } else {
+        console.error("Unexpected response or empty data");
+      }
+    } catch (error) {
+      console.error("Error fetching Section consumption:", error);
+      toast.error("حدث خطأ أثناء جلب استهلاك المطبخ");
+    }
+  };
+
+
+  const [AllWaiters, setAllWaiters] = useState([]); // State for active waiters
+
+  const getAllWaiters = async () => {
+    try {
+      if (!token) {
+        // Handle case where token is not available
+        toast.error("رجاء تسجيل الدخول مره اخري");
+        return;
+      }
+
+      const allEmployees = await axios.get(apiUrl + "/api/employee", config);
+
+      const allWaiters =
+        allEmployees.data.length > 0
+          ? allEmployees.data.filter((employee) => employee.role === "waiter")
+          : [];
+      const waiterActive =
+        allWaiters.length > 0
+          ? allWaiters.filter((waiter) => waiter.isActive === true)
+          : [];
+      setAllWaiters(waiterActive);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+    // Determines the next available waiter to take an Ticket
+    const specifiedWaiter = async (id) => {
+      try {
+        if (!token) {
+          // Handle case where token is not available
+          toast.error("رجاء تسجيل الدخول مره اخري");
+          return;
+        }
+        if (AllWaiters.length === 0) {
+          // Handle case where token is not available
+          toast.warn(
+            "قائمه الندلاء فارغه ! رجاء اعاده تحميل الصفحة و اذا ظلت المشكله ابلغ الاداره"
+          );
+          return;
+        }
+        // البحث عن الطلب بالمعرف المحدد
+        const getTicket = AllPreparationTicket.find(
+          (Ticket) => Ticket._id === id
+        );
+        if (!getTicket) {
+          throw new Error("Ticket not found");
+        }
+        // console.log({AllPreparationTicket, getTicket})
+  
+        if (getTicket.status) {
+        }
+        // استخراج رقم القسم من بيانات الطاولة المرتبطة بالطلب
+        const tablesectionNumber =
+          getTicket.order?.table && getTicket.order?.table?.sectionNumber;
+        if (!tablesectionNumber) {
+          throw new Error("Table section number not found");
+        }
+  
+        // البحث عن النوادل في القسم المحدد
+        const sectionWaiters = AllWaiters.filter(
+          (waiter) => waiter.sectionNumber === tablesectionNumber
+        );
+        if (sectionWaiters.length === 0) {
+          throw new Error("No waiters found in the specified section");
+        }
+  
+        const TicketSection = AllPreparationTicket.filter(
+          (Ticket) =>
+            Ticket.waiter && Ticket.waiter?.sectionNumber === tablesectionNumber
+        ).sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+  
+        let waiterId = "";
+  
+        if (TicketSection.length > 0) {
+          const lastWaiterId = TicketSection[0]?.waiter?._id;
+          const lastWaiterIndex = sectionWaiters.findIndex(
+            (waiter) => waiter._id === lastWaiterId
+          );
+          // console.log({ lastWaiterId, lastWaiterIndex });
+  
+          waiterId =
+            lastWaiterIndex !== -1 && lastWaiterIndex < sectionWaiters.length - 1
+              ? sectionWaiters[lastWaiterIndex + 1]._id
+              : sectionWaiters[0]._id;
+        } else {
+          console.log("لا توجد طلبات سابقة لهذه الطاولة");
+          waiterId = sectionWaiters[0]._id;
+        }
+  
+        // console.log({ waiterId });
+  
+        return waiterId;
+      } catch (error) {
+        console.error("Error fetching table or waiter data:", error);
+        return "";
+      }
+    };
+  
+
+  const TicketInProgress = async (ticketId, status) => {
     if (!token) {
       toast.error("Please log in again.");
       return;
@@ -154,6 +294,200 @@ const PreparationScreen = () => {
     }
   };
 
+
+  const updateTicketDone = async (id, type) => {
+    if (!token) {
+      toast.error("رجاء تسجيل الدخول مره أخرى");
+      return;
+    }
+
+    try {
+      // 1. Fetch Ticket and product data
+      const preparationticketData = await axios.get(
+        `${apiUrl}/api/preparationticket/${id}`,
+        config
+      );
+      const { products: SectionProducts } = preparationticketData.data.data;
+      const orderId = await preparationticketData.data.data?.order._id;
+      const orderProducts = preparationticketData.data.data.order?.products;
+      // console.log({preparationticketData:preparationticketData.data.data, orderId, orderProducts,  SectionProducts});
+
+      if (!SectionProducts.length) {
+        toast.warn("لا توجد منتجات بحاجة إلى تجهيز في المطبخ");
+        return;
+      }
+
+      // 2. Fetch today's Section consumption data
+      const { data: consumptionData } = await axios.get(
+        `${apiUrl}/api/consumption`,
+        config
+      );
+      const allSectionConsumption = consumptionData.data;
+      const SectionConsumptionsToday = allSectionConsumption.filter((item) => {
+        const itemDate = formatDate(item.createdAt);
+        return itemDate === date;
+      });
+
+      // 3. Prepare total consumption Ticket
+      const totalConsumptionTicket = [];
+
+      for (const product of SectionProducts) {
+        if (product.isDone) continue;
+
+        // Fetch product ingredients from recipes
+        const productIngredients = product.sizeId
+          ? allRecipe.find(
+              (recipe) =>
+                recipe.productId._id === product.productid?._id &&
+                recipe.sizeId === product.sizeId
+            )?.ingredients
+          : allRecipe.find(
+              (recipe) => recipe.productId._id === product.productid?._id
+            )?.ingredients || [];
+
+        // Process ingredients
+        for (const ingredient of productIngredients || []) {
+          const existingItemIndex = totalConsumptionTicket.findIndex(
+            (item) => item.itemId?._id === ingredient.itemId?._id
+          );
+
+          const amount = ingredient.amount * product.quantity;
+
+          if (existingItemIndex !== -1) {
+            totalConsumptionTicket[existingItemIndex].amount += amount;
+          } else {
+            const SectionConsumption = SectionConsumptionsToday.find(
+              (sectionItem) => sectionItem.stocsectionemId._id === ingredient.itemId?._id
+            );
+
+            totalConsumptionTicket.push({
+              itemId: ingredient.itemId,
+              amount,
+              productsProduced: SectionConsumption
+                ? [...SectionConsumption.productsProduced]
+                : [],
+            });
+          }
+        }
+
+        // Process extras
+        for (const extraGroup of product.extras || []) {
+          for (const extra of extraGroup.extraDetails) {
+            const extraIngredients =
+              allRecipe.find(
+                (recipe) => recipe.productId._id === extra.extraId._id
+              )?.ingredients || [];
+
+            for (const ingredient of extraIngredients) {
+              const existingItemIndex = totalConsumptionTicket.findIndex(
+                (item) => item.itemId?._id === ingredient.itemId?._id
+              );
+              const amount = ingredient.amount;
+
+              if (existingItemIndex !== -1) {
+                totalConsumptionTicket[existingItemIndex].amount += amount;
+              } else {
+                totalConsumptionTicket.push({
+                  itemId: ingredient.itemId,
+                  amount,
+                });
+              }
+            }
+          }
+        }
+      }
+
+      // 4. Update consumption data in the Section
+      for (const item of totalConsumptionTicket) {
+        const SectionConsumption = SectionConsumptionsToday.find(
+          (sectionItem) => sectionItem.stocsectionemId._id === item.itemId?._id
+        );
+
+        if (SectionConsumption) {
+          const consumptionQuantity =
+            SectionConsumption.consumptionQuantity + item.amount;
+          const bookBalance = SectionConsumption.bookBalance - item.amount;
+
+          await axios.put(
+            `${apiUrl}/api/consumption/${SectionConsumption._id}`,
+            {
+              consumptionQuantity,
+              bookBalance,
+              productsProduced: item.productsProduced,
+            },
+            config
+          );
+        }
+      }
+
+      const updateTicketProducts = SectionProducts.map((product) => {
+        return { ...product, isDone: true };
+      });
+
+      // 5. Update Ticket Products
+      const updatedOrderProducts = orderProducts.map((product) =>
+        SectionProducts.some(
+          (SectionProduct) =>
+            SectionProduct.productid?._id === product.productid?._id
+        )
+          ? { ...product, isDone: true }
+          : product
+      );
+
+      // console.log({updatedOrderProducts, updateTicketProducts, updateTicket})
+
+      if (type === "Internal") {
+        const waiter = await specifiedWaiter(id);
+        console.log({ waiter });
+        if (!waiter) {
+          toast.warn("لا يوجد نادل متاح لتسليم الطلب. يرجى مراجعة الإدارة!");
+          return;
+        }
+        const response = await axios.put(
+          `${apiUrl}/api/order/${orderId}`,
+          {
+            products: updatedOrderProducts,
+            // waiter,
+          },
+          config
+        );
+        const updateTicket = axios.put(
+          `${apiUrl}/api/preparationticket/${id}`,
+          {
+            products: updateTicketProducts,
+            preparationStatus: "Prepared",
+            waiter,
+          },
+          config
+        );
+        console.log({ updateTicket });
+        waiterSocket.emit("orderready", `أورد جاهز في المطبخ-${waiter}`);
+      } else {
+        await axios.put(
+          `${apiUrl}/api/order/${orderId}`,
+          {
+            products: updatedOrderProducts,
+          },
+          config
+        );
+        const updateTicket = axios.put(
+          `${apiUrl}/api/preparationticket/${id}`,
+          { products: updateTicketProducts, preparationStatus: "Prepared" },
+          config
+        );
+        waiterSocket.emit("orderready", "أورد جاهز في المطبخ");
+      }
+
+      // 6. Refresh state
+      // getAllPreparationTicket();
+      getSectionConsumption();
+      toast.success("تم تجهيز الطلب بنجاح!");
+    } catch (error) {
+      console.error("Error in updating Ticket:", error);
+      toast.error("حدث خطأ أثناء تعديل حالة الطلب. يرجى إعادة المحاولة.");
+    }
+  };
+
   const [activeTab, setActiveTab] = useState("newTickets");
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -169,11 +503,16 @@ const PreparationScreen = () => {
   };
 
   useEffect(() => {
+    getAllRecipe();
+    getAllWaiters();
+    getSectionConsumption();
     fetchPreparationSections();
   }, []);
 
   useEffect(() => {
     if (selectedSectionId) {
+      getAllRecipe();
+      getAllWaiters();  
       fetchSectionData(selectedSectionId);
     }
   }, [selectedSectionId, isRefresh]);
@@ -438,7 +777,7 @@ const PreparationScreen = () => {
                               <button
                                 className="btn w-100 btn-warning h-100 btn btn-lg"
                                 onClick={() => {
-                                  updateTicketStatus(Ticket._id, "Prepared");
+                                  updateTicketDone(Ticket._id, "Prepared");
                                 }}
                               >
                                 تم التنفيذ
@@ -447,7 +786,7 @@ const PreparationScreen = () => {
                               <button
                                 className="btn w-100 btn-primary h-100 btn btn-lg"
                                 onClick={() =>
-                                  updateTicketStatus(Ticket._id, "Preparing")
+                                  TicketInProgress(Ticket._id, "Preparing")
                                 }
                               >
                                 بدء التنفيذ
@@ -906,10 +1245,10 @@ const PreparationScreen = () => {
               <h5 calssName="text-right text-dark font-weight-bold mb-4">
                 عناصر المخزن الاستهلاك
               </h5>
-              {consumptionItems.length === 0 ? (
+              {filteredSectionConsumptionToday.length === 0 ? (
                 <p>لا توجد عناصر مخزن استهلاك.</p>
               ) : (
-                consumptionItems.map((item, index) => (
+                filteredSectionConsumptionToday.map((item, index) => (
                   <div key={index} className="consumption-item mb-3">
                     <h6>{item.name}</h6>
                     <p>
