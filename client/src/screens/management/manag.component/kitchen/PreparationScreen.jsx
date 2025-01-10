@@ -27,9 +27,13 @@ const PreparationScreen = () => {
     completed: 0,
     rejected: 0,
   });
+  const [allRecipe, setallRecipe] = useState([]); // State for all Tickets
+  const [filteredSectionConsumptionToday, setFilteredSectionConsumptionToday] = useState([]);
+  const [AllWaiters, setAllWaiters] = useState([]); // State for active waiters
 
   const today = formatDate(new Date());
   const [date, setDate] = useState(today);
+  const [activeTab, setActiveTab] = useState("newTickets");
 
   // Fetch all preparation sections
   const fetchPreparationSections = async () => {
@@ -56,7 +60,6 @@ const PreparationScreen = () => {
     }
   };
 
-  const [allRecipe, setallRecipe] = useState([]); // State for all Tickets
 
   const getAllRecipe = async () => {
     try {
@@ -154,8 +157,6 @@ const PreparationScreen = () => {
     }
   };
 
-  const [filteredSectionConsumptionToday, setFilteredSectionConsumptionToday] =
-    useState([]);
 
   const getSectionConsumption = async () => {
     try {
@@ -192,7 +193,6 @@ const PreparationScreen = () => {
     }
   };
 
-  const [AllWaiters, setAllWaiters] = useState([]); // State for active waiters
 
   const getAllWaiters = async () => {
     try {
@@ -513,7 +513,6 @@ const PreparationScreen = () => {
     }
   };
 
-  const [activeTab, setActiveTab] = useState("newTickets");
   const handleTabChange = (tab) => {
     setActiveTab(tab);
   };

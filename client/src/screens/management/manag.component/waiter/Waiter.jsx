@@ -133,12 +133,37 @@ const Waiter = () => {
     }
   };
 
-  const updateOrderDelivered = async (id, products) => {
+  const updateOrderDelivered = async (ticketId) => {
     try {
+      const fetchPreparationTicketData = await axios.get(
+        `${apiUrl}/api/preparationticket/${ticketId}`,
+        config
+      );
+      const preparationticketData = fetchPreparationTicketData.data.data
+      const { products: ticketProducts } = preparationticketData;
+      const orderType= preparationticketData.order?.orderType
+      const orderId = await preparationticketData?.order._id;
+      const orderProducts = preparationticketData.order?.products;
+
+      const updatedOrderProducts = orderProducts.map((product) =>
+        ticketProducts.some(
+          (ticketProduct) =>
+            ticketProduct.productid?._id === product.productid?._id
+        )
+          ? { ...product, isDeleverd: true }
+          : product
+      );
+      const updateOrder = await axios.put(
+        `${apiUrl}/api/order/${orderId}`,
+        {
+          products: updatedOrderProducts,
+        },
+        config
+      );
       const preparationStatus = "Delivered";
       const isDelivered = true;
-      const updateOrder = await axios.put(
-        `${apiUrl}/api/preparationticket/${id}`,
+      const updateTicket = await axios.put(
+        `${apiUrl}/api/preparationticket/${ticketId}`,
         {
           preparationStatus,
           isDelivered,
@@ -345,75 +370,84 @@ const Waiter = () => {
                 </div>
                 <ul className="list-group list-group-flush">
                   {Ticket.products.map((product, i) => {
-                    return (
-                      <>
-                        <li
-                          className="list-group-item d-flex flex-column justify-content-between align-items-center"
-                          key={i}
-                        >
-                          <div className="d-flex justify-content-between align-items-center w-100">
-                            <p
-                              style={{
-                                fontSize: "1.2em",
-                                fontWeight: "bold",
-                              }}
-                            >
-                              {i + 1}- {product.name}
-                            </p>
-                            <span
-                              style={{
-                                fontSize: "1.2em",
-                                fontWeight: "bold",
-                              }}
-                            >
-                              {" "}
-                              × {product.quantity}
-                            </span>
-                          </div>
-                          <div
-                            style={{
-                              fontSize: "1.2em",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            {product.notes}
-                          </div>
-                        </li>
-                        {product.extras &&
-                          product.extras.length > 0 &&
-                          product.extras.map((extra, j) => {
-                            if (extra && extra.isDone === false) {
                               return (
-                                <li
-                                  className="list-group-item d-flex flex-column justify-content-between align-items-center"
-                                  key={`${i}-${j}`}
-                                  style={
-                                    product.isAdd
-                                      ? {
-                                          backgroundColor: "red",
-                                          color: "white",
-                                        }
-                                      : { color: "black" }
-                                  }
-                                >
-                                  <div className="d-flex justify-content-between align-items-center w-100">
-                                    {extra.extraDetails.map((detail) => (
+                                <>
+                                  <li
+                                    className="list-group-item d-flex flex-column justify-content-between align-items-center p-1"
+                                    key={i}
+                                    style={
+                                      product.isAdd
+                                        ? {
+                                            backgroundColor: "red",
+                                            color: "white",
+                                          }
+                                        : { color: "black" }
+                                    }
+                                  >
+                                    <div className="d-flex justify-content-between align-items-center w-100 p-1">
                                       <p
-                                        className="badge badge-secondary m-1"
-                                        key={detail.extraid}
+                                        style={{
+                                          fontSize: "1.2em",
+                                          fontWeight: "bold",
+                                        }}
                                       >
-                                        {`${detail.name}`}
+                                        {i + 1}- {product.name}{" "}
+                                        {product.size ? product.size : ""}
                                       </p>
-                                    ))}
-                                  </div>
-                                </li>
+                                      <span
+                                        style={{
+                                          fontSize: "1.2em",
+                                          fontWeight: "bold",
+                                        }}
+                                      >
+                                        {" "}
+                                        × {product.quantity}
+                                      </span>
+                                    </div>
+                                    <div
+                                      style={{
+                                        fontSize: "1.2em",
+                                        fontWeight: "bold",
+                                      }}
+                                    >
+                                      {product.notes}
+                                    </div>
+                                  </li>
+                                  {product.extras &&
+                                    product.extras.length > 0 &&
+                                    product.extras.map((extra, j) => {
+                                      if (extra && extra.isDone === false) {
+                                        return (
+                                          <li
+                                            className="list-group-item d-flex flex-column justify-content-between align-items-center p-1"
+                                            key={`${i}-${j}`}
+                                            style={
+                                              product.isAdd
+                                                ? {
+                                                    backgroundColor: "red",
+                                                    color: "white",
+                                                  }
+                                                : { color: "black" }
+                                            }
+                                          >
+                                            <div className="d-flex justify-content-between align-items-center w-100 p-1">
+                                              {extra.extraDetails.map(
+                                                (detail) => (
+                                                  <p
+                                                    className="badge badge-secondary m-1"
+                                                    key={detail.extraid}
+                                                  >{`${detail.name}`}</p>
+                                                )
+                                              )}
+                                            </div>
+                                          </li>
+                                        );
+                                      } else {
+                                        return null;
+                                      }
+                                    })}
+                                </>
                               );
-                            } else {
-                              return null;
-                            }
-                          })}
-                      </>
-                    );
                   })}
                 </ul>
                 <div className="card-footer text-center">
