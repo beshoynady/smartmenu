@@ -88,7 +88,7 @@ const PreparationScreen = () => {
         config
       );
       const tickets = response.data.data;
-      setAllPreparationTicket([...tickets])
+      setAllPreparationTicket([...tickets]);
       const filteredTickets = tickets.filter(
         (ticket) =>
           ticket.preparationSection._id === sectionId && ticket.isActive
@@ -155,8 +155,7 @@ const PreparationScreen = () => {
   };
 
   const [filteredSectionConsumptionToday, setFilteredSectionConsumptionToday] =
-  useState([]);
-
+    useState([]);
 
   const getSectionConsumption = async () => {
     try {
@@ -193,7 +192,6 @@ const PreparationScreen = () => {
     }
   };
 
-
   const [AllWaiters, setAllWaiters] = useState([]); // State for active waiters
 
   const getAllWaiters = async () => {
@@ -220,79 +218,78 @@ const PreparationScreen = () => {
     }
   };
 
-    // Determines the next available waiter to take an Ticket
-    const specifiedWaiter = async (id) => {
-      try {
-        if (!token) {
-          // Handle case where token is not available
-          toast.error("رجاء تسجيل الدخول مره اخري");
-          return;
-        }
-        if (AllWaiters.length === 0) {
-          // Handle case where token is not available
-          toast.warn(
-            "قائمه الندلاء فارغه ! رجاء اعاده تحميل الصفحة و اذا ظلت المشكله ابلغ الاداره"
-          );
-          return;
-        }
-        // البحث عن الطلب بالمعرف المحدد
-        const getTicket = AllPreparationTicket.find(
-          (Ticket) => Ticket._id === id
-        );
-        if (!getTicket) {
-          throw new Error("Ticket not found");
-        }
-        // console.log({AllPreparationTicket, getTicket})
-  
-        if (getTicket.status) {
-        }
-        // استخراج رقم القسم من بيانات الطاولة المرتبطة بالطلب
-        const tablesectionNumber =
-          getTicket.order?.table && getTicket.order?.table?.sectionNumber;
-        if (!tablesectionNumber) {
-          throw new Error("Table section number not found");
-        }
-  
-        // البحث عن النوادل في القسم المحدد
-        const sectionWaiters = AllWaiters.filter(
-          (waiter) => waiter.sectionNumber === tablesectionNumber
-        );
-        if (sectionWaiters.length === 0) {
-          throw new Error("No waiters found in the specified section");
-        }
-  
-        const TicketSection = AllPreparationTicket.filter(
-          (Ticket) =>
-            Ticket.waiter && Ticket.waiter?.sectionNumber === tablesectionNumber
-        ).sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-  
-        let waiterId = "";
-  
-        if (TicketSection.length > 0) {
-          const lastWaiterId = TicketSection[0]?.waiter?._id;
-          const lastWaiterIndex = sectionWaiters.findIndex(
-            (waiter) => waiter._id === lastWaiterId
-          );
-          // console.log({ lastWaiterId, lastWaiterIndex });
-  
-          waiterId =
-            lastWaiterIndex !== -1 && lastWaiterIndex < sectionWaiters.length - 1
-              ? sectionWaiters[lastWaiterIndex + 1]._id
-              : sectionWaiters[0]._id;
-        } else {
-          console.log("لا توجد طلبات سابقة لهذه الطاولة");
-          waiterId = sectionWaiters[0]._id;
-        }
-  
-        // console.log({ waiterId });
-  
-        return waiterId;
-      } catch (error) {
-        console.error("Error fetching table or waiter data:", error);
-        return "";
+  // Determines the next available waiter to take an Ticket
+  const specifiedWaiter = async (TicketId) => {
+    try {
+      if (!token) {
+        // Handle case where token is not available
+        toast.error("رجاء تسجيل الدخول مره اخري");
+        return;
       }
-    };
-  
+      if (AllWaiters.length === 0) {
+        // Handle case where token is not available
+        toast.warn(
+          "قائمه الندلاء فارغه ! رجاء اعاده تحميل الصفحة و اذا ظلت المشكله ابلغ الاداره"
+        );
+        return;
+      }
+      // البحث عن الطلب بالمعرف المحدد
+      const getTicket = AllPreparationTicket.find(
+        (Ticket) => Ticket._id === TicketId
+      );
+      if (!getTicket) {
+        throw new Error("Ticket not found");
+      }
+      // console.log({AllPreparationTicket, getTicket})
+
+      if (getTicket.status) {
+      }
+      // استخراج رقم القسم من بيانات الطاولة المرتبطة بالطلب
+      const tablesectionNumber =
+        getTicket.order?.table && getTicket.order?.table?.sectionNumber;
+      if (!tablesectionNumber) {
+        throw new Error("Table section number not found");
+      }
+
+      // البحث عن النوادل في القسم المحدد
+      const sectionWaiters = AllWaiters.filter(
+        (waiter) => waiter.sectionNumber === tablesectionNumber
+      );
+      if (sectionWaiters.length === 0) {
+        throw new Error("No waiters found in the specified section");
+      }
+
+      const TicketSection = AllPreparationTicket.filter(
+        (Ticket) =>
+          Ticket.waiter && Ticket.waiter?.sectionNumber === tablesectionNumber
+      ).sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+
+      let waiterId = "";
+
+      if (TicketSection.length > 0) {
+        const lastWaiterId = TicketSection[0]?.waiter?._id;
+        const lastWaiterIndex = sectionWaiters.findIndex(
+          (waiter) => waiter._id === lastWaiterId
+        );
+        // console.log({ lastWaiterId, lastWaiterIndex });
+
+        waiterId =
+          lastWaiterIndex !== -1 && lastWaiterIndex < sectionWaiters.length - 1
+            ? sectionWaiters[lastWaiterIndex + 1]._id
+            : sectionWaiters[0]._id;
+      } else {
+        console.log("لا توجد طلبات سابقة لهذه الطاولة");
+        waiterId = sectionWaiters[0]._id;
+      }
+
+      console.log({ waiterId });
+
+      return waiterId;
+    } catch (error) {
+      console.error("Error fetching table or waiter data:", error);
+      return "";
+    }
+  };
 
   const TicketInProgress = async (ticketId, status) => {
     if (!token) {
@@ -319,8 +316,7 @@ const PreparationScreen = () => {
     }
   };
 
-
-  const updateTicketDone = async (id, type) => {
+  const updateTicketDone = async (ticketId) => {
     if (!token) {
       toast.error("رجاء تسجيل الدخول مره أخرى");
       return;
@@ -328,14 +324,16 @@ const PreparationScreen = () => {
 
     try {
       // 1. Fetch Ticket and product data
-      const preparationticketData = await axios.get(
-        `${apiUrl}/api/preparationticket/${id}`,
+      const fetchPreparationTicketData = await axios.get(
+        `${apiUrl}/api/preparationticket/${ticketId}`,
         config
       );
-      const { products: SectionProducts } = preparationticketData.data.data;
-      const orderId = await preparationticketData.data.data?.order._id;
-      const orderProducts = preparationticketData.data.data.order?.products;
-      // console.log({preparationticketData:preparationticketData.data.data, orderId, orderProducts,  SectionProducts});
+      const preparationticketData = fetchPreparationTicketData.data.data
+      const { products: SectionProducts } = preparationticketData;
+      const orderType= preparationticketData.order?.type
+      const orderId = await preparationticketData?.order._id;
+      const orderProducts = preparationticketData.order?.products;
+      console.log({preparationticketData:preparationticketData, orderId,orderType, orderProducts,  SectionProducts});
 
       if (!SectionProducts.length) {
         toast.warn("لا توجد منتجات بحاجة إلى تجهيز في المطبخ");
@@ -382,7 +380,8 @@ const PreparationScreen = () => {
             totalConsumptionTicket[existingItemIndex].amount += amount;
           } else {
             const SectionConsumption = SectionConsumptionsToday.find(
-              (sectionItem) => sectionItem.stocsectionemId._id === ingredient.itemId?._id
+              (sectionItem) =>
+                sectionItem.stocsectionemId._id === ingredient.itemId?._id
             );
 
             totalConsumptionTicket.push({
@@ -461,7 +460,7 @@ const PreparationScreen = () => {
 
       // console.log({updatedOrderProducts, updateTicketProducts, updateTicket})
 
-      if (type === "Internal") {
+      if (orderType === "Internal") {
         const waiter = await specifiedWaiter(id);
         console.log({ waiter });
         if (!waiter) {
@@ -537,7 +536,7 @@ const PreparationScreen = () => {
   useEffect(() => {
     if (selectedSectionId) {
       getAllRecipe();
-      getAllWaiters();  
+      getAllWaiters();
       fetchSectionData(selectedSectionId);
     }
   }, [selectedSectionId, isRefresh]);
@@ -802,7 +801,7 @@ const PreparationScreen = () => {
                               <button
                                 className="btn w-100 btn-warning h-100 btn btn-lg"
                                 onClick={() => {
-                                  updateTicketDone(Ticket._id, "Prepared");
+                                  updateTicketDone(Ticket._id);
                                 }}
                               >
                                 تم التنفيذ
