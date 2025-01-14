@@ -42,6 +42,7 @@ const OrderSchema = new mongoose.Schema(
     },
 
     // List of products associated with the order
+
     products: [
       {
         // Product ID
@@ -309,6 +310,7 @@ const OrderSchema = new mongoose.Schema(
       type: String,
       default: "Pending",
       required: true,
+      trim: true,
       enum: [
         "Pending",
         "Approved",
@@ -329,6 +331,7 @@ const OrderSchema = new mongoose.Schema(
       type: String,
       default: "Not requested",
       required: true,
+      trim: true,
       enum: ["Not requested", "Requests assistance", "Requests bill"],
     },
     // Help request progress
@@ -336,6 +339,7 @@ const OrderSchema = new mongoose.Schema(
       type: String,
       default: "Not send",
       required: true,
+      trim: true,
       enum: ["Not send", "Send waiter", "On the way", "Assistance done"],
     },
     // Indicates if the order is split

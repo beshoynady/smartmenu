@@ -285,97 +285,209 @@ const ManagerDash = () => {
   // };
   
 
-  const changeOrderStatus = async (e, orderId)  => {
-    if (!token) {
-      // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-      }
-      const status = e.target.value;
-      const cashier= employeeLoginInfo.id
-      const isActive = status === "Cancelled" ? false : true;
+  // const changeOrderStatus = async (e, orderId)  => {
+  //   if (!token) {
+  //     // Handle case where token is not available
+  //       toast.error("رجاء تسجيل الدخول مره اخري");
+  //     }
+  //     const status = e.target.value;
+  //     const cashier= employeeLoginInfo.id
+  //     const isActive = status === "Cancelled" ? false : true;
 
-      console.log({ orderProducts });
-      if(status === "Cancelled"){
+  //     if(status === "Cancelled"){
+  //       try {
+  //         const response = await axios.put(
+  //           `${apiUrl}/api/order/${orderId}`,
+  //           { status, isActive, cashier },
+  //           config
+  //         );
+  //       } catch (error) {
+  //           console.error("خطأ في تغيير حالة الطلب:", error);
+  //           toast.error("حدث خطأ أثناء تغيير حالة الطلب");
+  //         }
+  //       }else{
+          
+  //         try {
+  //           const getOrder = await axios.get(
+  //             `${apiUrl}/api/order/${orderId}`,
+  //             config
+  //           );
+  //           const orderProducts =await getOrder.data.products
+  //           console.log({ orderProducts });
+  //         const newProducts = await orderProducts.filter(product=>product.isSend === false)
+
+  //         allPreparationSections &&
+  //         allPreparationSections.map((section) => {
+  //             const sectionProducts = [];
+  //             newProducts &&
+  //               newProducts.map((product) => {
+  //                 if (product.productid?.preparationSection === section._id && product.isSend === false) {
+  //                   sectionProducts.push({
+  //                     ...product,
+  //                     orderProductId:product._id
+  //                   });
+  //                 }
+  //               });
+  //             if (sectionProducts.length > 0) {
+  //               axios
+  //                 .post(
+  //                   `${apiUrl}/api/preparationticket`,
+  //                   {
+  //                     order: orderId,
+  //                     preparationSection: section,
+  //                     products: sectionProducts,
+  //                   },
+  //                   config
+  //                 )
+  //                 .then((response) => {
+  //                   console.log({
+  //                     sectionProducts,
+  //                     createTicket: response,
+  //                     createTicketdata: response.data,
+  //                   });
+  //                 })
+  //                 .catch((error) => {
+  //                   console.error("Error creating ticket:", error);
+  //                 });
+  //             }
+  //           });
+
+  //           const updateproduct =await newProducts.map(product=>{
+  //             return {...product, isSend:true}
+  //           })
+  //         const updateOrder = await axios.put(
+  //           `${apiUrl}/api/order/${orderId}`,
+  //           { status, isActive, cashier, products:updateproduct },
+  //           config
+  //         );
+  //         fetchOrdersData();
+  
+  //         toast.success("تم تغيير حالة الطلب بنجاح");
+  
+  //         if (status === "Approved") {
+  //           kitchenSocket.emit("orderkitchen", "استلام اوردر جديد");
+  //           setupdate(!update);
+  //           setisRefresh(!isRefresh);
+  //         }
+  //     } catch (error) {
+  //       console.error("خطأ في تغيير حالة الطلب:", error);
+  //       toast.error("حدث خطأ أثناء تغيير حالة الطلب");
+  //     }
+  //     }
+  // };
+
+
+  const changeOrderStatus = async (e, orderId) => {
+    try {
+      // Check if the token is available
+      if (!token) {
+        toast.error("رجاء تسجيل الدخول مره اخري");
+        return;
+      }
+  
+      const status = e.target.value; // Get the new status from the event
+      const cashier = employeeLoginInfo.id; // Current cashier ID
+      const isActive = status !== "Cancelled"; // Determine if the order is active
+  
+      // If the order is canceled
+      if (status === "Cancelled") {
         try {
-          const response = await axios.put(
+          // Update the order status and set isActive to false
+          await axios.put(
             `${apiUrl}/api/order/${orderId}`,
             { status, isActive, cashier },
             config
           );
-        } catch (error) {
-            console.error("خطأ في تغيير حالة الطلب:", error);
-            toast.error("حدث خطأ أثناء تغيير حالة الطلب");
-          }
-      }else{
-        
-        try {
-          const getOrder = await axios.get(
-            `${apiUrl}/api/order/${orderId}`,
-            config
-          );
-          const orderProducts = response.data.products
-          const newProducts = orderProducts.filter(product=>product.isSend === false)
-          const updateproduct =await newProducts.map(product=>{
-            return {...product, isSend:true}
-          })
-        const updateOrder = await axios.put(
-          `${apiUrl}/api/order/${orderId}`,
-          { status, isActive, cashier, products:updateproduct },
-          config
-        );
-        if (updateOrder.status === 200) {
-          allPreparationSections &&
-          allPreparationSections.map((section) => {
-              const sectionProducts = [];
-              newProducts &&
-                newProducts.map((product) => {
-                  if (product.productid?.preparationSection === section._id && product.isSend === false) {
-                    sectionProducts.push({
-                      ...product,
-                      orderProductId:product._id
-                    });
-                  }
-                });
-              if (sectionProducts.length > 0) {
-                axios
-                  .post(
-                    `${apiUrl}/api/preparationticket`,
-                    {
-                      order: orderId,
-                      preparationSection: section,
-                      products: sectionProducts,
-                    },
-                    config
-                  )
-                  .then((response) => {
-                    console.log({
-                      sectionProducts,
-                      createTicket: response,
-                      createTicketdata: response.data,
-                    });
-                  })
-                  .catch((error) => {
-                    console.error("Error creating ticket:", error);
-                  });
-              }
-            });
           fetchOrdersData();
-  
-          toast.success("تم تغيير حالة الطلب بنجاح");
-  
-          if (status === "Approved") {
-            kitchenSocket.emit("orderkitchen", "استلام اوردر جديد");
-            setupdate(!update);
-            setisRefresh(!isRefresh);
-          }
+          toast.success("تم إلغاء الطلب بنجاح");
+        } catch (error) {
+          console.error("Error updating order status:", error);
+          toast.error("حدث خطأ أثناء تغيير حالة الطلب");
         }
-      } catch (error) {
-        console.error("خطأ في تغيير حالة الطلب:", error);
-        toast.error("حدث خطأ أثناء تغيير حالة الطلب");
+        return;
       }
+  
+      // For other statuses
+      // Fetch the order details
+      const getOrder = await axios.get(`${apiUrl}/api/order/${orderId}`, config);
+      const orderProducts = getOrder.data.products; // Extract the products from the order
+      console.log({ orderProducts });
+  
+      // Filter products that are not yet sent to preparation
+      const newProducts = orderProducts.filter((product) => !product.isSend);
+  
+      // Iterate over all preparation sections
+      allPreparationSections &&
+        allPreparationSections.forEach((section) => {
+          const sectionProducts = [];
+  
+          // Filter products that belong to the current preparation section
+          newProducts.forEach((product) => {
+            if (
+              product.productid?.preparationSection === section._id &&
+              !product.isSend
+            ) {
+              sectionProducts.push({
+                ...product,
+                orderProductId: product._id, // Add orderProductId to the product
+              });
+            }
+          });
+  
+          // Create a preparation ticket for the section if there are products
+          if (sectionProducts.length > 0) {
+            axios
+              .post(
+                `${apiUrl}/api/preparationticket`,
+                {
+                  order: orderId,
+                  preparationSection: section,
+                  products: sectionProducts,
+                },
+                config
+              )
+              .then((response) => {
+                console.log({
+                  sectionProducts,
+                  createTicket: response,
+                  createTicketData: response.data,
+                });
+              })
+              .catch((error) => {
+                console.error("Error creating ticket:", error);
+              });
+          }
+        });
+  
+      // Update the isSend status for all products
+      const updatedProducts = newProducts.map((product) => ({
+        ...product,
+        isSend: true, // Mark the product as sent
+      }));
+  
+      // Update the order with the new products and status
+      await axios.put(
+        `${apiUrl}/api/order/${orderId}`,
+        { status, isActive, cashier, products: updatedProducts },
+        config
+      );
+  
+      fetchOrdersData();
+      toast.success("تم تغيير حالة الطلب بنجاح");
+  
+      // Emit event to kitchen if status is "Approved"
+      if (status === "Approved") {
+        kitchenSocket.emit("orderkitchen", "استلام اوردر جديد");
+        setupdate(!update);
+        setisRefresh(!isRefresh);
       }
+    } catch (error) {
+      // Log and show error messages
+      console.error("Error updating order status:", error);
+      toast.error("حدث خطأ أثناء تغيير حالة الطلب");
+    }
   };
-
+  
   const paymentstatus = ["Pending", "Paid"];
   const paymentstatusAr = ["انظار دفع", "دفع"];
 

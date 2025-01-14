@@ -210,21 +210,49 @@ const updateOrder = async (req, res) => {
   try {
     const orderId = req.params.id;
 
+    // Validate the order ID format
+    if (!orderId || !orderId.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ error: "Invalid order ID format" });
+    }
+
+    // Check if update data is provided
+    if (!req.body || Object.keys(req.body).length === 0) {
+      return res.status(400).json({ error: "No data provided for update" });
+    }
+
+    // Update the order
     const updatedOrder = await OrderModel.findByIdAndUpdate(
       orderId,
       { $set: req.body },
-      { new: true }
+      { new: true, runValidators: true } // Enable validation during update
     )
       .populate("products.productid", "_id name price preparationSection")
       .populate("products.extras.extraDetails.extraId", "_id name price");
+
+    // Check if the order exists
     if (!updatedOrder) {
       return res.status(404).json({ error: "Order not found" });
     }
-    res.status(200).json(updatedOrder);
+
+    // Respond with the updated order
+    return res.status(200).json({
+      message: "Order updated successfully",
+      order: updatedOrder,
+    });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    // Handle validation errors
+    if (err.name === "ValidationError") {
+      return res
+        .status(422)
+        .json({ error: "Validation error", details: err.errors });
+    }
+
+    // Handle general errors
+    console.error(err); // Log the error for debugging
+    return res.status(500).json({ error: "An internal server error occurred" });
   }
 };
+
 
 // Delete an order by ID
 const deleteOrder = async (req, res) => {
