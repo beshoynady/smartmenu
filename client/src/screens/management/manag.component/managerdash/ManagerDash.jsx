@@ -285,18 +285,15 @@ const ManagerDash = () => {
   // };
   
 
-  const changeOrderStatus = async (e, orderId,orderProducts)  => {
+  const changeOrderStatus = async (e, orderId)  => {
     if (!token) {
       // Handle case where token is not available
         toast.error("رجاء تسجيل الدخول مره اخري");
       }
-      const cashier= employeeLoginInfo.id
-
       const status = e.target.value;
+      const cashier= employeeLoginInfo.id
       const isActive = status === "Cancelled" ? false : true;
-      orderProducts.map(product=>{
-        return {...product, isSend:true}
-      })
+
       console.log({ orderProducts });
       if(status === "Cancelled"){
         try {
@@ -312,17 +309,26 @@ const ManagerDash = () => {
       }else{
         
         try {
-        const response = await axios.put(
+          const getOrder = await axios.get(
+            `${apiUrl}/api/order/${orderId}`,
+            config
+          );
+          const orderProducts = response.data.products
+          const newProducts = orderProducts.filter(product=>product.isSend === false)
+          const updateproduct =await newProducts.map(product=>{
+            return {...product, isSend:true}
+          })
+        const updateOrder = await axios.put(
           `${apiUrl}/api/order/${orderId}`,
-          { status, isActive, cashier, products:orderProducts },
+          { status, isActive, cashier, products:updateproduct },
           config
         );
-        if (response) {
+        if (updateOrder.status === 200) {
           allPreparationSections &&
           allPreparationSections.map((section) => {
               const sectionProducts = [];
-              orderProducts &&
-                orderProducts.map((product) => {
+              newProducts &&
+                newProducts.map((product) => {
                   if (product.productid?.preparationSection === section._id && product.isSend === false) {
                     sectionProducts.push({
                       ...product,
@@ -1128,7 +1134,6 @@ const ManagerDash = () => {
                                     changeOrderStatus(
                                       e,
                                       recent._id,
-                                      recent.products,
                                     );
                                   }}
                                 >
