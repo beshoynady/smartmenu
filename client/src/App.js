@@ -1066,8 +1066,8 @@ function App() {
         const oldSubTotal = lastUserOrder.subTotal;
         const newsalesTaxt = lastUserOrder.salesTax + salesTax;
         const subTotal = costOrder + oldSubTotal;
-        const deliveryCost = delivery_fee;
-        const total = subTotal + salesTax + deliveryCost;
+        const deliveryFee = delivery_fee;
+        const total = subTotal + salesTax + deliveryFee;
 
         // Update order if it's in 'Preparing' status
         if (lastUserOrder.status === "Preparing") {
@@ -1084,7 +1084,7 @@ function App() {
             {
               products,
               subTotal,
-              deliveryCost,
+              deliveryFee,
               salesTaxt: newsalesTaxt,
               total,
               status,
@@ -1112,7 +1112,7 @@ function App() {
             {
               products,
               subTotal,
-              deliveryCost,
+              deliveryFee,
               salesTaxt: newsalesTaxt,
               total,
               status,
@@ -1135,12 +1135,12 @@ function App() {
         const user = findUser ? userId : null;
         const products = [...itemsInCart];
         const subTotal = costOrder;
-        const deliveryCost = delivery_fee;
+        const deliveryFee = delivery_fee;
         const name = findUser ? findUser.username : "";
         const phone = findUser ? findUser.phone : "";
         const address = currentAddress;
         const orderType = "Delivery";
-        const total = subTotal + deliveryCost + salesTax;
+        const total = subTotal + deliveryFee + salesTax;
 
         await axios.post(
           `${apiUrl}/api/order`,
@@ -1149,7 +1149,7 @@ function App() {
             products,
             subTotal,
             salesTax,
-            deliveryCost,
+            deliveryFee,
             total,
             user,
             name,
@@ -1302,7 +1302,7 @@ function App() {
   const [tablenum, settablenum] = useState();
   const [orderTotal, setorderTotal] = useState();
   const [orderSubtotal, setorderSubtotal] = useState();
-  const [orderDeliveryCost, setorderDeliveryCost] = useState();
+  const [orderdeliveryFee, setorderdeliveryFee] = useState();
   const [orderdiscount, setorderdiscount] = useState(0);
   const [orderaddition, setorderaddition] = useState(0);
   const [discount, setdiscount] = useState(0);
@@ -1313,7 +1313,7 @@ function App() {
   const [clientphone, setclientphone] = useState("");
   const [clientaddress, setclientaddress] = useState("");
   const [deliveryAreaId, setdeliveryAreaId] = useState(0);
-  const [deliverycost, setdeliverycost] = useState(0);
+  const [deliveryFee, setdeliveryFee] = useState(0);
 
   const [salesTax, setsalesTax] = useState(0);
   const [serviceTax, setserviceTax] = useState(0);
@@ -1375,7 +1375,7 @@ function App() {
         setclientphone("");
         setclientaddress("");
         setdeliveryAreaId(0);
-        setdeliverycost(0);
+        setdeliveryFee(0);
         setsalesTax(0);
         setserviceTax(0);
       } else {
@@ -1415,7 +1415,7 @@ function App() {
         setclientphone("");
         setclientaddress("");
         setdeliveryAreaId(0);
-        setdeliverycost(0);
+        setdeliveryFee(0);
         setsalesTax(0);
         setserviceTax(0);
       }
@@ -1433,7 +1433,7 @@ function App() {
     clientPhone,
     clientAddress,
     orderType,
-    deliveryCost,
+    deliveryFee,
     discount,
     addition
   ) => {
@@ -1463,7 +1463,7 @@ function App() {
       const subTotal = costOrder;
 
       const total =
-        subTotal + salesTax + serviceTax + deliveryCost + addition - discount;
+        subTotal + salesTax + serviceTax + deliveryFee + addition - discount;
 
       const name = clientName;
       const phone = clientPhone;
@@ -1479,7 +1479,7 @@ function App() {
           orderNum,
           products,
           subTotal,
-          deliveryCost,
+          deliveryFee,
           salesTax,
           serviceTax,
           discount,
@@ -1507,7 +1507,7 @@ function App() {
         setclientphone("");
         setclientaddress("");
         setdeliveryAreaId(0);
-        setdeliverycost(0);
+        setdeliveryFee(0);
         setsalesTax(0);
         setserviceTax(0);
         cashierSocket.emit("orderkitchen", "استلام اوردر ديليفري جديد");
@@ -1579,7 +1579,7 @@ function App() {
         setorderUpdateDate(data.updatedAt);
         setorderTotal(data.total);
         setorderSubtotal(data.subTotal);
-        setorderDeliveryCost(data.deliveryCost);
+        setorderdeliveryFee(data.deliveryFee);
         setitemsInCart([]);
       } else {
         toast.info("لا توجد طلبات نشطة لهذا العميل");
@@ -1849,7 +1849,7 @@ function App() {
           setorderaddition(orderData.addition);
           setorderdiscount(orderData.discount);
           setorderSubtotal(orderData.subTotal);
-          setorderDeliveryCost(orderData.deliveryCost);
+          setorderdeliveryFee(orderData.deliveryFee);
           setitemsInCart([]);
         }
       } else {
@@ -2331,8 +2331,8 @@ function App() {
         setclientaddress,
         deliveryAreaId,
         setdeliveryAreaId,
-        deliverycost,
-        setdeliverycost,
+        deliveryFee,
+        setdeliveryFee,
 
         // الدوال المتعلقة بالتقسيم
         setisLoading,
@@ -2354,8 +2354,8 @@ function App() {
         salesTax,
         setserviceTax,
         serviceTax,
-        orderDeliveryCost,
-        setorderDeliveryCost,
+        orderdeliveryFee,
+        setorderdeliveryFee,
 
         // الدوال المتعلقة بتفاصيل الطلبات
         orderDetalisBySerial,

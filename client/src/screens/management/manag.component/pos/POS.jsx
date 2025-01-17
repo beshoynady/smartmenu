@@ -33,8 +33,8 @@ const POS = () => {
     setclientaddress,
     deliveryAreaId,
     setdeliveryAreaId,
-    deliverycost,
-    setdeliverycost,
+    deliveryFee,
+    setdeliveryFee,
     allProducts,
     allMenuCategories,
     allTable,
@@ -56,7 +56,7 @@ const POS = () => {
     orderTotal,
     orderSubtotal,
     ordertax,
-    orderdeliveryCost,
+    orderdeliveryFee,
     setdiscount,
     setaddition,
     discount,
@@ -115,7 +115,7 @@ const POS = () => {
     // console.log({deliveryArea})
     setdeliveryAreaId(deliveryArea._id);
     setdeliveryAreaName(deliveryArea.name);
-    setdeliverycost(deliveryArea.delivery_fee);
+    setdeliveryFee(deliveryArea.delivery_fee);
   };
 
   const getAllDeliveryAreas = async () => {
@@ -168,7 +168,7 @@ const POS = () => {
         setclientname(customer.name);
         setclientaddress(customer.address);
         setclientphone(customer.phone);
-        setdeliverycost(customer.deliveryArea?.delivery_fee);
+        setdeliveryFee(customer.deliveryArea?.delivery_fee);
         setdeliveryAreaName(customer.deliveryArea?.name);
         setclientNotes(customer.notes);
         setisVarified(customer.isVarified);
@@ -400,7 +400,7 @@ const POS = () => {
   useEffect(() => {
     settotalOrder(
       costOrder > 0
-        ? costOrder + salesTax + serviceTax + deliverycost + addition - discount
+        ? costOrder + salesTax + serviceTax + deliveryFee + addition - discount
         : 0
     );
   }, [
@@ -408,7 +408,7 @@ const POS = () => {
     ordertype,
     salesTax,
     serviceTax,
-    deliverycost,
+    deliveryFee,
     discount,
     addition,
   ]);
@@ -1198,7 +1198,7 @@ const POS = () => {
                       خدمة التوصيل:
                     </span>
                     <span className="text-dark fw-bold fs-5 text-center">
-                      {deliverycost > 0 ? deliverycost : 0} ج
+                      {deliveryFee > 0 ? deliveryFee : 0} ج
                     </span>
                   </p>
                 ) : null}
@@ -1268,7 +1268,7 @@ const POS = () => {
                     clientphone,
                     clientaddress,
                     ordertype,
-                    deliverycost,
+                    deliveryFee,
                     discount,
                     addition
                   );
@@ -1290,7 +1290,7 @@ const POS = () => {
                     clientphone,
                     clientaddress,
                     ordertype,
-                    deliverycost,
+                    deliveryFee,
                     discount,
                     addition
                   );

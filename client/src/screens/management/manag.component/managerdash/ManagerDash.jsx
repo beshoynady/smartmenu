@@ -460,7 +460,7 @@ const ManagerDash = () => {
         });
   
       // Update the isSend status for all products
-      const updatedProducts = newProducts.map((product) => ({
+      const updatedProducts = orderProducts.map((product) => ({
         ...product,
         isSend: true, // Mark the product as sent
       }));
@@ -1844,10 +1844,10 @@ const ManagerDash = () => {
                         {orderdata.subTotal - orderdata.subtotalSplitOrder}
                       </td>
                     </tr>
-                    {orderdata.deliveryCost > 0 && (
+                    {orderdata.deliveryFee > 0 && (
                       <tr>
                         <td colSpan="3">خدمة التوصيل</td>
-                        <td>{orderdata.deliveryCost}</td>
+                        <td>{orderdata.deliveryFee}</td>
                       </tr>
                     )}
                     {orderdata.addition > 0 ? (

@@ -8,11 +8,6 @@ const PreparationTicketSchema = new mongoose.Schema(
       ref: "Order",
       required: true,
     },
-    isActive: {
-      type: Boolean,
-      require: true,
-      default: true,
-    },
     preparationSection: {
       type: ObjectId,
       ref: "PreparationSection",
@@ -28,6 +23,7 @@ const PreparationTicketSchema = new mongoose.Schema(
         "Prepared",
         "On the way",
         "Delivered",
+        "cancelled",
         "Rejected",
       ],
     },
@@ -47,7 +43,7 @@ const PreparationTicketSchema = new mongoose.Schema(
           ref: "Product",
           required: true,
         },
-        orderProductId: {
+        c: {
           type: ObjectId,
           required: true,
         },
@@ -93,23 +89,23 @@ const PreparationTicketSchema = new mongoose.Schema(
             ],
           },
         ],
-        isDone: {
-          type: Boolean,
-          default: false,
-          required: true,
-        },
-        isDelivered: {
-          type: Boolean,
-          default: false,
-          required: true,
-        },
-        isAdd: {
-          type: Boolean,
-          default: false,
-          required: true,
-        },
       },
     ],
+    isDone: {
+      type: Boolean,
+      default: false,
+      required: true,
+    },
+    isDelivered: {
+      type: Boolean,
+      default: false,
+      required: true,
+    },
+    isActive: {
+      type: Boolean,
+      require: true,
+      default: true,
+    },
   },
   { timestamps: true }
 );

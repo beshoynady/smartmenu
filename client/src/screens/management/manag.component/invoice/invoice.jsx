@@ -15,7 +15,7 @@ const InvoiceComponent=({  ModalId, orderData, showModal, setShowModal })=>{
   const { restaurantData, formatdate, formatDateTime } = useContext(detacontext);  
 
   const { serial, orderType, name, phone, address, deliveryMan, table, products,
-     subTotal, deliveryCost, addition,salesTax, serviceTax, discount, total, cashier } = orderData;
+     subTotal, deliveryFee, addition,salesTax, serviceTax, discount, total, cashier } = orderData;
 
 
   const printContainerInvoice = useRef();
@@ -122,10 +122,10 @@ const InvoiceComponent=({  ModalId, orderData, showModal, setShowModal })=>{
                     <td colSpan="3">المجموع</td>
                     <td>{subTotal}</td>
                   </tr>
-                  {deliveryCost > 0 && (
+                  {deliveryFee > 0 && (
                     <tr>
                       <td colSpan="3">خدمة التوصيل</td>
-                      <td>{deliveryCost}</td>
+                      <td>{deliveryFee}</td>
                     </tr>
                   )}
                   {addition > 0 && (

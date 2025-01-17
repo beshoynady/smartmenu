@@ -39,7 +39,7 @@ const Cart = (props) => {
     orderTotal,
     orderSubtotal,
     ordertax,
-    orderdeliveryCost,
+    orderdeliveryFee,
     createDeliveryOrderByClient,
     createOrderForTableByClient,
     checkout,
@@ -460,10 +460,10 @@ const Cart = (props) => {
                       <td>{orderSubtotal > 0 ? orderSubtotal : 0} ج</td>
                     </tr>
                     {myOrder.orderType === "Delivery" &&
-                      myOrder.deliveryCost > 0 && (
+                      myOrder.deliveryFee > 0 && (
                         <tr>
                           <td colSpan="3">خدمة التوصيل</td>
-                          <td>{myOrder.deliveryCost} ج</td>
+                          <td>{myOrder.deliveryFee} ج</td>
                         </tr>
                       )}
 

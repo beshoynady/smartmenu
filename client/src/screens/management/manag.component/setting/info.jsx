@@ -193,7 +193,7 @@ const Info = () => {
   };
 
   // تحديث حقل تكلفة التوصيل
-  const handleDeliveryCostChange = (index, event) => {
+  const handledeliveryFeeChange = (index, event) => {
     const updatedAreas = [...areas];
     updatedAreas[index].delivery_fee = Number(event.target.value);
     setAreas(updatedAreas);
@@ -1458,7 +1458,7 @@ const Info = () => {
                               placeholder="تكلفة التوصيل"
                               defaultValue={Number(area.delivery_fee)}
                               onChange={(e) =>
-                                handleDeliveryCostChange(index, e)
+                                handledeliveryFeeChange(index, e)
                               }
                             />
                           </div>

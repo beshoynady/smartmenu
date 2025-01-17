@@ -444,21 +444,21 @@ const PreparationScreen = () => {
         }
       }
 
-      const updateTicketProducts = ticketProducts.map((product) => {
-        return { ...product, isDone: true };
-      });
+      // const updateTicketProducts = ticketProducts.map((product) => {
+      //   return { ...product, isDone: true };
+      // });
 
       // 5. Update Ticket Products
       const updatedOrderProducts = orderProducts.map((product) =>
         ticketProducts.some(
           (ticketProduct) =>
-            ticketProduct.productid?._id === product.productid?._id
+            ticketProduct.orderProductId === product.productid?._id
         )
           ? { ...product, isDone: true }
           : product
       );
 
-      console.log({updatedOrderProducts, updateTicketProducts, updatedOrderProducts})
+      // console.log({updatedOrderProducts, updateTicketProducts, updatedOrderProducts})
 
       if (orderType === "Internal") {
         const waiter = await specifiedWaiter(ticketId);
@@ -478,8 +478,9 @@ const PreparationScreen = () => {
         const updateTicket = axios.put(
           `${apiUrl}/api/preparationticket/${ticketId}`,
           {
-            products: updateTicketProducts,
+            // products: updateTicketProducts,
             preparationStatus: "Prepared",
+            isDone: true,
             waiter,
           },
           config
@@ -496,7 +497,9 @@ const PreparationScreen = () => {
         );
         const updateTicket = axios.put(
           `${apiUrl}/api/preparationticket/${ticketId}`,
-          { products: updateTicketProducts, preparationStatus: "Prepared" },
+          { preparationStatus: "Prepared",
+            isDone:true
+           },
           config
         );
         console.log({ updateTicket, updateOrder });

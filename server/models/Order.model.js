@@ -123,12 +123,12 @@ const OrderSchema = new mongoose.Schema(
           default: false,
           required: true,
         },
-        // Indicates if the product is an addition to the order
-        isAdd: {
-          type: Boolean,
-          default: false,
-          required: true,
-        },
+        // // Indicates if the product is an addition to the order
+        // isAdd: {
+        //   type: Boolean,
+        //   default: false,
+        //   required: true,
+        // },
         // List of extras for the product
         extras: [
           {
@@ -220,7 +220,7 @@ const OrderSchema = new mongoose.Schema(
       required: true,
     },
     // Delivery cost for the order
-    deliveryCost: {
+    deliveryFee: {
       type: Number,
       default: 0,
       required: true,
