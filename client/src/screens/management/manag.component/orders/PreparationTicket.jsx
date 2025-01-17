@@ -125,7 +125,7 @@ const PreparationTicket = () => {
         await axios.delete(deleteUrl, config);
     
         // Refresh the orders list after deletion
-        await getOrders();
+        await fetchPreparationTickets();
     
         // Show a success message
         toast.success("تم حذف التذكره بنجاح.");
@@ -137,25 +137,25 @@ const PreparationTicket = () => {
           if (status === 401) {
             toast.error("غير مصرح. يرجى تسجيل الدخول مرة أخرى.");
           } else if (status === 404) {
-            await getOrders();
+            await fetchPreparationTickets();
             toast.error("التذكره غير موجود. قد يكون تم حذفه مسبقًا.");
           } else {
-            await getOrders();
+            await fetchPreparationTickets();
             toast.error(data?.message || "حدث خطأ غير متوقع.");
           }
         } else if (error.request) {
-          await getOrders();
+          await fetchPreparationTickets();
           // Request was made but no response was received
           console.error("No response received:", error.request);
           toast.error("فشل الاتصال بالخادم. يرجى التحقق من الشبكة.");
         } else {
-          await getOrders();
+          await fetchPreparationTickets();
           // Something else went wrong during the request setup
           console.error("Request setup error:", error.message);
           toast.error("حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.");
         }
       } finally{
-        await getOrders();
+        await fetchPreparationTickets();
       }
     };
     
@@ -185,7 +185,7 @@ const PreparationTicket = () => {
       for (const Id of selectedIds) {
         await axios.delete(`${apiUrl}/api/preparationticket/${Id}`, config);
       }
-      getOrders();
+      fetchPreparationTickets();
       toast.success("Selected orders deleted successfully");
       setSelectedIds([]);
     } catch (error) {
@@ -197,28 +197,28 @@ const PreparationTicket = () => {
   // Filter orders by serial number
   const searchBySerial = (serial) => {
     if (serial) {
-      const orders = PreparationSection.filter((order) =>
-        order.serial.toString().startsWith(serial)
+      const PreparationTicketsfilter = PreparationTickets.filter((Ticket) => Ticket.order?.serial.toString().startsWith(serial)
       );
-      setPreparationSections(orders);
+      setPreparationTickets(PreparationTicketsfilter);
     } else {
-      getOrders();
+      fetchPreparationTickets();
     }
   };
 
   // Filter orders by order type
-  const getOrdersByType = (type) => {
+  const getPreparationTicketByType = (type) => {
     if (!type) {
-      getOrders();
+      fetchPreparationTickets();
     } else {
-      const orders = PreparationSection.filter((order) => order.orderType === type);
-      setPreparationSections(orders.reverse());
+      const PreparationTicketsfilter = PreparationTickets.filter((Ticket) => Ticket.order?.orderType === type);
+      setPreparationTickets(orders.reverse());
     }
   };
 
   // Fetch orders on component mount
   useEffect(() => {
-    getOrders();
+    fetchPreparationSections();
+    fetchPreparationTickets()
   }, []);
 
   return (
@@ -282,7 +282,7 @@ const PreparationTicket = () => {
                 </label>
                 <select
                   className="form-control border-primary m-0 p-2 h-auto"
-                  onChange={(e) => getOrdersByType(e.target.value)}
+                  onChange={(e) => getPreparationTicketByType(e.target.value)}
                 >
                   <option value={""}>الكل</option>
                   <option value="Internal">Internal</option>
@@ -364,7 +364,7 @@ const PreparationTicket = () => {
                     </button>
                     <button
                       type="button"
-                      className="btn btn-warning h-100 p-2" onClick={getOrders}
+                      className="btn btn-warning h-100 p-2" onClick={fetchPreparationTickets}
                     >
                       استعادة
                     </button>
@@ -442,7 +442,7 @@ const PreparationTicket = () => {
                             href="#deletePreparationTicketModal"
                             className="delete"
                             data-toggle="modal"
-                            onClick={() => setPreparationTicketId(order._id)}
+                            onClick={() => setPreparationTicketId(Ticket._id)}
                           >
                             <i
                               className="material-icons"
@@ -526,12 +526,12 @@ const PreparationTicket = () => {
         </div>
       </div>
 
-      <InvoiceComponent
+      {/* <InvoiceComponent
         ModalId="invoiceOrderModal"
         orderData={orderData}
         showModal={showModal}
         setShowModal={setShowModal}
-      />
+      /> */}
 
       <div id="deletePreparationTicketModal" className="modal fade">
         <div className="modal-dialog modal-lg">
