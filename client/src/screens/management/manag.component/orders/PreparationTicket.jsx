@@ -211,7 +211,7 @@ const PreparationTicket = () => {
       fetchPreparationTickets();
     } else {
       const PreparationTicketsfilter = PreparationTickets.filter((Ticket) => Ticket.order?.orderType === type);
-      setPreparationTickets(orders.reverse());
+      setPreparationTickets(PreparationTicketsfilter.reverse());
     }
   };
 
@@ -408,7 +408,7 @@ const PreparationTicket = () => {
                             data-toggle="modal"
                             data-target="#invoiceOrderModal"
                             onClick={() => {
-                              getOrderDataBySerial(Ticket.order?.serial);
+                              searchBySerial(Ticket.order?.serial);
                               setShowModal(!showModal);
                             }}
                           >
