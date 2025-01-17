@@ -43,7 +43,7 @@ const PreparationTicketSchema = new mongoose.Schema(
           ref: "Product",
           required: true,
         },
-        c: {
+        orderProductId: {
           type: ObjectId,
           required: true,
         },

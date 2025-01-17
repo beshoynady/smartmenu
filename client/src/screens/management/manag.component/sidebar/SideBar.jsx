@@ -160,7 +160,7 @@ const SideBar = () => {
                   </li>
                 )}
                 {/* bar */}
-                {(isProgrammer ||
+                {/* {(isProgrammer ||
                   role === "chef" ||
                   role === "manager" ||
                   role === "owner") && (
@@ -180,9 +180,9 @@ const SideBar = () => {
                       </li>
                     </ul>
                   </li>
-                )}
+                )} */}
                 {/* Grill */}
-                {(isProgrammer ||
+                {/* {(isProgrammer ||
                   role === "chef" ||
                   role === "manager" ||
                   role === "owner") && (
@@ -201,7 +201,7 @@ const SideBar = () => {
                       </li>
                     </ul>
                   </li>
-                )}
+                )} */}
 
                 {/* Waiter */}
                 {(isProgrammer ||
@@ -262,6 +262,26 @@ const SideBar = () => {
                     <ul className="submenu blank">
                       <li className="list">
                         <Link to="orders" className="linkname">
+                          الطلبات
+                        </Link>
+                      </li>
+                    </ul>
+                  </li>
+                )}
+                {(isProgrammer ||
+                  permissionsList?.filter(
+                    (permission) => permission.resource === "Orders"
+                  )[0]?.read) && (
+                  <li className="list">
+                    <Link to="preparationticket">
+                      <span className="material-symbols-outlined list-icon ml-2">
+                        list_alt
+                      </span>
+                      <span className="linkname">الطلبات</span>
+                    </Link>
+                    <ul className="submenu blank">
+                      <li className="list">
+                        <Link to="preparationticket" className="linkname">
                           الطلبات
                         </Link>
                       </li>
