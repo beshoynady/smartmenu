@@ -575,23 +575,22 @@ const PreparationScreen = () => {
       {/* Section selection and ticket stats */}
       <div
         className=" d-flex col-lg-2 col-sm-3 flex-column align-items-start justify-content-between mb-3"
-        style={{ alignItems: "flex-end" }}
+        style={{ alignItems: "flex-end", maxWidth: "150px"  }}
       >
         {/* Section selection */}
         <div
           className="d-flex flex-column align-items-end bg-white shadow-sm rounded p-2 mb-3 w-100"
-          style={{ maxWidth: "200px" }}
         >
           <label
             htmlFor="section-select"
-            className="fw-bold text-dark"
+            className="w-100 fw-bold text-dark text-center"
             style={{ fontSize: "1.2rem" }}
           >
             اختر القسم:
           </label>
           <select
             id="section-select"
-            className="form-select"
+            className="w-100 form-select"
             onChange={(e) => setSelectedSectionId(e.target.value)}
           >
             <option value="" disabled selected>
@@ -1010,7 +1009,7 @@ const PreparationScreen = () => {
               <h5 className="text-right text-dark font-weight-bold mb-4">
                 التذاكر المنفذة
               </h5>
-              <div>
+              <div className="d-flex flex-wrap ">
                 {TicketsToday.filter(
                   (ticket) => ticket.preparationStatus === "Delivered"
                 ).length === 0 ? (
@@ -1157,6 +1156,7 @@ const PreparationScreen = () => {
               <h5 className="text-right text-dark font-weight-bold mb-4">
                 التذاكر الملغاة
               </h5>
+              <div className="d-flex flex-wrap ">
               {TicketsToday.filter(
                 (ticket) => ticket.preparationStatus === "Rejected"
               ).length === 0 ? (
@@ -1294,6 +1294,8 @@ const PreparationScreen = () => {
                   return null;
                 })
               )}
+                </div>
+
             </div>
           )}
 
@@ -1302,6 +1304,7 @@ const PreparationScreen = () => {
               <h5 calssName="text-right text-dark font-weight-bold mb-4">
                 عناصر المخزن الاستهلاك
               </h5>
+
               {filteredSectionConsumptionToday.length === 0 ? (
                 <p>لا توجد عناصر مخزن استهلاك.</p>
               ) : (
