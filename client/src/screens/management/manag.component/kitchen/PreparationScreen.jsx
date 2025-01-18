@@ -110,16 +110,16 @@ const PreparationScreen = () => {
 
       // Update section stats
       const stats = {
-        waitingApproval: filteredTickets.filter(
+        waitingApproval: filteredTicketsToday.filter(
           (ticket) => ticket.preparationStatus === "Pending"
         ).length,
-        inProgress: filteredTickets.filter(
+        inProgress: filteredTicketsToday.filter(
           (ticket) => ticket.preparationStatus === "Preparing"
         ).length,
-        completed: filteredTickets.filter(
+        completed: filteredTicketsToday.filter(
           (ticket) => ticket.preparationStatus === "Prepared"
         ).length,
-        rejected: filteredTickets.filter(
+        rejected: filteredTicketsToday.filter(
           (ticket) => ticket.preparationStatus === "Rejected"
         ).length,
       };
