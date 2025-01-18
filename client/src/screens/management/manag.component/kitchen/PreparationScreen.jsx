@@ -25,6 +25,7 @@ const PreparationScreen = () => {
   const [sectionStats, setSectionStats] = useState({
     waitingApproval: 0,
     inProgress: 0,
+    waitingPickup: 0,
     completed: 0,
     rejected: 0,
   });
@@ -114,8 +115,11 @@ const PreparationScreen = () => {
         inProgress: filteredTicketsToday.filter(
           (ticket) => ticket.preparationStatus === "Preparing"
         ).length,
-        completed: filteredTicketsToday.filter(
+        waitingPickup: filteredTicketsToday.filter(
           (ticket) => ticket.preparationStatus === "Prepared"
+        ).length,
+        completed: filteredTicketsToday.filter(
+          (ticket) => ticket.preparationStatus === "Delivered"
         ).length,
         rejected: filteredTicketsToday.filter(
           (ticket) => ticket.preparationStatus === "Rejected"
@@ -619,6 +623,13 @@ const PreparationScreen = () => {
           >
             <h6 className="text-dark">جاري التنفيذ</h6>
             <p className="text-warning">{sectionStats.inProgress}</p>
+          </div>
+          <div
+            className="ticket-box text-center bg-light shadow-sm rounded p-3 mb-2"
+            style={{ width: "100%" }}
+          >
+            <h6 className="text-dark">انتظار الاستلام</h6>
+            <p className="text-warning">{sectionStats.waitingPickup}</p>
           </div>
           <div
             className="ticket-box text-center bg-light shadow-sm rounded p-3 mb-2"
