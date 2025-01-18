@@ -574,7 +574,7 @@ const PreparationScreen = () => {
     >
       {/* Section selection and ticket stats */}
       <div
-        className=" d-flex col-lg-2 col-sm-3 flex-column align-items-start justify-content-between mb-3"
+        className=" d-flex col-lg-2 col-sm-3 flex-column align-items-start justify-content-between p-1 mb-3"
         style={{ alignItems: "flex-end", maxWidth: "150px"  }}
       >
         {/* Section selection */}
@@ -609,31 +609,31 @@ const PreparationScreen = () => {
           className="w-100 d-flex flex-column align-items-end justify-content-between flex-wrap"
         >
           <div
-            className="ticket-box text-center bg-light shadow-sm rounded p-3 mb-2"
+            className="ticket-box text-center bg-light shadow-sm rounded w-100 p-2 mb-2"
           >
             <h6 className="text-dark">انتظار الموافقة</h6>
             <p className="text-primary">{sectionStats.waitingApproval}</p>
           </div>
           <div
-            className="ticket-box text-center bg-light shadow-sm rounded p-3 mb-2"
+            className="ticket-box text-center bg-light shadow-sm rounded w-100 p-2 mb-2"
           >
             <h6 className="text-dark">جاري التنفيذ</h6>
             <p className="text-warning">{sectionStats.inProgress}</p>
           </div>
           <div
-            className="ticket-box text-center bg-light shadow-sm rounded p-3 mb-2"
+            className="ticket-box text-center bg-light shadow-sm rounded w-100 p-2 mb-2"
           >
             <h6 className="text-dark">انتظار الاستلام</h6>
             <p className="text-warning">{sectionStats.waitingPickup}</p>
           </div>
           <div
-            className="ticket-box text-center bg-light shadow-sm rounded p-3 mb-2"
+            className="ticket-box text-center bg-light shadow-sm rounded w-100 p-2 mb-2"
           >
             <h6 className="text-dark">تم التنفيذ</h6>
             <p className="text-success">{sectionStats.completed}</p>
           </div>
           <div
-            className="ticket-box text-center bg-light shadow-sm rounded p-3"
+            className="ticket-box text-center bg-light shadow-sm rounded w-100 p-2 mb-2"
           >
             <h6 className="text-dark">مرفوض</h6>
             <p className="text-danger">{sectionStats.rejected}</p>
