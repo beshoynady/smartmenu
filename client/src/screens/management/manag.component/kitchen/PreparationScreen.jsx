@@ -17,8 +17,9 @@ const PreparationScreen = () => {
 
   const [preparationSections, setPreparationSections] = useState([]);
   const [selectedSectionId, setSelectedSectionId] = useState(null);
-  const [activeTickets, setActiveTickets] = useState([]);
   const [AllPreparationTicket, setAllPreparationTicket] = useState([]); // State for all Tickets
+  const [TicketsToday, setTicketsToday] = useState([]); // State for all Tickets
+  const [activeTickets, setActiveTickets] = useState([]);
 
   const [consumptionItems, setConsumptionItems] = useState([]);
   const [sectionStats, setSectionStats] = useState({
@@ -92,12 +93,20 @@ const PreparationScreen = () => {
       );
       const tickets = response.data.data;
       setAllPreparationTicket([...tickets]);
-      const filteredTickets = tickets.filter(
+      const filteredTicketsToday = tickets.filter(
+        (ticket) => {
+          const itemDate = formatDate(ticket.createdAt);
+          return itemDate === date;
+        }
+      );
+      setTicketsToday(filteredTicketsToday)
+
+      const filteredTicketsSectionisActive = filteredTicketsToday.filter(
         (ticket) =>
           ticket.preparationSection._id === sectionId && ticket.isActive
       );
 
-      setActiveTickets(filteredTickets);
+      setActiveTickets(filteredTicketsSectionisActive);
 
       // Update section stats
       const stats = {
@@ -981,12 +990,12 @@ const PreparationScreen = () => {
                 التذاكر المنفذة
               </h5>
               <div>
-                {activeTickets.filter(
+                {TicketsToday.filter(
                   (ticket) => ticket.preparationStatus === "Delivered"
                 ).length === 0 ? (
                   <p>لا توجد تذاكر تم تنفيذها.</p>
                 ) : (
-                  activeTickets.map((ticket, index) => {
+                  TicketsToday.map((ticket, index) => {
                     if (ticket.preparationStatus === "Completed") {
                       return (
                         <div
@@ -1127,12 +1136,12 @@ const PreparationScreen = () => {
               <h5 className="text-right text-dark font-weight-bold mb-4">
                 التذاكر الملغاة
               </h5>
-              {activeTickets.filter(
+              {TicketsToday.filter(
                 (ticket) => ticket.preparationStatus === "Rejected"
               ).length === 0 ? (
                 <p>لا توجد تذاكر ملغاة.</p>
               ) : (
-                activeTickets.map((ticket, index) => {
+                TicketsToday.map((ticket, index) => {
                   if (ticket.preparationStatus === "Rejected") {
                     return (
                       <div
