@@ -1001,7 +1001,7 @@ const PreparationScreen = () => {
                   <p>لا توجد تذاكر تم تنفيذها.</p>
                 ) : (
                   TicketsToday.map((ticket, index) => {
-                    if (ticket.preparationStatus === "Completed") {
+                    if (ticket.preparationStatus === "Delivered") {
                       return (
                         <div
                           className="col-lg-3 col-md-4 col-sm-6 col-12 mb-4 ml-2 card text-white bg-success p-0 m-0"
