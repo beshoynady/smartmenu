@@ -2,8 +2,16 @@ const PreparationTicketModel = require("../models/PreparationTicket.model.js");
 
 const createPreparationTicket = async (req, res) => {
   try {
-    const { order, preparationSection, preparationStatus, products, isActive } =
-      req.body;
+    const {
+      order,
+      preparationSection,
+      preparationStatus,
+      products,
+      isActive,
+      timeReceived,
+      expectedCompletionTime,
+      notes,
+    } = req.body;
 
     const newPreparationTicket = await PreparationTicketModel.create({
       order,
@@ -11,6 +19,9 @@ const createPreparationTicket = async (req, res) => {
       preparationStatus,
       products,
       isActive,
+      timeReceived,
+      expectedCompletionTime,
+      notes,
     });
 
     res.status(201).json({
@@ -42,6 +53,7 @@ const getAllPreparationTickets = async (req, res) => {
       .populate("preparationSection", "_id name")
       .populate("responsibleEmployee", "_id username role")
       .populate("waiter", "_id fullname username role shift sectionNumber");
+
     res.status(200).json({
       success: true,
       data: preparationTickets,
@@ -57,7 +69,7 @@ const getAllPreparationTickets = async (req, res) => {
 
 const getActivePreparationTickets = async (req, res) => {
   try {
-    const preparationTickets = await PreparationTicketModel.find({isActive: true})
+    const preparationTickets = await PreparationTicketModel.find({ isActive: true })
       .populate("order")
       .populate({
         path: "order",
@@ -70,6 +82,7 @@ const getActivePreparationTickets = async (req, res) => {
       .populate("preparationSection", "_id name")
       .populate("responsibleEmployee", "_id username role")
       .populate("waiter", "_id fullname username role shift sectionNumber");
+
     res.status(200).json({
       success: true,
       data: preparationTickets,
@@ -97,9 +110,10 @@ const getPreparationTicketById = async (req, res) => {
       })
       .populate("products.productid", "_id name preparationSection")
       .populate("products.extras.extraDetails.extraId", "_id name")
-      // .populate("preparationSection", "_id name")
+      .populate("preparationSection", "_id name")
       .populate("responsibleEmployee", "_id username role")
       .populate("waiter", "_id fullname username role shift sectionNumber");
+
     if (!preparationTicket) {
       return res.status(404).json({
         success: false,
@@ -129,22 +143,25 @@ const updatePreparationTicket = async (req, res) => {
       waiter,
       products,
       isActive,
+      actualCompletionTime,
+      notes,
     } = req.body;
 
-    const updatedPreparationTicket =
-      await PreparationTicketModel.findByIdAndUpdate(
-        id,
-        {
-          $set: {
-            preparationStatus,
-            responsibleEmployee,
-            waiter,
-            products,
-            isActive,
-          },
+    const updatedPreparationTicket = await PreparationTicketModel.findByIdAndUpdate(
+      id,
+      {
+        $set: {
+          preparationStatus,
+          responsibleEmployee,
+          waiter,
+          products,
+          isActive,
+          actualCompletionTime,
+          notes,
         },
-        { new: true, runValidators: true }
-      );
+      },
+      { new: true, runValidators: true }
+    );
 
     if (!updatedPreparationTicket) {
       return res.status(404).json({
@@ -171,8 +188,7 @@ const deletePreparationTicket = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const deletedPreparationTicket =
-      await PreparationTicketModel.findByIdAndDelete(id);
+    const deletedPreparationTicket = await PreparationTicketModel.findByIdAndDelete(id);
 
     if (!deletedPreparationTicket) {
       return res.status(404).json({

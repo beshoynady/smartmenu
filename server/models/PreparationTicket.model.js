@@ -23,7 +23,7 @@ const PreparationTicketSchema = new mongoose.Schema(
         "Prepared",
         "On the way",
         "Delivered",
-        "cancelled",
+        "Cancelled",
         "Rejected",
       ],
     },
@@ -91,6 +91,17 @@ const PreparationTicketSchema = new mongoose.Schema(
         ],
       },
     ],
+    timeReceived: {
+      type: Date,
+      required: true,
+    },
+    expectedCompletionTime: {
+      type: Date,
+      required: true,
+    },
+    actualCompletionTime: {
+      type: Date,
+    },
     isDone: {
       type: Boolean,
       default: false,
@@ -103,8 +114,13 @@ const PreparationTicketSchema = new mongoose.Schema(
     },
     isActive: {
       type: Boolean,
-      require: true,
+      required: true,
       default: true,
+    },
+    notes: {
+      type: String,
+      trim: true,
+      default: "",
     },
   },
   { timestamps: true }
