@@ -607,39 +607,33 @@ const PreparationScreen = () => {
         {/* Ticket stats */}
         <div
           className="w-100 d-flex flex-column align-items-end justify-content-between flex-wrap"
-          style={{ maxWidth: "200px" }}
         >
           <div
             className="ticket-box text-center bg-light shadow-sm rounded p-3 mb-2"
-            style={{ width: "100%" }}
           >
             <h6 className="text-dark">انتظار الموافقة</h6>
             <p className="text-primary">{sectionStats.waitingApproval}</p>
           </div>
           <div
             className="ticket-box text-center bg-light shadow-sm rounded p-3 mb-2"
-            style={{ width: "100%" }}
           >
             <h6 className="text-dark">جاري التنفيذ</h6>
             <p className="text-warning">{sectionStats.inProgress}</p>
           </div>
           <div
             className="ticket-box text-center bg-light shadow-sm rounded p-3 mb-2"
-            style={{ width: "100%" }}
           >
             <h6 className="text-dark">انتظار الاستلام</h6>
             <p className="text-warning">{sectionStats.waitingPickup}</p>
           </div>
           <div
             className="ticket-box text-center bg-light shadow-sm rounded p-3 mb-2"
-            style={{ width: "100%" }}
           >
             <h6 className="text-dark">تم التنفيذ</h6>
             <p className="text-success">{sectionStats.completed}</p>
           </div>
           <div
             className="ticket-box text-center bg-light shadow-sm rounded p-3"
-            style={{ width: "100%" }}
           >
             <h6 className="text-dark">مرفوض</h6>
             <p className="text-danger">{sectionStats.rejected}</p>
