@@ -121,6 +121,11 @@ const PreparationScreen = () => {
           (ticket) => ticket.preparationStatus === "Rejected"
         ).length,
       };
+      console.log({
+        filteredTicketsToday,
+        filteredTicketsSectionisActive,
+        stats,
+      });
       setSectionStats(stats);
 
       // Fetch consumption items
