@@ -77,7 +77,7 @@ const PreparationTicket = () => {
         config
       );
       if (response.status === 200) {
-        setPreparationSections(response.data.data);
+        setPreparationTickets(response.data.data);
       } else {
         throw new Error("Failed to fetch sections.");
       }
