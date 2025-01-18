@@ -29,7 +29,8 @@ const PreparationScreen = () => {
     rejected: 0,
   });
   const [allRecipe, setallRecipe] = useState([]); // State for all Tickets
-  const [filteredSectionConsumptionToday, setFilteredSectionConsumptionToday] = useState([]);
+  const [filteredSectionConsumptionToday, setFilteredSectionConsumptionToday] =
+    useState([]);
   const [AllWaiters, setAllWaiters] = useState([]); // State for active waiters
 
   const today = formatDate(new Date());
@@ -60,7 +61,6 @@ const PreparationScreen = () => {
       );
     }
   };
-
 
   const getAllRecipe = async () => {
     try {
@@ -93,17 +93,15 @@ const PreparationScreen = () => {
       );
       const tickets = response.data.data;
       setAllPreparationTicket([...tickets]);
-      const filteredTicketsToday = tickets.filter(
-        (ticket) => {
-          const itemDate = formatDate(ticket.createdAt);
-          return itemDate === date;
-        }
-      );
-      setTicketsToday(filteredTicketsToday)
+
+      const filteredTicketsToday = tickets.filter((ticket) => {
+        const itemDate = formatDate(ticket.createdAt);
+        return itemDate === date && ticket.preparationSection._id === sectionId;
+      });
+      setTicketsToday(filteredTicketsToday);
 
       const filteredTicketsSectionisActive = filteredTicketsToday.filter(
-        (ticket) =>
-          ticket.preparationSection._id === sectionId && ticket.isActive
+        (ticket) => ticket.isActive
       );
 
       setActiveTickets(filteredTicketsSectionisActive);
@@ -130,33 +128,38 @@ const PreparationScreen = () => {
       const recipes = recipeResponse.data;
 
       const updatedConsumptionItems = [];
-      filteredTickets.forEach((ticket) => {
-        ticket.products.forEach((product) => {
-          if (!product.isDone) {
-            const ingredients =
-              recipes.find(
-                (recipe) => recipe.productId._id === product.productid?._id
-              )?.ingredients || [];
+      filteredTicketsSectionisActive.forEach((Ticket) => {
+        if (
+          Ticket.preparationStatus === "Pending" ||
+          Ticket.preparationStatus === "Preparing"
+        ) {
+          Ticket.products.forEach((product) => {
+            if (!product.isDone) {
+              const ingredients =
+                recipes.find(
+                  (recipe) => recipe.productId._id === product.productid?._id
+                )?.ingredients || [];
 
-            ingredients.forEach((ingredient) => {
-              const existingItemIndex = updatedConsumptionItems.findIndex(
-                (item) => item.itemId?._id === ingredient.itemId?._id
-              );
-              const amount = ingredient.amount * product.quantity;
+              ingredients.forEach((ingredient) => {
+                const existingItemIndex = updatedConsumptionItems.findIndex(
+                  (item) => item.itemId?._id === ingredient.itemId?._id
+                );
+                const amount = ingredient.amount * product.quantity;
 
-              if (existingItemIndex !== -1) {
-                updatedConsumptionItems[existingItemIndex].amount += amount;
-              } else {
-                updatedConsumptionItems.push({
-                  itemId: ingredient.itemId,
-                  name: ingredient.name,
-                  unit: ingredient.unit,
-                  amount,
-                });
-              }
-            });
-          }
-        });
+                if (existingItemIndex !== -1) {
+                  updatedConsumptionItems[existingItemIndex].amount += amount;
+                } else {
+                  updatedConsumptionItems.push({
+                    itemId: ingredient.itemId,
+                    name: ingredient.name,
+                    unit: ingredient.unit,
+                    amount,
+                  });
+                }
+              });
+            }
+          });
+        }
       });
 
       setConsumptionItems(updatedConsumptionItems);
@@ -165,7 +168,6 @@ const PreparationScreen = () => {
       toast.error("An error occurred while fetching data for the section.");
     }
   };
-
 
   const getSectionConsumption = async () => {
     try {
@@ -201,7 +203,6 @@ const PreparationScreen = () => {
       toast.error("حدث خطأ أثناء جلب استهلاك المطبخ");
     }
   };
-
 
   const getAllWaiters = async () => {
     try {
@@ -337,12 +338,18 @@ const PreparationScreen = () => {
         `${apiUrl}/api/preparationticket/${ticketId}`,
         config
       );
-      const preparationticketData = fetchPreparationTicketData.data.data
+      const preparationticketData = fetchPreparationTicketData.data.data;
       const { products: ticketProducts } = preparationticketData;
-      const orderType= preparationticketData.order?.orderType
+      const orderType = preparationticketData.order?.orderType;
       const orderId = await preparationticketData?.order._id;
       const orderProducts = preparationticketData.order?.products;
-      console.log({preparationticketData:preparationticketData, orderId,orderType, orderProducts,  ticketProducts});
+      console.log({
+        preparationticketData: preparationticketData,
+        orderId,
+        orderType,
+        orderProducts,
+        ticketProducts,
+      });
 
       if (!ticketProducts.length) {
         toast.warn("لا توجد منتجات بحاجة إلى تجهيز في المطبخ");
@@ -506,9 +513,7 @@ const PreparationScreen = () => {
         );
         const updateTicket = axios.put(
           `${apiUrl}/api/preparationticket/${ticketId}`,
-          { preparationStatus: "Prepared",
-            isDone:true
-           },
+          { preparationStatus: "Prepared", isDone: true },
           config
         );
         console.log({ updateTicket, updateOrder });
