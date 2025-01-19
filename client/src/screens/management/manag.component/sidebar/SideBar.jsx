@@ -562,7 +562,7 @@ const SideBar = () => {
                             permission.resource === "Kitchen Usage"
                         )[0]?.read) && (
                         <li className="list">
-                          <Link to="kitchenconsumption">استهلاك المطبخ</Link>
+                          <Link to="SectionConsumption">الاستهلاك اليومي</Link>
                         </li>
                       )}
                       {(isProgrammer ||

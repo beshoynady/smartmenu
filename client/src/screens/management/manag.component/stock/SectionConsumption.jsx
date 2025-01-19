@@ -4,7 +4,7 @@ import { detacontext } from "../../../../App";
 import { toast, ToastContainer } from "react-toastify";
 import "../orders/Orders.css";
 
-const KitchenConsumption = () => {
+const SectionConsumption = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
   const token = localStorage.getItem("token_e");
   const config = {
@@ -54,7 +54,7 @@ const KitchenUsegePermission =
   const addKitchenItem = async (e) => {
     e.preventDefault();
     const today = new Date().toISOString().split("T")[0]; // Today's date in the format YYYY-MM-DD
-    const consumptionToday = allKitchenConsumption.filter((consumption) => {
+    const consumptionToday = allSectionConsumption.filter((consumption) => {
       const itemDate = new Date(consumption.createdAt)
         .toISOString()
         .split("T")[0];
@@ -95,7 +95,7 @@ const KitchenUsegePermission =
           setstockItemId("");
           setstockItemName("");
           setquantityTransferred(0);
-          getKitchenConsumption();
+          getSectionConsumption();
           // Show a success toast if the quantity is added
           toast.success("تمت إضافة الكمية بنجاح");
         } else {
@@ -137,7 +137,7 @@ const KitchenUsegePermission =
           setstockItemId("");
           setstockItemName("");
           setquantityTransferred(0);
-          getKitchenConsumption();
+          getSectionConsumption();
           // Show a success toast if the item is added
           toast.success("تمت إضافة العنصر بنجاح");
         } else {
@@ -195,7 +195,7 @@ const KitchenUsegePermission =
         //     setstockItemId('')
         //     setstockItemName('')
         //     setquantityTransferred(0)
-        //     getKitchenConsumption()
+        //     getSectionConsumption()
         // Show a success toast if the item is added
         toast.success("تمت تعديل العنصر بنجاح");
       } else {
@@ -257,13 +257,13 @@ const KitchenUsegePermission =
         config
       );
       if (response.status === 200) {
-        getKitchenConsumption();
+        getSectionConsumption();
       } else {
-        toast.error("Failed to deltet kitchenconsumption items");
+        toast.error("Failed to deltet SectionConsumption items");
       }
     } catch (error) {
       console.log(error);
-      toast.error("Failed to retrieve kitchenconsumption items");
+      toast.error("Failed to retrieve SectionConsumption items");
     }
   };
 
@@ -287,12 +287,12 @@ const KitchenUsegePermission =
 
   const today = new Date().toISOString().split("T")[0];
   const [date, setDate] = useState(today);
-  const [allKitchenConsumption, setAllKitchenConsumption] = useState([]);
-  const [KitchenConsumptionForView, setKitchenConsumptionForView] = useState(
+  const [allSectionConsumption, setAllSectionConsumption] = useState([]);
+  const [SectionConsumptionForView, setSectionConsumptionForView] = useState(
     []
   );
 
-  const getKitchenConsumption = async () => {
+  const getSectionConsumption = async () => {
     if (!token) {
       // Handle case where token is not available
       toast.error("رجاء تسجيل الدخول مره اخري");
@@ -307,12 +307,12 @@ const KitchenUsegePermission =
       const response = await axios.get(apiUrl + "/api/consumption", config);
       if (response && response.data) {
         const Consumptions = response.data.data;
-        const kitchenConsumptions = Consumptions.filter(
+        const SectionConsumptions = Consumptions.filter(
           (consumption) => consumption.consumptionSource === "kitchen"
         );
 
-        setAllKitchenConsumption(kitchenConsumptions.reverse());
-        setKitchenConsumptionForView(filterByTime(today, kitchenConsumptions));
+        setAllSectionConsumption(SectionConsumptions.reverse());
+        setSectionConsumptionForView(filterByTime(today, SectionConsumptions));
       } else {
         console.log("Unexpected response or empty data");
       }
@@ -328,36 +328,36 @@ const KitchenUsegePermission =
     setDate(selectedDate);
   };
 
-  const searchByKitchenConsumption = (name) => {
+  const searchBySectionConsumption = (name) => {
     if (!name) {
-      getKitchenConsumption();
+      getSectionConsumption();
       return;
     }
-    const filter = KitchenConsumptionForView.filter(
+    const filter = SectionConsumptionForView.filter(
       (item) => item.stockItemName.startsWith(name) === true
     );
-    setKitchenConsumptionForView(filter);
+    setSectionConsumptionForView(filter);
   };
 
   // Initialize state variables for date and filtered kitchen consumption
   // const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
-  // const [KitchenConsumptionForView, setKitchenConsumptionForView] = useState([]);
+  // const [SectionConsumptionForView, setSectionConsumptionForView] = useState([]);
 
   // // Function to filter kitchen consumption based on creation date
   // const filterByConsumCreatedAt = () => {
   //   console.log({datett:date})
-  //   const filtered = allKitchenConsumption.filter((consumption) => {
+  //   const filtered = allSectionConsumption.filter((consumption) => {
   //     new Date(kitItem.createdAt).toISOString().split('T')[0] === date;
   //     console.log({createdAt:kitItem.createdAt})
   //     return itemDate === date;
   //   });
   //   console.log({filtered})
-  //   setKitchenConsumptionForView(filtered);
+  //   setSectionConsumptionForView(filtered);
   // };
 
   useEffect(() => {
     getStockItems();
-    getKitchenConsumption();
+    getSectionConsumption();
     // filterByConsumCreatedAt()
   }, [date]);
 
@@ -433,7 +433,7 @@ const KitchenUsegePermission =
                 <input
                   type="text"
                   class="form-control border-primary m-0 p-2 h-auto"
-                  onChange={(e) => searchByKitchenConsumption(e.target.value)}
+                  onChange={(e) => searchBySectionConsumption(e.target.value)}
                 />
               </div>
 
@@ -443,10 +443,10 @@ const KitchenUsegePermission =
                 </label>
                 <select
                   class="form-control border-primary m-0 p-2 h-auto"
-                  onChange={(e) => searchByKitchenConsumption(e.target.value)}
+                  onChange={(e) => searchBySectionConsumption(e.target.value)}
                 >
                   <option value={""}>الكل</option>
-                  {KitchenConsumptionForView.map((consumption) => {
+                  {SectionConsumptionForView.map((consumption) => {
                     return (
                       <option value={consumption.stockItemName}>
                         {consumption.stockItemName}
@@ -463,8 +463,8 @@ const KitchenUsegePermission =
                   <select
                     className="form-control border-primary m-0 p-2 h-auto"
                     onChange={(e) =>
-                      setAllKitchenConsumption(
-                        filterByTime(e.target.value, allKitchenConsumption)
+                      setAllSectionConsumption(
+                        filterByTime(e.target.value, allSectionConsumption)
                       )
                     }
                   >
@@ -510,8 +510,8 @@ const KitchenUsegePermission =
                       type="button"
                       className="btn btn-primary h-100 p-2 "
                       onClick={() =>
-                        setAllKitchenConsumption(
-                          filterByDateRange(allKitchenConsumption)
+                        setAllSectionConsumption(
+                          filterByDateRange(allSectionConsumption)
                         )
                       }
                     >
@@ -520,7 +520,7 @@ const KitchenUsegePermission =
                     <button
                       type="button"
                       className="btn btn-warning h-100 p-2"
-                      onClick={getKitchenConsumption}
+                      onClick={getSectionConsumption}
                     >
                       استعادة
                     </button>
@@ -547,8 +547,8 @@ const KitchenUsegePermission =
               </tr>
             </thead>
             <tbody>
-              {KitchenConsumptionForView &&
-                KitchenConsumptionForView.map((item, i) => {
+              {SectionConsumptionForView &&
+                SectionConsumptionForView.map((item, i) => {
                   if ((i >= startpagination) & (i < endpagination)) {
                     return (
                       <tr key={i}>
@@ -560,7 +560,7 @@ const KitchenUsegePermission =
                         <td>{item.bookBalance}</td>
                         <td>{item.adjustment}</td>
                         <td>
-                          {item.productsProduced.length > 0
+                          {item.productsProduced&&item.productsProduced.length > 0
                             ? item.productsProduced.map((product, j) => (
                                 <span key={j}>{`[${product.productionCount} * ${
                                   product.productName
@@ -621,11 +621,11 @@ const KitchenUsegePermission =
             <div className="hint-text text-dark">
               عرض{" "}
               <b>
-                {KitchenConsumptionForView.length > endpagination
+                {SectionConsumptionForView.length > endpagination
                   ? endpagination
-                  : KitchenConsumptionForView.length}
+                  : SectionConsumptionForView.length}
               </b>{" "}
-              من <b>{KitchenConsumptionForView.length}</b> عنصر
+              من <b>{SectionConsumptionForView.length}</b> عنصر
             </div>
             <ul className="pagination">
               <li onClick={EditPagination} className="page-item disabled">
@@ -965,4 +965,4 @@ const KitchenUsegePermission =
   );
 };
 
-export default KitchenConsumption;
+export default SectionConsumption;

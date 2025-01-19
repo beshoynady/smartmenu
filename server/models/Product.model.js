@@ -25,12 +25,6 @@ const productSchema = new mongoose.Schema(
       required: [true, "Category is required"],
     },
 
-    // preparationSection: {
-    //   type: String,
-    //   required: [true, "Preparation section is required"],
-    //   enum: ["Kitchen", "Bar", "Grill"],
-    // },
-
     preparationSection: {
       type: ObjectId,
       ref: 'PreparationSection',

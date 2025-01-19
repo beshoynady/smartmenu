@@ -114,8 +114,8 @@ const StockManag = React.lazy(() =>
 const BatchStockReport = React.lazy(() =>
   import("./screens/management/manag.component/stock/BatchStockReport.jsx")
 );
-const KitchenConsumption = React.lazy(() =>
-  import("./screens/management/manag.component/stock/KitchenConsumption")
+const SectionConsumption = React.lazy(() =>
+  import("./screens/management/manag.component/stock/SectionConsumption.jsx")
 );
 const BarConsumption = React.lazy(() =>
   import("./screens/management/manag.component/stock/BarConsumption.jsx")
@@ -2683,10 +2683,10 @@ function App() {
               }
             />
             <Route
-              path="kitchenconsumption"
+              path="sectionconsumption"
               element={
                 <Suspense fallback={<LoadingPage />}>
-                  <KitchenConsumption />
+                  <SectionConsumption />
                 </Suspense>
               }
             />
