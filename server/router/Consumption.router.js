@@ -3,6 +3,7 @@ const router = express.Router();
 const {
   getAllConsumptions,
   getConsumptionById,
+  getConsumptionBySection,
   createConsumption,
   updateConsumptionById,
   deleteConsumptionById,
@@ -22,5 +23,9 @@ router
   .get(authenticateToken, checkSubscription, getConsumptionById)
   .put(authenticateToken, checkSubscription, updateConsumptionById)
   .delete(authenticateToken, checkSubscription, deleteConsumptionById);
+
+router
+  .route("/bysection/:sectionId")
+  .get(authenticateToken, checkSubscription, getConsumptionBySection)
 
 module.exports = router;

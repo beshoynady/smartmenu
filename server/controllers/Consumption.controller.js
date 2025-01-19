@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const ConsumptionModel = require("../models/Consumption.model");
 
-// Create a new kitchen consumption
+// Create a new consumption
 const createConsumption = async (req, res) => {
   try {
     const {
@@ -53,7 +53,7 @@ const createConsumption = async (req, res) => {
   }
 };
 
-// Update kitchen consumption by ID
+// Update consumption by ID
 const updateConsumptionById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -132,7 +132,7 @@ const updateConsumptionById = async (req, res) => {
 };
 
 
-// Get all kitchen consumptions
+// Get all consumptions
 const getAllConsumptions = async (req, res) => {
   try {
     const consumptions = await ConsumptionModel.find({})
@@ -149,7 +149,7 @@ const getAllConsumptions = async (req, res) => {
   }
 };
 
-// Get single kitchen consumption by ID
+// Get single consumption by ID
 const getConsumptionById = async (req, res) => {
   const { id } = req.params;
   try {
@@ -174,8 +174,57 @@ const getConsumptionById = async (req, res) => {
     res.status(500).json({ success: false, error: "Internal Server Error" });
   }
 };
+// Get single consumption by section 
+const getConsumptionBySection = async (req, res) => {
+  const { sectionId } = req.params;
 
-// Delete kitchen consumption by ID
+  try {
+    // التحقق من صحة المعرف
+    if (!mongoose.Types.ObjectId.isValid(sectionId)) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid section ID format",
+      });
+    }
+
+    // استرجاع بيانات الاستهلاك المرتبطة بالقسم المحدد
+    const consumptions = await ConsumptionModel.find({ section: sectionId })
+      .populate("section")
+      .populate("tickets")
+      .populate("stockItem")
+      .populate("deliveredBy", "_id fullname username role")
+      .populate("receivedBy", "_id fullname username role");
+
+    // التحقق من وجود بيانات الاستهلاك
+    if (!consumptions || consumptions.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: "No consumption records found for this section",
+      });
+    }
+
+    // إرسال البيانات في الاستجابة
+    return res.status(200).json({
+      success: true,
+      data: consumptions,
+      message: "Consumptions fetched successfully",
+    });
+  } catch (err) {
+    console.error("Error fetching consumption by section:", err);
+
+    // إرسال استجابة مفصلة عن الخطأ
+    return res.status(500).json({
+      success: false,
+      error: {
+        message: "Failed to fetch consumptions by section",
+        details: err.message || "Internal Server Error",
+      },
+    });
+  }
+};
+
+
+// Delete consumption by ID
 const deleteConsumptionById = async (req, res) => {
   const { id } = req.params;
   try {
@@ -201,5 +250,6 @@ module.exports = {
   updateConsumptionById,
   getAllConsumptions,
   getConsumptionById,
+  getConsumptionBySection,
   deleteConsumptionById,
 };

@@ -31,10 +31,10 @@ const SectionConsumption = () => {
     setendpagination,
   } = useContext(detacontext);
 
-const KitchenUsegePermission =
+const SectionUsegePermission =
     permissionsList &&
     permissionsList.filter(
-      (permission) => permission.resource === "Kitchen Usage"
+      (permission) => permission.resource === "SectionConsumption"
     )[0];
 
 
@@ -47,11 +47,11 @@ const KitchenUsegePermission =
 
   const [bookBalance, setbookBalance] = useState();
   const [actualBalance, setactualBalance] = useState();
-  const [KitchenItemId, setKitchenItemId] = useState();
+  const [SectionItemId, setSectionItemId] = useState();
   const [adjustment, setadjustment] = useState();
 
-  // Function to add an item to kitchen consumption
-  const addKitchenItem = async (e) => {
+  // Function to add an item to Section consumption
+  const addSectionItem = async (e) => {
     e.preventDefault();
     const today = new Date().toISOString().split("T")[0]; // Today's date in the format YYYY-MM-DD
     const consumptionToday = allSectionConsumption.filter((consumption) => {
@@ -72,7 +72,7 @@ const KitchenUsegePermission =
           // Handle case where token is not available
           toast.error("رجاء تسجيل الدخول مره اخري");
         }
-        if (KitchenUsegePermission && !KitchenUsegePermission.update) {
+        if (SectionUsegePermission && !SectionUsegePermission.update) {
           toast.warn("ليس لك صلاحية لتعديل عنصر لمخزن الاستهلاك");
           return;
         }
@@ -113,7 +113,7 @@ const KitchenUsegePermission =
           // Handle case where token is not available
           toast.error("رجاء تسجيل الدخول مره اخري");
         }
-        if (KitchenUsegePermission && !KitchenUsegePermission.create) {
+        if (SectionUsegePermission && !SectionUsegePermission.create) {
           toast.warn("ليس لك صلاحية لاضافه عنصر لمخزن الاستهلاك");
           return;
         }
@@ -126,7 +126,7 @@ const KitchenUsegePermission =
             quantityTransferred,
             bookBalance: quantityTransferred,
             unit,
-            consumptionSource: "kitchen",
+            consumptionSource: "Section",
             receivedBy,
           },
           config
@@ -152,21 +152,21 @@ const KitchenUsegePermission =
     }
   };
 
-  const updateKitchenItem = async (e) => {
+  const updateSectionItem = async (e) => {
     e.preventDefault();
-    console.log("updateKitchenItem");
+    console.log("updateSectionItem");
     if (!token) {
       // Handle case where token is not available
       toast.error("رجاء تسجيل الدخول مره اخري");
       return;
     }
-    if (KitchenUsegePermission && !KitchenUsegePermission.update) {
+    if (SectionUsegePermission && !SectionUsegePermission.update) {
       toast.warn("ليس لك صلاحية لتعديل عنصر لمخزن الاستهلاك");
       return;
     }
     try {
       const update = await axios.put(
-        `${apiUrl}/api/consumption/${KitchenItemId}`,
+        `${apiUrl}/api/consumption/${SectionItemId}`,
         {
           adjustment,
           actualBalance,
@@ -215,6 +215,32 @@ const KitchenUsegePermission =
     }
   };
 
+  const deleteSectionItem = async () => {
+    if (!token) {
+      // Handle case where token is not available
+      toast.error("رجاء تسجيل الدخول مره اخري");
+      return;
+    }
+    if (SectionUsegePermission && !SectionUsegePermission.delete) {
+      toast.warn("ليس لك صلاحية لحذف عنصر بمخزن الاستهلاك");
+      return;
+    }
+    try {
+      const response = await axios.delete(
+        apiUrl + "/api/consumption/" + SectionItemId,
+        config
+      );
+      if (response.status === 200) {
+        getSectionConsumption();
+      } else {
+        toast.error("Failed to deltet SectionConsumption items");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to retrieve SectionConsumption items");
+    }
+  };
+
   const [AllStockItems, setAllStockItems] = useState([]);
   // Function to retrieve all stock items
   const getStockItems = async () => {
@@ -241,49 +267,51 @@ const KitchenUsegePermission =
     }
   };
 
-  const deleteKitchenItem = async () => {
+  const [preparationSections, setPreparationSections] = useState([]);
+  // Fetch all preparation sections
+  const fetchPreparationSections = async () => {
     if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
+      toast.error("Please log in again.");
       return;
     }
-    if (KitchenUsegePermission && !KitchenUsegePermission.delete) {
-      toast.warn("ليس لك صلاحية لحذف عنصر بمخزن الاستهلاك");
-      return;
-    }
+
     try {
-      const response = await axios.delete(
-        apiUrl + "/api/consumption/" + KitchenItemId,
+      const response = await axios.get(
+        `${apiUrl}/api/preparationsection`,
         config
       );
       if (response.status === 200) {
-        getSectionConsumption();
+        setPreparationSections(response.data.data);
       } else {
-        toast.error("Failed to deltet SectionConsumption items");
+        throw new Error("Failed to fetch sections.");
       }
     } catch (error) {
-      console.log(error);
-      toast.error("Failed to retrieve SectionConsumption items");
+      console.error("Error fetching preparation sections:", error);
+      toast.error(
+        "An error occurred while fetching sections. Please try again later."
+      );
     }
   };
 
-  // const [AllCategoryStock, setAllCategoryStock] = useState([])
-  // // Function to retrieve all category stock
-  // const getAllCategoryStock = async () => {
-  //   try{
-  // if (!token) {
-  // Handle case where token is not available
-  //   toast.error('رجاء تسجيل الدخول مره اخري');
-  // }
-  //     const res = await axios.get(apiUrl+'/api/categoryStock/');
-  //     setAllCategoryStock(res.data);
-  //   } catch (error) {
-  //     console.log(error);
+  const [AllCategoryStock, setAllCategoryStock] = useState([])
+  // Function to retrieve all category stock
+  const getAllCategoryStock = async () => {
+    try{
+      if (!token) {
+        // Handle case where token is not available
+        toast.error("رجاء تسجيل الدخول مره اخري");
+        return;
+      }
+      const res = await axios.get(apiUrl+'/api/categoryStock/');
+      setAllCategoryStock(res.data);
+    } catch (error) {
+      console.log(error);
 
-  //     // Notify on error
-  //     toast.error('Failed to retrieve category stock');
-  //   }
-  // };
+      // Notify on error
+      toast.error('Failed to retrieve category stock');
+    }
+  };
+  
 
   const today = new Date().toISOString().split("T")[0];
   const [date, setDate] = useState(today);
@@ -291,6 +319,32 @@ const KitchenUsegePermission =
   const [SectionConsumptionForView, setSectionConsumptionForView] = useState(
     []
   );
+  const getAllConsumption = async () => {
+    if (!token) {
+      // Handle case where token is not available
+      toast.error("رجاء تسجيل الدخول مره اخري");
+      return;
+    }
+    if (SectionUsegePermission && !SectionUsegePermission.read) {
+      toast.warn("ليس لك صلاحية لعرض عناصر لمخزن الاستهلاك");
+      return;
+    }
+    try {
+      console.log("Fetching Section consumption...");
+      const response = await axios.get(`${apiUrl}/api/consumption/`, config);
+      if (response && response.data) {
+        const allConsumptions = response.data.data;
+        setAllSectionConsumption(allConsumptions.reverse());
+        setSectionConsumptionForView(filterByTime(today, allConsumptions));
+      } else {
+        console.log("Unexpected response or empty data");
+      }
+    } catch (error) {
+      console.error("Error fetching Section consumption:", error);
+      // Handle error: Notify user, log error, etc.
+    }
+  };
+  const [selectedSectionId, setSelectedSectionId] = useState(null);
 
   const getSectionConsumption = async () => {
     if (!token) {
@@ -298,29 +352,31 @@ const KitchenUsegePermission =
       toast.error("رجاء تسجيل الدخول مره اخري");
       return;
     }
-    if (KitchenUsegePermission && !KitchenUsegePermission.read) {
+    if (SectionUsegePermission && !SectionUsegePermission.read) {
       toast.warn("ليس لك صلاحية لعرض عناصر لمخزن الاستهلاك");
       return;
     }
     try {
-      console.log("Fetching kitchen consumption...");
-      const response = await axios.get(apiUrl + "/api/consumption", config);
+      console.log("Fetching Section consumption...");
+      const response = await axios.get(`${apiUrl}/api/consumption/bysection/${selectedSectionId}`, config);
       if (response && response.data) {
-        const Consumptions = response.data.data;
-        const SectionConsumptions = Consumptions.filter(
-          (consumption) => consumption.consumptionSource === "kitchen"
-        );
-
+        const SectionConsumptions = response.data.data;
         setAllSectionConsumption(SectionConsumptions.reverse());
         setSectionConsumptionForView(filterByTime(today, SectionConsumptions));
       } else {
         console.log("Unexpected response or empty data");
       }
     } catch (error) {
-      console.error("Error fetching kitchen consumption:", error);
+      console.error("Error fetching Section consumption:", error);
       // Handle error: Notify user, log error, etc.
     }
   };
+  // useEffect(() => {
+  //   if(selectedSectionId){
+  //     getSectionConsumption()  
+  //   }
+  // }, [selectedSectionId])
+  
 
   const handleDateChange = (e) => {
     const selectedDate = e.target.value;
@@ -339,11 +395,11 @@ const KitchenUsegePermission =
     setSectionConsumptionForView(filter);
   };
 
-  // Initialize state variables for date and filtered kitchen consumption
+  // Initialize state variables for date and filtered Section consumption
   // const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   // const [SectionConsumptionForView, setSectionConsumptionForView] = useState([]);
 
-  // // Function to filter kitchen consumption based on creation date
+  // // Function to filter Section consumption based on creation date
   // const filterByConsumCreatedAt = () => {
   //   console.log({datett:date})
   //   const filtered = allSectionConsumption.filter((consumption) => {
@@ -357,7 +413,7 @@ const KitchenUsegePermission =
 
   useEffect(() => {
     getStockItems();
-    getSectionConsumption();
+    getAllConsumption();
     // filterByConsumCreatedAt()
   }, [date]);
 
@@ -574,12 +630,12 @@ const KitchenUsegePermission =
                         <td>{formatDateTime(item.createdAt)}</td>
                         <td>
                           <a
-                            href="#updateKitchenItemModal"
+                            href="#updateSectionItemModal"
                             className="edit"
                             data-toggle="modal"
                             onClick={() => {
                               setreceivedBy(employeeLoginInfo.id);
-                              setKitchenItemId(item._id);
+                              setSectionItemId(item._id);
                               setstockItemId(item.stockItemId?._id);
                               setstockItemName(item.stockItemName);
                               setquantityTransferred(item.quantityTransferred);
@@ -600,7 +656,7 @@ const KitchenUsegePermission =
                             href="#deleteStockItemModal"
                             className="delete"
                             data-toggle="modal"
-                            onChange={() => setKitchenItemId(item._id)}
+                            onChange={() => setSectionItemId(item._id)}
                           >
                             <i
                               className="material-icons"
@@ -687,7 +743,7 @@ const KitchenUsegePermission =
       <div id="addItemModal" className="modal fade">
         <div className="modal-dialog modal-lg">
           <div className="modal-content shadow-lg border-0 rounded ">
-            <form onSubmit={(e) => addKitchenItem(e)}>
+            <form onSubmit={(e) => addSectionItem(e)}>
               <div className="modal-header d-flex flex-wrap align-items-center text-light bg-primary">
                 <h4 className="modal-title">اضافه صنف </h4>
                 <button
@@ -790,10 +846,10 @@ const KitchenUsegePermission =
           </div>
         </div>
       </div>
-      <div id="updateKitchenItemModal" className="modal fade">
+      <div id="updateSectionItemModal" className="modal fade">
         <div className="modal-dialog modal-lg">
           <div className="modal-content shadow-lg border-0 rounded ">
-            <form onSubmit={(e) => updateKitchenItem(e)}>
+            <form onSubmit={(e) => updateSectionItem(e)}>
               <div className="modal-header d-flex flex-wrap align-items-center text-light bg-primary">
                 <h4 className="modal-title">تسويه الرصيد</h4>
                 <button
@@ -924,7 +980,7 @@ const KitchenUsegePermission =
       <div id="deleteStockItemModal" className="modal fade">
         <div className="modal-dialog modal-lg">
           <div className="modal-content shadow-lg border-0 rounded ">
-            <form onSubmit={deleteKitchenItem}>
+            <form onSubmit={deleteSectionItem}>
               <div className="modal-header d-flex flex-wrap align-items-center text-light bg-primary">
                 <h4 className="modal-title">حذف منتج</h4>
                 <button
