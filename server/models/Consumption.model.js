@@ -67,6 +67,12 @@ const ConsumptionSchema = new mongoose.Schema(
       ref: "Employee", // The employee in the preparation section who received the stock item.
       required: true,
     },
+    tickets: [
+      {
+        type: ObjectId,
+        ref: "PreparationTicket", // Reference to the tickets executed in the section.
+      },
+    ],
     date: {
       type: Date, // The date of the record, representing a specific day of operation.
       required: true,
