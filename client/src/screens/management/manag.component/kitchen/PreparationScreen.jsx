@@ -453,14 +453,14 @@ const PreparationScreen = () => {
         );
 
         if (SectionConsumption) {
-          const consumptionQuantity =
-            SectionConsumption.consumptionQuantity + item.amount;
+          const quantityConsumed =
+            SectionConsumption.quantityConsumed + item.amount;
           const bookBalance = SectionConsumption.bookBalance - item.amount;
 
           await axios.put(
             `${apiUrl}/api/consumption/${SectionConsumption._id}`,
             {
-              consumptionQuantity,
+              quantityConsumed,
               bookBalance,
               productsProduced: item.productsProduced,
             },

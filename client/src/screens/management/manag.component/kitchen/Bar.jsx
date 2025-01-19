@@ -358,14 +358,14 @@ const Bar = () => {
         );
 
         if (BarConsumption) {
-          const consumptionQuantity =
-            BarConsumption.consumptionQuantity + item.amount;
+          const quantityConsumed =
+            BarConsumption.quantityConsumed + item.amount;
           const bookBalance = BarConsumption.bookBalance - item.amount;
 
           await axios.put(
             `${apiUrl}/api/consumption/${BarConsumption._id}`,
             {
-              consumptionQuantity,
+              quantityConsumed,
               bookBalance,
               productsProduced: item.productsProduced,
             },

@@ -43,7 +43,7 @@ const GrillConsumption = () => {
   const [stockItemName, setstockItemName] = useState("");
   const [quantityTransferred, setquantityTransferred] = useState();
   const [receivedBy, setreceivedBy] = useState("");
-  const [consumptionQuantity, setconsumptionQuantity] = useState("");
+  const [quantityConsumed, setquantityConsumed] = useState("");
   const [unit, setunit] = useState("");
 
   const [bookBalance, setbookBalance] = useState();
@@ -552,7 +552,7 @@ const GrillConsumption = () => {
                         <td>{i + 1}</td>
                         <td>{item.stockItemName}</td>
                         <td>{item.quantityTransferred}</td>
-                        <td>{item.consumptionQuantity}</td>
+                        <td>{item.quantityConsumed}</td>
                         <td>{item.unit}</td>
                         <td>{item.bookBalance}</td>
                         <td>{item.adjustment}</td>
@@ -582,7 +582,7 @@ const GrillConsumption = () => {
                               setquantityTransferred(item.quantityTransferred);
                               setbookBalance(item.bookBalance);
                               setunit(item.unit);
-                              setconsumptionQuantity(item.consumptionQuantity);
+                              setquantityConsumed(item.quantityConsumed);
                             }}
                           >
                             <i
@@ -831,7 +831,7 @@ const GrillConsumption = () => {
                   <input
                     type="text"
                     className="form-control border-primary m-0 p-2 h-auto"
-                    defaultValue={consumptionQuantity}
+                    defaultValue={quantityConsumed}
                     required
                     readOnly
                   />

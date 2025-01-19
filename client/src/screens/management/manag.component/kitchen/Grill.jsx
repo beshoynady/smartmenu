@@ -384,14 +384,14 @@ const Grill = () => {
         );
 
         if (kitchenConsumption) {
-          const consumptionQuantity =
-            kitchenConsumption.consumptionQuantity + item.amount;
+          const quantityConsumed =
+            kitchenConsumption.quantityConsumed + item.amount;
           const bookBalance = kitchenConsumption.bookBalance - item.amount;
 
           await axios.put(
             `${apiUrl}/api/consumption/${kitchenConsumption._id}`,
             {
-              consumptionQuantity,
+              quantityConsumed,
               bookBalance,
               productsProduced: item.productsProduced,
             },

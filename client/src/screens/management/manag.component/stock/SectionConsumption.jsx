@@ -42,7 +42,7 @@ const SectionUsegePermission =
   const [stockItemName, setstockItemName] = useState("");
   const [quantityTransferred, setquantityTransferred] = useState();
   const [receivedBy, setreceivedBy] = useState("");
-  const [consumptionQuantity, setconsumptionQuantity] = useState("");
+  const [quantityConsumed, setquantityConsumed] = useState("");
   const [unit, setunit] = useState("");
 
   const [bookBalance, setbookBalance] = useState();
@@ -63,7 +63,7 @@ const SectionUsegePermission =
     let consumption = null;
     if (consumptionToday.length > 0) {
       consumption = consumptionToday.find(
-        (item) => item.stockItemId === stockItemId
+        (item) => Consumption.stockItemId === stockItemId
       );
     }
     if (consumption) {
@@ -390,7 +390,7 @@ const SectionUsegePermission =
       return;
     }
     const filter = SectionConsumptionForView.filter(
-      (item) => item.stockItemName.startsWith(name) === true
+      (item) => Consumption.stockItemName.startsWith(name) === true
     );
     setSectionConsumptionForView(filter);
   };
@@ -403,8 +403,8 @@ const SectionUsegePermission =
   // const filterByConsumCreatedAt = () => {
   //   console.log({datett:date})
   //   const filtered = allSectionConsumption.filter((consumption) => {
-  //     new Date(kitItem.createdAt).toISOString().split('T')[0] === date;
-  //     console.log({createdAt:kitItem.createdAt})
+  //     new Date(kitConsumption.createdAt).toISOString().split('T')[0] === date;
+  //     console.log({createdAt:kitConsumption.createdAt})
   //     return itemDate === date;
   //   });
   //   console.log({filtered})
@@ -425,7 +425,7 @@ const SectionUsegePermission =
             <div className="w-100 d-flex flex-wrap align-items-center justify-content-between">
               <div className="text-right">
                 <h2>
-                  ادارة <b>استهلاك قسم المطبخ</b>
+                  ادارة <b>استهلاك الاقسام</b>
                 </h2>
               </div>
               <div className="col-12 col-md-6 p-0 m-0 d-flex flex-wrap aliegn-items-center justify-content-end print-hide">
@@ -590,12 +590,16 @@ const SectionUsegePermission =
             <thead>
               <tr>
                 <th>م</th>
+                <th>القسم</th>
                 <th>اسم الصنف</th>
                 <th>الكمية المضافه</th>
                 <th>الاستهلاك</th>
                 <th>الوحدة</th>
                 <th>الرصيد</th>
                 <th>التسويه</th>
+                <th>الرصيد الفعلي </th>
+                <th>الرصيد المرحل</th>
+                <th>الرصيد المرتجع</th>
                 <th>المنتجات</th>
                 <th>بواسطه</th>
                 <th>تاريخ الاضافه</th>
@@ -604,20 +608,24 @@ const SectionUsegePermission =
             </thead>
             <tbody>
               {SectionConsumptionForView &&
-                SectionConsumptionForView.map((item, i) => {
+                SectionConsumptionForView.map((Consumption, i) => {
                   if ((i >= startpagination) & (i < endpagination)) {
                     return (
                       <tr key={i}>
                         <td>{i + 1}</td>
-                        <td>{item.stockItemName}</td>
-                        <td>{item.quantityTransferred}</td>
-                        <td>{item.consumptionQuantity}</td>
-                        <td>{item.unit}</td>
-                        <td>{item.bookBalance}</td>
-                        <td>{item.adjustment}</td>
+                        <td>{Consumption.section?.name}</td>
+                        <td>{Consumption.stockItemName}</td>
+                        <td>{Consumption.quantityTransferred}</td>
+                        <td>{Consumption.quantityConsumed}</td>
+                        <td>{Consumption.unit}</td>
+                        <td>{Consumption.bookBalance}</td>
+                        <td>{Consumption.adjustment}</td>
+                        <td>{Consumption.quantityRemaining}</td>
+                        <td>{Consumption.carriedForward}</td>
+                        <td>{Consumption.returnedToStock}</td>
                         <td>
-                          {item.productsProduced&&item.productsProduced.length > 0
-                            ? item.productsProduced.map((product, j) => (
+                          {Consumption.productsProduced&&Consumption.productsProduced.length > 0
+                            ? Consumption.productsProduced.map((product, j) => (
                                 <span key={j}>{`[${product.productionCount} * ${
                                   product.productName
                                 } ${
@@ -626,8 +634,8 @@ const SectionUsegePermission =
                               ))
                             : "لا يوجد"}
                         </td>
-                        <td>{item.receivedBy?.username}</td>
-                        <td>{formatDateTime(item.createdAt)}</td>
+                        <td>{Consumption.receivedBy?.username}</td>
+                        <td>{formatDateTime(Consumption.createdAt)}</td>
                         <td>
                           <a
                             href="#updateSectionItemModal"
@@ -635,13 +643,13 @@ const SectionUsegePermission =
                             data-toggle="modal"
                             onClick={() => {
                               setreceivedBy(employeeLoginInfo.id);
-                              setSectionItemId(item._id);
-                              setstockItemId(item.stockItemId?._id);
-                              setstockItemName(item.stockItemName);
-                              setquantityTransferred(item.quantityTransferred);
-                              setbookBalance(item.bookBalance);
-                              setunit(item.unit);
-                              setconsumptionQuantity(item.consumptionQuantity);
+                              setSectionItemId(Consumption._id);
+                              setstockItemId(Consumption.stockItemId?._id);
+                              setstockItemName(Consumption.stockItemName);
+                              setquantityTransferred(Consumption.quantityTransferred);
+                              setbookBalance(Consumption.bookBalance);
+                              setunit(Consumption.unit);
+                              setquantityConsumed(Consumption.quantityConsumed);
                             }}
                           >
                             <i
@@ -656,7 +664,7 @@ const SectionUsegePermission =
                             href="#deleteStockItemModal"
                             className="delete"
                             data-toggle="modal"
-                            onChange={() => setSectionItemId(item._id)}
+                            onChange={() => setSectionItemId(Consumption._id)}
                           >
                             <i
                               className="material-icons"
@@ -892,7 +900,7 @@ const SectionUsegePermission =
                   <input
                     type="text"
                     className="form-control border-primary m-0 p-2 h-auto"
-                    defaultValue={consumptionQuantity}
+                    defaultValue={quantityConsumed}
                     required
                     readOnly
                   />
