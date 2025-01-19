@@ -63,7 +63,7 @@ const SectionUsegePermission =
     let consumption = null;
     if (consumptionToday.length > 0) {
       consumption = consumptionToday.find(
-        (item) => Consumption.stockItemId === stockItemId
+        (Consumption) => Consumption.stockItemId === stockItemId
       );
     }
     if (consumption) {
@@ -390,7 +390,7 @@ const SectionUsegePermission =
       return;
     }
     const filter = SectionConsumptionForView.filter(
-      (item) => Consumption.stockItemName.startsWith(name) === true
+      (Consumption) => Consumption.stockItemName.startsWith(name) === true
     );
     setSectionConsumptionForView(filter);
   };
