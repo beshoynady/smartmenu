@@ -24,8 +24,14 @@ const ConsumptionSchema = new mongoose.Schema(
       default: 0,
       min: 0,
     },
-    actualBalance: {
+    bookBalance: {
       type: Number, // The actual remaining quantity after consumption, verified by physical count (stocktake).
+      required: true,
+      default: 0,
+      min: 0,
+    },
+    actualBalance: {
+      type: Number, // The actual remaining quantity.
       required: true,
       default: 0,
       min: 0,

@@ -31,141 +31,142 @@ const SectionConsumption = () => {
     setendpagination,
   } = useContext(detacontext);
 
-const SectionUsegePermission =
+  const SectionUsegePermission =
     permissionsList &&
     permissionsList.filter(
       (permission) => permission.resource === "SectionConsumption"
     )[0];
 
+  // Variables to store form inputs
+  const [section, setSection] = useState("");
+  const [stockItem, setStockItem] = useState("");
+  const [quantityTransferred, setQuantityTransferred] = useState(0);
+  const [quantityConsumed, setQuantityConsumed] = useState(0);
+  const [bookBalance, setBookBalance] = useState(0);
+  const [actualBalance, setActualBalance] = useState(0);
+  const [adjustment, setAdjustment] = useState(0);
+  const [adjustmentReason, setAdjustmentReason] = useState("");
+  const [quantityRemaining, setQuantityRemaining] = useState(0);
+  const [carriedForward, setCarriedForward] = useState(0);
+  const [returnedToStock, setReturnedToStock] = useState(0);
+  const [deliveredBy, setDeliveredBy] = useState("");
+  const [receivedBy, setReceivedBy] = useState("");
+  const [tickets, setTickets] = useState([]);
+  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+  const [remarks, setRemarks] = useState("");
 
-  const [stockItemId, setstockItemId] = useState("");
-  const [stockItemName, setstockItemName] = useState("");
-  const [quantityTransferred, setquantityTransferred] = useState();
-  const [receivedBy, setreceivedBy] = useState("");
-  const [quantityConsumed, setquantityConsumed] = useState("");
-  const [unit, setunit] = useState("");
-
-  const [bookBalance, setbookBalance] = useState();
-  const [actualBalance, setactualBalance] = useState();
-  const [SectionItemId, setSectionItemId] = useState();
-  const [adjustment, setadjustment] = useState();
-
-  // Function to add an item to Section consumption
-  const addSectionItem = async (e) => {
+  // Function to add or update an item in Section consumption
+  const handleSectionItem = async (e) => {
     e.preventDefault();
-    const today = new Date().toISOString().split("T")[0]; // Today's date in the format YYYY-MM-DD
-    const consumptionToday = allSectionConsumption.filter((consumption) => {
-      const itemDate = new Date(consumption.createdAt)
-        .toISOString()
-        .split("T")[0];
-      return itemDate === today;
-    });
-    let consumption = null;
-    if (consumptionToday.length > 0) {
-      consumption = consumptionToday.find(
-        (Consumption) => Consumption.stockItemId === stockItemId
-      );
-    }
-    if (consumption) {
-      try {
-        if (!token) {
-          // Handle case where token is not available
-          toast.error("رجاء تسجيل الدخول مره اخري");
-        }
-        if (SectionUsegePermission && !SectionUsegePermission.update) {
-          toast.warn("ليس لك صلاحية لتعديل عنصر لمخزن الاستهلاك");
-          return;
-        }
-        // Make a PUT request to update an item
-        const newquantityTransferred =
-          consumption.quantityTransferred + quantityTransferred;
-        const newBalance = consumption.bookBalance + quantityTransferred;
-        const response = await axios.put(
-          `${apiUrl}/api/consumption/${consumption._id}`,
-          {
-            quantityTransferred: newquantityTransferred,
-            receivedBy,
-            bookBalance: newBalance,
-          },
-          config
-        );
 
-        // Check if the item was updated successfully
-        if (response.status === 200) {
-          setstockItemId("");
-          setstockItemName("");
-          setquantityTransferred(0);
-          getSectionConsumption();
-          // Show a success toast if the quantity is added
-          toast.success("تمت إضافة الكمية بنجاح");
-        } else {
-          // Show an error toast if adding the quantity failed
-          toast.error("فشلت عملية إضافة الكمية");
-        }
-      } catch (error) {
-        // Show an error toast if an error occurs during the request
-        toast.error("فشلت عملية إضافة الكمية");
-        console.error(error);
+    try {
+      if (!token) {
+        toast.error("رجاء تسجيل الدخول مره أخرى");
+        return;
       }
-    } else {
-      try {
-        if (!token) {
-          // Handle case where token is not available
-          toast.error("رجاء تسجيل الدخول مره اخري");
-        }
-        if (SectionUsegePermission && !SectionUsegePermission.create) {
-          toast.warn("ليس لك صلاحية لاضافه عنصر لمخزن الاستهلاك");
+
+      const today = new Date().toISOString().split("T")[0];
+      const { data: allSectionConsumption } = await axios.get(
+        `${apiUrl}/api/consumption/bysection/${section}`,
+        config
+      );
+
+      // Filter to find today's consumption records
+      const consumptionToday = allSectionConsumption.filter(
+        (consumption) =>
+          new Date(consumption.createdAt).toISOString().split("T")[0] === today
+      );
+
+      let existingConsumption = consumptionToday.find(
+        (consumption) => consumption.stockItem === stockItem
+      );
+
+      // If the item exists, update it
+      if (existingConsumption) {
+        if (SectionUsegePermission && !SectionUsegePermission.update) {
+          toast.warn("ليس لديك صلاحية لتعديل عنصر في استهلاك القسم");
           return;
         }
-        // Make a POST request to add an item
-        const response = await axios.post(
-          apiUrl + "/api/consumption",
-          {
-            stockItemId,
-            stockItemName,
-            quantityTransferred,
-            bookBalance: quantityTransferred,
-            unit,
-            consumptionSource: "Section",
-            receivedBy,
-          },
+
+        const updatedData = {
+          quantityTransferred:
+            existingConsumption.quantityTransferred + quantityTransferred,
+          actualBalance:
+            existingConsumption.actualBalance + quantityTransferred,
+          receivedBy,
+        };
+
+        const response = await axios.put(
+          `${apiUrl}/api/consumption/${existingConsumption._id}`,
+          updatedData,
           config
         );
 
-        // Check if the item was added successfully
+        if (response.status === 200) {
+          resetForm();
+          toast.success("تم تحديث الكمية بنجاح");
+        } else {
+          toast.error("فشل تحديث الكمية");
+        }
+      } else {
+        // If the item doesn't exist, create it
+        if (SectionUsegePermission && !SectionUsegePermission.create) {
+          toast.warn("ليس لديك صلاحية لإضافة عنصر إلى استهلاك القسم");
+          return;
+        }
+
+        const newConsumptionData = {
+          section,
+          stockItem,
+          quantityTransferred,
+          actualBalance: quantityTransferred,
+          deliveredBy,
+          receivedBy,
+          tickets: [],
+          remarks,
+        };
+
+        const response = await axios.post(
+          `${apiUrl}/api/consumption`,
+          newConsumptionData,
+          config
+        );
+
         if (response.status === 201) {
-          setstockItemId("");
-          setstockItemName("");
-          setquantityTransferred(0);
-          getSectionConsumption();
-          // Show a success toast if the item is added
+          resetForm();
           toast.success("تمت إضافة العنصر بنجاح");
         } else {
-          // Show an error toast if adding the item failed
-          toast.error("فشلت عملية إضافة العنصر");
+          toast.error("فشل إضافة العنصر");
         }
-      } catch (error) {
-        // Show an error toast if an error occurs during the request
-        toast.error("فشلت عملية إضافة العنصر");
-        console.error(error);
       }
+    } catch (error) {
+      toast.error("حدث خطأ أثناء العملية");
+      console.error(error);
     }
   };
 
-  const updateSectionItem = async (e) => {
-    e.preventDefault();
-    console.log("updateSectionItem");
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
-    if (SectionUsegePermission && !SectionUsegePermission.update) {
-      toast.warn("ليس لك صلاحية لتعديل عنصر لمخزن الاستهلاك");
-      return;
-    }
+  // Reset form fields
+  const resetForm = () => {
+    setStockItem("");
+    setQuantityTransferred(0);
+    setActualBalance(0);
+    setRemarks("");
+  };
+
+  // Update a section item
+  const updateSectionItem = async () => {
     try {
-      const update = await axios.put(
+      if (!token) {
+        toast.error("رجاء تسجيل الدخول مره أخرى");
+        return;
+      }
+
+      if (SectionUsegePermission && !SectionUsegePermission.update) {
+        toast.warn("ليس لديك صلاحية لتعديل عنصر لمخزن الاستهلاك");
+        return;
+      }
+
+      const response = await axios.put(
         `${apiUrl}/api/consumption/${SectionItemId}`,
         {
           adjustment,
@@ -174,44 +175,15 @@ const SectionUsegePermission =
         },
         config
       );
-      if (update.status === 200) {
-        // try {
-        //   if (!token) {
-        //     // Handle case where token is not available
-        //     toast.error('رجاء تسجيل الدخول مره اخري');
-        //   }
-        //   // Make a POST request to add an item
-        //   const response = await axios.post(apiUrl + '/api/consumption', {
-        //     stockItemId,
-        //     stockItemName,
-        //     quantityTransferred: actualBalance,
-        //     bookBalance: actualBalance,
-        //     unit,
-        //     receivedBy
-        //   }, config);
 
-        //   // Check if the item was added successfully
-        //   if (response.status === 201) {
-        //     setstockItemId('')
-        //     setstockItemName('')
-        //     setquantityTransferred(0)
-        //     getSectionConsumption()
-        // Show a success toast if the item is added
-        toast.success("تمت تعديل العنصر بنجاح");
+      if (response.status === 200) {
+        toast.success("تم تعديل العنصر بنجاح");
       } else {
-        // Show an error toast if adding the item failed
         toast.error("فشلت عملية تعديل العنصر");
       }
-      // } catch (error) {
-      //   // Show an error toast if an error occurs during the request
-      //   toast.error('فشلت عملية تعديل العنصر');
-      //   console.error(error);
-      // }
-      // }
     } catch (error) {
-      console.error("Error occurred:", error);
-      // Add toast for error
-      toast.error("حدث خطأ");
+      toast.error("حدث خطأ أثناء تعديل العنصر");
+      console.error(error);
     }
   };
 
@@ -293,28 +265,25 @@ const SectionUsegePermission =
     }
   };
 
-  const [AllCategoryStock, setAllCategoryStock] = useState([])
+  const [AllCategoryStock, setAllCategoryStock] = useState([]);
   // Function to retrieve all category stock
   const getAllCategoryStock = async () => {
-    try{
+    try {
       if (!token) {
         // Handle case where token is not available
         toast.error("رجاء تسجيل الدخول مره اخري");
         return;
       }
-      const res = await axios.get(apiUrl+'/api/categoryStock/');
+      const res = await axios.get(apiUrl + "/api/categoryStock/");
       setAllCategoryStock(res.data);
     } catch (error) {
       console.log(error);
 
       // Notify on error
-      toast.error('Failed to retrieve category stock');
+      toast.error("Failed to retrieve category stock");
     }
   };
-  
 
-  const today = new Date().toISOString().split("T")[0];
-  const [date, setDate] = useState(today);
   const [allSectionConsumption, setAllSectionConsumption] = useState([]);
   const [SectionConsumptionForView, setSectionConsumptionForView] = useState(
     []
@@ -358,7 +327,10 @@ const SectionUsegePermission =
     }
     try {
       console.log("Fetching Section consumption...");
-      const response = await axios.get(`${apiUrl}/api/consumption/bysection/${selectedSectionId}`, config);
+      const response = await axios.get(
+        `${apiUrl}/api/consumption/bysection/${selectedSectionId}`,
+        config
+      );
       if (response && response.data) {
         const SectionConsumptions = response.data.data;
         setAllSectionConsumption(SectionConsumptions.reverse());
@@ -373,10 +345,9 @@ const SectionUsegePermission =
   };
   // useEffect(() => {
   //   if(selectedSectionId){
-  //     getSectionConsumption()  
+  //     getSectionConsumption()
   //   }
   // }, [selectedSectionId])
-  
 
   const handleDateChange = (e) => {
     const selectedDate = e.target.value;
@@ -414,6 +385,7 @@ const SectionUsegePermission =
   useEffect(() => {
     getStockItems();
     getAllConsumption();
+    fetchPreparationSections();
     // filterByConsumCreatedAt()
   }, [date]);
 
@@ -471,15 +443,22 @@ const SectionUsegePermission =
               </div>
               <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
                 <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
-                  التاريخ
+                  القسم
                 </label>
-                <input
-                  id="dateInput"
-                  type="date"
-                  value={date}
-                  class="form-control border-primary m-0 p-2 h-auto"
-                  onChange={handleDateChange}
-                />
+                <select
+                  id="section-select"
+                  className="w-100 form-select"
+                  onChange={(e) => getSectionConsumption(e.target.value)}
+                >
+                  <option value="" disabled selected>
+                    اختر القسم
+                  </option>
+                  {preparationSections.map((section) => (
+                    <option key={section._id} value={section._id}>
+                      {section.name}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
@@ -504,8 +483,8 @@ const SectionUsegePermission =
                   <option value={""}>الكل</option>
                   {SectionConsumptionForView.map((consumption) => {
                     return (
-                      <option value={consumption.stockItemName}>
-                        {consumption.stockItemName}
+                      <option value={consumption.stockItem?.itemName}>
+                        {consumption.stockItem?.itemName}
                       </option>
                     );
                   })}
@@ -585,71 +564,79 @@ const SectionUsegePermission =
               </div>
             </div>
           </div>
-
           <table className="table table-striped table-hover">
             <thead>
               <tr>
                 <th>م</th>
                 <th>القسم</th>
                 <th>اسم الصنف</th>
-                <th>الكمية المضافه</th>
+                <th>الكمية المضافة</th>
                 <th>الاستهلاك</th>
                 <th>الوحدة</th>
                 <th>الرصيد</th>
-                <th>التسويه</th>
-                <th>الرصيد الفعلي </th>
+                <th>التسوية</th>
+                <th>الرصيد الفعلي</th>
                 <th>الرصيد المرحل</th>
                 <th>الرصيد المرتجع</th>
                 <th>المنتجات</th>
-                <th>بواسطه</th>
-                <th>تاريخ الاضافه</th>
-                <th>اجراءات</th>
+                <th>بواسطة</th>
+                <th>تاريخ الإضافة</th>
+                <th>إجراءات</th>
               </tr>
             </thead>
             <tbody>
-              {SectionConsumptionForView &&
-                SectionConsumptionForView.map((Consumption, i) => {
+              {SectionConsumptionForView?.length > 0 ? (
+                SectionConsumptionForView.map((consumption, i) => {
                   if ((i >= startpagination) & (i < endpagination)) {
                     return (
-                      <tr key={i}>
-                        <td>{i + 1}</td>
-                        <td>{Consumption.section?.name}</td>
-                        <td>{Consumption.stockItemName}</td>
-                        <td>{Consumption.quantityTransferred}</td>
-                        <td>{Consumption.quantityConsumed}</td>
-                        <td>{Consumption.unit}</td>
-                        <td>{Consumption.bookBalance}</td>
-                        <td>{Consumption.adjustment}</td>
-                        <td>{Consumption.quantityRemaining}</td>
-                        <td>{Consumption.carriedForward}</td>
-                        <td>{Consumption.returnedToStock}</td>
+                      <tr key={consumption._id}>
+                        <td>{index + startpagination + 1}</td>
+                        <td>{consumption.section?.name || "غير محدد"}</td>
+                        <td>{consumption.stockItemName || "غير محدد"}</td>
+                        <td>{consumption.quantityTransferred ?? 0}</td>
+                        <td>{consumption.quantityConsumed ?? 0}</td>
+                        <td>{consumption.unit || "غير محدد"}</td>
+                        <td>{consumption.bookBalance ?? 0}</td>
+                        <td>{consumption.adjustment ?? 0}</td>
+                        <td>{consumption.quantityRemaining ?? 0}</td>
+                        <td>{consumption.carriedForward ?? 0}</td>
+                        <td>{consumption.returnedToStock ?? 0}</td>
                         <td>
-                          {Consumption.productsProduced&&Consumption.productsProduced.length > 0
-                            ? Consumption.productsProduced.map((product, j) => (
-                                <span key={j}>{`[${product.productionCount} * ${
-                                  product.productName
-                                } ${
-                                  product.sizeName ? product.sizeName : ""
-                                }]`}</span>
-                              ))
+                          {consumption.productsProduced?.length > 0
+                            ? consumption.productsProduced.map(
+                                (product, productIndex) => (
+                                  <span key={productIndex}>
+                                    [{product.productionCount} *{" "}
+                                    {product.productName}{" "}
+                                    {product.sizeName || ""}]
+                                  </span>
+                                )
+                              )
                             : "لا يوجد"}
                         </td>
-                        <td>{Consumption.receivedBy?.username}</td>
-                        <td>{formatDateTime(Consumption.createdAt)}</td>
+                        <td>
+                          {consumption.receivedBy?.username || "غير معروف"}
+                        </td>
+                        <td>
+                          {formatDateTime(consumption.createdAt) || "غير محدد"}
+                        </td>
                         <td>
                           <a
                             href="#updateSectionItemModal"
                             className="edit"
                             data-toggle="modal"
                             onClick={() => {
-                              setreceivedBy(employeeLoginInfo.id);
-                              setSectionItemId(Consumption._id);
-                              setstockItemId(Consumption.stockItemId?._id);
-                              setstockItemName(Consumption.stockItemName);
-                              setquantityTransferred(Consumption.quantityTransferred);
-                              setbookBalance(Consumption.bookBalance);
-                              setunit(Consumption.unit);
-                              setquantityConsumed(Consumption.quantityConsumed);
+                              setReceivedBy(employeeLoginInfo.id);
+                              setSectionItemId(consumption._id);
+                              setStockItem(consumption.stockItem?._id);
+                              setQuantityTransferred(
+                                consumption.quantityTransferred ?? 0
+                              );
+                              setbookBalance(consumption.bookBalance ?? 0);
+                              setunit(consumption.unit || "");
+                              setQuantityConsumed(
+                                consumption.quantityConsumed ?? 0
+                              );
                             }}
                           >
                             <i
@@ -664,7 +651,7 @@ const SectionUsegePermission =
                             href="#deleteStockItemModal"
                             className="delete"
                             data-toggle="modal"
-                            onChange={() => setSectionItemId(Consumption._id)}
+                            onClick={() => setSectionItemId(consumption._id)}
                           >
                             <i
                               className="material-icons"
@@ -678,7 +665,14 @@ const SectionUsegePermission =
                       </tr>
                     );
                   }
-                })}
+                })
+              ) : (
+                <tr>
+                  <td colSpan="15" className="text-center">
+                    لا توجد بيانات لعرضها.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
           <div className="clearfix">
@@ -747,13 +741,12 @@ const SectionUsegePermission =
           </div>
         </div>
       </div>
-
       <div id="addItemModal" className="modal fade">
         <div className="modal-dialog modal-lg">
           <div className="modal-content shadow-lg border-0 rounded ">
-            <form onSubmit={(e) => addSectionItem(e)}>
+            <form onSubmit={(e) => handleSectionItem(e)}>
               <div className="modal-header d-flex flex-wrap align-items-center text-light bg-primary">
-                <h4 className="modal-title">اضافه صنف </h4>
+                <h4 className="modal-title">اضافه صنف</h4>
                 <button
                   type="button"
                   className="close m-0 p-1"
@@ -764,65 +757,83 @@ const SectionUsegePermission =
                 </button>
               </div>
               <div className="modal-body d-flex flex-wrap align-items-center p-3 text-right">
+                {/* قسم */}
+                <div className="form-group col-12 col-md-6">
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    القسم
+                  </label>
+                  <select
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    value={section}
+                    onChange={(e) => setSection(e.target.value)}
+                    required
+                  >
+                    <option value="">اختر القسم</option>
+                    {AllSections.map((sectionItem, i) => (
+                      <option value={sectionItem._id} key={i}>
+                        {sectionItem.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* الصنف */}
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
                     الصنف
                   </label>
                   <select
                     className="form-control border-primary m-0 p-2 h-auto"
-                    name="category"
-                    id="category"
-                    form="carform"
+                    value={stockItem}
                     onChange={(e) => {
-                      setstockItemId(e.target.value);
-                      setunit(
-                        AllStockItems.filter(
-                          (stock) => stock._id === e.target.value
-                        )[0].smallUnit
+                      setStockItem(e.target.value);
+                      const selectedStockItem = AllStockItems.find(
+                        (item) => item._id === e.target.value
                       );
-                      setreceivedBy(employeeLoginInfo.id);
-                      setstockItemName(
-                        AllStockItems.filter(
-                          (it) => it._id === e.target.value
-                        )[0].itemName
-                      );
+                      setUnit(selectedStockItem.smallUnit);
                     }}
+                    required
                   >
-                    <option>اختر الصنف</option>
-                    {AllStockItems.map((StockItems, i) => {
-                      return (
-                        <option value={StockItems._id} key={i}>
-                          {StockItems.itemName}
-                        </option>
-                      );
-                    })}
+                    <option value="">اختر الصنف</option>
+                    {AllStockItems.map((item, i) => (
+                      <option value={item._id} key={i}>
+                        {item.itemName}
+                      </option>
+                    ))}
                   </select>
                 </div>
-                
+
+                {/* رصيد محول */}
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
                     رصيد محول
                   </label>
                   <input
-                    type="Number"
+                    type="number"
                     className="form-control border-primary m-0 p-2 h-auto"
-                    required
+                    value={quantityTransferred}
                     onChange={(e) =>
-                      setquantityTransferred(Number(e.target.value))
+                      setQuantityTransferred(Number(e.target.value))
                     }
+                    required
                   />
                 </div>
+
+                {/* الوحدة */}
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
-                    الوحدة{" "}
+                    الوحدة
                   </label>
                   <input
                     type="text"
                     className="form-control border-primary m-0 p-2 h-auto"
+                    value={unit}
+                    readOnly
                     required
-                    defaultValue={unit}
-                  ></input>
+                  />
                 </div>
+
+                {/* التاريخ */}
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
                     التاريخ
@@ -830,9 +841,21 @@ const SectionUsegePermission =
                   <input
                     type="text"
                     className="form-control border-primary m-0 p-2 h-auto"
-                    Value={formatDateTime(new Date())}
-                    required
+                    value={formatDateTime(new Date())}
                     readOnly
+                    required
+                  />
+                </div>
+
+                {/* الملاحظات */}
+                <div className="form-group col-12 col-md-6">
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    الملاحظات
+                  </label>
+                  <textarea
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    value={remarks}
+                    onChange={(e) => setRemarks(e.target.value)}
                   />
                 </div>
               </div>
@@ -842,6 +865,7 @@ const SectionUsegePermission =
                   type="submit"
                   className="btn btn-success col-6 h-100 px-2 py-3 m-0"
                   value="اضافه"
+                  disabled={!section || !stockItem || quantityTransferred <= 0}
                 />
                 <input
                   type="button"
@@ -854,6 +878,7 @@ const SectionUsegePermission =
           </div>
         </div>
       </div>
+
       <div id="updateSectionItemModal" className="modal fade">
         <div className="modal-dialog modal-lg">
           <div className="modal-content shadow-lg border-0 rounded ">
