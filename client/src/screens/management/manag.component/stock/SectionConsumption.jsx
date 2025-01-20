@@ -60,42 +60,50 @@ const SectionConsumption = () => {
   // Function to add or update an item in Section consumption
   const handleSectionItem = async (e) => {
     e.preventDefault();
-
+  
     try {
       if (!token) {
         toast.error("رجاء تسجيل الدخول مره أخرى");
         return;
       }
-
+  
       const today = new Date().toISOString().split("T")[0];
-      const { data: allSectionConsumption } = await axios.get(
-        `${apiUrl}/api/consumption/bysection/${section}`,
-        config
-      );
-
-      // Filter to find today's consumption records
-      const consumptionToday =
-        allSectionConsumption &&
-        allSectionConsumption.filter(
-          (consumption) =>
-            new Date(consumption.createdAt).toISOString().split("T")[0] ===
-            today
+      
+      // محاولة جلب السجلات من الـ API
+      let allSectionConsumption = [];
+      try {
+        const { data } = await axios.get(
+          `${apiUrl}/api/consumption/bysection/${section}`,
+          config
         );
-
+        allSectionConsumption = data;  // في حال وجود بيانات
+      } catch (error) {
+        // في حال كان الخطأ 404 أو أي خطأ آخر، تعتبر المرة الأولى التي لا يوجد فيها بيانات
+        if (error.response && error.response.status === 404) {
+          console.log("لا توجد سجلات لهذا القسم حتى الآن");
+        } else {
+          throw error;  // في حال كان هناك خطأ آخر غير متوقع
+        }
+      }
+  
+      // إذا كانت هناك سجلات، نقوم بفلترتها حسب اليوم
+      const consumptionToday = allSectionConsumption.filter(
+        (consumption) =>
+          new Date(consumption.createdAt).toISOString().split("T")[0] === today
+      );
+  
       let existingConsumption =
         consumptionToday.length > 0
-          ? consumptionToday.find(
-              (consumption) => consumption.stockItem === stockItem
-            )
+          ? consumptionToday.find((consumption) => consumption.stockItem === stockItem)
           : null;
-
-      // If the item exists, update it
+  
       if (existingConsumption) {
+        // إذا كان العنصر موجودًا، نحدثه
         if (SectionUsegePermission && !SectionUsegePermission.update) {
           toast.warn("ليس لديك صلاحية لتعديل عنصر في استهلاك القسم");
           return;
         }
-
+  
         const updatedData = {
           quantityTransferred:
             existingConsumption.quantityTransferred + quantityTransferred,
@@ -103,13 +111,13 @@ const SectionConsumption = () => {
             existingConsumption.actualBalance + quantityTransferred,
           receivedBy,
         };
-
+  
         const response = await axios.put(
           `${apiUrl}/api/consumption/${existingConsumption._id}`,
           updatedData,
           config
         );
-
+  
         if (response.status === 200) {
           resetForm();
           toast.success("تم تحديث الكمية بنجاح");
@@ -117,12 +125,12 @@ const SectionConsumption = () => {
           toast.error("فشل تحديث الكمية");
         }
       } else {
-        // If the item doesn't exist, create it
+        // إذا كان العنصر غير موجود، نضيفه
         if (SectionUsegePermission && !SectionUsegePermission.create) {
           toast.warn("ليس لديك صلاحية لإضافة عنصر إلى استهلاك القسم");
           return;
         }
-
+  
         const newConsumptionData = {
           section,
           stockItem,
@@ -133,13 +141,13 @@ const SectionConsumption = () => {
           tickets: [],
           remarks,
         };
-
+  
         const response = await axios.post(
           `${apiUrl}/api/consumption`,
           newConsumptionData,
           config
         );
-
+  
         if (response.status === 201) {
           resetForm();
           toast.success("تمت إضافة العنصر بنجاح");
@@ -152,6 +160,7 @@ const SectionConsumption = () => {
       console.error(error);
     }
   };
+  
 
   // Reset form fields
   const resetForm = () => {
