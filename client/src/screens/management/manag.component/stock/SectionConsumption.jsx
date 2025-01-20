@@ -74,14 +74,20 @@ const SectionConsumption = () => {
       );
 
       // Filter to find today's consumption records
-      const consumptionToday = allSectionConsumption.filter(
-        (consumption) =>
-          new Date(consumption.createdAt).toISOString().split("T")[0] === today
-      );
+      const consumptionToday =
+        allSectionConsumption &&
+        allSectionConsumption.filter(
+          (consumption) =>
+            new Date(consumption.createdAt).toISOString().split("T")[0] ===
+            today
+        );
 
-      let existingConsumption = consumptionToday.find(
-        (consumption) => consumption.stockItem === stockItem
-      );
+      let existingConsumption =
+        consumptionToday.length > 0
+          ? consumptionToday.find(
+              (consumption) => consumption.stockItem === stockItem
+            )
+          : null;
 
       // If the item exists, update it
       if (existingConsumption) {
@@ -336,7 +342,9 @@ const SectionConsumption = () => {
       if (response && response.data) {
         const SectionConsumptions = response.data.data;
         setAllSectionConsumption(SectionConsumptions.reverse());
-        setSectionConsumptionForView(filterByTime("today", SectionConsumptions));
+        setSectionConsumptionForView(
+          filterByTime("today", SectionConsumptions)
+        );
       } else {
         console.log("Unexpected response or empty data");
       }
