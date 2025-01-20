@@ -590,7 +590,7 @@ const SectionConsumption = () => {
             <tbody>
               {SectionConsumptionForView?.length > 0 ? (
                 SectionConsumptionForView.map((consumption, index) => {
-                  if (( >= startpagination) & (index < endpagination)) {
+                  if ((index >= startpagination) & (index < endpagination)) {
                     return (
                       <tr key={consumption._id}>
                         <td>{index + startpagination + 1}</td>
