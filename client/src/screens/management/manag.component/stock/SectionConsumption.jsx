@@ -593,7 +593,7 @@ const SectionConsumption = () => {
                   if ((index >= startpagination) & (index < endpagination)) {
                     return (
                       <tr key={consumption._id}>
-                        <td>{index + startpagination + 1}</td>
+                        <td>{index + 1}</td>
                         <td>{consumption.section?.name || "غير محدد"}</td>
                         <td>{consumption.stockItem?.itemName || "غير محدد"}</td>
                         <td>{consumption.quantityTransferred ?? 0}</td>
