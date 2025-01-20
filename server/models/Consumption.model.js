@@ -18,6 +18,11 @@ const ConsumptionSchema = new mongoose.Schema(
       required: true,
       min: 0,
     },
+    unit: {
+      type: String,
+      default: '',
+      require: true
+    },
     quantityConsumed: {
       type: Number, // The actual quantity consumed in the preparation section during the day.
       required: true,

@@ -38,8 +38,10 @@ const SectionConsumption = () => {
     )[0];
 
   // Variables to store form inputs
+  const [consumptionId, setconsumptionId] = useState("");
   const [section, setSection] = useState("");
   const [stockItem, setStockItem] = useState("");
+  const [unit, setunit] = useState("");
   const [quantityTransferred, setQuantityTransferred] = useState(0);
   const [quantityConsumed, setQuantityConsumed] = useState(0);
   const [bookBalance, setBookBalance] = useState(0);
@@ -167,7 +169,7 @@ const SectionConsumption = () => {
       }
 
       const response = await axios.put(
-        `${apiUrl}/api/consumption/${SectionItemId}`,
+        `${apiUrl}/api/consumption/${consumptionId}`,
         {
           adjustment,
           actualBalance,
@@ -199,7 +201,7 @@ const SectionConsumption = () => {
     }
     try {
       const response = await axios.delete(
-        apiUrl + "/api/consumption/" + SectionItemId,
+        apiUrl + "/api/consumption/" + consumptionId,
         config
       );
       if (response.status === 200) {
@@ -304,7 +306,7 @@ const SectionConsumption = () => {
       if (response && response.data) {
         const allConsumptions = response.data.data;
         setAllSectionConsumption(allConsumptions.reverse());
-        setSectionConsumptionForView(filterByTime(today, allConsumptions));
+        setSectionConsumptionForView(filterByTime("today", allConsumptions));
       } else {
         console.log("Unexpected response or empty data");
       }
@@ -334,7 +336,7 @@ const SectionConsumption = () => {
       if (response && response.data) {
         const SectionConsumptions = response.data.data;
         setAllSectionConsumption(SectionConsumptions.reverse());
-        setSectionConsumptionForView(filterByTime(today, SectionConsumptions));
+        setSectionConsumptionForView(filterByTime("today", SectionConsumptions));
       } else {
         console.log("Unexpected response or empty data");
       }
@@ -571,11 +573,12 @@ const SectionConsumption = () => {
                 <th>القسم</th>
                 <th>اسم الصنف</th>
                 <th>الكمية المضافة</th>
-                <th>الاستهلاك</th>
                 <th>الوحدة</th>
+                <th>الاستهلاك</th>
                 <th>الرصيد</th>
-                <th>التسوية</th>
                 <th>الرصيد الفعلي</th>
+                <th>التسوية</th>
+                <th>السبب</th>
                 <th>الرصيد المرحل</th>
                 <th>الرصيد المرتجع</th>
                 <th>المنتجات</th>
@@ -586,18 +589,19 @@ const SectionConsumption = () => {
             </thead>
             <tbody>
               {SectionConsumptionForView?.length > 0 ? (
-                SectionConsumptionForView.map((consumption, i) => {
+                SectionConsumptionForView.map((consumption, index) => {
                   if ((i >= startpagination) & (i < endpagination)) {
                     return (
                       <tr key={consumption._id}>
                         <td>{index + startpagination + 1}</td>
                         <td>{consumption.section?.name || "غير محدد"}</td>
-                        <td>{consumption.stockItemName || "غير محدد"}</td>
+                        <td>{consumption.stockItem?.itemName || "غير محدد"}</td>
                         <td>{consumption.quantityTransferred ?? 0}</td>
-                        <td>{consumption.quantityConsumed ?? 0}</td>
                         <td>{consumption.unit || "غير محدد"}</td>
+                        <td>{consumption.quantityConsumed ?? 0}</td>
                         <td>{consumption.bookBalance ?? 0}</td>
                         <td>{consumption.adjustment ?? 0}</td>
+                        <td>{consumption.adjustmentReason ?? ""}</td>
                         <td>{consumption.quantityRemaining ?? 0}</td>
                         <td>{consumption.carriedForward ?? 0}</td>
                         <td>{consumption.returnedToStock ?? 0}</td>
@@ -627,12 +631,12 @@ const SectionConsumption = () => {
                             data-toggle="modal"
                             onClick={() => {
                               setReceivedBy(employeeLoginInfo.id);
-                              setSectionItemId(consumption._id);
+                              setconsumptionId(consumption._id);
                               setStockItem(consumption.stockItem?._id);
                               setQuantityTransferred(
                                 consumption.quantityTransferred ?? 0
                               );
-                              setbookBalance(consumption.bookBalance ?? 0);
+                              setBookBalance(consumption.bookBalance ?? 0);
                               setunit(consumption.unit || "");
                               setQuantityConsumed(
                                 consumption.quantityConsumed ?? 0
@@ -651,7 +655,7 @@ const SectionConsumption = () => {
                             href="#deleteStockItemModal"
                             className="delete"
                             data-toggle="modal"
-                            onClick={() => setSectionItemId(consumption._id)}
+                            onClick={() => setconsumptionId(consumption._id)}
                           >
                             <i
                               className="material-icons"
@@ -769,9 +773,9 @@ const SectionConsumption = () => {
                     required
                   >
                     <option value="">اختر القسم</option>
-                    {AllSections.map((sectionItem, i) => (
-                      <option value={sectionItem._id} key={i}>
-                        {sectionItem.name}
+                    {preparationSections.map((section, i) => (
+                      <option value={section._id} key={i}>
+                        {section.name}
                       </option>
                     ))}
                   </select>
@@ -790,7 +794,7 @@ const SectionConsumption = () => {
                       const selectedStockItem = AllStockItems.find(
                         (item) => item._id === e.target.value
                       );
-                      setUnit(selectedStockItem.smallUnit);
+                      setunit(selectedStockItem.smallUnit);
                     }}
                     required
                   >
@@ -899,12 +903,12 @@ const SectionConsumption = () => {
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
                     اسم الصنف
                   </label>
-                  <input
+                  {/* <input
                     type="text"
                     className="form-control border-primary m-0 p-2 h-auto"
-                    defaultValue={stockItemName}
+                    defaultValue={}
                     required
-                  />
+                  /> */}
                 </div>
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
@@ -951,8 +955,8 @@ const SectionConsumption = () => {
                     className="form-control border-primary m-0 p-2 h-auto"
                     required
                     onChange={(e) => {
-                      setadjustment(Number(e.target.value) - bookBalance);
-                      setactualBalance(e.target.value);
+                      setAdjustment(Number(e.target.value) - bookBalance);
+                      setActualBalance(e.target.value);
                     }}
                   />
                 </div>
