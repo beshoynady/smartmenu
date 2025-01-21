@@ -48,7 +48,6 @@ const SectionConsumption = () => {
   const [actualBalance, setActualBalance] = useState(0);
   const [adjustment, setAdjustment] = useState(0);
   const [adjustmentReason, setAdjustmentReason] = useState("");
-  const [quantityRemaining, setQuantityRemaining] = useState(0);
   const [carriedForward, setCarriedForward] = useState(0);
   const [returnedToStock, setReturnedToStock] = useState(0);
   const [deliveredBy, setDeliveredBy] = useState(employeeLoginInfo.id);
@@ -103,8 +102,8 @@ const SectionConsumption = () => {
         const updatedData = {
           quantityTransferred:
             existingConsumption.quantityTransferred + quantityTransferred,
-          actualBalance:
-            existingConsumption.actualBalance + quantityTransferred,
+            bookBalance:
+            existingConsumption.bookBalance + quantityTransferred,
           receivedBy,
         };
   
@@ -130,7 +129,7 @@ const SectionConsumption = () => {
           section,
           stockItem,
           quantityTransferred,
-          actualBalance: quantityTransferred,
+          bookBalance: quantityTransferred,
           deliveredBy,
           receivedBy,
           tickets: [],

@@ -57,7 +57,6 @@ const updateConsumptionById = async (req, res) => {
       actualBalance,
       adjustment,
       adjustmentReason,
-      quantityRemaining,
       carriedForward,
       returnedToStock,
       deliveredBy,
@@ -89,7 +88,7 @@ const updateConsumptionById = async (req, res) => {
           actualBalance,
           adjustment,
           adjustmentReason,
-          quantityRemaining,
+  
           carriedForward,
           returnedToStock,
           deliveredBy,
