@@ -59,7 +59,6 @@ const SectionConsumption = () => {
   // Function to add or update an item in Section consumption
   const handleSectionItem = async (e) => {
     e.preventDefault();
-  
     try {
       if (!token) {
         toast.error("رجاء تسجيل الدخول مره أخرى");
@@ -170,7 +169,9 @@ const SectionConsumption = () => {
   };
 
   // Update a section item
-  const updateSectionItem = async () => {
+  const updateSectionItem = async (e) => {
+    e.preventDefault()
+
     try {
       if (!token) {
         toast.error("رجاء تسجيل الدخول مره أخرى");
@@ -203,7 +204,8 @@ const SectionConsumption = () => {
     }
   };
 
-  const deleteSectionItem = async () => {
+  const deleteSectionItem = async (e) => {
+    e.preventDefault()
     if (!token) {
       // Handle case where token is not available
       toast.error("رجاء تسجيل الدخول مره اخري");
@@ -1031,7 +1033,7 @@ const SectionConsumption = () => {
       </div>
 
       <div id="deleteStockItemModal" className="modal fade">
-        <div className="modal-dialog modal-lg">
+      <div className="modal-dialog modal-lg">
           <div className="modal-content shadow-lg border-0 rounded ">
             <form onSubmit={deleteSectionItem}>
               <div className="modal-header d-flex flex-wrap align-items-center text-light bg-primary">
@@ -1053,7 +1055,7 @@ const SectionConsumption = () => {
                   <small>لا يمكن الرجوع في هذا الإجراء.</small>
                 </p>
               </div>
-              <div className="modal-footer flex-nowrap d-flex flex-row align-items-center justify-content-between flex-nowrap d-flex flex-row align-items-center justify-content-between">
+              <div className="modal-footer d-flex flex-nowrap align-items-center justify-content-between m-0 p-1">
                 <input
                   type="submit"
                   className="btn btn-warning col-6 h-100 px-2 py-3 m-0"
@@ -1061,9 +1063,9 @@ const SectionConsumption = () => {
                 />
                 <input
                   type="button"
-                  className="col-md-6 col-12 h-100 p-0 m-0 btn btn-default"
+                  className="btn btn-danger col-6 h-100 px-2 py-3 m-0"
                   data-dismiss="modal"
-                  value="إلغاء"
+                  value="إغلاق"
                 />
               </div>
             </form>

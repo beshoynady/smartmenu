@@ -720,7 +720,7 @@ const Store = () => {
                   هل أنت متأكد من حذف مخزن <strong>{storeName}</strong>؟
                 </p>
               </div>
-              <div className="modal-footer flex-nowrap d-flex flex-row align-items-center justify-content-between flex-nowrap d-flex flex-row align-items-center justify-content-between">
+              <div className="modal-footer d-flex flex-nowrap align-items-center justify-content-between m-0 p-1">
                 <input
                   type="submit"
                   className="btn btn-warning col-6 h-100 px-2 py-3 m-0"
@@ -728,9 +728,9 @@ const Store = () => {
                 />
                 <input
                   type="button"
-                  className="col-md-6 col-12 h-100 p-0 m-0 btn btn-default"
+                  className="btn btn-danger col-6 h-100 px-2 py-3 m-0"
                   data-dismiss="modal"
-                  value="إلغاء"
+                  value="إغلاق"
                 />
               </div>
             </form>
