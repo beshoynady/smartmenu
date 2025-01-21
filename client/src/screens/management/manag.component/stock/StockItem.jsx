@@ -25,10 +25,10 @@ const StockItem = () => {
     formatDateTime,
     setisLoading,
     EditPagination,
-    startpagination,
-    endpagination,
-    setstartpagination,
-    setendpagination,
+    startPagination,
+    endPagination,
+    setStartPagination,
+    setEndPagination,
   } = useContext(dataContext);
 
   const stockItemPermission =
@@ -459,8 +459,8 @@ const StockItem = () => {
                 <select
                   className="form-control border-primary m-0 p-2 h-auto"
                   onChange={(e) => {
-                    setstartpagination(0);
-                    setendpagination(e.target.value);
+                    setStartPagination(0);
+                    setEndPagination(e.target.value);
                   }}
                 >
                   {(() => {
@@ -533,7 +533,7 @@ const StockItem = () => {
             <tbody>
               {AllStockItems &&
                 AllStockItems.map((item, i) => {
-                  if ((i >= startpagination) & (i < endpagination)) {
+                  if ((i >= startPagination) & (i < endPagination)) {
                     return (
                       <tr
                         key={i}
@@ -633,8 +633,8 @@ const StockItem = () => {
             <div className="hint-text text-dark">
               عرض{" "}
               <b>
-                {AllStockItems.length > endpagination
-                  ? endpagination
+                {AllStockItems.length > endPagination
+                  ? endPagination
                   : AllStockItems.length}
               </b>{" "}
               من <b>{AllStockItems.length}</b> عنصر
@@ -645,7 +645,7 @@ const StockItem = () => {
               </li>
               <li
                 onClick={EditPagination}
-                className={`page-item ${endpagination === 5 ? "active" : ""}`}
+                className={`page-item ${endPagination === 5 ? "active" : ""}`}
               >
                 <a href="#" className="page-link">
                   1
@@ -653,7 +653,7 @@ const StockItem = () => {
               </li>
               <li
                 onClick={EditPagination}
-                className={`page-item ${endpagination === 10 ? "active" : ""}`}
+                className={`page-item ${endPagination === 10 ? "active" : ""}`}
               >
                 <a href="#" className="page-link">
                   2
@@ -661,7 +661,7 @@ const StockItem = () => {
               </li>
               <li
                 onClick={EditPagination}
-                className={`page-item ${endpagination === 15 ? "active" : ""}`}
+                className={`page-item ${endPagination === 15 ? "active" : ""}`}
               >
                 <a href="#" className="page-link">
                   3
@@ -669,7 +669,7 @@ const StockItem = () => {
               </li>
               <li
                 onClick={EditPagination}
-                className={`page-item ${endpagination === 20 ? "active" : ""}`}
+                className={`page-item ${endPagination === 20 ? "active" : ""}`}
               >
                 <a href="#" className="page-link">
                   4
@@ -677,7 +677,7 @@ const StockItem = () => {
               </li>
               <li
                 onClick={EditPagination}
-                className={`page-item ${endpagination === 25 ? "active" : ""}`}
+                className={`page-item ${endPagination === 25 ? "active" : ""}`}
               >
                 <a href="#" className="page-link">
                   5
@@ -685,7 +685,7 @@ const StockItem = () => {
               </li>
               <li
                 onClick={EditPagination}
-                className={`page-item ${endpagination === 30 ? "active" : ""}`}
+                className={`page-item ${endPagination === 30 ? "active" : ""}`}
               >
                 <a href="#" className="page-link">
                   التالي

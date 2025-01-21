@@ -27,10 +27,10 @@ const Purchase = () => {
     formatDateTime,
     setisLoading,
     EditPagination,
-    startpagination,
-    endpagination,
-    setstartpagination,
-    setendpagination,
+    startPagination,
+    endPagination,
+    setStartPagination,
+    setEndPagination,
   } = useContext(dataContext);
 
   const purchasePermission = permissionsList?.filter(
@@ -869,8 +869,8 @@ const Purchase = () => {
                 <select
                   className="form-control border-primary m-0 p-2 h-auto"
                   onChange={(e) => {
-                    setstartpagination(0);
-                    setendpagination(e.target.value);
+                    setStartPagination(0);
+                    setEndPagination(e.target.value);
                   }}
                 >
                   {(() => {
@@ -1059,7 +1059,7 @@ const Purchase = () => {
             <tbody>
               {allPurchaseInvoice.length > 0 &&
                 allPurchaseInvoice.map((invoice, i) => {
-                  if ((i >= startpagination) & (i < endpagination)) {
+                  if ((i >= startPagination) & (i < endPagination)) {
                     return (
                       <tr key={i}>
                         <td>{i + 1}</td>
@@ -1119,8 +1119,8 @@ const Purchase = () => {
             <div className="hint-text text-dark">
               عرض{" "}
               <b>
-                {allPurchaseInvoice.length > endpagination
-                  ? endpagination
+                {allPurchaseInvoice.length > endPagination
+                  ? endPagination
                   : allPurchaseInvoice.length}
               </b>{" "}
               من <b>{allPurchaseInvoice.length}</b> عنصر
@@ -1131,7 +1131,7 @@ const Purchase = () => {
               </li>
               <li
                 onClick={EditPagination}
-                className={`page-item ${endpagination === 5 ? "active" : ""}`}
+                className={`page-item ${endPagination === 5 ? "active" : ""}`}
               >
                 <a href="#" className="page-link">
                   1
@@ -1139,7 +1139,7 @@ const Purchase = () => {
               </li>
               <li
                 onClick={EditPagination}
-                className={`page-item ${endpagination === 10 ? "active" : ""}`}
+                className={`page-item ${endPagination === 10 ? "active" : ""}`}
               >
                 <a href="#" className="page-link">
                   2
@@ -1147,7 +1147,7 @@ const Purchase = () => {
               </li>
               <li
                 onClick={EditPagination}
-                className={`page-item ${endpagination === 15 ? "active" : ""}`}
+                className={`page-item ${endPagination === 15 ? "active" : ""}`}
               >
                 <a href="#" className="page-link">
                   3
@@ -1155,7 +1155,7 @@ const Purchase = () => {
               </li>
               <li
                 onClick={EditPagination}
-                className={`page-item ${endpagination === 20 ? "active" : ""}`}
+                className={`page-item ${endPagination === 20 ? "active" : ""}`}
               >
                 <a href="#" className="page-link">
                   4
@@ -1163,7 +1163,7 @@ const Purchase = () => {
               </li>
               <li
                 onClick={EditPagination}
-                className={`page-item ${endpagination === 25 ? "active" : ""}`}
+                className={`page-item ${endPagination === 25 ? "active" : ""}`}
               >
                 <a href="#" className="page-link">
                   5
@@ -1171,7 +1171,7 @@ const Purchase = () => {
               </li>
               <li
                 onClick={EditPagination}
-                className={`page-item ${endpagination === 30 ? "active" : ""}`}
+                className={`page-item ${endPagination === 30 ? "active" : ""}`}
               >
                 <a href="#" className="page-link">
                   التالي

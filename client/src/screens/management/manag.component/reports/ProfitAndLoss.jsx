@@ -27,8 +27,8 @@ const ProfitAndLoss = () => {
     //           <select
     //             className="form-control border-primary m-0 p-2 h-auto"
     //             onChange={(e) => {
-    //               setstartpagination(0);
-    //               setendpagination(e.target.value);
+    //               setStartPagination(0);
+    //               setEndPagination(e.target.value);
     //             }}
     //           >
     //             {(() => {
@@ -178,7 +178,7 @@ const ProfitAndLoss = () => {
     //       <tbody>
     //         {listOfOrders &&
     //           listOfOrders.map((order, i) => {
-    //             if ((i >= startpagination) & (i < endpagination)) {
+    //             if ((i >= startPagination) & (i < endPagination)) {
     //               return (
     //                 <tr key={i}>
     //                   <td>{i + 1}</td>

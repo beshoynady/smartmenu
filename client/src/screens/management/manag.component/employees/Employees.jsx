@@ -23,10 +23,10 @@ const Employees = () => {
     formatDateTime,
     setisLoading,
     EditPagination,
-    startpagination,
-    endpagination,
-    setstartpagination,
-    setendpagination,
+    startPagination,
+    endPagination,
+    setStartPagination,
+    setEndPagination,
   } = useContext(dataContext);
 
   const notify = (message, type) => {
@@ -525,8 +525,8 @@ const Employees = () => {
                 <select
                   className="form-control border-primary m-0 p-2 h-auto"
                   onChange={(e) => {
-                    setstartpagination(0);
-                    setendpagination(e.target.value);
+                    setStartPagination(0);
+                    setEndPagination(e.target.value);
                   }}
                 >
                   {(() => {
@@ -634,7 +634,7 @@ const Employees = () => {
             <tbody>
               {listOfEmployees.length > 0
                 ? listOfEmployees.map((employee, i) => {
-                    if (i >= startpagination && i < endpagination) {
+                    if (i >= startPagination && i < endPagination) {
                       return (
                         <tr key={i}>
                           <td>{i + 1}</td>
@@ -718,8 +718,8 @@ const Employees = () => {
             <div className="hint-text text-dark">
               عرض{" "}
               <b>
-                {listOfEmployees.length > endpagination
-                  ? endpagination
+                {listOfEmployees.length > endPagination
+                  ? endPagination
                   : listOfEmployees.length}
               </b>{" "}
               من <b>{listOfEmployees.length}</b> عنصر
@@ -730,7 +730,7 @@ const Employees = () => {
               </li>
               <li
                 onClick={EditPagination}
-                className={`page-item ${endpagination === 5 ? "active" : ""}`}
+                className={`page-item ${endPagination === 5 ? "active" : ""}`}
               >
                 <a href="#" className="page-link">
                   1
@@ -738,7 +738,7 @@ const Employees = () => {
               </li>
               <li
                 onClick={EditPagination}
-                className={`page-item ${endpagination === 10 ? "active" : ""}`}
+                className={`page-item ${endPagination === 10 ? "active" : ""}`}
               >
                 <a href="#" className="page-link">
                   2
@@ -746,7 +746,7 @@ const Employees = () => {
               </li>
               <li
                 onClick={EditPagination}
-                className={`page-item ${endpagination === 15 ? "active" : ""}`}
+                className={`page-item ${endPagination === 15 ? "active" : ""}`}
               >
                 <a href="#" className="page-link">
                   3
@@ -754,7 +754,7 @@ const Employees = () => {
               </li>
               <li
                 onClick={EditPagination}
-                className={`page-item ${endpagination === 20 ? "active" : ""}`}
+                className={`page-item ${endPagination === 20 ? "active" : ""}`}
               >
                 <a href="#" className="page-link">
                   4
@@ -762,7 +762,7 @@ const Employees = () => {
               </li>
               <li
                 onClick={EditPagination}
-                className={`page-item ${endpagination === 25 ? "active" : ""}`}
+                className={`page-item ${endPagination === 25 ? "active" : ""}`}
               >
                 <a href="#" className="page-link">
                   5
@@ -770,7 +770,7 @@ const Employees = () => {
               </li>
               <li
                 onClick={EditPagination}
-                className={`page-item ${endpagination === 30 ? "active" : ""}`}
+                className={`page-item ${endPagination === 30 ? "active" : ""}`}
               >
                 <a href="#" className="page-link">
                   التالي

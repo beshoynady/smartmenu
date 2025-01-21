@@ -32,10 +32,10 @@ const ManagerDash = () => {
     formatDate,
     setisLoading,
     EditPagination,
-    startpagination,
-    endpagination,
-    setstartpagination,
-    setendpagination,
+    startPagination,
+    endPagination,
+    setStartPagination,
+    setEndPagination,
     isRefresh,
     setIsRefresh,
     cashierSocket,
@@ -1058,8 +1058,8 @@ const ManagerDash = () => {
                     <select
                       className="form-control border-primary m-0 p-2 h-auto"
                       onChange={(e) => {
-                        setstartpagination(0);
-                        setendpagination(parseInt(e.target.value));
+                        setStartPagination(0);
+                        setEndPagination(parseInt(e.target.value));
                       }}
                     >
                       <option value={5}>5</option>
@@ -1179,7 +1179,7 @@ const ManagerDash = () => {
                     <tbody>
                       {listOrderShow.length > 0 ? (
                         listOrderShow
-                          .slice(startpagination, endpagination + 15)
+                          .slice(startPagination, endPagination + 15)
                           .map((recent, i) => (
                             <tr
                               key={i}
@@ -1342,8 +1342,8 @@ const ManagerDash = () => {
                   <div className="hint-text text-dark">
                     عرض{" "}
                     <b>
-                      {listOrderShow.length > startpagination
-                        ? startpagination
+                      {listOrderShow.length > startPagination
+                        ? startPagination
                         : listOrderShow.length}
                     </b>{" "}
                     من <b>{listOrderShow.length}</b> عنصر
@@ -1355,7 +1355,7 @@ const ManagerDash = () => {
                     <li
                       onClick={EditPagination}
                       className={`page-item ${
-                        endpagination === 5 ? "active" : ""
+                        endPagination === 5 ? "active" : ""
                       }`}
                     >
                       <a href="#" className="page-link">
@@ -1365,7 +1365,7 @@ const ManagerDash = () => {
                     <li
                       onClick={EditPagination}
                       className={`page-item ${
-                        endpagination === 10 ? "active" : ""
+                        endPagination === 10 ? "active" : ""
                       }`}
                     >
                       <a href="#" className="page-link">
@@ -1375,7 +1375,7 @@ const ManagerDash = () => {
                     <li
                       onClick={EditPagination}
                       className={`page-item ${
-                        endpagination === 15 ? "active" : ""
+                        endPagination === 15 ? "active" : ""
                       }`}
                     >
                       <a href="#" className="page-link">
@@ -1385,7 +1385,7 @@ const ManagerDash = () => {
                     <li
                       onClick={EditPagination}
                       className={`page-item ${
-                        endpagination === 20 ? "active" : ""
+                        endPagination === 20 ? "active" : ""
                       }`}
                     >
                       <a href="#" className="page-link">
@@ -1395,7 +1395,7 @@ const ManagerDash = () => {
                     <li
                       onClick={EditPagination}
                       className={`page-item ${
-                        endpagination === 25 ? "active" : ""
+                        endPagination === 25 ? "active" : ""
                       }`}
                     >
                       <a href="#" className="page-link">
@@ -1405,7 +1405,7 @@ const ManagerDash = () => {
                     <li
                       onClick={EditPagination}
                       className={`page-item ${
-                        endpagination === 30 ? "active" : ""
+                        endPagination === 30 ? "active" : ""
                       }`}
                     >
                       <a href="#" className="page-link">

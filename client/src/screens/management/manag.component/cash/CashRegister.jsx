@@ -17,10 +17,10 @@ const CashRegister = () => {
     permissionsList,
     setisLoading,
     EditPagination,
-    startpagination,
-    endpagination,
-    setstartpagination,
-    setendpagination,
+    startPagination,
+    endPagination,
+    setStartPagination,
+    setEndPagination,
   } = useContext(dataContext);
 
   const cashRegisterPermissions = permissionsList?.filter(
@@ -315,8 +315,8 @@ const CashRegister = () => {
                 <select
                   className="form-control border-primary m-0 p-2 h-auto"
                   onChange={(e) => {
-                    setstartpagination(0);
-                    setendpagination(e.target.value);
+                    setStartPagination(0);
+                    setEndPagination(e.target.value);
                   }}
                 >
                   <option value={5}>5</option>
@@ -384,7 +384,7 @@ const CashRegister = () => {
             <tbody>
               {cashRegisters.length > 0
                 ? cashRegisters.map((cashRegister, i) => {
-                    if ((i >= startpagination) & (i < endpagination)) {
+                    if ((i >= startPagination) & (i < endPagination)) {
                       return (
                         <tr key={i}>
                           <td>
@@ -456,8 +456,8 @@ const CashRegister = () => {
             <div className="hint-text text-dark">
               عرض{" "}
               <b>
-                {cashRegisters.length > endpagination
-                  ? endpagination
+                {cashRegisters.length > endPagination
+                  ? endPagination
                   : cashRegisters.length}
               </b>{" "}
               من <b>{cashRegisters.length}</b> عنصر

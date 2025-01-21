@@ -26,10 +26,10 @@ const DeliveryMan = () => {
     formatDateTime,
     setisLoading,
     EditPagination,
-    startpagination,
-    endpagination,
-    setstartpagination,
-    setendpagination,
+    startPagination,
+    endPagination,
+    setStartPagination,
+    setEndPagination,
   } = useContext(dataContext);
 
   // // State for pending orders and payments

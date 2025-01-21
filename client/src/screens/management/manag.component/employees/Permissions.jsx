@@ -404,10 +404,10 @@ const PermissionsComponent = () => {
         restaurantData,
         setisLoading,
         EditPagination,
-        startpagination,
-        endpagination,
-        setstartpagination,
-        setendpagination,
+        startPagination,
+        endPagination,
+        setStartPagination,
+        setEndPagination,
       }) => {
         return (
           <div className="col-md-8 co;-12 px-3 d-flex align-itmes-center justify-content-start">

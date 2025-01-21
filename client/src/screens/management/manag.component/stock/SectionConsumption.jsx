@@ -25,10 +25,10 @@ const SectionConsumption = () => {
     formatDateTime,
     setisLoading,
     EditPagination,
-    startpagination,
-    endpagination,
-    setstartpagination,
-    setendpagination,
+    startPagination,
+    endPagination,
+    setStartPagination,
+    setEndPagination,
   } = useContext(dataContext);
 
   const SectionUsegePermission =
@@ -38,10 +38,10 @@ const SectionConsumption = () => {
     )[0];
 
   // Variables to store form inputs
-  const [consumptionId, setconsumptionId] = useState("");
+  const [consumptionId, setConsumptionId] = useState("");
   const [section, setSection] = useState("");
   const [stockItem, setStockItem] = useState("");
-  const [unit, setunit] = useState("");
+  const [unit, setUnit] = useState("");
   const [quantityTransferred, setQuantityTransferred] = useState(0);
   const [quantityConsumed, setQuantityConsumed] = useState(0);
   const [bookBalance, setBookBalance] = useState(0);
@@ -51,8 +51,8 @@ const SectionConsumption = () => {
   const [quantityRemaining, setQuantityRemaining] = useState(0);
   const [carriedForward, setCarriedForward] = useState(0);
   const [returnedToStock, setReturnedToStock] = useState(0);
-  const [deliveredBy, setDeliveredBy] = useState("");
-  const [receivedBy, setReceivedBy] = useState("");
+  const [deliveredBy, setDeliveredBy] = useState(employeeLoginInfo.id);
+  const [receivedBy, setReceivedBy] = useState(employeeLoginInfo.id);
   const [tickets, setTickets] = useState([]);
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [remarks, setRemarks] = useState("");
@@ -69,24 +69,21 @@ const SectionConsumption = () => {
   
       const today = new Date().toISOString().split("T")[0];
       
-      // محاولة جلب السجلات من الـ API
       let allSectionConsumption = [];
       try {
         const { data } = await axios.get(
           `${apiUrl}/api/consumption/bysection/${section}`,
           config
         );
-        allSectionConsumption = data;  // في حال وجود بيانات
+        allSectionConsumption = data;
       } catch (error) {
-        // في حال كان الخطأ 404 أو أي خطأ آخر، تعتبر المرة الأولى التي لا يوجد فيها بيانات
         if (error.response && error.response.status === 404) {
           console.log("لا توجد سجلات لهذا القسم حتى الآن");
         } else {
-          throw error;  // في حال كان هناك خطأ آخر غير متوقع
+          throw error; 
         }
       }
   
-      // إذا كانت هناك سجلات، نقوم بفلترتها حسب اليوم
       const consumptionToday = allSectionConsumption.filter(
         (consumption) =>
           new Date(consumption.createdAt).toISOString().split("T")[0] === today
@@ -98,7 +95,6 @@ const SectionConsumption = () => {
           : null;
   
       if (existingConsumption) {
-        // إذا كان العنصر موجودًا، نحدثه
         if (SectionUsegePermission && !SectionUsegePermission.update) {
           toast.warn("ليس لديك صلاحية لتعديل عنصر في استهلاك القسم");
           return;
@@ -125,7 +121,6 @@ const SectionConsumption = () => {
           toast.error("فشل تحديث الكمية");
         }
       } else {
-        // إذا كان العنصر غير موجود، نضيفه
         if (SectionUsegePermission && !SectionUsegePermission.create) {
           toast.warn("ليس لديك صلاحية لإضافة عنصر إلى استهلاك القسم");
           return;
@@ -443,8 +438,8 @@ const SectionConsumption = () => {
                 <select
                   className="form-control border-primary m-0 p-2 h-auto"
                   onChange={(e) => {
-                    setstartpagination(0);
-                    setendpagination(e.target.value);
+                    setStartPagination(0);
+                    setEndPagination(e.target.value);
                   }}
                 >
                   {(() => {
@@ -607,7 +602,7 @@ const SectionConsumption = () => {
             <tbody>
               {SectionConsumptionForView?.length > 0 ? (
                 SectionConsumptionForView.map((consumption, index) => {
-                  if ((index >= startpagination) & (index < endpagination)) {
+                  if ((index >= startPagination) & (index < endPagination)) {
                     return (
                       <tr key={consumption._id}>
                         <td>{index + 1}</td>
@@ -648,13 +643,13 @@ const SectionConsumption = () => {
                             data-toggle="modal"
                             onClick={() => {
                               setReceivedBy(employeeLoginInfo.id);
-                              setconsumptionId(consumption._id);
+                              setConsumptionId(consumption._id);
                               setStockItem(consumption.stockItem?._id);
                               setQuantityTransferred(
                                 consumption.quantityTransferred ?? 0
                               );
                               setBookBalance(consumption.bookBalance ?? 0);
-                              setunit(consumption.unit || "");
+                              setUnit(consumption.unit || "");
                               setQuantityConsumed(
                                 consumption.quantityConsumed ?? 0
                               );
@@ -672,7 +667,7 @@ const SectionConsumption = () => {
                             href="#deleteStockItemModal"
                             className="delete"
                             data-toggle="modal"
-                            onClick={() => setconsumptionId(consumption._id)}
+                            onClick={() => setConsumptionId(consumption._id)}
                           >
                             <i
                               className="material-icons"
@@ -700,8 +695,8 @@ const SectionConsumption = () => {
             <div className="hint-text text-dark">
               عرض{" "}
               <b>
-                {SectionConsumptionForView.length > endpagination
-                  ? endpagination
+                {SectionConsumptionForView.length > endPagination
+                  ? endPagination
                   : SectionConsumptionForView.length}
               </b>{" "}
               من <b>{SectionConsumptionForView.length}</b> عنصر
@@ -712,7 +707,7 @@ const SectionConsumption = () => {
               </li>
               <li
                 onClick={EditPagination}
-                className={`page-item ${endpagination === 5 ? "active" : ""}`}
+                className={`page-item ${endPagination === 5 ? "active" : ""}`}
               >
                 <a href="#" className="page-link">
                   1
@@ -720,7 +715,7 @@ const SectionConsumption = () => {
               </li>
               <li
                 onClick={EditPagination}
-                className={`page-item ${endpagination === 10 ? "active" : ""}`}
+                className={`page-item ${endPagination === 10 ? "active" : ""}`}
               >
                 <a href="#" className="page-link">
                   2
@@ -728,7 +723,7 @@ const SectionConsumption = () => {
               </li>
               <li
                 onClick={EditPagination}
-                className={`page-item ${endpagination === 15 ? "active" : ""}`}
+                className={`page-item ${endPagination === 15 ? "active" : ""}`}
               >
                 <a href="#" className="page-link">
                   3
@@ -736,7 +731,7 @@ const SectionConsumption = () => {
               </li>
               <li
                 onClick={EditPagination}
-                className={`page-item ${endpagination === 20 ? "active" : ""}`}
+                className={`page-item ${endPagination === 20 ? "active" : ""}`}
               >
                 <a href="#" className="page-link">
                   4
@@ -744,7 +739,7 @@ const SectionConsumption = () => {
               </li>
               <li
                 onClick={EditPagination}
-                className={`page-item ${endpagination === 25 ? "active" : ""}`}
+                className={`page-item ${endPagination === 25 ? "active" : ""}`}
               >
                 <a href="#" className="page-link">
                   5
@@ -752,7 +747,7 @@ const SectionConsumption = () => {
               </li>
               <li
                 onClick={EditPagination}
-                className={`page-item ${endpagination === 30 ? "active" : ""}`}
+                className={`page-item ${endPagination === 30 ? "active" : ""}`}
               >
                 <a href="#" className="page-link">
                   التالي
@@ -811,7 +806,7 @@ const SectionConsumption = () => {
                       const selectedStockItem = AllStockItems.find(
                         (item) => item._id === e.target.value
                       );
-                      setunit(selectedStockItem.smallUnit);
+                      setUnit(selectedStockItem.smallUnit);
                     }}
                     required
                   >

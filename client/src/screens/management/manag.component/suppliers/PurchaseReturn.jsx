@@ -20,8 +20,8 @@ const PurchaseReturn = () => {
 
 
   const { restaurantData, permissionsList, setStartDate, setEndDate, filterByDateRange, filterByTime, employeeLoginInfo,
-     formatDate, formatDateTime, setisLoading, EditPagination, startpagination, endpagination,
-    setstartpagination, setendpagination } = useContext(dataContext)
+     formatDate, formatDateTime, setisLoading, EditPagination, startPagination, endPagination,
+    setStartPagination, setEndPagination } = useContext(dataContext)
 
     const purchaseReturnPermission = permissionsList?.filter(
       (permission) => permission.resource === "Purchase Returns"
@@ -730,7 +730,7 @@ const PurchaseReturn = () => {
               <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
                 <label className="form-label text-wrap text-right fw-bolder p-0 m-0">عرض</label>
 
-                <select className="form-control border-primary m-0 p-2 h-auto" onChange={(e) => { setstartpagination(0); setendpagination(e.target.value) }}>
+                <select className="form-control border-primary m-0 p-2 h-auto" onChange={(e) => { setStartPagination(0); setEndPagination(e.target.value) }}>
                   {
                     (() => {
                       const options = [];
@@ -833,7 +833,7 @@ const PurchaseReturn = () => {
             </thead>
             <tbody>
               {allPurchasesReturn.length > 0 && allPurchasesReturn.map((returnInvoice, i) => {
-                if (i >= startpagination & i < endpagination) {
+                if (i >= startPagination & i < endPagination) {
                   return (
                     <tr key={i}>
                       {/* <td>
@@ -875,15 +875,15 @@ const PurchaseReturn = () => {
             </tbody>
           </table>
           <div className="clearfix">
-            <div className="hint-text text-dark">عرض <b>{allPurchasesReturn.length > endpagination ? endpagination : allPurchasesReturn.length}</b> من <b>{allPurchasesReturn.length}</b> عنصر</div>
+            <div className="hint-text text-dark">عرض <b>{allPurchasesReturn.length > endPagination ? endPagination : allPurchasesReturn.length}</b> من <b>{allPurchasesReturn.length}</b> عنصر</div>
             <ul className="pagination">
               <li onClick={EditPagination} className="page-item disabled"><a href="#">السابق</a></li>
-              <li onClick={EditPagination} className={`page-item ${endpagination === 5 ? 'active' : ''}`}><a href="#" className="page-link">1</a></li>
-              <li onClick={EditPagination} className={`page-item ${endpagination === 10 ? 'active' : ''}`}><a href="#" className="page-link">2</a></li>
-              <li onClick={EditPagination} className={`page-item ${endpagination === 15 ? 'active' : ''}`}><a href="#" className="page-link">3</a></li>
-              <li onClick={EditPagination} className={`page-item ${endpagination === 20 ? 'active' : ''}`}><a href="#" className="page-link">4</a></li>
-              <li onClick={EditPagination} className={`page-item ${endpagination === 25 ? 'active' : ''}`}><a href="#" className="page-link">5</a></li>
-              <li onClick={EditPagination} className={`page-item ${endpagination === 30 ? 'active' : ''}`}><a href="#" className="page-link">التالي</a></li>
+              <li onClick={EditPagination} className={`page-item ${endPagination === 5 ? 'active' : ''}`}><a href="#" className="page-link">1</a></li>
+              <li onClick={EditPagination} className={`page-item ${endPagination === 10 ? 'active' : ''}`}><a href="#" className="page-link">2</a></li>
+              <li onClick={EditPagination} className={`page-item ${endPagination === 15 ? 'active' : ''}`}><a href="#" className="page-link">3</a></li>
+              <li onClick={EditPagination} className={`page-item ${endPagination === 20 ? 'active' : ''}`}><a href="#" className="page-link">4</a></li>
+              <li onClick={EditPagination} className={`page-item ${endPagination === 25 ? 'active' : ''}`}><a href="#" className="page-link">5</a></li>
+              <li onClick={EditPagination} className={`page-item ${endPagination === 30 ? 'active' : ''}`}><a href="#" className="page-link">التالي</a></li>
 
             </ul>
           </div>

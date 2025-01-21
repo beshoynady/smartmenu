@@ -19,10 +19,10 @@ const Suppliers = () => {
     formatDateTime,
     setisLoading,
     EditPagination,
-    startpagination,
-    endpagination,
-    setstartpagination,
-    setendpagination,
+    startPagination,
+    endPagination,
+    setStartPagination,
+    setEndPagination,
   } = useContext(dataContext);
 
   const supplierDataPermission =
@@ -478,8 +478,8 @@ const addSupplierToStockItem = async (supplierId) => {
                 <select
                   className="form-control border-primary m-0 p-2 h-auto"
                   onChange={(e) => {
-                    setstartpagination(0);
-                    setendpagination(e.target.value);
+                    setStartPagination(0);
+                    setEndPagination(e.target.value);
                   }}
                 >
                   {(() => {
@@ -562,7 +562,7 @@ const addSupplierToStockItem = async (supplierId) => {
             <tbody>
               {AllSuppliers &&
                 AllSuppliers.map((supplier, i) => {
-                  if ((i >= startpagination) & (i < endpagination)) {
+                  if ((i >= startPagination) & (i < endPagination)) {
                     return (
                       <tr key={i}>
                         <td>{i + 1}</td>
@@ -646,8 +646,8 @@ const addSupplierToStockItem = async (supplierId) => {
             <div className="hint-text text-dark">
               عرض{" "}
               <b>
-                {AllSuppliers.length > endpagination
-                  ? endpagination
+                {AllSuppliers.length > endPagination
+                  ? endPagination
                   : AllSuppliers.length}
               </b>{" "}
               من <b>{AllSuppliers.length}</b> عنصر
@@ -658,7 +658,7 @@ const addSupplierToStockItem = async (supplierId) => {
               </li>
               <li
                 onClick={EditPagination}
-                className={`page-item ${endpagination === 5 ? "active" : ""}`}
+                className={`page-item ${endPagination === 5 ? "active" : ""}`}
               >
                 <a href="#" className="page-link">
                   1
@@ -666,7 +666,7 @@ const addSupplierToStockItem = async (supplierId) => {
               </li>
               <li
                 onClick={EditPagination}
-                className={`page-item ${endpagination === 10 ? "active" : ""}`}
+                className={`page-item ${endPagination === 10 ? "active" : ""}`}
               >
                 <a href="#" className="page-link">
                   2
@@ -674,7 +674,7 @@ const addSupplierToStockItem = async (supplierId) => {
               </li>
               <li
                 onClick={EditPagination}
-                className={`page-item ${endpagination === 15 ? "active" : ""}`}
+                className={`page-item ${endPagination === 15 ? "active" : ""}`}
               >
                 <a href="#" className="page-link">
                   3
@@ -682,7 +682,7 @@ const addSupplierToStockItem = async (supplierId) => {
               </li>
               <li
                 onClick={EditPagination}
-                className={`page-item ${endpagination === 20 ? "active" : ""}`}
+                className={`page-item ${endPagination === 20 ? "active" : ""}`}
               >
                 <a href="#" className="page-link">
                   4
@@ -690,7 +690,7 @@ const addSupplierToStockItem = async (supplierId) => {
               </li>
               <li
                 onClick={EditPagination}
-                className={`page-item ${endpagination === 25 ? "active" : ""}`}
+                className={`page-item ${endPagination === 25 ? "active" : ""}`}
               >
                 <a href="#" className="page-link">
                   5
@@ -698,7 +698,7 @@ const addSupplierToStockItem = async (supplierId) => {
               </li>
               <li
                 onClick={EditPagination}
-                className={`page-item ${endpagination === 30 ? "active" : ""}`}
+                className={`page-item ${endPagination === 30 ? "active" : ""}`}
               >
                 <a href="#" className="page-link">
                   التالي

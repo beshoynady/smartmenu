@@ -19,7 +19,7 @@ const AttendanceManagement = () => {
   };
 
   const {setStartDate, setEndDate, filterByDateRange, filterByTime, restaurantData, formatDateTime, permissionsList,setisLoading, formatDate, formatTime,
-    EditPagination, startpagination, endpagination, setstartpagination, setendpagination } = useContext(dataContext);
+    EditPagination, startPagination, endPagination, setStartPagination, setEndPagination } = useContext(dataContext);
 
   const permissionsForAttendance = permissionsList?.filter(permission => permission.resource === 'Attendance')[0]
 
@@ -459,7 +459,7 @@ const AttendanceManagement = () => {
             <div className="w-100 d-flex flex-row flex-wrap align-items-center justify-content-start text-dark">
                 <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">عرض</label>
-                  <select className="form-control border-primary m-0 p-2 h-auto" onChange={(e) => { setstartpagination(0); setendpagination(e.target.value) }}>
+                  <select className="form-control border-primary m-0 p-2 h-auto" onChange={(e) => { setStartPagination(0); setEndPagination(e.target.value) }}>
                     <option value={5}>5</option>
                     <option value={10}>10</option>
                     <option value={15}>15</option>
@@ -564,7 +564,7 @@ const AttendanceManagement = () => {
             </thead>
             <tbody>
               {allAttendanceRecords && allAttendanceRecords.map((Record, i) => {
-                if (i >= startpagination & i < endpagination) {
+                if (i >= startPagination & i < endPagination) {
                   return (
                     <tr key={i}>
 
@@ -609,15 +609,15 @@ const AttendanceManagement = () => {
             </tbody>
           </table>
           <div className="clearfix">
-            <div className="hint-text text-dark">عرض <b>{allAttendanceRecords.length > endpagination ? endpagination : allAttendanceRecords.length}</b> من <b>{allAttendanceRecords.length}</b> عنصر</div>
+            <div className="hint-text text-dark">عرض <b>{allAttendanceRecords.length > endPagination ? endPagination : allAttendanceRecords.length}</b> من <b>{allAttendanceRecords.length}</b> عنصر</div>
             <ul className="pagination">
               <li onClick={EditPagination} className="page-item disabled"><a href="#">السابق</a></li>
-              <li onClick={EditPagination} className={`page-item ${endpagination === 5 ? 'active' : ''}`}><a href="#" className="page-link">1</a></li>
-              <li onClick={EditPagination} className={`page-item ${endpagination === 10 ? 'active' : ''}`}><a href="#" className="page-link">2</a></li>
-              <li onClick={EditPagination} className={`page-item ${endpagination === 15 ? 'active' : ''}`}><a href="#" className="page-link">3</a></li>
-              <li onClick={EditPagination} className={`page-item ${endpagination === 20 ? 'active' : ''}`}><a href="#" className="page-link">4</a></li>
-              <li onClick={EditPagination} className={`page-item ${endpagination === 25 ? 'active' : ''}`}><a href="#" className="page-link">5</a></li>
-              <li onClick={EditPagination} className={`page-item ${endpagination === 30 ? 'active' : ''}`}><a href="#" className="page-link">التالي</a></li>
+              <li onClick={EditPagination} className={`page-item ${endPagination === 5 ? 'active' : ''}`}><a href="#" className="page-link">1</a></li>
+              <li onClick={EditPagination} className={`page-item ${endPagination === 10 ? 'active' : ''}`}><a href="#" className="page-link">2</a></li>
+              <li onClick={EditPagination} className={`page-item ${endPagination === 15 ? 'active' : ''}`}><a href="#" className="page-link">3</a></li>
+              <li onClick={EditPagination} className={`page-item ${endPagination === 20 ? 'active' : ''}`}><a href="#" className="page-link">4</a></li>
+              <li onClick={EditPagination} className={`page-item ${endPagination === 25 ? 'active' : ''}`}><a href="#" className="page-link">5</a></li>
+              <li onClick={EditPagination} className={`page-item ${endPagination === 30 ? 'active' : ''}`}><a href="#" className="page-link">التالي</a></li>
 
             </ul>
           </div>

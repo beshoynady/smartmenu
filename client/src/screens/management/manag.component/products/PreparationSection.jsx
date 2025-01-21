@@ -18,10 +18,10 @@ const PreparationSection = () => {
     allProducts,
     setisLoading,
     EditPagination,
-    startpagination,
-    endpagination,
-    setstartpagination,
-    setendpagination,
+    startPagination,
+    endPagination,
+    setStartPagination,
+    setEndPagination,
   } = useContext(dataContext);
 
   const [preparationSectionName, setpreparationSectionName] = useState("");
@@ -227,8 +227,8 @@ const PreparationSection = () => {
                 <select
                   className="form-control border-primary m-0 p-2 h-auto"
                   onChange={(e) => {
-                    setstartpagination(0);
-                    setendpagination(e.target.value);
+                    setStartPagination(0);
+                    setEndPagination(e.target.value);
                   }}
                 >
                   {(() => {
@@ -280,7 +280,7 @@ const PreparationSection = () => {
             <tbody>
               {allPreparationSections &&
                 allPreparationSections.map((PreparationSection, i) => {
-                  if ((i >= startpagination) & (i < endpagination)) {
+                  if ((i >= startPagination) & (i < endPagination)) {
                     return (
                       <tr key={i}>
                         {/* <td>
@@ -351,8 +351,8 @@ const PreparationSection = () => {
             <div className="hint-text text-dark">
               عرض{" "}
               <b>
-                {allPreparationSections.length > endpagination
-                  ? endpagination
+                {allPreparationSections.length > endPagination
+                  ? endPagination
                   : allPreparationSections.length}
               </b>{" "}
               من <b>{allPreparationSections.length}</b> عنصر

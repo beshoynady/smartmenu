@@ -18,10 +18,10 @@ const MenuCategory = () => {
     allProducts,
     setisLoading,
     EditPagination,
-    startpagination,
-    endpagination,
-    setstartpagination,
-    setendpagination,
+    startPagination,
+    endPagination,
+    setStartPagination,
+    setEndPagination,
   } = useContext(dataContext);
 
   const [categoryName, setcategoryName] = useState("");
@@ -375,8 +375,8 @@ const MenuCategory = () => {
                 <select
                   className="form-control border-primary m-0 p-2 h-auto"
                   onChange={(e) => {
-                    setstartpagination(0);
-                    setendpagination(e.target.value);
+                    setStartPagination(0);
+                    setEndPagination(e.target.value);
                   }}
                 >
                   {(() => {
@@ -427,7 +427,7 @@ const MenuCategory = () => {
             <tbody>
               {allCategory &&
                 allCategory.map((category, i) => {
-                  if ((i >= startpagination) & (i < endpagination)) {
+                  if ((i >= startPagination) & (i < endPagination)) {
                     return (
                       <tr key={i}>
                         {/* <td>
@@ -494,8 +494,8 @@ const MenuCategory = () => {
             <div className="hint-text text-dark">
               عرض{" "}
               <b>
-                {allCategory.length > endpagination
-                  ? endpagination
+                {allCategory.length > endPagination
+                  ? endPagination
                   : allCategory.length}
               </b>{" "}
               من <b>{allCategory.length}</b> عنصر

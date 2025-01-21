@@ -16,7 +16,7 @@ const SupplierTransaction = () => {
     },
   };
   
-  const{restaurantData, permissionsList,setStartDate, setEndDate, filterByDateRange, filterByTime, employeeLoginInfo,  formatDate, formatDateTime, setisLoading, EditPagination, startpagination, endpagination, setstartpagination, setendpagination } = useContext(dataContext)
+  const{restaurantData, permissionsList,setStartDate, setEndDate, filterByDateRange, filterByTime, employeeLoginInfo,  formatDate, formatDateTime, setisLoading, EditPagination, startPagination, endPagination, setStartPagination, setEndPagination } = useContext(dataContext)
 
   const [AllSupplierTransaction, setAllSupplierTransaction] = useState([])
   const getAllSupplierTransaction = async () => {
@@ -224,8 +224,8 @@ const SupplierTransaction = () => {
               <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
                 <label className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">عرض</label>
                 <select
-                  className="form-control border-primary m-0 p-2 h-auto" onChange={(e) => { setstartpagination(0);
-                    setendpagination(e.target.value);
+                  className="form-control border-primary m-0 p-2 h-auto" onChange={(e) => { setStartPagination(0);
+                    setEndPagination(e.target.value);
                   }}
                 >
                   {
@@ -385,7 +385,7 @@ const SupplierTransaction = () => {
             </thead>
             <tbody>
               {AllSupplierTransaction && AllSupplierTransaction.map((Transaction, i) => {
-                if (i >= startpagination & i < endpagination) {
+                if (i >= startPagination & i < endPagination) {
                   return (
                     <tr key={i}>
                       <td>{i + 1}</td>
@@ -411,15 +411,15 @@ const SupplierTransaction = () => {
             </tbody>
           </table>
           <div className="clearfix">
-            <div className="hint-text text-dark">عرض <b>{AllSupplierTransaction.length > endpagination ? endpagination : AllSupplierTransaction.length}</b> من <b>{AllSupplierTransaction.length}</b> عنصر</div>
+            <div className="hint-text text-dark">عرض <b>{AllSupplierTransaction.length > endPagination ? endPagination : AllSupplierTransaction.length}</b> من <b>{AllSupplierTransaction.length}</b> عنصر</div>
             <ul className="pagination">
               <li onClick={EditPagination} className="page-item disabled"><a href="#">السابق</a></li>
-              <li onClick={EditPagination} className={`page-item ${endpagination === 5 ? 'active' : ''}`}><a href="#" className="page-link">1</a></li>
-              <li onClick={EditPagination} className={`page-item ${endpagination === 10 ? 'active' : ''}`}><a href="#" className="page-link">2</a></li>
-              <li onClick={EditPagination} className={`page-item ${endpagination === 15 ? 'active' : ''}`}><a href="#" className="page-link">3</a></li>
-              <li onClick={EditPagination} className={`page-item ${endpagination === 20 ? 'active' : ''}`}><a href="#" className="page-link">4</a></li>
-              <li onClick={EditPagination} className={`page-item ${endpagination === 25 ? 'active' : ''}`}><a href="#" className="page-link">5</a></li>
-              <li onClick={EditPagination} className={`page-item ${endpagination === 30 ? 'active' : ''}`}><a href="#" className="page-link">التالي</a></li>
+              <li onClick={EditPagination} className={`page-item ${endPagination === 5 ? 'active' : ''}`}><a href="#" className="page-link">1</a></li>
+              <li onClick={EditPagination} className={`page-item ${endPagination === 10 ? 'active' : ''}`}><a href="#" className="page-link">2</a></li>
+              <li onClick={EditPagination} className={`page-item ${endPagination === 15 ? 'active' : ''}`}><a href="#" className="page-link">3</a></li>
+              <li onClick={EditPagination} className={`page-item ${endPagination === 20 ? 'active' : ''}`}><a href="#" className="page-link">4</a></li>
+              <li onClick={EditPagination} className={`page-item ${endPagination === 25 ? 'active' : ''}`}><a href="#" className="page-link">5</a></li>
+              <li onClick={EditPagination} className={`page-item ${endPagination === 30 ? 'active' : ''}`}><a href="#" className="page-link">التالي</a></li>
 
             </ul>
           </div>

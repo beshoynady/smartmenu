@@ -241,25 +241,25 @@ function App() {
 
   //++++++++++++++++++++ pagination ++++++++++
 
-  const [startpagination, setstartpagination] = useState(0);
-  const [endpagination, setendpagination] = useState(5);
+  const [startPagination, setStartPagination] = useState(0);
+  const [endPagination, setEndPagination] = useState(5);
 
   // const [pagination, setpagination] = useState(5)
   const EditPagination = (e) => {
     if (e.target.innerHTML === "التالي") {
-      setstartpagination(startpagination + 5);
-      setendpagination(endpagination + 5);
+      setStartPagination(startPagination + 5);
+      setEndPagination(endPagination + 5);
     } else if (e.target.innerHTML === "السابق") {
-      if (endpagination <= 5) {
-        setstartpagination(0);
-        setendpagination(5);
+      if (endPagination <= 5) {
+        setStartPagination(0);
+        setEndPagination(5);
       } else {
-        setstartpagination(startpagination - 5);
-        setendpagination(endpagination - 5);
+        setStartPagination(startPagination - 5);
+        setEndPagination(endPagination - 5);
       }
     } else {
-      setstartpagination(e.target.innerHTML * 5 - 5);
-      setendpagination(e.target.innerHTML * 5);
+      setStartPagination(e.target.innerHTML * 5 - 5);
+      setEndPagination(e.target.innerHTML * 5);
     }
   };
 
@@ -2338,10 +2338,10 @@ function App() {
         // الدوال المتعلقة بالتقسيم
         setisLoading,
         EditPagination,
-        startpagination,
-        endpagination,
-        setstartpagination,
-        setendpagination,
+        startPagination,
+        endPagination,
+        setStartPagination,
+        setEndPagination,
 
         // دوال أخرى أو متغيرات حالة
         itemId,
