@@ -74,7 +74,7 @@ const SectionConsumption = () => {
           `${apiUrl}/api/consumption/bysection/${section}`,
           config
         );
-        allSectionConsumption = data;
+        allSectionConsumption = data.data;
       } catch (error) {
         if (error.response && error.response.status === 404) {
           console.log("لا توجد سجلات لهذا القسم حتى الآن");
