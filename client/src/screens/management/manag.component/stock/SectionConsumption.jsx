@@ -89,7 +89,7 @@ const SectionConsumption = () => {
   
       let existingConsumption =
         consumptionToday.length > 0
-        ? consumptionToday.find((consumption) => consumption.stockItem === stockItem)
+        ? consumptionToday.find((consumption) => consumption.stockItem?._id === stockItem)
         : null;
         
         console.log({allSectionConsumption, consumptionToday, existingConsumption})
@@ -116,7 +116,7 @@ const SectionConsumption = () => {
         );
   
         if (response.status === 200) {
-          getSectionConsumption();
+          getAllConsumption();
           resetForm();
           toast.success("تم تحديث الكمية بنجاح");
         } else {
@@ -146,7 +146,7 @@ const SectionConsumption = () => {
         );
   
         if (response.status === 201) {
-          getSectionConsumption();
+          getAllConsumption();
           resetForm();
           toast.success("تمت إضافة العنصر بنجاح");
         } else {
@@ -221,7 +221,7 @@ const SectionConsumption = () => {
         config
       );
       if (response.status === 200) {
-        getSectionConsumption();
+        getAllConsumption();
       } else {
         toast.error("Failed to deltet SectionConsumption items");
       }
