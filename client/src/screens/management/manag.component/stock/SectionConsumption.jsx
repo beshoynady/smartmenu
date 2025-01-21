@@ -90,9 +90,10 @@ const SectionConsumption = () => {
   
       let existingConsumption =
         consumptionToday.length > 0
-          ? consumptionToday.find((consumption) => consumption.stockItem === stockItem)
-          : null;
-  
+        ? consumptionToday.find((consumption) => consumption.stockItem === stockItem)
+        : null;
+        
+        console.log({allSectionConsumption, consumptionToday, existingConsumption})
       if (existingConsumption) {
         if (SectionUsegePermission && !SectionUsegePermission.update) {
           toast.warn("ليس لديك صلاحية لتعديل عنصر في استهلاك القسم");
