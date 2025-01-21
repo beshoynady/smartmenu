@@ -106,6 +106,8 @@ const SectionConsumption = () => {
             existingConsumption.bookBalance + quantityTransferred,
           receivedBy,
         };
+
+        console.log({allSectionConsumption, consumptionToday, existingConsumption, updatedData})
   
         const response = await axios.put(
           `${apiUrl}/api/consumption/${existingConsumption._id}`,
