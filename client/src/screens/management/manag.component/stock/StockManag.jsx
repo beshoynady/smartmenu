@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import { detacontext } from "../../../../App";
+import { dataContext } from "../../../../App";
 import { toast } from "react-toastify";
 import "../orders/Orders.css";
 
@@ -29,7 +29,7 @@ const StockManag = () => {
     filterByDateRange,
     setStartDate,
     setEndDate,
-  } = useContext(detacontext);
+  } = useContext(dataContext);
 
   const stockManagementPermission =
     permissionsList &&
@@ -37,7 +37,7 @@ const StockManag = () => {
       (perission) => perission.resource === "stock Management"
     )[0];
 
-  // const [allrecipes, setallrecipes] = useState([]);
+  // const [allrecipes, setAllRecipes] = useState([]);
 
   // const getallrecipes = async () => {
   //   if (!token) {
@@ -50,7 +50,7 @@ const StockManag = () => {
   //     if (response) {
   //       console.log(response);
   //       const allRecipe = await response.data;
-  //       setallrecipes(allRecipe);
+  //       setAllRecipes(allRecipe);
   //     }
   //   } catch (error) {
   //     console.log(error);

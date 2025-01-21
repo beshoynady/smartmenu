@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useContext } from "react";
 import axios from "axios";
-import { detacontext } from "../../../../App";
+import { dataContext } from "../../../../App";
 import { toast } from "react-toastify";
 import io from "socket.io-client";
 
@@ -23,13 +23,13 @@ const Bar = () => {
     formatDate,
     formatTime,
     isRefresh,
-    setisRefresh,
+    setIsRefresh,
     cashierSocket,
     kitchenSocket,
     BarSocket,
     GrillSocket,
     waiterSocket,
-  } = useContext(detacontext);
+  } = useContext(dataContext);
 
   const start = useRef();
   const ready = useRef();
@@ -38,7 +38,7 @@ const Bar = () => {
   const [consumptionOrderActive, setConsumptionOrderActive] = useState([]); // State for active orders
   const [allOrders, setAllOrders] = useState([]); // State for all orders
 
-  const [allRecipe, setallRecipe] = useState([]); // State for all orders
+  const [allRecipe, setAllRecipe] = useState([]); // State for all orders
 
   const getAllRecipe = async () => {
     try {
@@ -50,7 +50,7 @@ const Bar = () => {
 
       const getAllRecipe = await axios.get(`${apiUrl}/api/recipe`, config);
       const allRecipeData = getAllRecipe.data;
-      setallRecipe(allRecipeData);
+      setAllRecipe(allRecipeData);
       console.log({ getAllRecipe });
     } catch (error) {
       console.error("Error fetching product recipe:", error.message);
@@ -100,11 +100,11 @@ const Bar = () => {
               const productIngredients = product.sizeId
                 ? allRecipe.find(
                     (recipe) =>
-                      recipe.productId._id === product.productid?._id &&
+                      recipe.productId._id === product.productId?._id &&
                       recipe.sizeId === product.sizeId
                   )?.ingredients
                 : allRecipe.find(
-                    (recipe) => recipe.productId._id === product.productid?._id
+                    (recipe) => recipe.productId._id === product.productId?._id
                   )?.ingredients || [];
 
               // console.log({ productIngredients })
@@ -263,7 +263,7 @@ const Bar = () => {
       );
       const { products: orderProducts } = orderData;
       const BarProducts = orderProducts.filter(
-        (product) => product.productid?.preparationSection === "Bar"
+        (product) => product.productId?.preparationSection === "Bar"
       );
 
       if (!BarProducts.length) {
@@ -292,11 +292,11 @@ const Bar = () => {
         const productIngredients = product.sizeId
           ? allRecipe.find(
               (recipe) =>
-                recipe.productId._id === product.productid?._id &&
+                recipe.productId._id === product.productId?._id &&
                 recipe.sizeId === product.sizeId
             )?.ingredients
           : allRecipe.find(
-              (recipe) => recipe.productId._id === product.productid?._id
+              (recipe) => recipe.productId._id === product.productId?._id
             )?.ingredients || [];
 
         // Process ingredients
@@ -379,7 +379,7 @@ const Bar = () => {
         if (
           BarProducts.some(
             (BarProduct) =>
-              BarProduct.productid?._id === product.productid._id
+              BarProduct.productId?._id === product.productId._id
           )
         ) {
           return { ...product, isDone: true };
@@ -406,7 +406,7 @@ const Bar = () => {
           config
         );
         if (response) {
-          BarSocket.emit("orderready", `أورد جاهز في البار - ${waiter}`);
+          BarSocket.emit("orderReady", `أورد جاهز في البار - ${waiter}`);
         }
       } else {
         await axios.put(
@@ -414,7 +414,7 @@ const Bar = () => {
           { products: updatedProducts, "preparationStatus.Bar": "Prepared" },
           config
         );
-        BarSocket.emit("orderready", "أورد جاهز في البار");
+        BarSocket.emit("orderReady", "أورد جاهز في البار");
       }
 
       // 6. Refresh state
@@ -429,7 +429,7 @@ const Bar = () => {
 
   // Fetches all active waiters from the API
 
-  const [AllWaiters, setAllWaiters] = useState([]); // State for active waiters
+  const [allWaiters, setAllWaiters] = useState([]); // State for active waiters
 
   const getAllWaiters = async () => {
     try {
@@ -464,7 +464,7 @@ const Bar = () => {
         return;
       }
 
-      if (AllWaiters.length === 0) {
+      if (allWaiters.length === 0) {
         // Handle case where token is not available
         toast.warn(
           "قائمه الندلاء فارغه ! رجاء اعاده تحميل الصفحة و اذا ظلت المشكله ابلغ الاداره"
@@ -485,7 +485,7 @@ const Bar = () => {
       }
 
       // البحث عن النوادل في القسم المحدد
-      const sectionWaiters = AllWaiters.filter(
+      const sectionWaiters = allWaiters.filter(
         (waiter) => waiter.sectionNumber === tablesectionNumber
       );
       if (sectionWaiters.length === 0) {
@@ -610,7 +610,7 @@ const Bar = () => {
               order.products.filter(
                 (product) =>
                   product.isDone === false &&
-                  product.productid?.preparationSection === "Bar"
+                  product.productId?.preparationSection === "Bar"
               ).length > 0
             ) {
               return (
@@ -664,7 +664,7 @@ const Bar = () => {
                         .filter(
                           (product) =>
                             product.isDone === false &&
-                            product.productid?.preparationSection === "Bar"
+                            product.productId?.preparationSection === "Bar"
                         )
                         .map((product, i) => {
                           return (

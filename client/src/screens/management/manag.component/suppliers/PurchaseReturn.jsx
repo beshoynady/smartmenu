@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from 'react'
 import axios from 'axios'
-import { detacontext } from '../../../../App'
+import { dataContext } from '../../../../App'
 import { toast } from 'react-toastify';
 import { useReactToPrint } from 'react-to-print';
 import '../orders/Orders.css'
@@ -21,7 +21,7 @@ const PurchaseReturn = () => {
 
   const { restaurantData, permissionsList, setStartDate, setEndDate, filterByDateRange, filterByTime, employeeLoginInfo,
      formatDate, formatDateTime, setisLoading, EditPagination, startpagination, endpagination,
-    setstartpagination, setendpagination } = useContext(detacontext)
+    setstartpagination, setendpagination } = useContext(dataContext)
 
     const purchaseReturnPermission = permissionsList?.filter(
       (permission) => permission.resource === "Purchase Returns"
@@ -94,7 +94,7 @@ const PurchaseReturn = () => {
     }
   };
 
-  const [allrecipes, setallrecipes] = useState([]);
+  const [allrecipes, setAllRecipes] = useState([]);
 
   const getallrecipes = async () => {
     if (!token) {
@@ -106,7 +106,7 @@ const PurchaseReturn = () => {
       const response = await axios.get(`${apiUrl}/api/recipe`, config);
       console.log(response)
       const allRecipe = await response.data;
-      setallrecipes(allRecipe)
+      setAllRecipes(allRecipe)
       console.log(allRecipe)
     } catch (error) {
       console.log(error)
@@ -519,7 +519,7 @@ const PurchaseReturn = () => {
     }
   }
 
-  const [allPurchasesReturn, setallPurchasesReturn] = useState([])
+  const [allPurchasesReturn, setAllPurchasesReturn] = useState([])
   const getAllPurchasesReturn = async () => {
     if (!token) {
       // Handle case where token is not available
@@ -534,7 +534,7 @@ const PurchaseReturn = () => {
       const response = await axios.get(apiUrl + '/api/purchasereturn', config);
       console.log({ response })
       if (response.status === 200) {
-        setallPurchasesReturn(response.data.reverse())
+        setAllPurchasesReturn(response.data.reverse())
       } else {
         toast.error('فشل جلب جميع فواتير المشتريات ! اعد تحميل الصفحة')
       }
@@ -544,7 +544,7 @@ const PurchaseReturn = () => {
     }
   }
 
-  const [allPurchaseInvoice, setallPurchaseInvoice] = useState([])
+  const [allPurchaseInvoice, setAllPurchaseInvoice] = useState([])
   const getAllPurchases = async () => {
     if (!token) {
       // Handle case where token is not available
@@ -555,7 +555,7 @@ const PurchaseReturn = () => {
       const response = await axios.get(apiUrl + '/api/purchaseinvoice', config);
       console.log({ response })
       if (response.status === 200) {
-        setallPurchaseInvoice(response.data.reverse())
+        setAllPurchaseInvoice(response.data.reverse())
       } else {
         toast.error('فشل جلب جميع فواتير المشتريات ! اعد تحميل الصفحة')
       }
@@ -571,7 +571,7 @@ const PurchaseReturn = () => {
     }
     getAllPurchasesReturn()
     const filters = allPurchasesReturn.filter((PurchasesReturn) => PurchasesReturn.originalInvoice._id === returnInvoice)
-    setallPurchasesReturn(filters)
+    setAllPurchasesReturn(filters)
   }
   const searchBySupplier = (supplierId) => {
     if (supplierId === "all") {
@@ -579,7 +579,7 @@ const PurchaseReturn = () => {
     }
     getAllPurchasesReturn()
     const filters = allPurchasesReturn.filter((PurchasesReturn) => PurchasesReturn.supplier._id === supplierId)
-    setallPurchasesReturn(filters)
+    setAllPurchasesReturn(filters)
   }
 
   const confirmPayment = async (e) => {
@@ -765,7 +765,7 @@ const PurchaseReturn = () => {
               <div className='col-12 text-dark d-flex flex-wrap align-items-center justify-content-start p-0 m-0 mt-3'>
                 <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">فلتر حسب الوقت</label>
-                  <select className="form-control border-primary m-0 p-2 h-auto" onChange={(e) => setallPurchasesReturn(filterByTime(e.target.value, allPurchasesReturn))}>
+                  <select className="form-control border-primary m-0 p-2 h-auto" onChange={(e) => setAllPurchasesReturn(filterByTime(e.target.value, allPurchasesReturn))}>
                     <option value="">اختر</option>
                     <option value="today">اليوم</option>
                     <option value="week">هذا الأسبوع</option>
@@ -788,7 +788,7 @@ const PurchaseReturn = () => {
                   </div>
 
                   <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
-                    <button type="button" className="btn btn-primary h-100 p-2 " onClick={() => setallPurchasesReturn(filterByDateRange(allPurchasesReturn))}>
+                    <button type="button" className="btn btn-primary h-100 p-2 " onClick={() => setAllPurchasesReturn(filterByDateRange(allPurchasesReturn))}>
                       <i className="fa fa-search"></i>
                     </button>
                     <button type="button" className="btn btn-warning h-100 p-2" onClick={getAllPurchasesReturn}>استعادة

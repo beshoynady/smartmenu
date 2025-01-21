@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import axios from "axios";
 import { useReactToPrint } from "react-to-print";
-import { detacontext } from "../../../../App";
+import { dataContext } from "../../../../App";
 import { toast } from "react-toastify";
 import "../orders/Orders.css";
 
@@ -29,7 +29,7 @@ const Tables = () => {
     endpagination,
     setstartpagination,
     setendpagination,
-  } = useContext(detacontext);
+  } = useContext(dataContext);
 
   const tablePermission =
     permissionsList &&

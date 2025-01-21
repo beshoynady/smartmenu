@@ -1,7 +1,7 @@
 import React from 'react';
 import './LoadingPage.css';
 import { useContext } from 'react';
-import { detacontext } from '../../../../App';
+import { dataContext } from '../../../../App';
 
 
 const LoadingPage = () => {

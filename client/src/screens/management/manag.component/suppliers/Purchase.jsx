@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import axios from "axios";
 import { useReactToPrint } from "react-to-print";
-import { detacontext } from "../../../../App";
+import { dataContext } from "../../../../App";
 import { toast } from "react-toastify";
 import "../orders/Orders.css";
 
@@ -31,7 +31,7 @@ const Purchase = () => {
     endpagination,
     setstartpagination,
     setendpagination,
-  } = useContext(detacontext);
+  } = useContext(dataContext);
 
   const purchasePermission = permissionsList?.filter(
     (permission) => permission.resource === "Purchases"
@@ -102,7 +102,7 @@ const Purchase = () => {
     }
   };
 
-  const [allrecipes, setallrecipes] = useState([]);
+  const [allrecipes, setAllRecipes] = useState([]);
 
   const getallrecipes = async () => {
     if (!token) {
@@ -114,7 +114,7 @@ const Purchase = () => {
       const response = await axios.get(`${apiUrl}/api/recipe`, config);
       console.log(response);
       const allRecipe = await response.data;
-      setallrecipes(allRecipe);
+      setAllRecipes(allRecipe);
       console.log(allRecipe);
     } catch (error) {
       console.log(error);
@@ -638,7 +638,7 @@ const Purchase = () => {
     }
   };
 
-  const [allPurchaseInvoice, setallPurchaseInvoice] = useState([]);
+  const [allPurchaseInvoice, setAllPurchaseInvoice] = useState([]);
   const getAllPurchases = async () => {
     if (
       purchasePermission &&
@@ -658,7 +658,7 @@ const Purchase = () => {
       const response = await axios.get(apiUrl + "/api/purchaseinvoice", config);
       console.log({ response });
       if (response.status === 200) {
-        setallPurchaseInvoice(response.data.reverse());
+        setAllPurchaseInvoice(response.data.reverse());
       } else {
         toast.error("فشل جلب جميع فواتير المشتريات ! اعد تحميل الصفحة");
       }
@@ -675,7 +675,7 @@ const Purchase = () => {
     const invoices = allPurchaseInvoice.filter(
       (invoice) => invoice.invoiceNumber.startsWith(invoiceNumber) === true
     );
-    setallPurchaseInvoice(invoices);
+    setAllPurchaseInvoice(invoices);
   };
 
   const searchByPaymentType = (type) => {
@@ -686,7 +686,7 @@ const Purchase = () => {
     const invoices = allPurchaseInvoice.filter(
       (invoice) => invoice.paymentType === type
     );
-    setallPurchaseInvoice(invoices);
+    setAllPurchaseInvoice(invoices);
   };
 
   const searchBySupplier = (supplier) => {
@@ -697,7 +697,7 @@ const Purchase = () => {
     const invoices = allPurchaseInvoice.filter(
       (invoice) => invoice.supplier._id === supplier
     );
-    setallPurchaseInvoice(invoices);
+    setAllPurchaseInvoice(invoices);
   };
 
   const searchBypaymentStatus = (status) => {
@@ -708,7 +708,7 @@ const Purchase = () => {
     const invoices = allPurchaseInvoice.filter(
       (invoice) => invoice.paymentStatus === status
     );
-    setallPurchaseInvoice(invoices);
+    setAllPurchaseInvoice(invoices);
   };
 
   const searchByCashRegister = (cashRegister) => {
@@ -719,7 +719,7 @@ const Purchase = () => {
     const invoices = allPurchaseInvoice.filter(
       (invoice) => invoice.cashRegister_id === cashRegister
     );
-    setallPurchaseInvoice(invoices);
+    setAllPurchaseInvoice(invoices);
   };
 
   const [isConfirmedaPaiment, setisConfirmedaPaiment] = useState(false);
@@ -965,7 +965,7 @@ const Purchase = () => {
                   <select
                     className="form-control border-primary m-0 p-2 h-auto"
                     onChange={(e) =>
-                      setallPurchaseInvoice(
+                      setAllPurchaseInvoice(
                         filterByTime(e.target.value, allPurchaseInvoice)
                       )
                     }
@@ -1012,7 +1012,7 @@ const Purchase = () => {
                       type="button"
                       className="btn btn-primary h-100 p-2 "
                       onClick={() =>
-                        setallPurchaseInvoice(
+                        setAllPurchaseInvoice(
                           filterByDateRange(allPurchaseInvoice)
                         )
                       }

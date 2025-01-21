@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import axios from "axios";
-import { detacontext } from "../../../../App";
+import { dataContext } from "../../../../App";
 import { toast } from "react-toastify";
 import "../orders/Orders.css";
 
@@ -28,7 +28,7 @@ const CashMovement = () => {
     endpagination,
     setstartpagination,
     setendpagination,
-  } = useContext(detacontext);
+  } = useContext(dataContext);
 
   const cashMovementPermissions = permissionsList?.filter(
     (permission) => permission.resource === "Cash Movement"

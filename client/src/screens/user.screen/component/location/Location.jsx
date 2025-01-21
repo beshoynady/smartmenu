@@ -1,12 +1,12 @@
 import React from 'react';
 import './Location.css';
-import { detacontext } from '../../../../App'
+import { dataContext } from '../../../../App'
 
 
 
 const Location = () => {
   return (
-    <detacontext.Consumer>
+    <dataContext.Consumer>
       {
         ({ restaurantData, askingForHelp, userLoginInfo }) => {
           return (
@@ -44,7 +44,7 @@ const Location = () => {
           )
         }
       }
-    </detacontext.Consumer>
+    </dataContext.Consumer>
 
   );
 };

@@ -63,13 +63,13 @@ const deleteOldImage = (imagePath) => {
 const deleteOldImageMiddleware = async (req, res, next) => {
   try {
     console.log('Middleware triggered');
-    const productId = req.params.productid;
+    const productId = req.params.productId;
     if (!productId) {
       return res.status(400).json({ message: 'Product ID is missing' });
     }
 
     // استدعاء getOneProduct بشكل صحيح
-    const productResponse = await getProduct({ params: { productid: productId } }, res);
+    const productResponse = await getProduct({ params: { productId: productId } }, res);
     const product = productResponse.product;  // افترض أن getOneProduct تعيد product داخل response
 
     if (!product) {
@@ -92,13 +92,13 @@ const deleteOldImageMiddleware = async (req, res, next) => {
 const deleteImageProductMiddleware = async (req, res, next) => {
   try {
     console.log('Middleware triggered');
-    const productId = req.params.productid;
+    const productId = req.params.productId;
     if (!productId) {
       return res.status(400).json({ message: 'Product ID is missing' });
     }
 
     // استدعاء getOneProduct بشكل صحيح
-    const productResponse = await getProduct({ params: { productid: productId } }, res);
+    const productResponse = await getProduct({ params: { productId: productId } }, res);
     const product = productResponse.product;  
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
@@ -125,7 +125,7 @@ router.route('/')
 router.route('/getproductbycategory/:categoryid')
   .get(getProductByCategory);
 
-router.route('/:productid')
+router.route('/:productId')
   .get(getOneProduct)
   .put(authenticateToken, checkSubscription, upload.single("image"), deleteOldImageMiddleware, updateProduct)
   .delete(authenticateToken, checkSubscription, deleteImageProductMiddleware, deleteProduct);

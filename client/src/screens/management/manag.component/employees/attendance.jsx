@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useContext } from 'react'
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import '../orders/Orders.css'
-import { detacontext } from '../../../../App';
+import { dataContext } from '../../../../App';
 
 
 
@@ -19,7 +19,7 @@ const AttendanceManagement = () => {
   };
 
   const {setStartDate, setEndDate, filterByDateRange, filterByTime, restaurantData, formatDateTime, permissionsList,setisLoading, formatDate, formatTime,
-    EditPagination, startpagination, endpagination, setstartpagination, setendpagination } = useContext(detacontext);
+    EditPagination, startpagination, endpagination, setstartpagination, setendpagination } = useContext(dataContext);
 
   const permissionsForAttendance = permissionsList?.filter(permission => permission.resource === 'Attendance')[0]
 
@@ -144,7 +144,7 @@ const AttendanceManagement = () => {
 
 
 
-  const [allAttendanceRecords, setallAttendanceRecords] = useState([])
+  const [allAttendanceRecords, setAllAttendanceRecords] = useState([])
   const getallAttendanceRecords = async () => {
     if (permissionsForAttendance && permissionsForAttendance.read === false) {
       toast.info('ليس لك صلاحية لعرض السجلات')
@@ -159,7 +159,7 @@ const AttendanceManagement = () => {
       const response = await axios.get(`${apiUrl}/api/attendance`, config);
       console.log({ response })
       if (response.status === 200) {
-        setallAttendanceRecords(response.data)
+        setAllAttendanceRecords(response.data)
       }
     } catch (error) {
       toast.error('حدث خطاء اثناء جلب سجل الحضور و الانصراف ! اعد تحميل الصفحة')
@@ -378,9 +378,9 @@ const AttendanceManagement = () => {
     if (status) {
       const filter = allAttendanceRecords.filter(record => record.status === status)
       if (filter.length > 0) {
-        setallAttendanceRecords(filter)
+        setAllAttendanceRecords(filter)
       } else {
-        setallAttendanceRecords([])
+        setAllAttendanceRecords([])
       }
     } else {
       getallAttendanceRecords()
@@ -395,7 +395,7 @@ const AttendanceManagement = () => {
     if (allAttendanceRecords.length > 0) {
       const filteredRecords = allAttendanceRecords.filter(record => record.employee.role === role)
       if (filteredRecords) {
-        setallAttendanceRecords(filteredRecords)
+        setAllAttendanceRecords(filteredRecords)
       } else {
         getallAttendanceRecords([])
       }
@@ -410,7 +410,7 @@ const AttendanceManagement = () => {
     if (allAttendanceRecords.length > 0 && shift) {
       const FilterEmployees = allAttendanceRecords.filter(record => record.shift._id === shift)
       if (FilterEmployees) {
-        setallAttendanceRecords(FilterEmployees)
+        setAllAttendanceRecords(FilterEmployees)
       } else {
         getallAttendanceRecords([])
       }
@@ -422,9 +422,9 @@ const AttendanceManagement = () => {
     if (allAttendanceRecords.length > 0 && name) {
       const employee = allAttendanceRecords.filter((record) => record.employee && record.employee.fullname.startsWith(name) === true || record.employee.username.startsWith(name) === true)
       if (employee) {
-        setallAttendanceRecords(employee)
+        setAllAttendanceRecords(employee)
       } else {
-        setallAttendanceRecords([])
+        setAllAttendanceRecords([])
       }
     } else {
       getallAttendanceRecords();
@@ -505,7 +505,7 @@ const AttendanceManagement = () => {
               <div className='col-12 text-dark d-flex flex-wrap align-items-center justify-content-start p-0 m-0 mt-3'>
                 <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">فلتر حسب الوقت</label>
-                  <select className="form-control border-primary m-0 p-2 h-auto"  onChange={(e) => setallAttendanceRecords(filterByTime(e.target.value, allAttendanceRecords))}>
+                  <select className="form-control border-primary m-0 p-2 h-auto"  onChange={(e) => setAllAttendanceRecords(filterByTime(e.target.value, allAttendanceRecords))}>
                     <option value="">اختر</option>
                     <option value="today">اليوم</option>
                     <option value="week">هذا الأسبوع</option>
@@ -528,7 +528,7 @@ const AttendanceManagement = () => {
                   </div>
 
                   <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
-                    <button type="button" className="btn btn-primary h-100 p-2 " onClick={()=>setallAttendanceRecords(filterByDateRange(allAttendanceRecords))}>
+                    <button type="button" className="btn btn-primary h-100 p-2 " onClick={()=>setAllAttendanceRecords(filterByDateRange(allAttendanceRecords))}>
                       <i className="fa fa-search"></i>
                     </button>
                     <button type="button" className="btn btn-warning h-100 p-2" onClick={getallAttendanceRecords}>

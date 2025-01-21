@@ -1,11 +1,11 @@
 import React, { useState, useContext } from 'react'
 import './Menu.css'
 import MenuCard from './Menu-card/Menu-card';
-import { detacontext } from '../../../../App'
+import { dataContext } from '../../../../App'
 
 
 const Menu = () => {
-  const { allMenuCategories, setMenuCategoryId, filterByMenuCategoryId, MenuCategoryId } = useContext(detacontext)
+  const { allMenuCategories, setMenuCategoryId, filterByMenuCategoryId, menuCategoryId } = useContext(dataContext)
   const [activeItem, setActiveItem] = useState(null);
   return (
     <section id='menu'>

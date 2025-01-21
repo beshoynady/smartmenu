@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useContext } from "react";
 import axios from "axios";
-import { detacontext } from "../../../../App";
+import { dataContext } from "../../../../App";
 import { toast } from "react-toastify";
 
 const Grill = () => {
@@ -16,18 +16,18 @@ const Grill = () => {
     formatDate,
     formatTime,
     isRefresh,
-    setisRefresh,
+    setIsRefresh,
     cashierSocket,
     kitchenSocket,
     BarSocket,
     GrillSocket,
     waiterSocket,
-  } = useContext(detacontext);
+  } = useContext(dataContext);
 
   const start = useRef();
   const ready = useRef();
 
-  const [allPreparationSections, setallPreparationSections] = useState([]);
+  const [allPreparationSections, setAllPreparationSections] = useState([]);
 
   const getAllPreparationSections = async () => {
     if (!token) {
@@ -40,7 +40,7 @@ const Grill = () => {
       if (res.status === 200) {
         const PreparationSections = res.data.data;
         console.log({ PreparationSections });
-        setallPreparationSections(PreparationSections);
+        setAllPreparationSections(PreparationSections);
       } else {
         throw new Error("Failed to fetch data");
       }
@@ -58,7 +58,7 @@ const Grill = () => {
 
   const [AllPreparationTicket, setAllPreparationTicket] = useState([]); // State for all Tickets
 
-  const [allRecipe, setallRecipe] = useState([]); // State for all Tickets
+  const [allRecipe, setAllRecipe] = useState([]); // State for all Tickets
 
   const getAllRecipe = async () => {
     try {
@@ -70,7 +70,7 @@ const Grill = () => {
 
       const getAllRecipe = await axios.get(`${apiUrl}/api/recipe`, config);
       const allRecipeData = getAllRecipe.data;
-      setallRecipe(allRecipeData);
+      setAllRecipe(allRecipeData);
       console.log({ getAllRecipe });
     } catch (error) {
       console.error("Error fetching product recipe:", error.message);
@@ -121,11 +121,11 @@ const Grill = () => {
               const productIngredients = product.sizeId
                 ? allRecipe.find(
                     (recipe) =>
-                      recipe.productId._id === product.productid?._id &&
+                      recipe.productId._id === product.productId?._id &&
                       recipe.sizeId === product.sizeId
                   )?.ingredients
                 : allRecipe.find(
-                    (recipe) => recipe.productId._id === product.productid?._id
+                    (recipe) => recipe.productId._id === product.productId?._id
                   )?.ingredients || [];
 
               // console.log({ productIngredients })
@@ -318,11 +318,11 @@ const Grill = () => {
         const productIngredients = product.sizeId
           ? allRecipe.find(
               (recipe) =>
-                recipe.productId._id === product.productid?._id &&
+                recipe.productId._id === product.productId?._id &&
                 recipe.sizeId === product.sizeId
             )?.ingredients
           : allRecipe.find(
-              (recipe) => recipe.productId._id === product.productid?._id
+              (recipe) => recipe.productId._id === product.productId?._id
             )?.ingredients || [];
 
         // Process ingredients
@@ -408,7 +408,7 @@ const Grill = () => {
       const updatedOrderProducts = orderProducts.map((product) =>
         kitchenProducts.some(
           (kitchenProduct) =>
-            kitchenProduct.productid?._id === product.productid?._id
+            kitchenProduct.productId?._id === product.productId?._id
         )
           ? { ...product, isDone: true }
           : product
@@ -441,7 +441,7 @@ const Grill = () => {
           config
         );
         console.log({ updateTicket });
-        waiterSocket.emit("orderready", `أورد جاهز في المطبخ-${waiter}`);
+        waiterSocket.emit("orderReady", `أورد جاهز في المطبخ-${waiter}`);
       } else {
         await axios.put(
           `${apiUrl}/api/order/${orderId}`,
@@ -455,7 +455,7 @@ const Grill = () => {
           { products: updateTicketProducts, preparationStatus: "Prepared" },
           config
         );
-        waiterSocket.emit("orderready", "أورد جاهز في المطبخ");
+        waiterSocket.emit("orderReady", "أورد جاهز في المطبخ");
       }
 
       // 6. Refresh state
@@ -468,7 +468,7 @@ const Grill = () => {
     }
   };
 
-  const [AllWaiters, setAllWaiters] = useState([]); // State for active waiters
+  const [allWaiters, setAllWaiters] = useState([]); // State for active waiters
 
   const getAllWaiters = async () => {
     try {
@@ -502,7 +502,7 @@ const Grill = () => {
         toast.error("رجاء تسجيل الدخول مره اخري");
         return;
       }
-      if (AllWaiters.length === 0) {
+      if (allWaiters.length === 0) {
         // Handle case where token is not available
         toast.warn(
           "قائمه الندلاء فارغه ! رجاء اعاده تحميل الصفحة و اذا ظلت المشكله ابلغ الاداره"
@@ -528,7 +528,7 @@ const Grill = () => {
       }
 
       // البحث عن النوادل في القسم المحدد
-      const sectionWaiters = AllWaiters.filter(
+      const sectionWaiters = allWaiters.filter(
         (waiter) => waiter.sectionNumber === tablesectionNumber
       );
       if (sectionWaiters.length === 0) {
@@ -770,7 +770,7 @@ const Grill = () => {
                         // .filter(
                         //   (product) =>
                         //     product.isDone === false &&
-                        //     product.productid?.preparationSection === "Kitchen"
+                        //     product.productId?.preparationSection === "Kitchen"
                         // )
                         .map((product, i) => {
                           return (

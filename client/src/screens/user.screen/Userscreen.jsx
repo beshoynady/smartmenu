@@ -9,10 +9,10 @@ import Location from './component/location/Location';
 import Contact from './component/contact/Contact';
 import Reservation from './component/reservations/Reservation';
 import Footer from './component/footer/Footer';
-import { detacontext } from '../../App';
+import { dataContext } from '../../App';
 
 const Userscreen = () => {
-  const { restaurantData, allProducts, productsOffer, sizesOffer } = useContext(detacontext);
+  const { restaurantData, allProducts, productsOffer, sizesOffer } = useContext(dataContext);
 
   return (
     <div className='userscreen' style={{ direction: "rtl" }}>

@@ -89,7 +89,7 @@ const createProduct = async (req, res) => {
 // Update a product by its ID
 const updateProduct = async (req, res) => {
   try {
-    const productid = req.params.productid;
+    const productId = req.params.productId;
     const {
       productname,
       productdescription,
@@ -124,7 +124,7 @@ const updateProduct = async (req, res) => {
       return res.status(400).json({ error: "Invalid combo items provided" });
     }
 
-    const existingProduct = await ProductModel.findById(productid);
+    const existingProduct = await ProductModel.findById(productId);
     if (!existingProduct) {
       return res.status(404).json({ message: "Product not found" });
     }
@@ -155,7 +155,7 @@ const updateProduct = async (req, res) => {
     }
 
     const updatedProduct = await ProductModel.findByIdAndUpdate(
-      productid,
+      productId,
       updateData,
       { new: true }
     );
@@ -236,8 +236,8 @@ const getProductByCategory = async (req, res) => {
 // Retrieve a single product by its ID
 const getOneProduct = async (req, res) => {
   try {
-    const productid = req.params.productid;
-    const product = await ProductModel.findById(productid)
+    const productId = req.params.productId;
+    const product = await ProductModel.findById(productId)
       .populate("category")
       .populate("preparationSection" ,"_id name")
       .populate("sizes.sizeRecipe")
@@ -270,8 +270,8 @@ const getOneProduct = async (req, res) => {
 
 const getProduct = async (req, res) => {
   try {
-    const productid = req.params.productid;
-    const product = await ProductModel.findById(productid);
+    const productId = req.params.productId;
+    const product = await ProductModel.findById(productId);
 
     // Check if product is found
     if (!product) {
@@ -290,8 +290,8 @@ const getProduct = async (req, res) => {
 // Delete a product by its ID
 const deleteProduct = async (req, res) => {
   try {
-    const productid = req.params.productid;
-    const product = await ProductModel.findById(productid);
+    const productId = req.params.productId;
+    const product = await ProductModel.findById(productId);
 
     if (!product) {
       return res.status(404).json({ message: "Product not found" });

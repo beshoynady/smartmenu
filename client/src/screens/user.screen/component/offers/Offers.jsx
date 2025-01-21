@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { detacontext } from '../../../../App'
+import { dataContext } from '../../../../App'
 import { ToastContainer, toast } from 'react-toastify';
 
  
@@ -23,13 +23,13 @@ export default function Offers() {
 
   const [noteArea, setnoteArea] = useState(false)
   const [extraArea, setextraArea] = useState(false)
-  const [productid, setproductid] = useState('')
+  const [productId, setproductId] = useState('')
 
   const [selectedButtonIndex, setSelectedButtonIndex] = useState(1);
 
 
   return (
-    <detacontext.Consumer>
+    <dataContext.Consumer>
       {
         ({ allProducts, productsOffer, sizesOffer, setproductExtras, productExtras, handleAddProductExtras, addExtrasToProduct, itemId, addItemToCart, deleteItemFromCart, incrementProductQuantity, decrementProductQuantity, setproductNote, addNoteToProduct, }) => {
           return (
@@ -62,7 +62,7 @@ export default function Offers() {
                           <SwiperSlide key={size._id}>
                             <div className="offer-card">
                               <img className='offer-img' src={`${apiUrl}/images/${product.image}`} alt="Delicious soup" />
-                              {size._id === productid && noteArea === true ?
+                              {size._id === productId && noteArea === true ?
                                 <form onSubmit={(e) => { addNoteToProduct(e, product._id, size._id); setnoteArea(!noteArea); }}
                                   className="position-absolute w-100 h-100 top-0 start-0 p-1 m-0 bg-white rounded-3 d-flex flex-column align-items-center justify-content-center overflow-hidden"
                                   style={{ zIndex: 10 , height:'40%'}}
@@ -89,7 +89,7 @@ export default function Offers() {
                                 <div className='offer-info'>
                                   <div className='p-info'>
                                     <h2 className='p-name'>{`${product.name} - ${size.sizeName}`}</h2>
-                                    <span className="material-symbols-outlined note-icon" onClick={() => { setnoteArea(!noteArea); setproductid(size._id); }}>note_alt</span>
+                                    <span className="material-symbols-outlined note-icon" onClick={() => { setnoteArea(!noteArea); setproductId(size._id); }}>note_alt</span>
                                   </div>
                                   <div className='offer-description'>{size.description}</div>
                                 </div>
@@ -126,7 +126,7 @@ export default function Offers() {
                       <SwiperSlide key={product._id}>
                         <div className="offer-card">
                           <img className='offer-img' src={`${apiUrl}/images/${product.image}`} alt="Delicious soup" />
-                          {product._id === productid && noteArea === true ?
+                          {product._id === productId && noteArea === true ?
                           <form onSubmit={(e) => { addNoteToProduct(e, product._id, ''); setnoteArea(!noteArea); }} 
                           className="position-absolute w-100 h-100 top-0 start-0 p-1 m-0 bg-white rounded-3 d-flex flex-column align-items-center justify-content-center overflow-hidden"
                             style={{ zIndex: 10, height:'40%' }}
@@ -153,7 +153,7 @@ export default function Offers() {
                             <div className='offer-info'>
                               <div className='p-info'>
                                 <h2 className='p-name'>{product.name}</h2>
-                                <span className="material-symbols-outlined note-icon" onClick={() => { setnoteArea(!noteArea); setproductid(product._id); }}>note_alt</span>
+                                <span className="material-symbols-outlined note-icon" onClick={() => { setnoteArea(!noteArea); setproductId(product._id); }}>note_alt</span>
                               </div>
                               <div className='offer-description'>{product.description}</div>
                             </div>
@@ -194,7 +194,7 @@ export default function Offers() {
                           <SwiperSlide key={size._id}>
                             <div className="card h-100">
                               <img src={`${apiUrl}/images/${product.image}`} alt="Delicious soup" className="card-img-top" style={{height:'40%'}} />
-                              {size._id === productid && noteArea === true ? (
+                              {size._id === productId && noteArea === true ? (
                                 <form
                                   onSubmit={(e) => {
                                     addNoteToProduct(e, product._id, size._id);
@@ -219,7 +219,7 @@ export default function Offers() {
                                 </form>
                               ) : ''}
 
-                              {size._id === productid && extraArea === true ?
+                              {size._id === productId && extraArea === true ?
                                 size.sizeQuantity > 0 ?
                                   (<div className="position-absolute w-100 h-100 top-0 start-0 p-1 m-0 bg-white d-flex flex-column align-items-center justify-content-center"
                                     style={{ zIndex: 100 }}>
@@ -282,10 +282,10 @@ export default function Offers() {
                                 <h5 className="card-title w-100 p-1 m-0 d-flex justify-content-between align-items-center">
                                   {`${product.name} - ${size.sizeName}`}
                                   <span className="material-symbols-outlined text-warning" style={{ fontSize: "45px", cursor: 'pointer' }}
-                                    onClick={() => { setnoteArea(!noteArea); setproductid(size._id); }}>note_alt</span>
+                                    onClick={() => { setnoteArea(!noteArea); setproductId(size._id); }}>note_alt</span>
                                   {product.hasExtras &&
                                     <span className="material-icons" style={{ color: "green", fontSize: "45px", cursor: 'pointer' }}
-                                      onClick={() => { setproductExtras(product.extrasSelected ? product.extrasSelected : []); setextraArea(!extraArea); setproductid(size._id); console.log({sizeid:size._id}) }}>add_circle</span>
+                                      onClick={() => { setproductExtras(product.extrasSelected ? product.extrasSelected : []); setextraArea(!extraArea); setproductId(size._id); console.log({sizeid:size._id}) }}>add_circle</span>
                                   }
                                 </h5>
                                 <p className="card-text text-center" style={{maxHeight:"25%", fontSize:'12px', fontWeight:'700', textOverflow:'hidden'}}>{size.description}</p>
@@ -323,7 +323,7 @@ export default function Offers() {
                       <SwiperSlide key={product._id}>
                         <div className="card h-100">
                           <img src={`${apiUrl}/images/${product.image}`} alt="Delicious soup" className="card-img-top" style={{height:'40%'}} />
-                          {product._id === productid && noteArea === true ? (
+                          {product._id === productId && noteArea === true ? (
                             <form
                               onSubmit={(e) => {
                                 addNoteToProduct(e, product._id, '');
@@ -348,7 +348,7 @@ export default function Offers() {
                             </form>
                           ) : ''}
 
-                          {product._id === productid && extraArea === true ?
+                          {product._id === productId && extraArea === true ?
                             product.quantity > 0 ?
                               (<div className="position-absolute w-100 h-100 top-0 start-0 p-1 m-0 bg-white d-flex flex-column align-items-center justify-content-center"
                                 style={{ zIndex: 100 }}>
@@ -411,10 +411,10 @@ export default function Offers() {
                             <h5 className="card-title w-100 p-1 m-0 d-flex justify-content-between align-items-center">
                               {`${product.name}`}
                               <span className="material-symbols-outlined text-warning" style={{ fontSize: "45px", cursor: 'pointer' }}
-                                onClick={() => { setnoteArea(!noteArea); setproductid(product._id); }}>note_alt</span>
+                                onClick={() => { setnoteArea(!noteArea); setproductId(product._id); }}>note_alt</span>
                               {product.hasExtras &&
                                 <span className="material-icons" style={{ color: "green", fontSize: "45px", cursor: 'pointer' }}
-                                  onClick={() => { setproductExtras(product.extrasSelected ? product.extrasSelected : []); setextraArea(!extraArea); setproductid(product._id) }}>add_circle</span>
+                                  onClick={() => { setproductExtras(product.extrasSelected ? product.extrasSelected : []); setextraArea(!extraArea); setproductId(product._id) }}>add_circle</span>
                               }
                             </h5>
                             <p className="card-text text-center" style={{maxHeight:"25%", fontSize:'12px', fontWeight:'700', textOverflow:'hidden'}}>{product.description}</p>
@@ -456,7 +456,7 @@ export default function Offers() {
           )
         }
       }
-    </detacontext.Consumer>
+    </dataContext.Consumer>
   );
 
 }

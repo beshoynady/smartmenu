@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react'
-import { detacontext } from '../../../../App'
+import { dataContext } from '../../../../App'
 
 
 
@@ -8,7 +8,7 @@ import { detacontext } from '../../../../App'
 
 const Footer = () => {
 
-  const { restaurantData } = useContext(detacontext)
+  const { restaurantData } = useContext(dataContext)
 
   
   return (

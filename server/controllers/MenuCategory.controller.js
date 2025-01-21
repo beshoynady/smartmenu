@@ -1,33 +1,33 @@
-const MenuCategoryModel = require('../models/MenuCategory.model');
+const menuCategoryModel = require('../models/menuCategory.model');
 
-// Create a new Menucategory
-const createMenuCategory = async (req, res, next) => {
+// Create a new menuCategory
+const createmenuCategory = async (req, res, next) => {
     try {
         let order;
-        const allMenuCategories = await MenuCategoryModel.find({}).exec();
+        const allMenuCategories = await menuCategoryModel.find({}).exec();
 
         if (allMenuCategories.length === 0) {
             order = 1;
         } else {
-            const lastMenuCategory = allMenuCategories[allMenuCategories.length - 1];
-            order = lastMenuCategory.order + 1;
+            const lastmenuCategory = allMenuCategories[allMenuCategories.length - 1];
+            order = lastmenuCategory.order + 1;
         }
 
         const { name, isMain, status } = req.body;
         const createdBy = req.employee.id;
-        const isExist = await MenuCategoryModel.findOne({name})
+        const isExist = await menuCategoryModel.findOne({name})
         if(isExist){
             return res.status(400).json({ message: 'Menu category name already exists' });
         }
-        const newMenuCategory = await MenuCategoryModel.create({ name, isMain, status, order, createdBy });
-        res.status(201).json(newMenuCategory);
+        const newmenuCategory = await menuCategoryModel.create({ name, isMain, status, order, createdBy });
+        res.status(201).json(newmenuCategory);
     } catch (error) {
-        console.error('Error creating MenuCategory:', error);
+        console.error('Error creating menuCategory:', error);
         if (error.code === 11000) { // Duplicate key error
-            return res.status(400).json({ message: 'MenuCategory name already exists', error });
+            return res.status(400).json({ message: 'menuCategory name already exists', error });
         }
         // Handle other errors
-        res.status(500).json({ message: 'Failed to create MenuCategory', error });
+        res.status(500).json({ message: 'Failed to create menuCategory', error });
         next(error);
     }
 };
@@ -37,7 +37,7 @@ const createMenuCategory = async (req, res, next) => {
 // Get all Menucategories
 const getAllMenuCategories = async (req, res, next) => {
     try {
-        const allMenuCategories = await MenuCategoryModel.find({}).sort('order').populate('createdBy');
+        const allMenuCategories = await menuCategoryModel.find({}).sort('order').populate('createdBy');
 
         res.status(200).json(allMenuCategories);
     } catch (error) {
@@ -47,67 +47,67 @@ const getAllMenuCategories = async (req, res, next) => {
     }
 };
 
-// Get a single Menucategory by ID
-const getOneMenuCategory = async (req, res, next) => {
+// Get a single menuCategory by ID
+const getOnemenuCategory = async (req, res, next) => {
     const { menuCategoryId } = req.params;
     try {
-        const Menucategory = await MenuCategoryModel.findById(menuCategoryId).populate('createdBy');
-        if (!Menucategory) {
-            return res.status(404).json({ message: 'MenuCategory not found' });
+        const menuCategory = await menuCategoryModel.findById(menuCategoryId).populate('createdBy');
+        if (!menuCategory) {
+            return res.status(404).json({ message: 'menuCategory not found' });
         }
-        res.status(200).json(Menucategory);
+        res.status(200).json(menuCategory);
     } catch (error) {
         // Handle errors
-        res.status(500).json({ message: 'Failed to fetch Menucategory' });
+        res.status(500).json({ message: 'Failed to fetch menuCategory' });
         next(error);
     }
 };
 
-// Update a Menucategory
-const updateMenuCategory = async (req, res, next) => {
+// Update a menuCategory
+const updatemenuCategory = async (req, res, next) => {
     const { menuCategoryId } = req.params;
     const { name, isMain, status , order } = req.body;
     const id = req.employee.id;
     try {
-        const updatedMenuCategory = await MenuCategoryModel.findByIdAndUpdate(
+        const updatedmenuCategory = await menuCategoryModel.findByIdAndUpdate(
             menuCategoryId,
             { name, isMain,order, status, createdBy: id },
             { new: true }
         );
-        if (!updatedMenuCategory) {
-            return res.status(404).json({ message: 'MenuCategory not found' });
+        if (!updatedmenuCategory) {
+            return res.status(404).json({ message: 'menuCategory not found' });
         }
-        res.status(200).json(updatedMenuCategory);
+        res.status(200).json(updatedmenuCategory);
     } catch (error) {
         if (error.code === 11000) { // Duplicate key error
-            return res.status(400).json({ message: 'MenuCategory name already exists' });
+            return res.status(400).json({ message: 'menuCategory name already exists' });
         }
         // Handle other errors
-        res.status(500).json({ message: 'Failed to update Menucategory' ,error});
+        res.status(500).json({ message: 'Failed to update menuCategory' ,error});
         next(error);
     }
 };
 
-// Delete a Menucategory
-const deleteMenuCategory = async (req, res, next) => {
+// Delete a menuCategory
+const deletemenuCategory = async (req, res, next) => {
     const { menuCategoryId } = req.params;
     try {
-        const deletedMenuCategory = await MenuCategoryModel.findByIdAndDelete(menuCategoryId);
-        if (!deletedMenuCategory) {
-            return res.status(404).json({ message: 'MenuCategory not found' });
+        const deletedmenuCategory = await menuCategoryModel.findByIdAndDelete(menuCategoryId);
+        if (!deletedmenuCategory) {
+            return res.status(404).json({ message: 'menuCategory not found' });
         }
-        res.status(200).json(deletedMenuCategory);
+        res.status(200).json(deletedmenuCategory);
     } catch (error) {
         // Handle errors
-        res.status(500).json({ message: 'Failed to delete Menucategory' });
+        res.status(500).json({ message: 'Failed to delete menuCategory' });
         next(error);
     }
 };
 
 module.exports = {
-    createMenuCategory,
+    createmenuCategory,
     getAllMenuCategories,
-    getOneMenuCategory,
-    updateMenuCategory,
-    deleteMenuCategory
+    getOnemenuCategory,
+    updatemenuCategory,
+    deletemenuCategory
 };

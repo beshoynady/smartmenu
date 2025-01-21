@@ -48,7 +48,7 @@ const getAllPreparationTickets = async (req, res) => {
           path: "table",
         },
       })
-      .populate("products.productid", "_id name preparationSection")
+      .populate("products.productId", "_id name preparationSection")
       .populate("products.extras.extraDetails.extraId", "_id name")
       .populate("preparationSection", "_id name")
       .populate("responsibleEmployee", "_id username role")
@@ -77,7 +77,7 @@ const getActivePreparationTickets = async (req, res) => {
           path: "table",
         },
       })
-      .populate("products.productid", "_id name preparationSection")
+      .populate("products.productId", "_id name preparationSection")
       .populate("products.extras.extraDetails.extraId", "_id name")
       .populate("preparationSection", "_id name")
       .populate("responsibleEmployee", "_id username role")
@@ -108,7 +108,7 @@ const getPreparationTicketById = async (req, res) => {
           path: "table",
         },
       })
-      .populate("products.productid", "_id name preparationSection")
+      .populate("products.productId", "_id name preparationSection")
       .populate("products.extras.extraDetails.extraId", "_id name")
       .populate("preparationSection", "_id name")
       .populate("responsibleEmployee", "_id username role")

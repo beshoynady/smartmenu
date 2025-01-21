@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { detacontext } from "../../../../App";
+import { dataContext } from "../../../../App";
 import "../orders/Orders.css";
 
 const PreparationSection = () => {
@@ -22,14 +22,14 @@ const PreparationSection = () => {
     endpagination,
     setstartpagination,
     setendpagination,
-  } = useContext(detacontext);
+  } = useContext(dataContext);
 
   const [preparationSectionName, setpreparationSectionName] = useState("");
   const [isActive, setisActive] = useState(false);
 
   const [PreparationSectionId, setPreparationSectionId] = useState("");
 
-  const [allPreparationSections, setallPreparationSections] = useState([]);
+  const [allPreparationSections, setAllPreparationSections] = useState([]);
 
   const createPreparationSection = async (event) => {
     event.preventDefault();
@@ -97,7 +97,7 @@ const PreparationSection = () => {
       if (res.status === 200) {
         const PreparationSections = res.data.data;
         console.log({ PreparationSections });
-        setallPreparationSections(PreparationSections);
+        setAllPreparationSections(PreparationSections);
       } else {
         throw new Error("Failed to fetch data");
       }
@@ -179,7 +179,7 @@ const PreparationSection = () => {
               PreparationSection.name.startsWith(name) === true
           )
         : [];
-      setallPreparationSections(preparationSection);
+      setAllPreparationSections(preparationSection);
     }
   };
 

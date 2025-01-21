@@ -38,12 +38,12 @@ const PreparationTicketSchema = new mongoose.Schema(
     },
     products: [
       {
-        productid: {
+        productId: {
           type: ObjectId,
           ref: "Product",
           required: true,
         },
-        orderProductId: {
+        orderproductId: {
           type: ObjectId,
           required: true,
         },

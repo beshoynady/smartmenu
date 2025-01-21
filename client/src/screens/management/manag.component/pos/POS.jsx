@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
-import { detacontext } from "../../../../App";
+import { dataContext } from "../../../../App";
 import { useReactToPrint } from "react-to-print";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -75,7 +75,7 @@ const POS = () => {
     handlePayExtras,
     splitInvoice,
     subtotalSplitOrder,
-  } = useContext(detacontext);
+  } = useContext(dataContext);
 
   const [showModal, setShowModal] = useState(false);
 
@@ -86,7 +86,7 @@ const POS = () => {
   const [tableID, settableID] = useState("");
   // const [itemId, setitemId] = useState([])
   const [noteArea, setnoteArea] = useState(false);
-  const [productid, setproductid] = useState("");
+  const [productId, setproductId] = useState("");
   const [areas, setAreas] = useState([]);
   const [extraArea, setextraArea] = useState(false);
 
@@ -136,9 +136,9 @@ const POS = () => {
   };
 
   const [product, setproduct] = useState();
-  const getProductDitalis = (allproducts, productID) => {
+  const getProductDitalis = (allproducts, productId) => {
     const filter = allproducts.filter(
-      (product) => product._id === productID
+      (product) => product._id === productId
     )[0];
     setproduct(filter);
   };
@@ -653,7 +653,7 @@ const POS = () => {
                     ) : product &&
                       !item.sizeId &&
                       product._id &&
-                      product._id === item.productid &&
+                      product._id === item.productId &&
                       extraArea === true &&
                       product.quantity > 0 ? (
                       <div
@@ -805,7 +805,7 @@ const POS = () => {
                         <form
                           className="card-body w-100 h-100 p-1 m-0"
                           onSubmit={(e) => {
-                            addNoteToProduct(e, item.productid, item.sizeId);
+                            addNoteToProduct(e, item.productId, item.sizeId);
                             setnoteArea(!noteArea);
                           }}
                         >
@@ -839,7 +839,7 @@ const POS = () => {
                     ) : product &&
                       !item.sizeId &&
                       product._id &&
-                      product._id === item.productid &&
+                      product._id === item.productId &&
                       noteArea ? (
                       <div
                         className="position-absolute w-100 h-100 top-0 start-0 bg-white rounded-3 d-flex flex-column align-items-center justify-content-center overflow-hidden"
@@ -848,7 +848,7 @@ const POS = () => {
                         <form
                           className="card-body w-100 h-100 p-1 m-0"
                           onSubmit={(e) => {
-                            addNoteToProduct(e, item.productid, item.sizeId);
+                            addNoteToProduct(e, item.productId, item.sizeId);
                             setnoteArea(!noteArea);
                           }}
                         >
@@ -896,11 +896,11 @@ const POS = () => {
                         <span
                           onClick={() => {
                             setnoteArea(!noteArea);
-                            setproductid(item.productid);
-                            getProductDitalis(allProducts, item.productid);
+                            setproductId(item.productId);
+                            getProductDitalis(allProducts, item.productId);
                             item.sizeId
                               ? setsizeId(item.sizeId)
-                              : setproductid(item.productid);
+                              : setproductId(item.productId);
                           }}
                           className="material-symbols-outlined"
                           style={{
@@ -924,10 +924,10 @@ const POS = () => {
                             onClick={() => {
                               setproductExtras(item.extras);
                               setextraArea(!extraArea);
-                              getProductDitalis(allProducts, item.productid);
+                              getProductDitalis(allProducts, item.productId);
                               item.sizeId
                                 ? setsizeId(item.sizeId)
-                                : setproductid(item.productid);
+                                : setproductId(item.productId);
                             }}
                           >
                             add_circle
@@ -936,7 +936,7 @@ const POS = () => {
 
                         <button
                           onClick={() =>
-                            deleteItemFromCart(item.productid, item.sizeId)
+                            deleteItemFromCart(item.productId, item.sizeId)
                           }
                           className="btn btn-danger col-3 h-100 p-0 m-0"
                         >
@@ -955,7 +955,7 @@ const POS = () => {
                           <button
                             onClick={() =>
                               decrementProductQuantity(
-                                item.productid,
+                                item.productId,
                                 item.sizeId
                               )
                             }
@@ -969,7 +969,7 @@ const POS = () => {
                           <button
                             onClick={() =>
                               incrementProductQuantity(
-                                item.productid,
+                                item.productId,
                                 item.sizeId
                               )
                             }
@@ -1030,7 +1030,7 @@ const POS = () => {
               : productOrderToUpdate.length > 0
               ? productOrderToUpdate.map((item, index) => (
                   <div className="card mb-3" key={index}>
-                    {item.productid === productid && noteArea ? (
+                    {item.productId === productId && noteArea ? (
                       <form className="card-body p-1 m-0">
                         <textarea
                           className="form-control h-75 p-1 m-0"
@@ -1069,7 +1069,7 @@ const POS = () => {
                           <span
                             onClick={() => {
                               setnoteArea(!noteArea);
-                              setproductid(item.productid);
+                              setproductId(item.productId);
                             }}
                             className="material-symbols-outlined"
                             style={{
@@ -1084,7 +1084,7 @@ const POS = () => {
 
                           <button
                             onClick={() =>
-                              deleteItemFromCart(item.productid, item.sizeId)
+                              deleteItemFromCart(item.productId, item.sizeId)
                             }
                             className="btn btn-danger col-3 h-100 p-0 m-0"
                           >
@@ -1109,7 +1109,7 @@ const POS = () => {
                             <button
                               onClick={() =>
                                 decrementProductQuantity(
-                                  item.productid,
+                                  item.productId,
                                   item.sizeId
                                 )
                               }
@@ -1123,7 +1123,7 @@ const POS = () => {
                             <button
                               onClick={() =>
                                 incrementProductQuantity(
-                                  item.productid,
+                                  item.productId,
                                   item.sizeId
                                 )
                               }
@@ -1694,7 +1694,7 @@ const POS = () => {
                                 defaultValue={0}
                                 onChange={(e) => {
                                   putNumOfPaid(
-                                    item.productid._id,
+                                    item.productId._id,
                                     item.sizeId,
                                     Number(e.target.value)
                                   );

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef } from 'react';
-import { detacontext } from '../../../../App';
+import { dataContext } from '../../../../App';
 import { useReactToPrint } from 'react-to-print';
 
 import '../orders/Orders.css'
@@ -12,7 +12,7 @@ import '../orders/Orders.css'
 
 const InvoiceComponent=({  ModalId, orderData, showModal, setShowModal })=>{
 
-  const { restaurantData, formatdate, formatDateTime } = useContext(detacontext);  
+  const { restaurantData, formatdate, formatDateTime } = useContext(dataContext);  
 
   const { serial, orderType, name, phone, address, deliveryMan, table, products,
      subTotal, deliveryFee, addition,salesTax, serviceTax, discount, total, cashier } = orderData;

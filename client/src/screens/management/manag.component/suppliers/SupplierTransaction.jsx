@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import axios from 'axios'
-import { detacontext } from '../../../../App'
+import { dataContext } from '../../../../App'
 import { toast } from 'react-toastify';
 import '../orders/Orders.css'
 
@@ -16,7 +16,7 @@ const SupplierTransaction = () => {
     },
   };
   
-  const{restaurantData, permissionsList,setStartDate, setEndDate, filterByDateRange, filterByTime, employeeLoginInfo,  formatDate, formatDateTime, setisLoading, EditPagination, startpagination, endpagination, setstartpagination, setendpagination } = useContext(detacontext)
+  const{restaurantData, permissionsList,setStartDate, setEndDate, filterByDateRange, filterByTime, employeeLoginInfo,  formatDate, formatDateTime, setisLoading, EditPagination, startpagination, endpagination, setstartpagination, setendpagination } = useContext(dataContext)
 
   const [AllSupplierTransaction, setAllSupplierTransaction] = useState([])
   const getAllSupplierTransaction = async () => {
@@ -169,7 +169,7 @@ const SupplierTransaction = () => {
   }
 
 
-  const [allPurchaseInvoice, setallPurchaseInvoice] = useState([])
+  const [allPurchaseInvoice, setAllPurchaseInvoice] = useState([])
   const getAllPurchases = async () => {
     try{
       if (!token) {
@@ -180,7 +180,7 @@ const SupplierTransaction = () => {
       const response = await axios.get(apiUrl + '/api/purchaseinvoice', config);
       console.log({ response })
       if (response.status === 200) {
-        setallPurchaseInvoice(response.data.reverse())
+        setAllPurchaseInvoice(response.data.reverse())
       } else {
         toast.error('فشل جلب جميع فواتير المشتريات ! اعد تحميل الصفحة')
       }
@@ -189,11 +189,11 @@ const SupplierTransaction = () => {
     }
   }
 
-  const [allPurchaseInvoiceFilterd, setallPurchaseInvoiceFilterd] = useState([])
+  const [allPurchaseInvoiceFilterd, setAllPurchaseInvoiceFilterd] = useState([])
   const filterPurchaseInvoiceBySupplier = (supplier) => {
     const filterPurchaseInvoice = allPurchaseInvoice.filter(invoice => invoice.supplier._id === supplier)
     console.log({ filterPurchaseInvoice })
-    setallPurchaseInvoiceFilterd(filterPurchaseInvoice)
+    setAllPurchaseInvoiceFilterd(filterPurchaseInvoice)
   }
 
   useEffect(() => {

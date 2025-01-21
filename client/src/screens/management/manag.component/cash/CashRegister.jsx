@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import { detacontext } from "../../../../App";
+import { dataContext } from "../../../../App";
 import { toast } from "react-toastify";
 import "../orders/Orders.css";
 
@@ -21,14 +21,14 @@ const CashRegister = () => {
     endpagination,
     setstartpagination,
     setendpagination,
-  } = useContext(detacontext);
+  } = useContext(dataContext);
 
   const cashRegisterPermissions = permissionsList?.filter(
     (permission) => permission.resource === "Cash Register"
   )[0];
 
   const [cashRegisters, setCashRegisters] = useState([]);
-  const [allEmployee, setallEmployee] = useState([]);
+  const [allEmployee, setAllEmployee] = useState([]);
   const [name, setname] = useState("");
   const [balance, setbalance] = useState("");
   const [employee, setemployee] = useState("");
@@ -63,7 +63,7 @@ const CashRegister = () => {
       const response = await axios.get(`${apiUrl}/api/employee`, config);
       const data = response.data;
       if (data) {
-        setallEmployee(data);
+        setAllEmployee(data);
       } else {
         toast.info("لا توجد بيانات لعرضها");
       }

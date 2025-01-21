@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { detacontext } from "../../../../App";
+import { dataContext } from "../../../../App";
 import { toast } from "react-toastify";
 
 import "./LoginRegistr.css";
@@ -151,7 +151,7 @@ const LoginRegistr = (props) => {
   }, []);
 
   return (
-    <detacontext.Consumer>
+    <dataContext.Consumer>
       {({ getUserInfoFromToken }) => {
         return (
           <div
@@ -329,7 +329,7 @@ const LoginRegistr = (props) => {
           </div>
         );
       }}
-    </detacontext.Consumer>
+    </dataContext.Consumer>
   );
 };
 

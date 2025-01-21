@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { detacontext } from "../../../../App";
+import { dataContext } from "../../../../App";
 import "../orders/Orders.css";
 
 const ReservationTables = () => {
@@ -23,7 +23,7 @@ const ReservationTables = () => {
     // confirmReservation, updateReservation, getReservationById, deleteReservation,
     getAllReservations,
     allReservations,
-    setallReservations,
+    setAllReservations,
     employeeLoginInfo,
     allusers,
     allTable,
@@ -35,7 +35,7 @@ const ReservationTables = () => {
     formatTime,
     filterByDateRange,
     filterByTime,
-  } = useContext(detacontext);
+  } = useContext(dataContext);
 
   const createdBy = employeeLoginInfo?.id;
   const [reservationId, setReservationId] = useState("");
@@ -224,7 +224,7 @@ const ReservationTables = () => {
       (reservation) =>
         reservation.tableNumber.toString().startsWith(num) === true
     );
-    setallReservations(tables);
+    setAllReservations(tables);
   };
 
   const filterByStatus = (status) => {
@@ -235,7 +235,7 @@ const ReservationTables = () => {
     const filter = allReservations.filter(
       (reservation) => reservation.status === status
     );
-    setallReservations(filter);
+    setAllReservations(filter);
   };
 
   const filterByPhone = (phone) => {
@@ -246,7 +246,7 @@ const ReservationTables = () => {
     const filter = allReservations.filter(
       (reservation) => reservation.phone === phone
     );
-    setallReservations(filter);
+    setAllReservations(filter);
   };
 
   // const [selectedIds, setSelectedIds] = useState([]);
@@ -417,7 +417,7 @@ const ReservationTables = () => {
                   <select
                     className="form-control border-primary m-0 p-2 h-auto"
                     onChange={(e) =>
-                      setallReservations(
+                      setAllReservations(
                         filterByTime(e.target.value, allReservations)
                       )
                     }
@@ -464,7 +464,7 @@ const ReservationTables = () => {
                       type="button"
                       className="btn btn-primary h-100 p-2"
                       onClick={() =>
-                        setallReservations(filterByDateRange(allReservations))
+                        setAllReservations(filterByDateRange(allReservations))
                       }
                     >
                       <i className="fa fa-search"></i>

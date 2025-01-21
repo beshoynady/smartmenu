@@ -1,21 +1,21 @@
 const express = require("express");
 const {
-  createMenuCategory,
+  createmenuCategory,
   getAllMenuCategories,
-  getOneMenuCategory,
-  updateMenuCategory,
-  deleteMenuCategory
-} = require("../controllers/MenuCategory.controller");
+  getOnemenuCategory,
+  updatemenuCategory,
+  deletemenuCategory
+} = require("../controllers/menuCategory.controller");
 const authenticateToken = require('../utlits/authenticate')
 const checkSubscription = require('../utlits/checkSubscription')
 
 const router = express.Router();
 
-router.route('/').post(authenticateToken, checkSubscription, createMenuCategory)
+router.route('/').post(authenticateToken, checkSubscription, createmenuCategory)
   .get(getAllMenuCategories);
 router.route('/:menuCategoryId')
-  .get(getOneMenuCategory)
-  .put(authenticateToken, checkSubscription, updateMenuCategory)
-  .delete(authenticateToken, checkSubscription, deleteMenuCategory);
+  .get(getOnemenuCategory)
+  .put(authenticateToken, checkSubscription, updatemenuCategory)
+  .delete(authenticateToken, checkSubscription, deletemenuCategory);
 
 module.exports = router;

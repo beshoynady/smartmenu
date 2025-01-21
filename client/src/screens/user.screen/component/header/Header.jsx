@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, useContext } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { detacontext } from '../../../../App';
+import { dataContext } from '../../../../App';
 import './Header.css';
 import Cart from '../cart/Cart';
 import LoginRegistr from '../auth/LoginRegistr';
@@ -8,7 +8,7 @@ import LoginRegistr from '../auth/LoginRegistr';
 
 
 const Header = () => {
-  const {restaurantData,apiUrl, userLoginInfo, itemsInCart ,productsOffer, sizesOffer} = useContext(detacontext)
+  const {restaurantData,apiUrl, userLoginInfo, itemsInCart ,productsOffer, sizesOffer} = useContext(dataContext)
   const { id } = useParams();
   const [opencart, setopencart] = useState(false);
   const [openlogin, setopenlogin] = useState(false);

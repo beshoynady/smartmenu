@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 // Define the category schema
-const MenuCategorySchema = new mongoose.Schema({
+const menuCategorySchema = new mongoose.Schema({
     // Category name
     name: {
         type: String,
@@ -36,7 +36,7 @@ const MenuCategorySchema = new mongoose.Schema({
 
 
 // Create the Category model
-const MenuCategoryModel = mongoose.model('MenuCategory', MenuCategorySchema)
+const menuCategoryModel = mongoose.model('menuCategory', menuCategorySchema)
 
 // Export the Category model
-module.exports = MenuCategoryModel
+module.exports = menuCategoryModel

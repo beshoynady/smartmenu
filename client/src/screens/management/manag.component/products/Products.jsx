@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { detacontext } from "../../../../App";
+import { dataContext } from "../../../../App";
 import "../orders/Orders.css";
 
 const Products = () => {
@@ -29,7 +29,7 @@ const Products = () => {
     endpagination,
     setstartpagination,
     setendpagination,
-  } = useContext(detacontext);
+  } = useContext(dataContext);
 
   const productPermission =
     permissionsList &&
@@ -131,7 +131,7 @@ const Products = () => {
   const [preparationSection, setpreparationSection] = useState("");
   // const preparationSectionList = ["Kitchen", "Bar", "Grill"]
 
-  const [allPreparationSections, setallPreparationSections] = useState([]);
+  const [allPreparationSections, setAllPreparationSections] = useState([]);
 
   const getAllPreparationSections = async () => {
     if (!token) {
@@ -144,7 +144,7 @@ const Products = () => {
       if (res.status === 200) {
         const PreparationSections = res.data.data;
         console.log({ PreparationSections });
-        setallPreparationSections(PreparationSections);
+        setAllPreparationSections(PreparationSections);
       } else {
         throw new Error("Failed to fetch data");
       }
@@ -276,7 +276,7 @@ const Products = () => {
   const [productInfo, setproductInfo] = useState({});
   const handelEditProductModal = (product) => {
     setproductInfo(product);
-    setproductid(product._id);
+    setproductId(product._id);
     setproductname(product.name);
     setproductdescription(product.description);
     setproductprice(product.price);
@@ -308,7 +308,7 @@ const Products = () => {
     }
   };
 
-  const [productid, setproductid] = useState("");
+  const [productId, setproductId] = useState("");
   const editProduct = async (e) => {
     e.preventDefault();
     if (!token) {
@@ -360,7 +360,7 @@ const Products = () => {
 
       // Perform the API request to update the product
       const response = await axios.put(
-        `${apiUrl}/api/product/${productid}`,
+        `${apiUrl}/api/product/${productId}`,
         requestBody,
         {
           headers: {
@@ -416,7 +416,7 @@ const Products = () => {
     }
   };
 
-  const [allOrders, setallOrders] = useState([]);
+  const [allOrders, setAllOrders] = useState([]);
   const getAllOrders = async () => {
     if (!token) {
       // Handle case where token is not available
@@ -429,7 +429,7 @@ const Products = () => {
       if (response.status === 200) {
         const allOrders = response.data;
         console.log({ allOrders });
-        setallOrders(allOrders);
+        setAllOrders(allOrders);
       } else {
         console.error("Failed to fetch orders");
       }
@@ -443,7 +443,7 @@ const Products = () => {
     allOrders.forEach((order) => {
       order.products.forEach((product) => {
         updatedListofProducts.map((pro) => {
-          if (product.productid._id === pro._id) {
+          if (product.productId._id === pro._id) {
             pro.sales += product.quantity;
           }
         });
@@ -488,7 +488,7 @@ const Products = () => {
         return;
       }
       const response = await axios.delete(
-        `${apiUrl}/api/product/${productid}`,
+        `${apiUrl}/api/product/${productId}`,
         config
       );
       if (response) {
@@ -508,7 +508,7 @@ const Products = () => {
       return;
     }
     try {
-      const response = await axios.get(apiUrl + "/api/menucategory/", config);
+      const response = await axios.get(apiUrl + "/api/menuCategory/", config);
       const categories = await response.data;
       // console.log(response.data)
       setlistofcategories(categories);
@@ -624,7 +624,7 @@ const Products = () => {
                   <select
                     className="form-control border-primary m-0 p-2 h-auto"
                     onChange={(e) =>
-                      setallOrders(filterByTime(e.target.value, allOrders))
+                      setAllOrders(filterByTime(e.target.value, allOrders))
                     }
                   >
                     <option value="">اختر</option>
@@ -668,7 +668,7 @@ const Products = () => {
                     <button
                       type="button"
                       className="btn btn-primary h-100 p-2 "
-                      onClick={() => setallOrders(filterByDateRange(allOrders))}
+                      onClick={() => setAllOrders(filterByDateRange(allOrders))}
                     >
                       <i className="fa fa-search"></i>
                     </button>
@@ -783,7 +783,7 @@ const Products = () => {
                                 href="#deleteProductModal"
                                 className="delete"
                                 data-toggle="modal"
-                                onClick={() => setproductid(product._id)}
+                                onClick={() => setproductId(product._id)}
                               >
                                 <i
                                   className="material-icons"

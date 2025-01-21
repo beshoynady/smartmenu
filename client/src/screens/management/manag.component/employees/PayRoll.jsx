@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import { detacontext } from "../../../../App";
+import { dataContext } from "../../../../App";
 import { toast } from "react-toastify";
 import "../orders/Orders.css";
 
@@ -22,7 +22,7 @@ const PayRoll = () => {
     endpagination,
     setstartpagination,
     setendpagination,
-  } = useContext(detacontext);
+  } = useContext(dataContext);
 
   const payrollPermissions = permissionsList?.filter(
     (permission) => permission.resource === "Payroll"
@@ -108,7 +108,7 @@ const PayRoll = () => {
     }
   };
 
-  const [allPayRoll, setallPayRoll] = useState([]);
+  const [allPayRoll, setAllPayRoll] = useState([]);
   const [currentPayRoll, setcurrentPayRoll] = useState([]);
 
   const getPayRoll = async () => {
@@ -122,7 +122,7 @@ const PayRoll = () => {
       console.log({ response });
       if (response.status === 200) {
         // Set all payroll data
-        setallPayRoll(response.data);
+        setAllPayRoll(response.data);
 
         // Get current date
         const currentDate = new Date();
@@ -199,7 +199,7 @@ const PayRoll = () => {
     }
   };
 
-  const [allAttendanceRecords, setallAttendanceRecords] = useState([]);
+  const [allAttendanceRecords, setAllAttendanceRecords] = useState([]);
   const getallAttendanceRecords = async () => {
     // if (permissionsForAttendance && permissionsForAttendance.read === false) {
     //   toast.info('ليس لك صلاحية لعرض السجلات')
@@ -223,7 +223,7 @@ const PayRoll = () => {
             createdAt.getFullYear() === currentYear
           );
         });
-        setallAttendanceRecords(response.data);
+        setAllAttendanceRecords(response.data);
       }
     } catch (error) {
       toast.error(

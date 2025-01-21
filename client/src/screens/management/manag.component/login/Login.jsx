@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import "./Login.css";
-import { detacontext } from "../../../../App";
+import { dataContext } from "../../../../App";
 import { toast } from "react-toastify";
 import axios from "axios";
 
@@ -9,7 +9,7 @@ import menu from "../../../../image/emenu.jpg";
 import pos from "../../../../image/pos.jpg";
 
 const Login = () => {
-  const { getUserInfoFromToken, setisLoading } = useContext(detacontext);
+  const { getUserInfoFromToken, setisLoading } = useContext(dataContext);
   const apiUrl = process.env.REACT_APP_API_URL;
 
   const [phone, setPhone] = useState("");

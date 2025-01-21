@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { detacontext } from "../../../../App";
+import { dataContext } from "../../../../App";
 import { toast } from "react-toastify";
 import "../orders/Orders.css";
 
@@ -399,7 +399,7 @@ const PermissionsComponent = () => {
   }, []);
 
   return (
-    <detacontext.Consumer>
+    <dataContext.Consumer>
       {({
         restaurantData,
         setisLoading,
@@ -624,7 +624,7 @@ const PermissionsComponent = () => {
           </div>
         );
       }}
-    </detacontext.Consumer>
+    </dataContext.Consumer>
   );
 };
 

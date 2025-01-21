@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import { detacontext } from '../../../../App';
+import { dataContext } from '../../../../App';
 import { toast } from 'react-toastify';
 import '../orders/Orders.css'
 
@@ -17,7 +17,7 @@ const ExpenseItem = () => {
     },
   };
 
-  const{restaurantData, permissionsList,setStartDate, setEndDate, filterByDateRange, filterByTime, EditPagination, startpagination, endpagination, setstartpagination, setendpagination, formatDateTime } = useContext(detacontext)
+  const{restaurantData, permissionsList,setStartDate, setEndDate, filterByDateRange, filterByTime, EditPagination, startpagination, endpagination, setstartpagination, setendpagination, formatDateTime } = useContext(dataContext)
   const permissionExpense = permissionsList && permissionsList.filter(permission => permission.resource === 'Expenses')[0]
 
   const expenseTypeEn = ['Operating Expenses', 'Fixed Expenses', 'Marketing and Advertising', 'Administrative and Office Expenses', 'Investment and Development']
@@ -135,7 +135,7 @@ const ExpenseItem = () => {
     }
   };
 
-  const [allDailyExpenses, setallDailyExpenses] = useState([]);
+  const [allDailyExpenses, setAllDailyExpenses] = useState([]);
   const getallDailyExpenses = async () => {
     try{
       if (!token) {
@@ -146,7 +146,7 @@ const ExpenseItem = () => {
       const response = await axios.get(apiUrl + '/api/dailyexpense/', config);
       const dailyExpenses = await response.data.reverse();
       console.log(response.data);
-      setallDailyExpenses(dailyExpenses);
+      setAllDailyExpenses(dailyExpenses);
     } catch (error) {
       console.log(error);
     }
@@ -251,7 +251,7 @@ const ExpenseItem = () => {
               <div className='col-12 text-dark d-flex flex-wrap align-items-center justify-content-start p-0 m-0 mt-3'>
                 <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">فلتر حسب الوقت</label>
-                  <select className="form-control border-primary m-0 p-2 h-auto"  onChange={(e) => setallDailyExpenses(filterByTime(e.target.value, allDailyExpenses))}>
+                  <select className="form-control border-primary m-0 p-2 h-auto"  onChange={(e) => setAllDailyExpenses(filterByTime(e.target.value, allDailyExpenses))}>
                     <option value="">اختر</option>
                     <option value="today">اليوم</option>
                     <option value="week">هذا الأسبوع</option>
@@ -274,7 +274,7 @@ const ExpenseItem = () => {
                   </div>
 
                   <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
-                    <button type="button" className="btn btn-primary h-100 p-2 " onClick={() => setallDailyExpenses(filterByDateRange(allDailyExpenses))}>
+                    <button type="button" className="btn btn-primary h-100 p-2 " onClick={() => setAllDailyExpenses(filterByDateRange(allDailyExpenses))}>
                       <i className="fa fa-search"></i>
                     </button>
                     <button type="button" className="btn btn-warning h-100 p-2" onClick={getAllExpenses}>استعادة

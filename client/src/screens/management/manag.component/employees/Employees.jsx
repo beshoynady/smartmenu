@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import axios from "axios";
-import { detacontext } from "../../../../App";
+import { dataContext } from "../../../../App";
 import { toast } from "react-toastify";
 import * as XLSX from "xlsx";
 import { useReactToPrint } from "react-to-print";
@@ -27,7 +27,7 @@ const Employees = () => {
     endpagination,
     setstartpagination,
     setendpagination,
-  } = useContext(detacontext);
+  } = useContext(dataContext);
 
   const notify = (message, type) => {
     toast[type](message);

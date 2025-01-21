@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import "./Home.css";
 import io from "socket.io-client";
 
-import { detacontext } from "../../../../App";
+import { dataContext } from "../../../../App";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -23,7 +23,7 @@ const Home = () => {
     },
   };
 
-  const { restaurantData, userLoginInfo } = useContext(detacontext);
+  const { restaurantData, userLoginInfo } = useContext(dataContext);
   const { id } = useParams();
   const navigate = useNavigate(); // Use useNavigate hook
   const [table, setTable] = useState(null);

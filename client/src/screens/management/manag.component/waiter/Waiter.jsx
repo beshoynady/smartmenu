@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
-import { detacontext } from "../../../../App";
+import { dataContext } from "../../../../App";
 // import './Waiter.css'
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
@@ -10,13 +10,13 @@ const Waiter = () => {
     isRefresh,
     formatTime,
     formatDate,
-    setisRefresh,
+    setIsRefresh,
     cashierSocket,
     kitchenSocket,
     BarSocket,
     GrillSocket,
     waiterSocket,
-  } = useContext(detacontext);
+  } = useContext(dataContext);
 
   const apiUrl = process.env.REACT_APP_API_URL;
   const token = localStorage.getItem("token_e");
@@ -153,7 +153,7 @@ const Waiter = () => {
       const updatedOrderProducts = orderProducts.map((product) =>
         ticketProducts.some(
           (ticketProduct) =>
-            ticketProduct.productid?._id === product.productid?._id
+            ticketProduct.productId?._id === product.productId?._id
         )
           ? { ...product, isDeleverd: true }
           : product

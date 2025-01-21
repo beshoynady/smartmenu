@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import { detacontext } from "../../../../App";
+import { dataContext } from "../../../../App";
 import { toast } from "react-toastify";
 
 const PreparationScreen = () => {
@@ -12,8 +12,8 @@ const PreparationScreen = () => {
     },
   };
 
-  const { formatTime, formatDate, isRefresh, setisRefresh, waiterSocket } =
-    useContext(detacontext);
+  const { formatTime, formatDate, isRefresh, setIsRefresh, waiterSocket } =
+    useContext(dataContext);
 
   const [preparationSections, setPreparationSections] = useState([]);
   const [selectedSectionId, setSelectedSectionId] = useState(null);
@@ -29,10 +29,10 @@ const PreparationScreen = () => {
     completed: 0,
     rejected: 0,
   });
-  const [allRecipe, setallRecipe] = useState([]); // State for all Tickets
+  const [allRecipe, setAllRecipe] = useState([]); // State for all Tickets
   const [filteredSectionConsumptionToday, setFilteredSectionConsumptionToday] =
     useState([]);
-  const [AllWaiters, setAllWaiters] = useState([]); // State for active waiters
+  const [allWaiters, setAllWaiters] = useState([]); // State for active waiters
 
   const today = formatDate(new Date());
   const [date, setDate] = useState(today);
@@ -73,7 +73,7 @@ const PreparationScreen = () => {
 
       const getAllRecipe = await axios.get(`${apiUrl}/api/recipe`, config);
       const allRecipeData = getAllRecipe.data;
-      setallRecipe(allRecipeData);
+      setAllRecipe(allRecipeData);
       console.log({ getAllRecipe });
     } catch (error) {
       console.error("Error fetching product recipe:", error.message);
@@ -101,11 +101,11 @@ const PreparationScreen = () => {
       });
       setTicketsToday(filteredTicketsToday);
 
-      const filteredTicketsSectionisActive = filteredTicketsToday.filter(
+      const filteredTicketsSectionIsActive = filteredTicketsToday.filter(
         (ticket) => ticket.isActive
       );
 
-      setActiveTickets(filteredTicketsSectionisActive);
+      setActiveTickets(filteredTicketsSectionIsActive);
 
       // Update section stats
       const stats = {
@@ -127,7 +127,7 @@ const PreparationScreen = () => {
       };
       console.log({
         filteredTicketsToday,
-        filteredTicketsSectionisActive,
+        filteredTicketsSectionIsActive,
         stats,
       });
       setSectionStats(stats);
@@ -137,7 +137,7 @@ const PreparationScreen = () => {
       const recipes = recipeResponse.data;
 
       const updatedConsumptionItems = [];
-      filteredTicketsSectionisActive.forEach((Ticket) => {
+      filteredTicketsSectionIsActive.forEach((Ticket) => {
         if (
           Ticket.preparationStatus === "Pending" ||
           Ticket.preparationStatus === "Preparing"
@@ -146,7 +146,7 @@ const PreparationScreen = () => {
             if (!product.isDone) {
               const ingredients =
                 recipes.find(
-                  (recipe) => recipe.productId._id === product.productid?._id
+                  (recipe) => recipe.productId._id === product.productId?._id
                 )?.ingredients || [];
 
               ingredients.forEach((ingredient) => {
@@ -245,7 +245,7 @@ const PreparationScreen = () => {
         toast.error("رجاء تسجيل الدخول مره اخري");
         return;
       }
-      if (AllWaiters.length === 0) {
+      if (allWaiters.length === 0) {
         // Handle case where token is not available
         toast.warn(
           "قائمه الندلاء فارغه ! رجاء اعاده تحميل الصفحة و اذا ظلت المشكله ابلغ الاداره"
@@ -264,15 +264,15 @@ const PreparationScreen = () => {
       if (getTicket.status) {
       }
       // استخراج رقم القسم من بيانات الطاولة المرتبطة بالطلب
-      const tablesectionNumber =
+      const tableSectionNumber =
         getTicket.order?.table && getTicket.order?.table?.sectionNumber;
-      if (!tablesectionNumber) {
+      if (!tableSectionNumber) {
         throw new Error("Table section number not found");
       }
 
       // البحث عن النوادل في القسم المحدد
-      const sectionWaiters = AllWaiters.filter(
-        (waiter) => waiter.sectionNumber === tablesectionNumber
+      const sectionWaiters = allWaiters.filter(
+        (waiter) => waiter.sectionNumber === tableSectionNumber
       );
       if (sectionWaiters.length === 0) {
         throw new Error("No waiters found in the specified section");
@@ -280,7 +280,7 @@ const PreparationScreen = () => {
 
       const TicketSection = AllPreparationTicket.filter(
         (Ticket) =>
-          Ticket.waiter && Ticket.waiter?.sectionNumber === tablesectionNumber
+          Ticket.waiter && Ticket.waiter?.sectionNumber === tableSectionNumber
       ).sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
 
       let waiterId = "";
@@ -347,13 +347,13 @@ const PreparationScreen = () => {
         `${apiUrl}/api/preparationticket/${ticketId}`,
         config
       );
-      const preparationticketData = fetchPreparationTicketData.data.data;
-      const { products: ticketProducts } = preparationticketData;
-      const orderType = preparationticketData.order?.orderType;
-      const orderId = await preparationticketData?.order._id;
-      const orderProducts = preparationticketData.order?.products;
+      const preparationTicketData = fetchPreparationTicketData.data.data;
+      const { products: ticketProducts } = preparationTicketData;
+      const orderType = preparationTicketData.order?.orderType;
+      const orderId = await preparationTicketData?.order._id;
+      const orderProducts = preparationTicketData.order?.products;
       console.log({
-        preparationticketData: preparationticketData,
+        preparationTicketData: preparationTicketData,
         orderId,
         orderType,
         orderProducts,
@@ -386,11 +386,11 @@ const PreparationScreen = () => {
         const productIngredients = product.sizeId
           ? allRecipe.find(
               (recipe) =>
-                recipe.productId._id === product.productid?._id &&
+                recipe.productId._id === product.productId?._id &&
                 recipe.sizeId === product.sizeId
             )?.ingredients
           : allRecipe.find(
-              (recipe) => recipe.productId._id === product.productid?._id
+              (recipe) => recipe.productId._id === product.productId?._id
             )?.ingredients || [];
 
         // Process ingredients
@@ -477,7 +477,7 @@ const PreparationScreen = () => {
       const updatedOrderProducts = orderProducts.map((product) =>
         ticketProducts.some(
           (ticketProduct) =>
-            ticketProduct.orderProductId === product.productid?._id
+            ticketProduct.orderproductId === product.productId?._id
         )
           ? { ...product, isDone: true }
           : product
@@ -511,7 +511,7 @@ const PreparationScreen = () => {
           config
         );
         console.log({ updateTicket, updateOrder });
-        waiterSocket.emit("orderready", `أورد جاهز في المطبخ-${waiter}`);
+        waiterSocket.emit("orderReady", `أورد جاهز في المطبخ-${waiter}`);
       } else {
         const updateOrder = await axios.put(
           `${apiUrl}/api/order/${orderId}`,
@@ -526,7 +526,7 @@ const PreparationScreen = () => {
           config
         );
         console.log({ updateTicket, updateOrder });
-        waiterSocket.emit("orderready", "أورد جاهز في المطبخ");
+        waiterSocket.emit("orderReady", "أورد جاهز في المطبخ");
       }
 
       // 6. Refresh state

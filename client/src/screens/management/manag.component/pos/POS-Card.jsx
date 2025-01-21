@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import {toast } from 'react-toastify';
-import { detacontext } from "../../../../App";
+import { dataContext } from "../../../../App";
 
 const POSCard = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
@@ -14,13 +14,13 @@ const POSCard = () => {
   const [selectedButtonIndex, setSelectedButtonIndex] = useState(1);
 
   return (
-    <detacontext.Consumer>
-      {({ allProducts, MenuCategoryId, addItemToCart }) => {
+    <dataContext.Consumer>
+      {({ allProducts, menuCategoryId, addItemToCart }) => {
         return (
           <div className="d-flex flex-wrap flex-md-row">
             {allProducts.length > 0
               ? allProducts
-                  .filter((pro) => pro.category._id === MenuCategoryId)
+                  .filter((pro) => pro.category._id === menuCategoryId)
                   .map((product, index) => {
                     if (product.hasSizes) {
                       return (
@@ -227,7 +227,7 @@ const POSCard = () => {
           </div>
         );
       }}
-    </detacontext.Consumer>
+    </dataContext.Consumer>
   );
 };
 

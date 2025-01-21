@@ -1,5 +1,5 @@
 import React, { useState, useContext, useRef, useEffect } from "react";
-import { detacontext } from "../../../../App";
+import { dataContext } from "../../../../App";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Navigate } from "react-router-dom";
@@ -43,7 +43,7 @@ const Cart = (props) => {
     createDeliveryOrderByClient,
     createOrderForTableByClient,
     checkout,
-  } = useContext(detacontext);
+  } = useContext(dataContext);
 
   const open_cart = props.opencart;
   const ordersText = useRef();
@@ -195,7 +195,7 @@ const Cart = (props) => {
                                     className="h-100 btn btn-danger btn-sm"
                                     onClick={() =>
                                       deleteItemFromCart(
-                                        item.productid,
+                                        item.productId,
                                         item.sizeId
                                       )
                                     }

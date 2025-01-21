@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import axios from "axios";
-import { detacontext } from "../../../../App";
+import { dataContext } from "../../../../App";
 import { toast, ToastContainer } from "react-toastify";
 import "../orders/Orders.css";
 
@@ -29,7 +29,7 @@ const GrillConsumption = () => {
     endpagination,
     setstartpagination,
     setendpagination,
-  } = useContext(detacontext);
+  } = useContext(dataContext);
 
 
   const GrillUsegePermission =

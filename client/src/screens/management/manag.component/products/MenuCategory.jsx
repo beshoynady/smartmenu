@@ -1,10 +1,10 @@
 import React, { useState, useEffect,useContext } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { detacontext } from "../../../../App";
+import { dataContext } from "../../../../App";
 import "../orders/Orders.css";
 
-const MenuCategory = () => {
+const menuCategory = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
   const token = localStorage.getItem("token_e");
 
@@ -22,7 +22,7 @@ const MenuCategory = () => {
     endpagination,
     setstartpagination,
     setendpagination,
-  } = useContext(detacontext);
+  } = useContext(dataContext);
 
   const [categoryName, setcategoryName] = useState("");
   const [mainCategory, setmainCategory] = useState({});
@@ -31,7 +31,7 @@ const MenuCategory = () => {
 
   const [categoryId, setcategoryId] = useState("");
 
-  const [allCategory, setallCategory] = useState([]);
+  const [allCategory, setAllCategory] = useState([]);
 
   const getallCategory = async () => {
     if (!token) {
@@ -40,10 +40,10 @@ const MenuCategory = () => {
       return;
     }
     try {
-      const res = await axios.get(apiUrl + "/api/menucategory/");
+      const res = await axios.get(apiUrl + "/api/menuCategory/");
       if (res) {
         const categories = res.data;
-        setallCategory(categories);
+        setAllCategory(categories);
         const filterMain = categories.filter(
           (category) => category.isMain === true
         )[0];
@@ -87,7 +87,7 @@ const MenuCategory = () => {
 
       // Send a PUT request to edit the category
       const edit = await axios.put(
-        apiUrl + "/api/menucategory/" + categoryId,
+        apiUrl + "/api/menuCategory/" + categoryId,
         bodydata,
         config
       );
@@ -120,7 +120,7 @@ const MenuCategory = () => {
     }
     try {
       const deleted = await axios.delete(
-        apiUrl + "/api/menucategory/" + categoryId
+        apiUrl + "/api/menuCategory/" + categoryId
       );
 
       if (deleted.status === 200) {
@@ -146,7 +146,7 @@ const MenuCategory = () => {
             (Category) => Category.name.startsWith(category) === true
           )
         : [];
-      setallCategory(categories);
+      setAllCategory(categories);
     } else {
       getallCategory();
     }
@@ -172,7 +172,7 @@ const MenuCategory = () => {
     // Insert the dragged category at the new position
     updatedCategories.splice(newIndex, 0, draggedCategory);
     // Update the state with the new order
-    setallCategory(updatedCategories);
+    setAllCategory(updatedCategories);
   };
 
   const handleOrderCategory = async (e) => {
@@ -193,7 +193,7 @@ const MenuCategory = () => {
         const order = index + 1;
         // Send a PUT request to edit the category order
         const edit = await axios.put(
-          `${apiUrl}/api/menucategory/${id}`,
+          `${apiUrl}/api/menuCategory/${id}`,
           { order },
           config
         );
@@ -236,7 +236,7 @@ const MenuCategory = () => {
         if (category.isMain === true) {
           // Send a PUT request to edit the category order
           const edit = await axios.put(
-            `${apiUrl}/api/menucategory/${category._id}`,
+            `${apiUrl}/api/menuCategory/${category._id}`,
             { isMain: false },
             config
           );
@@ -244,7 +244,7 @@ const MenuCategory = () => {
       }
 
       const mainCategory = await axios.put(
-        `${apiUrl}/api/menucategory/${id}`,
+        `${apiUrl}/api/menuCategory/${id}`,
         { isMain: true },
         config
       );
@@ -278,7 +278,7 @@ const MenuCategory = () => {
 
     try {
       const response = await axios.post(
-        `${apiUrl}/api/menucategory/`,
+        `${apiUrl}/api/menuCategory/`,
         categoryData,
         config
       );
@@ -758,4 +758,4 @@ const MenuCategory = () => {
   );
 };
 
-export default MenuCategory;
+export default menuCategory;

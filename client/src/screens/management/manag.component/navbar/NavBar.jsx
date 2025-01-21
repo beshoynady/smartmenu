@@ -3,7 +3,7 @@ import io from "socket.io-client";
 import { Link } from "react-router-dom";
 
 import axios from "axios";
-import { detacontext } from "../../../../App";
+import { dataContext } from "../../../../App";
 import { toast } from "react-toastify";
 
 import notificationSound from "../../../../audio/sound.mp3";
@@ -45,13 +45,13 @@ const NavBar = () => {
     permissionsList,
     employeeLoginInfo,
     isRefresh,
-    setisRefresh,
+    setIsRefresh,
     cashierSocket,
     kitchenSocket,
     BarSocket,
     GrillSocket,
     waiterSocket,
-  } = useContext(detacontext);
+  } = useContext(dataContext);
 
   const apiUrl = process.env.REACT_APP_API_URL;
   const token = localStorage.getItem("token_e");
@@ -215,7 +215,7 @@ const NavBar = () => {
               ...prevNotifications,
               notificationText,
             ];
-            setisRefresh(updatedNotifications.length);
+            setIsRefresh(updatedNotifications.length);
 
             // Save notifications to localStorage
             localStorage.setItem(
@@ -233,7 +233,7 @@ const NavBar = () => {
         setNotifications((prevNotifications) => {
           const updatedNotifications = [...prevNotifications, notification];
           // Save notifications to localStorage
-          setisRefresh(updatedNotifications.length);
+          setIsRefresh(updatedNotifications.length);
 
           localStorage.setItem(
             "notifications",
@@ -255,7 +255,7 @@ const NavBar = () => {
     ) {
       cashierSocket.on("neworder", handleNewOrderNotification);
       cashierSocket.on("helprequest", handleNewOrderNotification);
-      cashierSocket.on("orderready", handleNewOrderNotification);
+      cashierSocket.on("orderReady", handleNewOrderNotification);
     } else if (
       employeeLoginInfo.role === "chef"
     ) {
@@ -271,7 +271,7 @@ const NavBar = () => {
     } else if (
       employeeLoginInfo.role === "waiter"
     ) {
-      waiterSocket.on("orderready", handleNewOrderNotification);
+      waiterSocket.on("orderReady", handleNewOrderNotification);
       waiterSocket.on("neworder", handleNewOrderNotification);
       waiterSocket.on("helprequest", handleNewOrderNotification);
     }
@@ -283,7 +283,7 @@ const NavBar = () => {
         employeeLoginInfo.role === "programer"
       ) {
         cashierSocket.off("neworder", handleNewOrderNotification);
-        cashierSocket.off("orderready", handleNewOrderNotification);
+        cashierSocket.off("orderReady", handleNewOrderNotification);
         cashierSocket.off("helprequest", handleNewOrderNotification);
       } else if (employeeLoginInfo.role === "chef") {
         kitchenSocket.off("orderkitchen", handleNewOrderNotification);
@@ -293,7 +293,7 @@ const NavBar = () => {
         GrillSocket.off("orderkitchen", handleNewOrderNotification);
       } else if (employeeLoginInfo.role === "waiter") {
         waiterSocket.off("neworder", handleNewOrderNotification);
-        waiterSocket.off("orderready", handleNewOrderNotification);
+        waiterSocket.off("orderReady", handleNewOrderNotification);
         waiterSocket.off("helprequest", handleNewOrderNotification);
       }
     };

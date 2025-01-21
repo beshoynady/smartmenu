@@ -100,7 +100,7 @@ const getOrder = async (req, res) => {
 
     // Fetch the order by ID with population
     const order = await OrderModel.findById(orderId)
-      .populate("products.productid", "_id name price preparationSection")
+      .populate("products.productId", "_id name price preparationSection")
       .populate("products.extras.extraDetails.extraId", "_id name price")
       .populate("table", "_id tableNumber sectionNumber")
       .populate("user", "_id username address deliveryArea phone")
@@ -136,7 +136,7 @@ const getOrders = async (req, res) => {
   try {
     // Fetch orders from the database with necessary population
     const orders = await OrderModel.find()
-      .populate("products.productid", "_id name price preparationSection")
+      .populate("products.productId", "_id name price preparationSection")
       .populate("products.extras.extraDetails.extraId", "_id name price")
       .populate("table", "_id tableNumber sectionNumber")
       .populate("user", "_id username address deliveryArea phone")
@@ -177,7 +177,7 @@ const getLimitOrders = async (req, res) => {
     const orders = await OrderModel.find()
       .sort({ createdAt: -1 })
       .limit(limit)
-      .populate("products.productid", "_id name price preparationSection")
+      .populate("products.productId", "_id name price preparationSection")
       .populate("products.extras.extraDetails.extraId", "_id name price")
       .populate("table", "_id tableNumber sectionNumber")
       .populate("user", "_id username address deliveryArea phone")
@@ -226,7 +226,7 @@ const updateOrder = async (req, res) => {
       { $set: req.body },
       { new: true, runValidators: true } // Enable validation during update
     )
-      .populate("products.productid", "_id name price preparationSection")
+      .populate("products.productId", "_id name price preparationSection")
       .populate("products.extras.extraDetails.extraId", "_id name price");
 
     // Check if the order exists

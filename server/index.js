@@ -19,7 +19,7 @@ const routedeliveryarea = require('./router/DeliveryArea.router.js');
 const routereservation = require('./router/Reservation.router.js');
 const routemessage = require('./router/Message.router.js');
 const routeauth = require('./router/Auth.router.js');
-const routemenucategory = require('./router/MenuCategory.router.js');
+const routemenuCategory = require('./router/menuCategory.router.js');
 const routeproduct = require('./router/Product.router.js');
 const routerecipe = require('./router/Recipe.router.js');
 const routeuser = require('./router/User.router.js');
@@ -96,7 +96,7 @@ app.use('/api/preparationticket', routepreparationTicket);
 app.use('/api/deliveryarea', routedeliveryarea);
 app.use('/api/product', routeproduct);
 app.use('/api/recipe', routerecipe);
-app.use('/api/menucategory', routemenucategory);
+app.use('/api/menuCategory', routemenuCategory);
 app.use('/api/customer', routecustomer);
 app.use('/api/user', routeuser);
 app.use('/api/employee', routeemployee);
@@ -231,9 +231,9 @@ GrillNamespace.on('connection', (socket) => {
 waiterNamespace.on('connection', (socket) => {
   console.log('Waiter connected');
 
-  socket.on('orderready', (notification) => {
+  socket.on('orderReady', (notification) => {
     console.log("Help request received:", notification);
-    waiterNamespace.emit('orderready', notification);
+    waiterNamespace.emit('orderReady', notification);
   });
   socket.on('helprequest', (notification) => {
     console.log("Help request received:", notification);

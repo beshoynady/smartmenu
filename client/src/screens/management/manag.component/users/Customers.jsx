@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { detacontext } from "../../../../App";
+import { dataContext } from "../../../../App";
 import "../orders/Orders.css";
 
 const Customers = () => {
@@ -29,13 +29,13 @@ const Customers = () => {
     endpagination,
     setstartpagination,
     setendpagination,
-  } = useContext(detacontext);
+  } = useContext(dataContext);
 
   const permissionCustomer = permissionsList?.filter(
     (permission) => permission.resource === "Customers"
   )[0];
 
-  const [allCustomers, setallCustomers] = useState([]);
+  const [allCustomers, setAllCustomers] = useState([]);
   const [customerId, setcustomerId] = useState("");
   const [customerData, setCustomerData] = useState({
     name: "",
@@ -57,7 +57,7 @@ const Customers = () => {
       const response = await axios.get(`${apiUrl}/api/customer`, config);
       console.log({ AllCustomers: response });
       const data = await response.data;
-      setallCustomers(data);
+      setAllCustomers(data);
     } catch (error) {
       console.error("Error fetching customers:", error);
       toast.error("حدث خطأ أثناء جلب العملاء.");
@@ -271,7 +271,7 @@ const Customers = () => {
                   <select
                     className="form-control border-primary m-0 p-2 h-auto"
                     onChange={(e) =>
-                      setallCustomers(
+                      setAllCustomers(
                         filterByTime(e.target.value, allCustomers)
                       )
                     }
@@ -318,7 +318,7 @@ const Customers = () => {
                       type="button"
                       className="btn btn-primary h-100 p-2 "
                       onClick={() =>
-                        setallCustomers(filterByDateRange(allCustomers))
+                        setAllCustomers(filterByDateRange(allCustomers))
                       }
                     >
                       <i className="fa fa-search"></i>

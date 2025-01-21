@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import './ManagLayout.css';
-import { detacontext } from '../../App';
+import { dataContext } from '../../App';
 import { Navigate } from 'react-router-dom';
 import { Outlet } from "react-router";
 import NavBar from './manag.component/navbar/NavBar';
@@ -11,7 +11,7 @@ import { ToastContainer } from 'react-toastify';
 
 
 const ManagLayout = () => {
-  const { employeeLoginInfo } = useContext(detacontext);
+  const { employeeLoginInfo } = useContext(dataContext);
 
   const isLoggedIn = employeeLoginInfo?.isAdmin && employeeLoginInfo?.isActive;
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import axios from "axios";
-import { detacontext } from "../../../../App";
+import { dataContext } from "../../../../App";
 import { useReactToPrint } from "react-to-print";
 import { toast } from "react-toastify";
 import "./Orders.css";
@@ -31,7 +31,7 @@ const Orders = () => {
     endpagination,
     setstartpagination,
     setendpagination,
-  } = useContext(detacontext);
+  } = useContext(dataContext);
 
   const [showModal, setShowModal] = useState(false);
 

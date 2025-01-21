@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { detacontext } from "../../../../App";
+import { dataContext } from "../../../../App";
 
 import { Link } from "react-router-dom";
 
@@ -59,7 +59,7 @@ const SideBar = () => {
   }, []);
 
   return (
-    <detacontext.Consumer>
+    <dataContext.Consumer>
       {({ restaurantData, permissionsList, employeeLoginInfo }) => {
         const role = employeeLoginInfo ? employeeLoginInfo.role : "";
         const isProgrammer = role === "programer";
@@ -362,7 +362,7 @@ const SideBar = () => {
                             permission.resource === "Menu Categories"
                         )[0]?.read) && (
                         <li className="list">
-                          <Link to="menucategory">التصنيفات</Link>
+                          <Link to="menuCategory">التصنيفات</Link>
                         </li>
                       )}
                       {(isProgrammer ||
@@ -778,7 +778,7 @@ const SideBar = () => {
           </>
         );
       }}
-    </detacontext.Consumer>
+    </dataContext.Consumer>
   );
 };
 

@@ -64,8 +64,8 @@ const PayRoll = React.lazy(() =>
 const AttendanceManagement = React.lazy(() =>
   import("./screens/management/manag.component/employees/attendance")
 );
-const MenuCategory = React.lazy(() =>
-  import("./screens/management/manag.component/products/MenuCategory")
+const menuCategory = React.lazy(() =>
+  import("./screens/management/manag.component/products/menuCategory")
 );
 const PreparationScreen = React.lazy(() =>
   import("./screens/management/manag.component/kitchen/PreparationScreen.jsx")
@@ -174,7 +174,7 @@ const waiterSocket = io(`${process.env.REACT_APP_API_URL}/waiter`, {
   reconnectionDelay: 1000,
 });
 
-export const detacontext = createContext({});
+export const dataContext = createContext({});
 
 function App() {
   axios.defaults.withCredentials = true;
@@ -187,7 +187,7 @@ function App() {
     },
   };
 
-  const [isRefresh, setisRefresh] = useState(false);
+  const [isRefresh, setIsRefresh] = useState(false);
   const [isLoading, setisLoading] = useState(true);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
@@ -425,12 +425,12 @@ function App() {
     }
   };
 
-  //+++++++ menucategory +++++++++++
-  const [allMenuCategories, setallMenuCategories] = useState([]);
+  //+++++++ menu category +++++++++++
+  const [allMenuCategories, setAllMenuCategories] = useState([]);
   const getAllMenuCategories = async () => {
     try {
       // Fetch all categories from the API
-      const response = await axios.get(apiUrl + "/api/menucategory", config);
+      const response = await axios.get(apiUrl + "/api/menuCategory", config);
 
       // Check if response is successful
       if (response.status !== 200) {
@@ -440,17 +440,17 @@ function App() {
       const activeMenuCategories =
         allMenuCategories &&
         allMenuCategories.filter(
-          (menucategory) => menucategory.status === true
+          (menuCategory) => menuCategory.status === true
         );
       // Set fetched categories in the state
       console.log({ activeMenuCategories });
 
-      setallMenuCategories(activeMenuCategories);
+      setAllMenuCategories(activeMenuCategories);
 
       const mainCategory =
         activeMenuCategories &&
         activeMenuCategories.filter(
-          (menucategory) => menucategory.isMain === true
+          (menuCategory) => menuCategory.isMain === true
         )[0];
       if (mainCategory) {
         setMenuCategoryId(mainCategory._id);
@@ -463,7 +463,7 @@ function App() {
   };
 
   // ++++++++++ order ++++++++++++
-  const [allOrders, setallOrders] = useState([]);
+  const [allOrders, setAllOrders] = useState([]);
   const getAllOrders = async () => {
     try {
       // Fetch all orders from the API
@@ -475,7 +475,7 @@ function App() {
       }
 
       // Set fetched orders in the state
-      setallOrders(response.data.reverse());
+      setAllOrders(response.data.reverse());
     } catch (error) {
       // Handle errors
       console.error("Error fetching orders:", error.message);
@@ -484,7 +484,7 @@ function App() {
   };
 
   //+++++++++++ table ++++++++++++++
-  const [allTable, setallTable] = useState([]);
+  const [allTable, setAllTable] = useState([]);
 
   const getAllTable = async () => {
     try {
@@ -492,7 +492,7 @@ function App() {
         timeout: 5000,
       });
       if (response.status === 200 && response.data) {
-        setallTable(response.data);
+        setAllTable(response.data);
       } else {
         console.error("Failed to receive valid table data");
       }
@@ -507,12 +507,12 @@ function App() {
   };
 
   // +++++++++++++++ user +++++++++++++
-  const [allUsers, setallUsers] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
   const getAllUsers = async () => {
     try {
       const response = await axios.get(`${apiUrl}/api/user`);
       if (response.status === 200) {
-        setallUsers(response.data);
+        setAllUsers(response.data);
       } else {
         console.error(
           "Failed to fetch users data: Unexpected response status",
@@ -524,7 +524,7 @@ function App() {
     }
   };
 
-  const [allEmployees, setallEmployees] = useState([]);
+  const [allEmployees, setAllEmployees] = useState([]);
   const getAllEmployees = async () => {
     try {
       if (!token) {
@@ -534,7 +534,7 @@ function App() {
       const response = await axios.get(`${apiUrl}/api/employee`, config);
 
       if (response.status === 200) {
-        setallEmployees(response.data);
+        setAllEmployees(response.data);
         console.log("Employees data fetched successfully:", response.data);
       } else {
         console.error(
@@ -550,19 +550,19 @@ function App() {
   };
 
   // ++++++++ client screen +++++++++++++
-  const [MenuCategoryId, setMenuCategoryId] = useState("");
+  const [menuCategoryId, setMenuCategoryId] = useState("");
 
   const filterByMenuCategoryId = (e) => {
     // console.log(e.target.value)
     setMenuCategoryId(e.target.value);
   };
 
-  const [count, setcount] = useState(0);
+  const [count, setCount] = useState(0);
 
   const incrementProductQuantity = (productId, sizeId) => {
     try {
       // incrementProductQuantity the count state
-      setcount(count + 1);
+      setCount(count + 1);
       console.log({ productOrderToUpdate, productId, sizeId });
       // Find the product either in the order or in all products
       const findProduct =
@@ -582,7 +582,7 @@ function App() {
           }
         });
         itemsInCart.map((item) => {
-          if (item.productid === productId && item.sizeId === sizeId) {
+          if (item.productId === productId && item.sizeId === sizeId) {
             item.quantity += 1;
           }
         });
@@ -590,7 +590,7 @@ function App() {
         // incrementProductQuantity the quantity of the found product
         findProduct.quantity += 1;
         itemsInCart.map((item) => {
-          if (item.productid === productId) {
+          if (item.productId === productId) {
             item.quantity += 1;
           }
         });
@@ -607,7 +607,7 @@ function App() {
   const decrementProductQuantity = (productId, sizeId) => {
     try {
       // Decrement the count state
-      setcount(count - 1);
+      setCount(count - 1);
 
       // Find the product either in the order or in all products
       const findProduct =
@@ -634,7 +634,7 @@ function App() {
           }
         });
         itemsInCart.map((item) => {
-          if (item.productid === productId && item.sizeId === sizeId) {
+          if (item.productId === productId && item.sizeId === sizeId) {
             // incrementProductQuantity the quantity of the found product
             if (item.quantity < 2) {
               item.quantity = 0;
@@ -654,7 +654,7 @@ function App() {
         } else {
           findProduct.quantity -= 1;
           itemsInCart.map((item) => {
-            if (item.productid === productId) {
+            if (item.productId === productId) {
               item.quantity -= 1;
             }
           });
@@ -689,7 +689,7 @@ function App() {
           }
         });
         itemsInCart.map((item) => {
-          if (item.productid === productId && item.sizeId === sizeId) {
+          if (item.productId === productId && item.sizeId === sizeId) {
             item.notes = productNote;
           }
         });
@@ -697,7 +697,7 @@ function App() {
         // incrementProductQuantity the quantity of the found product
         findProduct.notes = productNote;
         itemsInCart.map((item) => {
-          if (item.productid === productId) {
+          if (item.productId === productId) {
             item.notes = productNote;
           }
         });
@@ -794,7 +794,7 @@ function App() {
           }
         });
         itemsInCart.map((item) => {
-          if (item.productid === productId && item.sizeId === sizeId) {
+          if (item.productId === productId && item.sizeId === sizeId) {
             item.extras = productExtras;
           }
         });
@@ -802,7 +802,7 @@ function App() {
         // Update the extras for the found product
         findProduct.extrasSelected = productExtras;
         itemsInCart.map((item) => {
-          if (item.productid === productId) {
+          if (item.productId === productId) {
             item.extras = productExtras;
             // item.extrasSelected = productExtras;
           }
@@ -830,7 +830,7 @@ function App() {
 
       if (cartItem) {
         let newItem = {
-          productid: cartItem._id,
+          productId: cartItem._id,
           name: cartItem.name,
           quantity: 0,
           notes: "",
@@ -866,7 +866,7 @@ function App() {
         if (itemsInCart.length > 0) {
           if (sizeId) {
             const repeatedItem = itemsInCart.find(
-              (item) => item.productid === productId && item.sizeId === sizeId
+              (item) => item.productId === productId && item.sizeId === sizeId
             );
             if (!repeatedItem) {
               setitemsInCart([...itemsInCart, newItem]);
@@ -874,7 +874,7 @@ function App() {
             }
           } else {
             const repeatedItem = itemsInCart.find(
-              (item) => item.productid === productId
+              (item) => item.productId === productId
             );
             if (!repeatedItem) {
               setitemsInCart([...itemsInCart, newItem]);
@@ -969,8 +969,8 @@ function App() {
         // Determine which list to operate on based on the presence of items in productOrderToUpdate
         const updatedList =
           productOrderToUpdate.length > 0
-            ? productOrderToUpdate.filter((product) => product.productid !== id)
-            : itemsInCart.filter((item) => item.productid !== id);
+            ? productOrderToUpdate.filter((product) => product.productId !== id)
+            : itemsInCart.filter((item) => item.productId !== id);
 
         console.log({ updatedList });
         // Update the list of item IDs
@@ -1678,14 +1678,14 @@ function App() {
       const updatedProducts = newlistofproductorder.map((product) => {
         if (
           (sizeid &&
-            product.productid._id === id &&
+            product.productId._id === id &&
             product.sizeId === sizeid) ||
-          (!sizeid && product.productid._id === id && !product.sizeId)
+          (!sizeid && product.productId._id === id && !product.sizeId)
         ) {
           const originalProduct = listProductsOrder.find(
             (pro) =>
-              (sizeid && pro.productid._id === id && pro.sizeId === sizeid) ||
-              (!sizeid && pro.productid._id === id && !pro.sizeId)
+              (sizeid && pro.productId._id === id && pro.sizeId === sizeid) ||
+              (!sizeid && pro.productId._id === id && !pro.sizeId)
           );
 
           if (originalProduct) {
@@ -1727,12 +1727,12 @@ function App() {
         if (product.sizeId) {
           originalProduct = listProductsOrder.find(
             (pro) =>
-              pro.productid._id === product.productid._id &&
+              pro.productId._id === product.productId._id &&
               pro.sizeId === product.sizeId
           );
         } else {
           originalProduct = listProductsOrder.find(
-            (pro) => pro.productid._id === product.productid._id
+            (pro) => pro.productId._id === product.productId._id
           );
         }
 
@@ -2004,12 +2004,12 @@ function App() {
 
   // ----------- reservation table------------//
   //============================================
-  const [allReservations, setallReservations] = useState([]);
+  const [allReservations, setAllReservations] = useState([]);
   const getAllReservations = async () => {
     try {
       const response = await axios.get(`${apiUrl}/api/reservation`, config);
       if (response.data) {
-        setallReservations(response.data);
+        setAllReservations(response.data);
       } else {
         console.log("No data returned from the server");
       }
@@ -2259,7 +2259,7 @@ function App() {
   }, [count, itemsInCart, productOrderToUpdate, isLogin]);
 
   return (
-    <detacontext.Provider
+    <dataContext.Provider
       value={{
         // المعلومات الأساسية
         restaurantData,
@@ -2300,7 +2300,7 @@ function App() {
         listProductsOrder,
         orderUpdateDate,
         myOrder,
-        MenuCategoryId,
+        menuCategoryId,
         itemsInCart,
         costOrder,
         addItemToCart,
@@ -2376,7 +2376,7 @@ function App() {
         createReservations,
         getAllReservations,
         allReservations,
-        setallReservations,
+        setAllReservations,
         // confirmReservation,
         // updateReservation,
         // getReservationById,
@@ -2390,7 +2390,7 @@ function App() {
         filterByDateRange,
         filterByTime,
         isRefresh,
-        setisRefresh,
+        setIsRefresh,
 
         cashierSocket,
         kitchenSocket,
@@ -2553,10 +2553,10 @@ function App() {
               }
             />
             <Route
-              path="menucategory"
+              path="menuCategory"
               element={
                 <Suspense fallback={<LoadingPage />}>
-                  <MenuCategory />
+                  <menuCategory />
                 </Suspense>
               }
             />
@@ -2773,7 +2773,7 @@ function App() {
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </BrowserRouter>
-    </detacontext.Provider>
+    </dataContext.Provider>
   );
 }
 

@@ -6,7 +6,7 @@ import React, {
   isValidElement,
 } from "react";
 import axios from "axios";
-import { detacontext } from "../../../../App";
+import { dataContext } from "../../../../App";
 import { toast } from "react-toastify";
 import "../orders/Orders.css";
 
@@ -36,7 +36,7 @@ const ProductRecipe = () => {
     endpagination,
     setstartpagination,
     setendpagination,
-  } = useContext(detacontext);
+  } = useContext(dataContext);
 
   const productRecipePermission =
     permissionsList &&
@@ -82,7 +82,7 @@ const ProductRecipe = () => {
       return;
     }
     try {
-      const response = await axios.get(apiUrl + "/api/menucategory/");
+      const response = await axios.get(apiUrl + "/api/menuCategory/");
       const categories = await response.data;
       // console.log(response.data)
       setlistofcategories(categories);

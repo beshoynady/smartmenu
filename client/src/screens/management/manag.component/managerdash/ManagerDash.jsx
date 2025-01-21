@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
-import { detacontext } from "../../../../App";
+import { dataContext } from "../../../../App";
 import axios from "axios";
 import io from "socket.io-client";
 import { toast } from "react-toastify";
@@ -37,13 +37,13 @@ const ManagerDash = () => {
     setstartpagination,
     setendpagination,
     isRefresh,
-    setisRefresh,
+    setIsRefresh,
     cashierSocket,
     kitchenSocket,
     BarSocket,
     GrillSocket,
     waiterSocket,
-  } = useContext(detacontext);
+  } = useContext(dataContext);
 
   const [showModal, setShowModal] = useState(false);
 
@@ -172,7 +172,7 @@ const ManagerDash = () => {
   // const preparationSection = ["Kitchen", "Bar", "Grill"]
   const [update, setupdate] = useState(false);
 
-  const [allPreparationSections, setallPreparationSections] = useState([]);
+  const [allPreparationSections, setAllPreparationSections] = useState([]);
 
   const getAllPreparationSections = async () => {
     if (!token) {
@@ -185,7 +185,7 @@ const ManagerDash = () => {
       if (res.status === 200) {
         const PreparationSections = res.data.data;
         console.log({ PreparationSections });
-        setallPreparationSections(PreparationSections);
+        setAllPreparationSections(PreparationSections);
       } else {
         throw new Error("Failed to fetch data");
       }
@@ -236,7 +236,7 @@ const ManagerDash = () => {
   //         preparationSection.forEach((section) => {
   //           const sectionProducts = orderProducts.filter(
   //             (product) =>
-  //               product.productid?.preparationSection === section && !product.isSend
+  //               product.productId?.preparationSection === section && !product.isSend
   //           );
   
   //           if (sectionProducts.length > 0) {
@@ -248,7 +248,7 @@ const ManagerDash = () => {
   //                   preparationSection: section,
   //                   products: sectionProducts.map((product) => ({
   //                     ...product,
-  //                     orderProductId: product._id,
+  //                     orderproductId: product._id,
   //                   })),
   //                 },
   //                 config
@@ -275,7 +275,7 @@ const ManagerDash = () => {
   //       if (status === "Approved") {
   //         kitchenSocket.emit("orderkitchen", "استلام أوردر جديد");
   //         setupdate(!update);
-  //         setisRefresh(!isRefresh);
+  //         setIsRefresh(!isRefresh);
   //       }
   //     }
   //   } catch (error) {
@@ -321,10 +321,10 @@ const ManagerDash = () => {
   //             const sectionProducts = [];
   //             newProducts &&
   //               newProducts.map((product) => {
-  //                 if (product.productid?.preparationSection === section._id && product.isSend === false) {
+  //                 if (product.productId?.preparationSection === section._id && product.isSend === false) {
   //                   sectionProducts.push({
   //                     ...product,
-  //                     orderProductId:product._id
+  //                     orderproductId:product._id
   //                   });
   //                 }
   //               });
@@ -367,7 +367,7 @@ const ManagerDash = () => {
   //         if (status === "Approved") {
   //           kitchenSocket.emit("orderkitchen", "استلام اوردر جديد");
   //           setupdate(!update);
-  //           setisRefresh(!isRefresh);
+  //           setIsRefresh(!isRefresh);
   //         }
   //     } catch (error) {
   //       console.error("خطأ في تغيير حالة الطلب:", error);
@@ -424,12 +424,12 @@ const ManagerDash = () => {
           // Filter products that belong to the current preparation section
           newProducts.forEach((product) => {
             if (
-              product.productid?.preparationSection === section._id &&
+              product.productId?.preparationSection === section._id &&
               !product.isSend
             ) {
               sectionProducts.push({
                 ...product,
-                orderProductId: product._id, // Add orderProductId to the product
+                orderproductId: product._id, // Add orderproductId to the product
               });
             }
           });
@@ -479,7 +479,7 @@ const ManagerDash = () => {
       if (status === "Approved") {
         kitchenSocket.emit("orderkitchen", "استلام اوردر جديد");
         setupdate(!update);
-        setisRefresh(!isRefresh);
+        setIsRefresh(!isRefresh);
       }
     } catch (error) {
       // Log and show error messages
@@ -491,7 +491,7 @@ const ManagerDash = () => {
   const paymentstatus = ["Pending", "Paid"];
   const paymentstatusAr = ["انظار دفع", "دفع"];
 
-  const [AllWaiters, setAllWaiters] = useState([]);
+  const [allWaiters, setAllWaiters] = useState([]);
   const [deliverymen, setDeliverymen] = useState([]);
 
   const fetchActiveEmployees = async () => {
@@ -540,7 +540,7 @@ const ManagerDash = () => {
         toast.error("رجاء تسجيل الدخول مره اخري");
         return;
       }
-      if (!AllWaiters.length > 0) {
+      if (!allWaiters.length > 0) {
         toast.warn("لا يوجد ويتر نشط الان ");
         return "";
       }
@@ -558,7 +558,7 @@ const ManagerDash = () => {
       }
 
       // البحث عن النوادل في القسم المحدد
-      const sectionWaiters = AllWaiters.filter(
+      const sectionWaiters = allWaiters.filter(
         (waiter) => waiter.sectionNumber === tablesectionNumber
       );
       if (sectionWaiters.length === 0) {
@@ -623,10 +623,10 @@ const ManagerDash = () => {
       if (orderData) {
         setupdate(!update);
         if (orderData.help === "Requests assistance") {
-          setisRefresh(!isRefresh);
+          setIsRefresh(!isRefresh);
           cashierSocket.emit("helprequest", `عميل يطلب مساعده-${waiter}`);
         } else if (orderData.help === "Requests bill") {
-          setisRefresh(!isRefresh);
+          setIsRefresh(!isRefresh);
           cashierSocket.emit("helprequest", `عميل يطلب الحساب-${waiter}`);
         }
       }

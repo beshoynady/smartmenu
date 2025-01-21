@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import { detacontext } from "../../../../App";
+import { dataContext } from "../../../../App";
 import { toast } from "react-toastify";
 import "../orders/Orders.css";
 
@@ -30,7 +30,7 @@ const CustomerMessage = () => {
     endpagination,
     setstartpagination,
     setendpagination,
-  } = useContext(detacontext);
+  } = useContext(dataContext);
 
   const permissionUserMassage = permissionsList?.filter(
     (permission) => permission.resource === "Messages"
@@ -41,7 +41,7 @@ const CustomerMessage = () => {
   const [phone, setPhone] = useState("");
   const [message, setMessage] = useState("");
   const [messageId, setmessageId] = useState("");
-  const [allCustomerMessage, setallCustomerMessage] = useState([]);
+  const [allCustomerMessage, setAllCustomerMessage] = useState([]);
 
   const getAllCustomerMessage = async () => {
     if (permissionUserMassage && !permissionUserMassage.read) {
@@ -55,7 +55,7 @@ const CustomerMessage = () => {
         return;
       }
       const response = await axios.get(`${apiUrl}/api/message`, config);
-      setallCustomerMessage(response.data);
+      setAllCustomerMessage(response.data);
     } catch (error) {
       console.log(error);
     }
@@ -123,7 +123,7 @@ const CustomerMessage = () => {
     const message = allCustomerMessage.filter((message) =>
       message.phone.startsWith(phone)
     );
-    setallCustomerMessage(message);
+    setAllCustomerMessage(message);
   };
 
   const [selectedIds, setSelectedIds] = useState([]);
@@ -237,7 +237,7 @@ const CustomerMessage = () => {
                   <select
                     className="form-control border-primary m-0 p-2 h-auto"
                     onChange={(e) =>
-                      setallCustomerMessage(
+                      setAllCustomerMessage(
                         filterByTime(e.target.value, allCustomerMessage)
                       )
                     }
@@ -284,7 +284,7 @@ const CustomerMessage = () => {
                       type="button"
                       className="btn btn-primary h-100 p-2 "
                       onClick={() =>
-                        setallCustomerMessage(
+                        setAllCustomerMessage(
                           filterByDateRange(allCustomerMessage)
                         )
                       }

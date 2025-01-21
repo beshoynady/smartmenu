@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
-import { detacontext } from "../../../../App";
+import { dataContext } from "../../../../App";
 // import './Waiter.css'
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
@@ -8,13 +8,13 @@ const Waiter = () => {
   const {
     employeeLoginInfo,
     isRefresh,
-    setisRefresh,
+    setIsRefresh,
     cashierSocket,
     kitchenSocket,
     BarSocket,
     GrillSocket,
     waiterSocket,
-  } = useContext(detacontext);
+  } = useContext(dataContext);
 
   const apiUrl = process.env.REACT_APP_API_URL;
   const token = localStorage.getItem("token_e");
@@ -117,7 +117,7 @@ const Waiter = () => {
       }
       const preparationSection = [];
       products.forEach((product) => {
-        const section = product.productid?.preparationSection;
+        const section = product.productId?.preparationSection;
         if (section) preparationSection.push(section);
       });
 
@@ -166,7 +166,7 @@ const Waiter = () => {
       );
       const preparationSection = [];
       products.forEach((product) => {
-        const section = product.productid?.preparationSection;
+        const section = product.productId?.preparationSection;
         if (section) preparationSection.push(section);
       });
 

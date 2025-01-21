@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import { detacontext } from '../../../../App';
+import { dataContext } from '../../../../App';
 import { toast } from 'react-toastify';
 import '../orders/Orders.css'
 import { date } from 'joi';
@@ -19,7 +19,7 @@ const DailyExpense = () => {
 
   const{restaurantData, permissionsList,setStartDate, setEndDate, filterByDateRange, filterByTime,
     employeeLoginInfo, formatDate, formatDateTime, setisLoading, EditPagination, startpagination,
-    endpagination, setstartpagination, setendpagination } = useContext(detacontext)
+    endpagination, setstartpagination, setendpagination } = useContext(dataContext)
 
   const permissionDailyExpense = permissionsList && permissionsList.filter(permission => permission.resource === 'Daily Expenses')[0]
 
@@ -41,8 +41,8 @@ const DailyExpense = () => {
   const [notes, setnotes] = useState('');
 
 
-  const [allExpenses, setallExpenses] = useState([]);
-  const [allDailyExpenses, setallDailyExpenses] = useState([]);
+  const [allExpenses, setAllExpenses] = useState([]);
+  const [allDailyExpenses, setAllDailyExpenses] = useState([]);
   const [AllcashRegisters, setAllcashRegisters] = useState([]);
 
   const getAllcashRegisters = async () => {
@@ -83,7 +83,7 @@ const DailyExpense = () => {
     try {
 
       const response = await axios.get(apiUrl + '/api/expenses/', config);
-      setallExpenses(response.data.reverse());
+      setAllExpenses(response.data.reverse());
     } catch (error) {
       console.log(error);
     }
@@ -297,7 +297,7 @@ const DailyExpense = () => {
       const response = await axios.get(apiUrl + '/api/dailyexpense/', config);
       const dailyExpenses = await response.data.reverse();
       console.log(response.data);
-      setallDailyExpenses(dailyExpenses);
+      setAllDailyExpenses(dailyExpenses);
     } catch (error) {
       console.log(error);
     }
@@ -312,7 +312,7 @@ const DailyExpense = () => {
       return
     }
     const filter =allDailyExpenses && allDailyExpenses.filter(exp => exp.expenseDescription.startsWith(DailyExpense) === true)
-    setallDailyExpenses(filter)
+    setAllDailyExpenses(filter)
   }
   const filterByExpense = (expenseId) => {
     if (!expenseId) {
@@ -320,7 +320,7 @@ const DailyExpense = () => {
       return
     }
     const filter =allDailyExpenses && allDailyExpenses.filter(exp => exp.expenseId?._id === expenseId)
-    setallDailyExpenses(filter)
+    setAllDailyExpenses(filter)
   }
 
   const filterByExpenseType = (expenseType) => {
@@ -334,7 +334,7 @@ const DailyExpense = () => {
       const filter =allDailyExpenses && allDailyExpenses.filter(exp => exp.expenseId?._id === expense._id)
       listCashRegister = [...listDailyExpenses, filter]
     })
-    setallDailyExpenses(listDailyExpenses)
+    setAllDailyExpenses(listDailyExpenses)
   }
 
 
@@ -409,7 +409,7 @@ const DailyExpense = () => {
               <div className='col-12 text-dark d-flex flex-wrap align-items-center justify-content-start p-0 m-0 mt-3'>
                 <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">فلتر حسب الوقت</label>
-                  <select className="form-control border-primary m-0 p-2 h-auto"  onChange={(e) => setallDailyExpenses(filterByTime(e.target.value, allDailyExpenses))}>
+                  <select className="form-control border-primary m-0 p-2 h-auto"  onChange={(e) => setAllDailyExpenses(filterByTime(e.target.value, allDailyExpenses))}>
                     <option value="">اختر</option>
                     <option value="today">اليوم</option>
                     <option value="week">هذا الأسبوع</option>
@@ -432,7 +432,7 @@ const DailyExpense = () => {
                   </div>
 
                   <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
-                    <button type="button" className="btn btn-primary h-100 p-2 " onClick={() => setallDailyExpenses(filterByDateRange(allDailyExpenses))}>
+                    <button type="button" className="btn btn-primary h-100 p-2 " onClick={() => setAllDailyExpenses(filterByDateRange(allDailyExpenses))}>
                       <i className="fa fa-search"></i>
                     </button>
                     <button type="button" className="btn btn-warning h-100 p-2" onClick={getallDailyExpenses}>استعادة
