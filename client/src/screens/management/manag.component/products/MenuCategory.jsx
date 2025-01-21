@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { dataContext } from "../../../../App";
 import "../orders/Orders.css";
 
-const menuCategory = () => {
+const MenuCategory = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
   const token = localStorage.getItem("token_e");
 
@@ -758,4 +758,4 @@ const menuCategory = () => {
   );
 };
 
-export default menuCategory;
+export default MenuCategory;

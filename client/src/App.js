@@ -64,7 +64,7 @@ const PayRoll = React.lazy(() =>
 const AttendanceManagement = React.lazy(() =>
   import("./screens/management/manag.component/employees/attendance")
 );
-const menuCategory = React.lazy(() =>
+const MenuCategory = React.lazy(() =>
   import("./screens/management/manag.component/products/MenuCategory")
 );
 const PreparationScreen = React.lazy(() =>
@@ -2556,7 +2556,7 @@ function App() {
               path="menucategory"
               element={
                 <Suspense fallback={<LoadingPage />}>
-                  <menuCategory/>
+                  <MenuCategory/>
                 </Suspense>
               }
             />
