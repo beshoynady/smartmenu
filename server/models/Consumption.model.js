@@ -48,7 +48,7 @@ const ConsumptionSchema = new mongoose.Schema(
     },
     adjustmentReason: {
       type: String, // Reason for discrepancies: waste, loss, or damage.
-      enum: ["waste", "loss", "damage"],
+      enum: ["waste", "loss", "damage", "overage", null],
       default: null,
     },
     quantityRemaining: {
