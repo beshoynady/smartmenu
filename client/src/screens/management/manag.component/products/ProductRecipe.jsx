@@ -82,7 +82,7 @@ const ProductRecipe = () => {
       return;
     }
     try {
-      const response = await axios.get(apiUrl + "/api/menuCategory/");
+      const response = await axios.get(apiUrl + "/api/menucategory/");
       const categories = await response.data;
       // console.log(response.data)
       setlistofcategories(categories);

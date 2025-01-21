@@ -65,7 +65,7 @@ const AttendanceManagement = React.lazy(() =>
   import("./screens/management/manag.component/employees/attendance")
 );
 const menuCategory = React.lazy(() =>
-  import("./screens/management/manag.component/products/menuCategory")
+  import("./screens/management/manag.component/products/MenuCategory")
 );
 const PreparationScreen = React.lazy(() =>
   import("./screens/management/manag.component/kitchen/PreparationScreen.jsx")
@@ -430,7 +430,7 @@ function App() {
   const getAllMenuCategories = async () => {
     try {
       // Fetch all categories from the API
-      const response = await axios.get(apiUrl + "/api/menuCategory", config);
+      const response = await axios.get(apiUrl + "/api/menucategory", config);
 
       // Check if response is successful
       if (response.status !== 200) {
@@ -2553,10 +2553,10 @@ function App() {
               }
             />
             <Route
-              path="menuCategory"
+              path="menucategory"
               element={
                 <Suspense fallback={<LoadingPage />}>
-                  <menuCategory />
+                  <menuCategory/>
                 </Suspense>
               }
             />

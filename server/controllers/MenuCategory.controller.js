@@ -1,4 +1,4 @@
-const menuCategoryModel = require('../models/menuCategory.model');
+const menuCategoryModel = require('../models/menucategory.model');
 
 // Create a new menuCategory
 const createmenuCategory = async (req, res, next) => {

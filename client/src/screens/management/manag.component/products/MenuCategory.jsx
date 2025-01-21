@@ -40,7 +40,7 @@ const menuCategory = () => {
       return;
     }
     try {
-      const res = await axios.get(apiUrl + "/api/menuCategory/");
+      const res = await axios.get(apiUrl + "/api/menucategory/");
       if (res) {
         const categories = res.data;
         setAllCategory(categories);
@@ -87,7 +87,7 @@ const menuCategory = () => {
 
       // Send a PUT request to edit the category
       const edit = await axios.put(
-        apiUrl + "/api/menuCategory/" + categoryId,
+        apiUrl + "/api/menucategory/" + categoryId,
         bodydata,
         config
       );
@@ -120,7 +120,7 @@ const menuCategory = () => {
     }
     try {
       const deleted = await axios.delete(
-        apiUrl + "/api/menuCategory/" + categoryId
+        apiUrl + "/api/menucategory/" + categoryId
       );
 
       if (deleted.status === 200) {
@@ -193,7 +193,7 @@ const menuCategory = () => {
         const order = index + 1;
         // Send a PUT request to edit the category order
         const edit = await axios.put(
-          `${apiUrl}/api/menuCategory/${id}`,
+          `${apiUrl}/api/menucategory/${id}`,
           { order },
           config
         );
@@ -236,7 +236,7 @@ const menuCategory = () => {
         if (category.isMain === true) {
           // Send a PUT request to edit the category order
           const edit = await axios.put(
-            `${apiUrl}/api/menuCategory/${category._id}`,
+            `${apiUrl}/api/menucategory/${category._id}`,
             { isMain: false },
             config
           );
@@ -244,7 +244,7 @@ const menuCategory = () => {
       }
 
       const mainCategory = await axios.put(
-        `${apiUrl}/api/menuCategory/${id}`,
+        `${apiUrl}/api/menucategory/${id}`,
         { isMain: true },
         config
       );
@@ -278,7 +278,7 @@ const menuCategory = () => {
 
     try {
       const response = await axios.post(
-        `${apiUrl}/api/menuCategory/`,
+        `${apiUrl}/api/menucategory/`,
         categoryData,
         config
       );

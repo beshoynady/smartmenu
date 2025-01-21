@@ -5,7 +5,7 @@ const {
   getOnemenuCategory,
   updatemenuCategory,
   deletemenuCategory
-} = require("../controllers/menuCategory.controller");
+} = require("../controllers/menucategory.controller");
 const authenticateToken = require('../utlits/authenticate')
 const checkSubscription = require('../utlits/checkSubscription')
 

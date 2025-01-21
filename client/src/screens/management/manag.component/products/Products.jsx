@@ -508,7 +508,7 @@ const Products = () => {
       return;
     }
     try {
-      const response = await axios.get(apiUrl + "/api/menuCategory/", config);
+      const response = await axios.get(apiUrl + "/api/menucategory/", config);
       const categories = await response.data;
       // console.log(response.data)
       setlistofcategories(categories);
