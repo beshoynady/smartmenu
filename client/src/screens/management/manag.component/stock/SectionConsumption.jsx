@@ -83,7 +83,7 @@ const SectionConsumption = () => {
         }
       }
   
-      const consumptionToday = allSectionConsumption.filter(
+      const consumptionToday = allSectionConsumption&&allSectionConsumption.filter(
         (consumption) =>
           new Date(consumption.createdAt).toISOString().split("T")[0] === today
       );
