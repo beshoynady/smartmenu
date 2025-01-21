@@ -9,8 +9,8 @@ const createMenuCategory = async (req, res, next) => {
         if (allMenuCategories.length === 0) {
             order = 1;
         } else {
-            const lastmenuCategory = allMenuCategories[allMenuCategories.length - 1];
-            order = lastmenuCategory.order + 1;
+            const lastMenuCategory = allMenuCategories[allMenuCategories.length - 1];
+            order = lastMenuCategory.order + 1;
         }
 
         const { name, isMain, status } = req.body;
@@ -19,8 +19,8 @@ const createMenuCategory = async (req, res, next) => {
         if(isExist){
             return res.status(400).json({ message: 'Menu category name already exists' });
         }
-        const newmenuCategory = await menuCategoryModel.create({ name, isMain, status, order, createdBy });
-        res.status(201).json(newmenuCategory);
+        const newMenuCategory = await menuCategoryModel.create({ name, isMain, status, order, createdBy });
+        res.status(201).json(newMenuCategory);
     } catch (error) {
         console.error('Error creating menuCategory:', error);
         if (error.code === 11000) { // Duplicate key error
