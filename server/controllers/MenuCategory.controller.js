@@ -1,7 +1,7 @@
-const menuCategoryModel = require('../models/menucategory.model');
+const menuCategoryModel = require('../models/MenuCategory.model');
 
 // Create a new menuCategory
-const createmenuCategory = async (req, res, next) => {
+const createMenuCategory = async (req, res, next) => {
     try {
         let order;
         const allMenuCategories = await menuCategoryModel.find({}).exec();
@@ -48,7 +48,7 @@ const getAllMenuCategories = async (req, res, next) => {
 };
 
 // Get a single menuCategory by ID
-const getOnemenuCategory = async (req, res, next) => {
+const getOneMenuCategory = async (req, res, next) => {
     const { menuCategoryId } = req.params;
     try {
         const menuCategory = await menuCategoryModel.findById(menuCategoryId).populate('createdBy');
@@ -64,7 +64,7 @@ const getOnemenuCategory = async (req, res, next) => {
 };
 
 // Update a menuCategory
-const updatemenuCategory = async (req, res, next) => {
+const updateMenuCategory = async (req, res, next) => {
     const { menuCategoryId } = req.params;
     const { name, isMain, status , order } = req.body;
     const id = req.employee.id;
@@ -89,7 +89,7 @@ const updatemenuCategory = async (req, res, next) => {
 };
 
 // Delete a menuCategory
-const deletemenuCategory = async (req, res, next) => {
+const deleteMenuCategory = async (req, res, next) => {
     const { menuCategoryId } = req.params;
     try {
         const deletedmenuCategory = await menuCategoryModel.findByIdAndDelete(menuCategoryId);
@@ -105,9 +105,9 @@ const deletemenuCategory = async (req, res, next) => {
 };
 
 module.exports = {
-    createmenuCategory,
+    createMenuCategory,
     getAllMenuCategories,
-    getOnemenuCategory,
-    updatemenuCategory,
-    deletemenuCategory
+    getOneMenuCategory,
+    updateMenuCategory,
+    deleteMenuCategory
 };
