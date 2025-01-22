@@ -8,7 +8,7 @@ const http = require('http');
 const socketIo = require('socket.io');
 
 // Import database connection and route files
-const connectDB = require('./database/connectDB.js');
+const connectdb = require('./database/connectdb.js');
 const routeRestaurant = require('./router/Restaurant.router.js');
 const routePermission = require('./router/Permission.router.js');
 const routeAttendance = require('./router/AttendanceRecord.router.js');
@@ -47,7 +47,7 @@ const routeCashMovement = require('./router/CashMovement.router.js');
 dotenv.config();
 
 // Connect to the database
-connectDB();
+connectdb();
 
 const app = express();
 const frontEnd = process.env.FRONT_END_URL;
@@ -113,7 +113,7 @@ app.use('/api/supplier', routeSupplier);
 app.use('/api/suppliertransaction', routeSupplierTransaction);
 app.use('/api/purchaseinvoice', routePurchase);
 app.use('/api/purchasereturn', routePurchaseReturn);
-app.use('/api/stockmovement', routeStockMovement);
+app.use('/api/stockmanag', routeStockMovement);
 app.use('/api/consumption', routeConsumption);
 app.use('/api/expenses', routeExpense);
 app.use('/api/dailyexpense', routeDailyExpense);

@@ -46,7 +46,7 @@ const Purchase = () => {
       return;
     }
     try {
-      const response = await axios.get(apiUrl + "/api/stockmovement/", config);
+      const response = await axios.get(apiUrl + "/api/stockmanag/", config);
       console.log(response.data);
       const Stockactions = await response.data;
       setAllStockactions(Stockactions.reverse());
@@ -202,7 +202,7 @@ const Purchase = () => {
         notes,
       });
       const response = await axios.post(
-        apiUrl + "/api/stockmovement/",
+        apiUrl + "/api/stockmanag/",
         {
           itemId,
           storeId,
