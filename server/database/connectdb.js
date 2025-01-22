@@ -6,7 +6,7 @@ dotenv.config();
 const url = process.env.MONGODB_URL;
 
 // Function to connect to the database
-const connectdb = async () => {
+const connectDB = async () => {
     try {
         // Attempt to connect to the database
         await mongoose.connect(url, {
@@ -23,4 +23,4 @@ const connectdb = async () => {
 };
 
 // Export the connection function
-module.exports = connectdb;
+module.exports = connectDB;

@@ -1,4 +1,4 @@
-const StockMovementModel = require("../models/StockManag.model");
+const StockMovementModel = require("../models/StockMovement.model");
 
 // Controller function to create a new stock movement action
 const createStockAction = async (req, res, next) => {
@@ -15,10 +15,13 @@ const createStockAction = async (req, res, next) => {
       outbound = {},
       balance,
       remainingQuantity = 0,
-      movementDate = new Date(),
+      movementDate,
       notes = "",
-      expirationDate
+      expirationDate,
+      sender, // Added sender
+      receiver  // Added receiver
     } = req.body;
+    
     const createdBy = req.employee?.id;
 
     // Validate required fields
@@ -28,7 +31,9 @@ const createStockAction = async (req, res, next) => {
       !categoryId ||
       !costMethod ||
       !source ||
-      !balance
+      !balance ||
+      !sender ||    // Validate sender
+      !receiver     // Validate receiver
     ) {
       return res.status(400).json({ message: "Missing required fields" });
     }
@@ -54,7 +59,9 @@ const createStockAction = async (req, res, next) => {
       movementDate,
       createdBy,
       notes,
-      expirationDate
+      expirationDate,
+      sender,
+      receiver // Include sender and receiver
     });
 
     // Respond with the created stock movement action
@@ -82,33 +89,40 @@ const updateStockAction = async (req, res, next) => {
       remainingQuantity,
       movementDate,
       notes,
-      expirationDate
+      expirationDate,
+      sender, // Added sender
+      receiver  // Added receiver
     } = req.body;
     const updatedBy = req.employee.id;
-    const actionId = req.params.actionid;
+    const actionId = req.params.actionId;
 
-    const findAction = await StockMovementModel.findById(actionId)
-    if(!findAction){
-      return res.status(400).json({massage: 'dont find this action'})
+    const findAction = await StockMovementModel.findById(actionId);
+    if (!findAction) {
+      return res.status(400).json({ message: "Action not found" });
     }
+
     // Find and update the stock movement action by ID
     const updatedAction = await StockMovementModel.findByIdAndUpdate(
       actionId,
       {
-        itemId,
-        storeId,
-        categoryId,
-        costMethod,
-        source,
-        unit,
-        inbound,
-        outbound,
-        balance,
-        remainingQuantity,
-        movementDate,
-        updatedBy,
-        notes,
-        expirationDate
+        $set: {
+          itemId,
+          storeId,
+          categoryId,
+          costMethod,
+          source,
+          unit,
+          inbound,
+          outbound,
+          balance,
+          remainingQuantity,
+          movementDate,
+          updatedBy,
+          notes,
+          expirationDate,
+          sender, // Include sender in update
+          receiver // Include receiver in update
+        }
       },
       { new: true } // Return the updated document
     );
@@ -133,7 +147,9 @@ const getAllStockActions = async (req, res, next) => {
       .populate("itemId")
       .populate("storeId")
       .populate("categoryId")
-      .populate("createdBy");
+      .populate("createdBy")
+      .populate("sender") // Populate sender
+      .populate("receiver"); // Populate receiver
 
     if (allActions.length > 0) {
       res.status(200).json(allActions);
@@ -155,7 +171,9 @@ const getOneStockAction = async (req, res, next) => {
       .populate("itemId")
       .populate("storeId")
       .populate("categoryId")
-      .populate("createdBy");
+      .populate("createdBy")
+      .populate("sender") // Populate sender
+      .populate("receiver"); // Populate receiver
 
     if (!action) {
       return res.status(404).json({ message: "Action not found" });

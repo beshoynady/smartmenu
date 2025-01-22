@@ -8,46 +8,46 @@ const http = require('http');
 const socketIo = require('socket.io');
 
 // Import database connection and route files
-const connectdb = require('./database/connectdb.js');
-const routerestaurant = require('./router/Restaurant.router.js');
-const routepermission = require('./router/Permission.router.js');
-const routeattendance = require('./router/AttendanceRecord.router.js');
-const routeshift = require('./router/Shift.router.js');
-const routepreparationsection = require('./router/PreparationSection.router.js');
-const routepreparationTicket= require('./router/PreparationTicket.router.js');
-const routedeliveryarea = require('./router/DeliveryArea.router.js');
-const routereservation = require('./router/Reservation.router.js');
-const routemessage = require('./router/Message.router.js');
-const routeauth = require('./router/Auth.router.js');
-const routemenuCategory = require('./router/MenuCategory.router.js');
-const routeproduct = require('./router/Product.router.js');
-const routerecipe = require('./router/Recipe.router.js');
-const routeuser = require('./router/User.router.js');
-const routecustomer = require('./router/Customer.router.js');
-const routeemployee = require('./router/Employee.router.js');
-const routepayroll = require('./router/PayRoll.router.js');
+const connectDB = require('./database/connectDB.js');
+const routeRstaurant = require('./router/Restaurant.router.js');
+const routePermission = require('./router/Permission.router.js');
+const routeAttendance = require('./router/AttendanceRecord.router.js');
+const routeShift = require('./router/Shift.router.js');
+const routePreparationSection = require('./router/PreparationSection.router.js');
+const routePreparationTicket= require('./router/PreparationTicket.router.js');
+const routeDeliveryArea = require('./router/DeliveryArea.router.js');
+const routeReservation = require('./router/Reservation.router.js');
+const routeMessage = require('./router/Message.router.js');
+const routeAuth = require('./router/Auth.router.js');
+const routeMenuCategory = require('./router/MenuCategory.router.js');
+const routeProduct = require('./router/Product.router.js');
+const routeRecipe = require('./router/Recipe.router.js');
+const routeUser = require('./router/User.router.js');
+const routeCustomer = require('./router/Customer.router.js');
+const routeEmployee = require('./router/Employee.router.js');
+const routePayroll = require('./router/PayRoll.router.js');
 const routeEmployeeTransactions = require('./router/EmployeeTransactions.router.js');
-const routetable = require('./router/Table.router.js');
-const routeorder = require('./router/Order.router.js');
-const routecategoryStock = require('./router/CategoryStock.router.js');
-const routestockitems = require('./router/StockItem.router.js');
-const routesupplier = require('./router/Supplier.router.js');
-const routesupplierTransaction = require('./router/SupplierTransaction.router.js');
-const routepurchase = require('./router/Purchase.router.js');
-const routepurchasereturn = require('./router/PurchaseReturnInvoice.router.js');
-const routestore = require('./router/Store.router.js');
-const routestockmanag = require('./router/StockMang.router.js');
-const routeconsumption = require('./router/Consumption.router.js');
-const routeexpense = require('./router/Expense.router.js');
-const routedailyexpense = require('./router/DailyExpense.router.js');
-const routecashRegister = require('./router/CashRegister.router.js');
-const routecashMovement = require('./router/CashMovement.router.js');
+const routeTable = require('./router/Table.router.js');
+const routeOrder = require('./router/Order.router.js');
+const routeCategoryStock = require('./router/CategoryStock.router.js');
+const routeStockItems = require('./router/StockItem.router.js');
+const routeSupplier = require('./router/Supplier.router.js');
+const routeSupplierTransaction = require('./router/SupplierTransaction.router.js');
+const routePurchase = require('./router/Purchase.router.js');
+const routePurchaseReturn = require('./router/PurchaseReturnInvoice.router.js');
+const routeStore = require('./router/Store.router.js');
+const routeStockMovement = require('./router/StockMovement.router.js');
+const routeConsumption = require('./router/Consumption.router.js');
+const routeExpense = require('./router/Expense.router.js');
+const routeDailyExpense = require('./router/DailyExpense.router.js');
+const routeCashRegister = require('./router/CashRegister.router.js');
+const routeCashMovement = require('./router/CashMovement.router.js');
 
 // Load environment variables from .env file
 dotenv.config();
 
 // Connect to the database
-connectdb();
+connectDB();
 
 const app = express();
 const frontEnd = process.env.FRONT_END_URL;
@@ -84,42 +84,42 @@ const limiter = rateLimit({
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
   trustProxy: false // Disable trusting proxy headers
 });
-app.use("/api", limiter); // Apply rate limiting to all API routes
+app.use("/api", limiter); // Apply rate limiting to all API routeS
 
 // Route requests to appropriate routers
-app.use('/api/restaurant', routerestaurant);
-app.use('/api/permission', routepermission);
-app.use('/api/attendance', routeattendance);
-app.use('/api/shift', routeshift);
-app.use('/api/preparationsection', routepreparationsection);
-app.use('/api/preparationticket', routepreparationTicket);
-app.use('/api/deliveryarea', routedeliveryarea);
-app.use('/api/product', routeproduct);
-app.use('/api/recipe', routerecipe);
-app.use('/api/menucategory', routemenuCategory);
-app.use('/api/customer', routecustomer);
-app.use('/api/user', routeuser);
-app.use('/api/employee', routeemployee);
-app.use('/api/message', routemessage);
-app.use('/api/payroll', routepayroll);
+app.use('/api/restaurant', routeRstaurant);
+app.use('/api/permission', routePermission);
+app.use('/api/attendance', routeAttendance);
+app.use('/api/shift', routeShift);
+app.use('/api/preparationsection', routePreparationSection);
+app.use('/api/preparationticket', routePreparationTicket);
+app.use('/api/deliveryarea', routeDeliveryArea);
+app.use('/api/product', routeProduct);
+app.use('/api/recipe', routeRecipe);
+app.use('/api/menucategory', routeMenuCategory);
+app.use('/api/customer', routeCustomer);
+app.use('/api/user', routeUser);
+app.use('/api/employee', routeEmployee);
+app.use('/api/message', routeMessage);
+app.use('/api/payroll', routePayroll);
 app.use('/api/employeetransactions', routeEmployeeTransactions);
-app.use('/api/table', routetable);
-app.use('/api/order', routeorder);
-app.use('/api/auth', routeauth);
-app.use('/api/store', routestore);
-app.use('/api/categoryStock', routecategoryStock);
-app.use('/api/stockitem', routestockitems);
-app.use('/api/supplier', routesupplier);
-app.use('/api/suppliertransaction', routesupplierTransaction);
-app.use('/api/purchaseinvoice', routepurchase);
-app.use('/api/purchasereturn', routepurchasereturn);
-app.use('/api/stockmanag', routestockmanag);
-app.use('/api/consumption', routeconsumption);
-app.use('/api/expenses', routeexpense);
-app.use('/api/dailyexpense', routedailyexpense);
-app.use('/api/cashregister', routecashRegister);
-app.use('/api/cashMovement', routecashMovement);
-app.use('/api/reservation', routereservation);
+app.use('/api/table', routeTable);
+app.use('/api/order', routeOrder);
+app.use('/api/auth', routeAuth);
+app.use('/api/store', routeStore);
+app.use('/api/categoryStock', routeCategoryStock);
+app.use('/api/stockitem', routeStockItems);
+app.use('/api/supplier', routeSupplier);
+app.use('/api/suppliertransaction', routeSupplierTransaction);
+app.use('/api/purchaseinvoice', routePurchase);
+app.use('/api/purchasereturn', routePurchaseReturn);
+app.use('/api/stockmanag', routeStockMovement);
+app.use('/api/consumption', routeConsumption);
+app.use('/api/expenses', routeExpense);
+app.use('/api/dailyexpense', routeDailyExpense);
+app.use('/api/cashregister', routeCashRegister);
+app.use('/api/cashMovement', routeCashMovement);
+app.use('/api/reservation', routeReservation);
 
 const server = http.createServer(app);
 
