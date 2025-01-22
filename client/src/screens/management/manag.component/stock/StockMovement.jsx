@@ -31,7 +31,7 @@ const StockMovement = () => {
     setEndDate,
   } = useContext(dataContext);
 
-  const stockManagementPermission =
+  const stockMovementPermission =
     permissionsList &&
     permissionsList.filter(
       (perission) => perission.resource === "stock Movement"
@@ -123,7 +123,7 @@ const StockMovement = () => {
       toast.error("رجاء تسجيل الدخول مره اخري");
       return;
     }
-    if (stockManagementPermission && !stockManagementPermission.create) {
+    if (stockMovementPermission && !stockMovementPermission.create) {
       toast.warn("ليس لك صلاحية لانشاء حركه المخزن");
       return;
     }
@@ -426,7 +426,7 @@ const StockMovement = () => {
       toast.error("رجاء تسجيل الدخول مره اخري");
       return;
     }
-    if (stockManagementPermission && !stockManagementPermission.update) {
+    if (stockMovementPermission && !stockMovementPermission.update) {
       toast.warn("ليس لك صلاحية لتعديل حركه المخزن");
       return;
     }
@@ -484,7 +484,7 @@ const StockMovement = () => {
       toast.error("رجاء تسجيل الدخول مره اخري");
       return;
     }
-    if (stockManagementPermission && !stockManagementPermission.delete) {
+    if (stockMovementPermission && !stockMovementPermission.delete) {
       toast.warn("ليس لك صلاحية لحذف حركه المخزن");
       return;
     }
@@ -682,8 +682,8 @@ const StockMovement = () => {
                 </h2>
               </div>
               <div className="col-12 col-md-6 p-0 m-0 d-flex flex-wrap aliegn-items-center justify-content-end print-hide">
-                {stockManagementPermission &&
-                  stockManagementPermission.create && (
+                {stockMovementPermission &&
+                  stockMovementPermission.create && (
                     <a
                       href="#addStockactionModal"
                       className="d-flex align-items-center justify-content-center h-100 m-0 btn btn-success"
@@ -692,8 +692,8 @@ const StockMovement = () => {
                       <span>انشاء حركه مخزن</span>
                     </a>
                   )}
-                {/* {stockManagementPermission &&
-                  stockManagementPermission.delete && (
+                {/* {stockMovementPermission &&
+                  stockMovementPermission.delete && (
                     <a
                       href="#deleteStockactionModal"
                       className="d-flex align-items-center justify-content-center h-100 m-0 btn btn-danger"
@@ -909,8 +909,8 @@ const StockMovement = () => {
                         <td>{formatDateTime(action.createdAt)}</td>
                         <td>{action.createdBy?.fullname}</td>
                         {/* <td>
-                          {stockManagementPermission &&
-                            stockManagementPermission.update && (
+                          {stockMovementPermission &&
+                            stockMovementPermission.update && (
                               <a
                                 href="#editStockactionModal"
                                 className="edit"
@@ -928,8 +928,8 @@ const StockMovement = () => {
                                 </i>
                               </a>
                             )}
-                          {stockManagementPermission &&
-                            stockManagementPermission.delete && (
+                          {stockMovementPermission &&
+                            stockMovementPermission.delete && (
                               <a
                                 href="#deleteStockactionModal"
                                 className="delete"

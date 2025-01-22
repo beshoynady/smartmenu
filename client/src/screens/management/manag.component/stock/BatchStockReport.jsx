@@ -31,7 +31,7 @@ const BatchStockReport = () => {
     setEndDate,
   } = useContext(dataContext);
 
-  const stockManagementPermission =
+  const stockMovementPermission =
     permissionsList &&
     permissionsList.filter(
       (perission) => perission.resource === "stock Movement"
