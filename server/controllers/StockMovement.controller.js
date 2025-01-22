@@ -19,9 +19,9 @@ const createStockAction = async (req, res, next) => {
       notes = "",
       expirationDate,
       sender, // Added sender
-      receiver  // Added receiver
+      receiver, // Added receiver
     } = req.body;
-    
+
     const createdBy = req.employee?.id;
 
     // Validate required fields
@@ -32,8 +32,8 @@ const createStockAction = async (req, res, next) => {
       !costMethod ||
       !source ||
       !balance ||
-      !sender ||    // Validate sender
-      !receiver     // Validate receiver
+      !sender || // Validate sender
+      !receiver // Validate receiver
     ) {
       return res.status(400).json({ message: "Missing required fields" });
     }
@@ -61,7 +61,7 @@ const createStockAction = async (req, res, next) => {
       notes,
       expirationDate,
       sender,
-      receiver // Include sender and receiver
+      receiver, // Include sender and receiver
     });
 
     // Respond with the created stock movement action
@@ -91,7 +91,7 @@ const updateStockAction = async (req, res, next) => {
       notes,
       expirationDate,
       sender, // Added sender
-      receiver  // Added receiver
+      receiver, // Added receiver
     } = req.body;
     const updatedBy = req.employee.id;
     const actionId = req.params.actionId;
@@ -121,8 +121,8 @@ const updateStockAction = async (req, res, next) => {
           notes,
           expirationDate,
           sender, // Include sender in update
-          receiver // Include receiver in update
-        }
+          receiver, // Include receiver in update
+        },
       },
       { new: true } // Return the updated document
     );
