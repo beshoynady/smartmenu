@@ -541,16 +541,16 @@ const SideBar = () => {
                       {(isProgrammer ||
                         permissionsList?.filter(
                           (permission) =>
-                            permission.resource === "stock Management"
+                            permission.resource === "stock Movement"
                         )[0]?.read) && (
                         <li className="list">
-                          <Link to="stockmanag">إدارة المخزون</Link>
+                          <Link to="StockMovement">إدارة المخزون</Link>
                         </li>
                       )}
                       {(isProgrammer ||
                         permissionsList?.filter(
                           (permission) =>
-                            permission.resource === "stock Management"
+                            permission.resource === "stock Movement"
                         )[0]?.read) && (
                         <li className="list">
                           <Link to="batchstockreport">تقرير دفعات المخزن</Link>
@@ -736,8 +736,8 @@ const SideBar = () => {
                 {/* {(isProgrammer || permissionsList?.filter(permission => permission.resource === 'stock Item')[0]?.read) && (
                           <li className="list"><Link to="stockitem">الأصناف</Link></li>
                         )}
-                        {(isProgrammer || permissionsList?.filter(permission => permission.resource === 'stock Management')[0]?.read) && (
-                          <li className="list"><Link to="stockmanag">إدارة المخزون</Link></li>
+                        {(isProgrammer || permissionsList?.filter(permission => permission.resource === 'stock Movement')[0]?.read) && (
+                          <li className="list"><Link to="StockMovement">إدارة المخزون</Link></li>
                         )}
                         {(isProgrammer || permissionsList?.filter(permission => permission.resource === 'Kitchen Usage')[0]?.read) && (
                           <li className="list"><Link to="kitchenconsumption">استهلاك المطبخ</Link></li>

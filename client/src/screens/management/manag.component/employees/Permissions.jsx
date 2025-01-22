@@ -74,7 +74,7 @@ const PermissionsComponent = () => {
     "Cash Movement",
     "stock Item",
     "stock Categories",
-    "stock Management",
+    "stock Movement",
     "store",
     "Orders",
     "Tables",

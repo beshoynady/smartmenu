@@ -22,7 +22,7 @@ const permissionsSchema = new Schema(
             "Cash Movement",
             "stock Item",
             "stock Categories",
-            "stock Management",
+            "stock Movement",
             "store",
             "Orders",
             "Tables",

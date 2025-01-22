@@ -113,7 +113,7 @@ app.use('/api/supplier', routeSupplier);
 app.use('/api/suppliertransaction', routeSupplierTransaction);
 app.use('/api/purchaseinvoice', routePurchase);
 app.use('/api/purchasereturn', routePurchaseReturn);
-app.use('/api/stockmanagement', routeStockMovement);
+app.use('/api/stockmovement', routeStockMovement);
 app.use('/api/consumption', routeConsumption);
 app.use('/api/expenses', routeExpense);
 app.use('/api/dailyexpense', routeDailyExpense);
