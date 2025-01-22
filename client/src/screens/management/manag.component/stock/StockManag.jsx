@@ -169,7 +169,7 @@ const StockManag = () => {
 
             // إرسال التحديث إلى قاعدة البيانات
             const updateBatch = await axios.put(
-              `${apiUrl}/api/stockmanag/${batch._id}`,
+              `${apiUrl}/api/stockmovement/${batch._id}`,
               {
                 remainingQuantity: batch.remainingQuantity,
               },
@@ -211,7 +211,7 @@ const StockManag = () => {
             // تحديث الرصيد المتبقي في الدُفعة
             batch.remainingQuantity -= quantityToUse;
             const updateBatch = await axios.put(
-              `${apiUrl}/api/stockmanag/${batch._id}`,
+              `${apiUrl}/api/stockmovement/${batch._id}`,
               {
                 remainingQuantity: batch.remainingQuantity,
               },
@@ -280,7 +280,7 @@ const StockManag = () => {
             batch.remainingQuantity -= quantityToUse;
 
             const updateBatch = await axios.put(
-              `${apiUrl}/api/stockmanag/${batch._id}`,
+              `${apiUrl}/api/stockmovement/${batch._id}`,
               {
                 remainingQuantity: batch.remainingQuantity,
               },
@@ -374,7 +374,7 @@ const StockManag = () => {
 
     try {
       const response = await axios.post(
-        `${apiUrl}/api/stockmanag`,
+        `${apiUrl}/api/stockmovement`,
         data,
         config
       );
@@ -449,7 +449,7 @@ const StockManag = () => {
 
     try {
       const response = await axios.put(
-        `${apiUrl}/api/stockmanag/${actionId}`,
+        `${apiUrl}/api/stockmovement/${actionId}`,
         data,
         config
       );
@@ -468,7 +468,7 @@ const StockManag = () => {
         toast.error("رجاء تسجيل الدخول مره اخري");
         return;
       }
-      const response = await axios.get(apiUrl + "/api/stockmanag/", config);
+      const response = await axios.get(apiUrl + "/api/stockmovement/", config);
       console.log(response.data);
       const Stockactions = await response.data;
       setAllStockactions(Stockactions.reverse());
@@ -492,7 +492,7 @@ const StockManag = () => {
     try {
       // Delete the selected stock action
       const response = await axios.delete(
-        `${apiUrl}/api/stockmanag/${actionId}`,
+        `${apiUrl}/api/stockmovement/${actionId}`,
         config
       );
       console.log(response);

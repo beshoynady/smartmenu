@@ -77,7 +77,7 @@ const BatchStockReport = () => {
         toast.error("رجاء تسجيل الدخول مره اخري");
         return;
       }
-      const response = await axios.get(apiUrl + "/api/stockmanag/", config);
+      const response = await axios.get(apiUrl + "/api/stockmovement/", config);
       console.log(response.data);
       const stockActions = await response.data;
       const filterBatches = stockActions.filter(action => action.inbound?.quantity > 0);

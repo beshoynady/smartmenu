@@ -9,7 +9,7 @@ const socketIo = require('socket.io');
 
 // Import database connection and route files
 const connectDB = require('./database/connectDB.js');
-const routeRstaurant = require('./router/Restaurant.router.js');
+const routeRestaurant = require('./router/Restaurant.router.js');
 const routePermission = require('./router/Permission.router.js');
 const routeAttendance = require('./router/AttendanceRecord.router.js');
 const routeShift = require('./router/Shift.router.js');
@@ -87,7 +87,7 @@ const limiter = rateLimit({
 app.use("/api", limiter); // Apply rate limiting to all API routeS
 
 // Route requests to appropriate routers
-app.use('/api/restaurant', routeRstaurant);
+app.use('/api/restaurant', routeRestaurant);
 app.use('/api/permission', routePermission);
 app.use('/api/attendance', routeAttendance);
 app.use('/api/shift', routeShift);
@@ -113,7 +113,7 @@ app.use('/api/supplier', routeSupplier);
 app.use('/api/suppliertransaction', routeSupplierTransaction);
 app.use('/api/purchaseinvoice', routePurchase);
 app.use('/api/purchasereturn', routePurchaseReturn);
-app.use('/api/stockmanag', routeStockMovement);
+app.use('/api/stockmovement', routeStockMovement);
 app.use('/api/consumption', routeConsumption);
 app.use('/api/expenses', routeExpense);
 app.use('/api/dailyexpense', routeDailyExpense);

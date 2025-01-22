@@ -37,7 +37,7 @@ const PurchaseReturn = () => {
       return
     }
     try {
-      const response = await axios.get(apiUrl + '/api/stockmanag/', config);
+      const response = await axios.get(apiUrl + '/api/stockmovement/', config);
       console.log(response.data)
       const Stockactions = await response.data;
       setAllStockactions(Stockactions.reverse())
@@ -168,7 +168,7 @@ const PurchaseReturn = () => {
 
       if (changeItem.status === 200) {
         // Create a new stock action
-        const response = await axios.post(apiUrl + '/api/stockmanag/', {
+        const response = await axios.post(apiUrl + '/api/stockmovement/', {
           itemId,
           movement,
           quantity,
