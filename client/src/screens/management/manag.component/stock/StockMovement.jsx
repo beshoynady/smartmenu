@@ -113,7 +113,7 @@ const StockMovement = () => {
   const [parts, setParts] = useState();
   const [expirationDate, setExpirationDate] = useState();
   const [expirationDateEnabled, setExpirationDateEnabled] = useState(false);
-  const [actionId, setactionId] = useState("");
+  const [actionId, setِActionId] = useState("");
   const [AllStockactions, setAllStockactions] = useState([]);
   const [AllStockactionsStore, setAllStockactionsStore] = useState([]);
 
@@ -232,7 +232,7 @@ const StockMovement = () => {
         }
       } else if (costMethod === "Weighted Average") {
         const batches = AllStockactionsStore.filter((stockAction) => {
-          // التحقق من أن جميع الحقول المستخدمة موجودة وصحيحة
+          
           const isValidAction =
             stockAction && stockAction.itemId && stockAction.itemId._id;
           const isMatchingItem =
@@ -241,7 +241,6 @@ const StockMovement = () => {
             stockAction.inbound && stockAction.inbound.quantity > 0;
           const hasRemainingQuantity = stockAction.remainingQuantity > 0;
 
-          // التحقق من جميع الشروط المطلوبة
           return isMatchingItem && isInboundPositive && hasRemainingQuantity;
         }).sort((a, b) => new Date(a.movementDate) - new Date(b.movementDate));
 
@@ -256,12 +255,10 @@ const StockMovement = () => {
 
         const weightedAverageCost = totalCostInStock / totalQuantityInStock;
 
-        // تحديث حركة الصادر
         outbound.quantity = quantity;
         outbound.unitCost = weightedAverageCost;
         outbound.totalCost = outbound.quantity * outbound.unitCost;
 
-        // تحديث الرصيد بعد الصادر
         balance.quantity -= quantity;
         balance.totalCost -= outbound.totalCost;
 
@@ -916,7 +913,7 @@ const StockMovement = () => {
                                 className="edit"
                                 data-toggle="modal"
                                 onClick={() => {
-                                  setactionId(action._id);
+                                  setِActionId(action._id);
                                 }}
                               >
                                 <i
@@ -934,7 +931,7 @@ const StockMovement = () => {
                                 href="#deleteStockactionModal"
                                 className="delete"
                                 data-toggle="modal"
-                                onClick={() => setactionId(action._id)}
+                                onClick={() => setِActionId(action._id)}
                               >
                                 <i
                                   className="material-icons"

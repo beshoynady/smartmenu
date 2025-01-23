@@ -18,11 +18,13 @@ const createStockAction = async (req, res, next) => {
       movementDate,
       notes = "",
       expirationDate,
-      sender, // Added sender
-      receiver, // Added receiver
+      // sender, // Added sender
+      // receiver, // Added receiver
     } = req.body;
 
     const createdBy = req.employee?.id;
+    const receiver = req.employee?.id;
+    const sender = req.employee?.id;
 
     // Validate required fields
     if (
@@ -166,7 +168,7 @@ const getAllStockActions = async (req, res, next) => {
 // Controller function to get a single stock movement action by ID
 const getOneStockAction = async (req, res, next) => {
   try {
-    const actionId = req.params.actionid;
+    const actionId = req.params.actionId;
     const action = await StockMovementModel.findById(actionId)
       .populate("itemId")
       .populate("storeId")
@@ -190,7 +192,7 @@ const getOneStockAction = async (req, res, next) => {
 // Controller function to delete a stock movement action by ID
 const deleteStockAction = async (req, res, next) => {
   try {
-    const actionId = req.params.actionid;
+    const actionId = req.params.actionId;
     const deletedAction = await StockMovementModel.findByIdAndDelete(actionId);
 
     if (!deletedAction) {

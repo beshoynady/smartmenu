@@ -108,14 +108,14 @@ const StockMovementSchema = new mongoose.Schema(
     },
     sender: {
       type: ObjectId,
-      refPath: function () {
+      ref: function () {
         return this.source === "Purchase"? "Supplier": "Employee";
       },
       required: true,
     },
     receiver: {
       type: ObjectId,
-      refPath: function () {
+      ref: function () {
         return  this.source === "ReturnIssuance" ? "Supplier" : "Employee";
       },
       required: true,
