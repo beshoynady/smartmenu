@@ -8,7 +8,7 @@ const {
   movements,
   deleteItem,
 } = require("../controllers/StockItem.constroller");
-const authenticateToken = require("../utlits/authenticate");
+const {authenticateToken} = require("../utlits/authenticate");
 const checkSubscription = require("../utlits/checkSubscription");
 
 const router = express.Router();

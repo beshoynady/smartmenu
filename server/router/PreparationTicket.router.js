@@ -9,7 +9,7 @@ const {
   deletePreparationTicket,
 } = require("../controllers/PreparationTicket.controller");
 
-const authenticateToken = require("../utlits/authenticate");
+const {authenticateToken} = require("../utlits/authenticate");
 const checkSubscription = require("../utlits/checkSubscription");
 
 router

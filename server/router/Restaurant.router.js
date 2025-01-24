@@ -14,7 +14,7 @@ const {
   updateSubscriptionDates,
 } = require("../controllers/Restaurant.controller");
 
-const authenticateToken = require("../utlits/authenticate");
+const {authenticateToken} = require("../utlits/authenticate");
 const checkSubscription = require("../utlits/checkSubscription");
 
 const imagesDir = path.join(__dirname, "..", "images");

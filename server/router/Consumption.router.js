@@ -9,7 +9,7 @@ const {
   deleteConsumptionById,
 } = require("../controllers/Consumption.controller");
 
-const authenticateToken = require("../utlits/authenticate");
+const {authenticateToken} = require("../utlits/authenticate");
 const checkSubscription = require("../utlits/checkSubscription");
 
 // Define routes using router.route for Kitchen Consumptions
