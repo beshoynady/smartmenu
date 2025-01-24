@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const recipeController = require('../controllers/recipe.controller');
-const authenticateToken = require('../utlits/authenticate')
+const {authenticateToken} = require("../utlits/authenticate");
 const checkSubscription = require('../utlits/checkSubscription')
 
 router.route('/')

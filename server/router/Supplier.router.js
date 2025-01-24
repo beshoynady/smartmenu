@@ -8,7 +8,7 @@ const {
     deleteSupplierById
 } = require('../controllers/Supplier.controller');
 
-const authenticateToken = require('../utlits/authenticate')
+const {authenticateToken} = require("../utlits/authenticate");
 const checkSubscription = require('../utlits/checkSubscription')
 
 router.route('/')

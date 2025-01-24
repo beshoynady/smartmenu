@@ -8,7 +8,7 @@ const {
     deletePurchaseInvoiceById
 } = require('../controllers/Purchase.controller');
 
-const authenticateToken = require('../utlits/authenticate')
+const {authenticateToken} = require("../utlits/authenticate");
 const checkSubscription = require('../utlits/checkSubscription')
 
 // Routes for purchase management

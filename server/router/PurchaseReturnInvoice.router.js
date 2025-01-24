@@ -8,7 +8,7 @@ const {
     deletePurchaseReturnInvoiceById
 } = require('../controllers/PurchaseReturn.controller');
 
-const authenticateToken = require('../utlits/authenticate')
+const {authenticateToken} = require("../utlits/authenticate");
 const checkSubscription = require('../utlits/checkSubscription')
 
 // Routes for purchase return management

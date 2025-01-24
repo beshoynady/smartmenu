@@ -5,7 +5,7 @@ const fs = require('fs');
 
 const router = express.Router();
 
-const authenticateToken = require('../utlits/authenticate');
+const {authenticateToken} = require("../utlits/authenticate");;
 const checkSubscription = require('../utlits/checkSubscription');
 const {
   createProduct,

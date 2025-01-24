@@ -8,7 +8,7 @@ const {
   deleteAttendanceRecordById
 } = require('../controllers/Attendance.controller');
 
-const authenticateToken = require('../utlits/authenticate')
+const {authenticateToken} = require("../utlits/authenticate");
 const checkSubscription = require('../utlits/checkSubscription')
 
 
