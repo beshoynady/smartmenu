@@ -1878,6 +1878,41 @@ function App() {
 
   const [isTokenValid, setIsTokenValid] = useState(false);
 
+
+  const refreshToken = async () => {
+    try {
+      const response = await axios.post(
+        `${apiUrl}/api/employee/refresh-token`,
+        {},
+        { withCredentials: true } // إرسال الكوكيز مع الطلب
+      );
+
+      if (response && response.data.accessToken) {
+        localStorage.setItem("token_e", response.data.accessToken);
+        return response.data.accessToken;
+      }
+    } catch (error) {
+      console.error("Error refreshing token:", error);
+      toast.error("انتهت صلاحية الجلسة. الرجاء تسجيل الدخول مرة أخرى.");
+      window.location.href = "/login"; // إعادة التوجيه إلى صفحة تسجيل الدخول
+      return null;
+    }
+  };
+
+  // دالة للتحقق من صلاحية التوكن
+  const verifyToken = async () => {
+    const employeeToken = localStorage.getItem("token_e");
+    if (!employeeToken) {
+      await refreshToken(); // تحديث التوكن إذا لم يكن موجودًا
+    } else {
+      const decodedToken = jwt_decode(employeeToken);
+      const currentTime = Date.now() / 1000; // الوقت الحالي بالثواني
+      if (decodedToken.exp < currentTime) {
+        await refreshToken(); // تحديث التوكن إذا انتهت صلاحيته
+      }
+    }
+  };
+
   const getUserInfoFromToken = async () => {
     const userToken = localStorage.getItem("token_u");
     const employeeToken = localStorage.getItem("token_e");
@@ -2206,13 +2241,14 @@ function App() {
 
   // عند التحقق من التوكن
   useEffect(() => {
-    const initialize = async () => {
-      setisLoading(true);
-      await getUserInfoFromToken();
+    const initializeSession = async () => {
+    setisLoading(true);
+      await verifyToken(); 
+      await getUserInfoFromToken(); 
       setisLoading(false);
     };
 
-    initialize();
+    initializeSession();
   }, []);
 
   // جلب البيانات عند التأكد من صلاحية التوكن

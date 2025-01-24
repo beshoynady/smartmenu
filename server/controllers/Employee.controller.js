@@ -315,14 +315,14 @@ const getoneEmployee = async (req, res) => {
   }
 };
 
+
+
 const loginEmployee = async (req, res) => {
   try {
     const { phone, password } = req.body;
 
     if (!phone || !password) {
-      return res
-        .status(400)
-        .json({ message: "Phone number and password are required" });
+      return res.status(400).json({ message: "Phone number and password are required" });
     }
 
     const findEmployee = await EmployeeModel.findOne({ phone });
@@ -330,8 +330,9 @@ const loginEmployee = async (req, res) => {
     if (!findEmployee) {
       return res.status(404).json({ message: "Employee not found" });
     }
+
     if (!findEmployee.isActive) {
-      return res.status(404).json({ message: "Employee not active" });
+      return res.status(403).json({ message: "Employee is not active" });
     }
 
     const match = await bcrypt.compare(password, findEmployee.password);
@@ -351,21 +352,29 @@ const loginEmployee = async (req, res) => {
         shift: findEmployee.shift,
       },
       process.env.JWT_SECRET_KEY,
-      { expiresIn: "1y" }
+      { expiresIn: "15m" }
     );
 
-    if (!accessToken) {
-      return res
-        .status(500)
-        .json({ message: "Failed to generate access token" });
-    }
+    const refreshToken = jwt.sign(
+      { id: findEmployee._id },
+      process.env.JWT_REFRESH_SECRET,
+      { expiresIn: "7d" } 
+    );
 
-    res
-      .status(200)
-      .json({ findEmployee, accessToken, message: "Login successful" });
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 أيام
+    });
+
+    res.status(200).json({
+      message: "Login successful",
+      accessToken,
+    });
   } catch (error) {
     console.error("Error logging in:", error);
-    res.status(500).json({ message: "Internal server error", error });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 

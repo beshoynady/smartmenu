@@ -11,7 +11,7 @@ const {
   deleteEmployee,
 } = require("../controllers/Employee.controller.js");
 
-const authenticateToken = require("../utlits/authenticate");
+const {authenticateToken, refreshAccessToken} = require("../utlits/authenticate");
 const checkSubscription = require("../utlits/checkSubscription");
 
 router.route("/create-first").post(createFirstEmployee);
@@ -29,5 +29,5 @@ router
   .delete(authenticateToken, checkSubscription, deleteEmployee);
 
 router.route("/login").post(loginEmployee);
-
+router.route("/refresh-token").post(refreshAccessToken);
 module.exports = router;

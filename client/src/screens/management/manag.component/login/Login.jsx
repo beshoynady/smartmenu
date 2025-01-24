@@ -50,7 +50,7 @@ const Login = () => {
       const response = await axios.post(`${apiUrl}/api/employee/login`, {
         phone,
         password,
-      });
+      },{ withCredentials: true });
       if (response && response.data) {
         const { data } = response;
         toast.success("تم تسجيل الدخول بنجاح");
