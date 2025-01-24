@@ -70,6 +70,10 @@ const StockItemSchema = new mongoose.Schema(
       ref: "Employee",
       required: true,
     },
+    updatedBy: {
+      type: ObjectId,
+      ref: "Employee",
+    },
     notes: {
       type: String,
       trim: true,

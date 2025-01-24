@@ -4,7 +4,7 @@ const {
   createFirstEmployee,
   createEmployee,
   updateEmployee,
-  getoneEmployee,
+  getOneEmployee,
   loginEmployee,
   getAllEmployee,
   getCountEmployees,
@@ -24,7 +24,7 @@ router
 
 router
   .route("/:employeeId")
-  .get(authenticateToken, checkSubscription, getoneEmployee)
+  .get(authenticateToken, checkSubscription, getOneEmployee)
   .put(authenticateToken, checkSubscription, updateEmployee)
   .delete(authenticateToken, checkSubscription, deleteEmployee);
 

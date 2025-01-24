@@ -164,8 +164,8 @@ const createEmployee = async (req, res) => {
       return res.status(409).json({ message: "This phone is already in use" });
     }
 
-    const isEmployeenumberIDFound = await EmployeeModel.findOne({ numberID });
-    if (isEmployeenumberIDFound) {
+    const isEmployeeNumberIDFound = await EmployeeModel.findOne({ numberID });
+    if (isEmployeeNumberIDFound) {
       return res
         .status(409)
         .json({ message: "This numberID is already in use" });
@@ -297,7 +297,7 @@ const updateEmployee = async (req, res) => {
   }
 };
 
-const getoneEmployee = async (req, res) => {
+const getOneEmployee = async (req, res) => {
   try {
     const employeeId = req.params.employeeId;
     const employee = await EmployeeModel.findById(employeeId)
@@ -426,7 +426,7 @@ module.exports = {
   createFirstEmployee,
   createEmployee,
   updateEmployee,
-  getoneEmployee,
+  getOneEmployee,
   loginEmployee,
   getAllEmployee,
   getCountEmployees,

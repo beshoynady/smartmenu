@@ -43,6 +43,8 @@ const StockMovementSchema = new mongoose.Schema(
         "Damaged",
         "stockAdjustment",
         "OpeningBalance",
+        "Transfer",
+        "ReturnTransfer",
       ],
       required: true,
     },
