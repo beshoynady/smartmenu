@@ -14,6 +14,9 @@ const Store = () => {
   };
 
   const {
+    employeeLoginInfo,
+    formatDate,
+    formatDateTime,
     permissionsList,
     setisLoading,
     EditPagination,
@@ -142,7 +145,7 @@ const Store = () => {
     newStorekeepers[index] = e.target.value;
     setStorekeeper(newStorekeepers);
   };
-  
+
   // Create store
   const createStore = async (e) => {
     e.preventDefault();
