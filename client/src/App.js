@@ -1954,26 +1954,26 @@ function App() {
   };
 
   const getPermissions = async (decodedToken) => {
-    // try {
-    //   const id = decodedToken.id;
+    try {
+      const id = decodedToken.id;
 
-    //   if (id) {
-    //     const response = await axios.get(
-    //       `${apiUrl}/api/permission/employee/${id}`,
-    //       config
-    //     );
-    //     if (response.status === 200) {
-    //       const data = response.data.Permissions;
-    //       setPermissionsList(data);
-    //     } else {
-    //       throw new Error(
-    //         "Failed to fetch permissions: Unexpected status code"
-    //       );
-    //     }
-    //   }
-    // } catch (error) {
-    //   console.error("Error fetching permissions:", error.message);
-    // }
+      if (id) {
+        const response = await axios.get(
+          `${apiUrl}/api/permission/employee/${id}`,
+          config
+        );
+        if (response.status === 200) {
+          const data = response.data.Permissions;
+          setPermissionsList(data);
+        } else {
+          throw new Error(
+            "Failed to fetch permissions: Unexpected status code"
+          );
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching permissions:", error.message);
+    }
   };
 
   //######### get order ditalis by serial

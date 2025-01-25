@@ -7,7 +7,7 @@ const refreshSecretKey = process.env.JWT_REFRESH_SECRET;
 
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers.authorization || req.headers.Authorization; // "Bearer token"
-  console.log({ authHeader });
+  // console.log({ authHeader });
 
   if (!authHeader) {
     return res.status(401).json({ message: "Unauthorized: Token unfound" }); // Unauthorized
