@@ -371,6 +371,7 @@ const loginEmployee = async (req, res) => {
     res.status(200).json({
       message: "Login successful",
       accessToken,
+      findEmployee
     });
   } catch (error) {
     console.error("Error logging in:", error);
