@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import './ManagLayout.css';
 import { dataContext } from '../../App';
 import { Navigate } from 'react-router-dom';
@@ -7,13 +7,16 @@ import NavBar from './manag.component/navbar/NavBar';
 import SideBar from './manag.component/sidebar/SideBar';
 import { ToastContainer } from 'react-toastify';
 
-
-
-
 const ManagLayout = () => {
   const { employeeLoginInfo } = useContext(dataContext);
 
-  const isLoggedIn = employeeLoginInfo?.isAdmin && employeeLoginInfo?.isActive;
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    console.log({ employeeLoginInfo });
+    const isActive = employeeLoginInfo?.isAdmin && employeeLoginInfo?.isActive;
+    setIsLoggedIn(isActive);
+  }, [employeeLoginInfo]);
 
   if (!isLoggedIn) {
     return <Navigate to='/login' />;
@@ -22,10 +25,10 @@ const ManagLayout = () => {
   return (
     <div className='manag-body'>
       <ToastContainer />
-      <main className='content'>
-        <NavBar />
+      <NavBar />
+      <div className='content'>
         <Outlet />
-      </main>
+      </div>
       <SideBar />
     </div>
   );

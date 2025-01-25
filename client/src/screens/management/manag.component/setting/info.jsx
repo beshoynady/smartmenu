@@ -52,13 +52,11 @@ const Info = () => {
     }
   };
 
-  // إضافة وردية جديدة
   const addShift = () => {
     setShifts([...shifts, { shiftType: "", startTime: "", endTime: "" }]);
     console.log({ shifts });
   };
 
-  // حذف وردية
   const removeShift = async (index, id) => {
     const updatedShifts = shifts.filter((_, i) => i !== index);
     if (id) {
@@ -73,14 +71,12 @@ const Info = () => {
     setShifts(updatedShifts);
   };
 
-  // تحديث حقل اسم الوردية
   const handleShiftTypeChange = (index, event) => {
     const updatedShifts = [...shifts];
     updatedShifts[index].shiftType = event.target.value;
     setShifts(updatedShifts);
   };
 
-  // تحديث حقل ميعاد بداية الوردية
   const handleStartTimeChange = (index, event) => {
     const updatedShifts = [...shifts];
     updatedShifts[index].startTime = event.target.value;
