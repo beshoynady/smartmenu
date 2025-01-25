@@ -1884,7 +1884,7 @@ function App() {
       const response = await axios.post(
         `${apiUrl}/api/employee/refresh-token`,
         {},
-        { withCredentials: true } // إرسال الكوكيز مع الطلب
+        { withCredentials: true }
       );
 
       if (response && response.data.accessToken) {
@@ -1894,21 +1894,19 @@ function App() {
     } catch (error) {
       console.error("Error refreshing token:", error);
       toast.error("انتهت صلاحية الجلسة. الرجاء تسجيل الدخول مرة أخرى.");
-      window.location.href = "/login"; // إعادة التوجيه إلى صفحة تسجيل الدخول
-      return null;
+      return <Navigate to='/login' />;
     }
   };
 
-  // دالة للتحقق من صلاحية التوكن
   const verifyToken = async () => {
     const employeeToken = localStorage.getItem("token_e");
     if (!employeeToken) {
-      await refreshToken(); // تحديث التوكن إذا لم يكن موجودًا
+      await refreshToken(); 
     } else {
       const decodedToken = jwt_decode(employeeToken);
-      const currentTime = Date.now() / 1000; // الوقت الحالي بالثواني
+      const currentTime = Date.now() / 1000; 
       if (decodedToken.exp < currentTime) {
-        await refreshToken(); // تحديث التوكن إذا انتهت صلاحيته
+        await refreshToken(); 
       }
     }
   };
