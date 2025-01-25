@@ -1876,7 +1876,7 @@ function App() {
   const [employeeLoginInfo, setEmployeeLoginInfo] = useState(null);
   const [clientInfo, setClientInfo] = useState({});
 
-  const [isTokenValid, setIsTokenValid] = useState(false);
+  const [isTokenValid, setIsTokenValid] = useState(true);
 
 
   const refreshToken = async () => {
