@@ -1,6 +1,6 @@
 {
   "name": "elbaronpark-client",
-  "main": "server.js",
+  "main": "App.js",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
