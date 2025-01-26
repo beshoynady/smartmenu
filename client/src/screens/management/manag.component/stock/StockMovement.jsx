@@ -296,12 +296,12 @@ const StockMovement = () => {
       }
      
      if(source === "Issuance"){
-      const costOfPart = outbound.unitCost
-      console.log({costOfPart})
+      const costPerPart = outbound.unitCost
+      console.log({costPerPart})
        const setcostUnit = await axios.put(
         `${apiUrl}/api/stockitem/${itemId}`,
         {
-          costOfPart
+          costPerPart
         },
         config
       );
@@ -380,7 +380,7 @@ const StockMovement = () => {
           const addCostOfUnit = await axios.put(
             `${apiUrl}/api/stockitem/${itemId}`,
             {
-              costOfPart: Number(outbound.unitCost) / Number(parts),
+              costPerPart: Number(outbound.unitCost) / Number(parts),
             },
             config
           );
@@ -568,10 +568,10 @@ const StockMovement = () => {
     const selectedItem = StockItems.find((item) => item._id === e.target.value);
     console.log({ selectedItem });
     if (selectedItem) {
-      const { _id, itemName, largeUnit, parts, costMethod } = selectedItem;
+      const { _id, itemName, storageUnit, parts, costMethod } = selectedItem;
       setItemId(_id);
       setItemName(itemName);
-      setunit(largeUnit);
+      setunit(storageUnit);
       setParts(parts);
       setCostMethod(costMethod);
     }

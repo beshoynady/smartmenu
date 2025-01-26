@@ -162,7 +162,7 @@ const Purchase = () => {
       const source = "Purchase";
       const stockItem = StockItems.filter((item) => item._id === itemId)[0];
 
-      const unit = stockItem.largeUnit;
+      const unit = stockItem.storageUnit;
       const categoryId = stockItem.categoryId?._id;
       const costMethod = stockItem.costMethod;
 
@@ -228,12 +228,12 @@ const Purchase = () => {
       //   const arrayingredients = recipe.ingredients;
 
       //   const newIngredients = arrayingredients.map((ingredient) => {
-      //     // console.log({ingredient, costOfPart, amount : ingredient.amount})
+      //     // console.log({ingredient, costPerPart, amount : ingredient.amount})
       //     if (ingredient.itemId === itemId) {
-      //       const costofitem = costOfPart;
+      //       const costofitem = costPerPart;
       //       const unit = ingredient.unit;
       //       const amount = ingredient.amount;
-      //       const totalcostofitem = amount * costOfPart;
+      //       const totalcostofitem = amount * costPerPart;
       //       return {
       //         itemId,
       //         name: itemName,
@@ -374,7 +374,7 @@ const Purchase = () => {
     {
       itemId: "",
       quantity: 0,
-      largeUnit: "",
+      storageUnit: "",
       price: 0,
       cost: 0,
       expirationDate: "",
@@ -388,7 +388,7 @@ const Purchase = () => {
         itemId: "",
         quantity: 0,
         price: 0,
-        largeUnit: "",
+        storageUnit: "",
         cost: 0,
         expirationDate: "",
       },
@@ -405,7 +405,7 @@ const Purchase = () => {
     const stockitem = StockItems.filter((item) => item._id === id)[0];
     const updatedItems = [...items];
     updatedItems[index].itemId = stockitem._id;
-    updatedItems[index].largeUnit = stockitem.largeUnit;
+    updatedItems[index].storageUnit = stockitem.storageUnit;
     console.log({ updatedItems });
     setItems(updatedItems);
   };
@@ -1356,9 +1356,9 @@ const Purchase = () => {
                               <input
                                 type="text"
                                 readOnly
-                                value={item.largeUnit}
+                                value={item.storageUnit}
                                 className="form-control p-0 m-0"
-                                name="largeUnit"
+                                name="storageUnit"
                               />
                             </td>
 
@@ -1836,8 +1836,8 @@ const Purchase = () => {
                               <input
                                 type="text"
                                 className="form-control p-0 m-0"
-                                name="largeUnit"
-                                value={item.largeUnit}
+                                name="storageUnit"
+                                value={item.storageUnit}
                                 readOnly
                               />
                             </td>

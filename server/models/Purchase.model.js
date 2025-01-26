@@ -25,7 +25,7 @@ const purchaseInvoiceSchema = new mongoose.Schema({
       required: true
     },
     quantity: { type: Number, required: true },
-    largeUnit: { type: String, required: true },
+    storageUnit: { type: String, required: true },
     price: { type: Number, required: true },
     cost: { type: Number, required: true },
     expirationDate: { type: Date }

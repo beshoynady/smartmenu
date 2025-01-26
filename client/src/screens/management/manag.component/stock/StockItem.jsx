@@ -38,14 +38,14 @@ const StockItem = () => {
     )[0];
 
   // State variables for creating or editing a stock item
-  const [itemCode, setItemCode] = useState(""); // For item code
+  const [SKU, setSKU] = useState(""); // For item code
   const [itemName, setItemName] = useState(""); // For item name
   const [categoryId, setCategoryId] = useState(""); // For category ID
   const [stores, setstores] = useState([]);
-  const [largeUnit, setLargeUnit] = useState(""); // For large unit
+  const [storageUnit, setLargeUnit] = useState(""); // For large unit
   const [parts, setParts] = useState(""); // For parts
-  const [smallUnit, setSmallUnit] = useState(""); // For small unit
-  const [costOfPart, setcostOfPart] = useState(0); // For small unit
+  const [ingredientUnit, setSmallUnit] = useState(""); // For small unit
+  const [costPerPart, setcostPerPart] = useState(0); // For small unit
   const [minThreshold, setMinThreshold] = useState(""); // For minimum threshold
   const [costMethod, setCostMethod] = useState(""); // For cost method (if necessary)
   const [suppliers, setSuppliers] = useState([]); // For suppliers (if necessary)
@@ -73,7 +73,7 @@ const StockItem = () => {
   };
   
 
-  const generateItemCode = () => {
+  const generateSKU = () => {
     if (!categoryId) {
       toast.warn("اختر اولا التصنيف ");
       return;
@@ -96,8 +96,8 @@ const StockItem = () => {
       return `${categoryCode}-${String(itemOrder).padStart(4, "0")}`;
     }
 
-    const itemCodeGenerated = generate(categoryCode, itemOrder);
-    setItemCode(itemCodeGenerated);
+    const SKUGenerated = generate(categoryCode, itemOrder);
+    setSKU(SKUGenerated);
   };
 
   const createItem = async (e) => {
@@ -114,7 +114,7 @@ const StockItem = () => {
       const isItemDuplicate =
         AllStockItems &&
         AllStockItems.some(
-          (item) => item.itemName === itemName || item.itemCode === itemCode
+          (item) => item.itemName === itemName || item.SKU === SKU
         );
 
       if (isItemDuplicate) {
@@ -127,13 +127,13 @@ const StockItem = () => {
       const response = await axios.post(
         `${apiUrl}/api/stockitem/`,
         {
-          itemCode,
+          SKU,
           itemName,
           categoryId,
           stores,
-          largeUnit,
+          storageUnit,
           parts,
-          smallUnit,
+          ingredientUnit,
           minThreshold,
           costMethod,
           isActive,
@@ -143,7 +143,7 @@ const StockItem = () => {
       );
       console.log(response.data);
 
-      if (response.data.error === "Item itemCode already exists") {
+      if (response.data.error === "Item SKU already exists") {
         toast.warn("هذا الكود موجود من قبل");
       }
 
@@ -159,7 +159,7 @@ const StockItem = () => {
       toast.error("فشل في إنشاء عنصر المخزون");
     } finally {
       setstockitem({});
-      setItemCode("");
+      setSKU("");
       setStockItemId("");
       setstores([]);
       setCategoryId("");
@@ -192,13 +192,13 @@ const StockItem = () => {
       const response = await axios.put(
         `${apiUrl}/api/stockitem/${stockItemId}`,
         {
-          itemCode,
+          SKU,
           itemName,
           categoryId,
           stores,
-          largeUnit,
+          storageUnit,
           parts,
-          smallUnit,
+          ingredientUnit,
           minThreshold,
           costMethod,
           isActive,
@@ -220,7 +220,7 @@ const StockItem = () => {
       toast.error("فشل في تحديث عنصر المخزون");
     } finally {
       setstockitem({});
-      setItemCode("");
+      setSKU("");
       setStockItemId("");
       setstores([]);
       setCategoryId("");
@@ -346,13 +346,13 @@ const StockItem = () => {
   const handelEditStockItemModal = (stockitem) => {
     const item = JSON.parse(stockitem);
     setstockitem(item);
-    setItemCode(item.itemCode);
+    setSKU(item.SKU);
     setStockItemId(item._id);
     setCategoryId(item.categoryId?._id);
     setItemName(item.itemName);
     setMinThreshold(item.minThreshold);
-    setLargeUnit(item.largeUnit);
-    setSmallUnit(item.smallUnit);
+    setLargeUnit(item.storageUnit);
+    setSmallUnit(item.ingredientUnit);
     setParts(item.parts);
     setCostMethod(item.costMethod);
     setNotes(item.notes);
@@ -548,7 +548,7 @@ const StockItem = () => {
                         }`}
                       >
                         <td>{i + 1}</td>
-                        <td>{item.itemCode}</td>
+                        <td>{item.SKU}</td>
                         <td>{item.itemName}</td>
                         <td>
                           {item.stores
@@ -556,12 +556,12 @@ const StockItem = () => {
                             .join(" - ")}
                         </td>
                         <td>{item.categoryId?.categoryName}</td>
-                        <td>{item.largeUnit}</td>
+                        <td>{item.storageUnit}</td>
                         <td>{item.parts}</td>
-                        <td>{item.smallUnit}</td>
+                        <td>{item.ingredientUnit}</td>
                         <td>{item.minThreshold}</td>
                         <td>{item.costMethod}</td>
-                        <td>{item.costOfPart}</td>
+                        <td>{item.costPerPart}</td>
                         <td>
                           {/* {item.suppliers.map(
                             (supplier, i) =>
@@ -779,14 +779,14 @@ const StockItem = () => {
                     <input
                       type="text"
                       className="form-control border-primary m-0 p-2 h-auto"
-                      value={itemCode}
-                      onChange={(e) => setItemCode(e.target.value)}
+                      value={SKU}
+                      onChange={(e) => setSKU(e.target.value)}
                     />
                     <input
                       type="button"
                       className="btn btn-primary ms-2 m-0 p-2 h-auto"
                       value="انشاء كود"
-                      onClick={generateItemCode}
+                      onClick={generateSKU}
                     />
                   </div>
                 </div>
@@ -1002,14 +1002,14 @@ const StockItem = () => {
                     <input
                       type="text"
                       className="form-control border-primary m-0 p-2 h-auto"
-                      value={itemCode}
-                      onChange={(e) => setItemCode(e.target.value)}
+                      value={SKU}
+                      onChange={(e) => setSKU(e.target.value)}
                     />
                     <input
                       type="button"
                       className="btn btn-primary ms-2 m-0 p-2 h-auto"
                       value="انشاء كود"
-                      onClick={generateItemCode}
+                      onClick={generateSKU}
                     />
                   </div>
                 </div>
@@ -1020,7 +1020,7 @@ const StockItem = () => {
                   <input
                     type="text"
                     className="form-control border-primary m-0 p-2 h-auto"
-                    defaultValue={largeUnit}
+                    defaultValue={storageUnit}
                     onChange={(e) => setLargeUnit(e.target.value)}
                   ></input>
                 </div>
@@ -1031,7 +1031,7 @@ const StockItem = () => {
                   <input
                     type="text"
                     className="form-control border-primary m-0 p-2 h-auto"
-                    defaultValue={smallUnit}
+                    defaultValue={ingredientUnit}
                     onChange={(e) => setSmallUnit(e.target.value)}
                   ></input>
                 </div>

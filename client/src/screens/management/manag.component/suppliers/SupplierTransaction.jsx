@@ -400,7 +400,7 @@ const SupplierTransaction = () => {
                       <td>{Transaction.recordedBy?.fullname}</td>
                       <td>{Transaction.createdAt && formatDateTime(Transaction.createdAt)}</td>
                       <td>
-                        {/* <a href="#editSupplierTransactionModal" className="edit" data-toggle="modal" onClick={() => { setStockItemid(item._id); setcategoryId(item.categoryId); setitemName(item.itemName); setBalance(item.Balance); setlargeUnit(item.largeUnit); setsmallUnit(item.smallUnit); setprice(item.price); setparts(item.parts); setcostOfPart(item.costOfPart); setminThreshold(item.minThreshold); settotalCost(item.totalCost) }}><i className="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+                        {/* <a href="#editSupplierTransactionModal" className="edit" data-toggle="modal" onClick={() => { setStockItemid(item._id); setcategoryId(item.categoryId); setitemName(item.itemName); setBalance(item.Balance); setlargeUnit(item.storageUnit); setsmallUnit(item.ingredientUnit); setprice(item.price); setparts(item.parts); setcostPerPart(item.costPerPart); setminThreshold(item.minThreshold); settotalCost(item.totalCost) }}><i className="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
                                 <a href="#deleteSupplierTransactionModal" className="delete" data-toggle="modal" onClick={() => setStockItemid(item._id)}><i className="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a> */}
                       </td>
                     </tr>
@@ -525,11 +525,11 @@ const SupplierTransaction = () => {
 
                         <div className="form-group col-12 col-md-6">
                           <label className="form-label text-wrap text-right fw-bolder p-0 m-0">الوحدة الكبيرة</label>
-                          <input type='text' className="form-control border-primary m-0 p-2 h-auto" defaultValue={largeUnit} required onChange={(e) => setlargeUnit(e.target.value)}></input>
+                          <input type='text' className="form-control border-primary m-0 p-2 h-auto" defaultValue={storageUnit} required onChange={(e) => setlargeUnit(e.target.value)}></input>
                         </div>
                         <div className="form-group col-12 col-md-6">
                           <label className="form-label text-wrap text-right fw-bolder p-0 m-0">الوحدة الصغيره</label>
-                          <input type='text' className="form-control border-primary m-0 p-2 h-auto" defaultValue={smallUnit} required onChange={(e) => setsmallUnit(e.target.value)}></input>
+                          <input type='text' className="form-control border-primary m-0 p-2 h-auto" defaultValue={ingredientUnit} required onChange={(e) => setsmallUnit(e.target.value)}></input>
                         </div>
                         <div className="form-group col-12 col-md-6">
                           <label className="form-label text-wrap text-right fw-bolder p-0 m-0">رصيد افتتاحي</label>
@@ -550,11 +550,11 @@ const SupplierTransaction = () => {
                         </div>
                         <div className="form-group col-12 col-md-6">
                           <label className="form-label text-wrap text-right fw-bolder p-0 m-0">عدد الوحدات</label>
-                          <input type='Number' className="form-control border-primary m-0 p-2 h-auto" defaultValue={parts} required onChange={(e) => { setparts(e.target.value); setcostOfPart(price / e.target.value) }} />
+                          <input type='Number' className="form-control border-primary m-0 p-2 h-auto" defaultValue={parts} required onChange={(e) => { setparts(e.target.value); setcostPerPart(price / e.target.value) }} />
                         </div>
                         <div className="form-group col-12 col-md-6">
                           <label className="form-label text-wrap text-right fw-bolder p-0 m-0">تكلفة الوحده</label>
-                          <input type='Number' className="form-control border-primary m-0 p-2 h-auto" required defaultValue={costOfPart} readOnly />
+                          <input type='Number' className="form-control border-primary m-0 p-2 h-auto" required defaultValue={costPerPart} readOnly />
                         </div>
                         <div className="form-group col-12 col-md-6">
                           <label className="form-label text-wrap text-right fw-bolder p-0 m-0">التاريخ</label>

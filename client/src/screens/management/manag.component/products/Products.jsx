@@ -523,7 +523,7 @@ const Products = () => {
 
     ingredients &&
       ingredients.map((ingredient) => {
-        const costPart = ingredient.itemId?.costOfPart;
+        const costPart = ingredient.itemId?.costPerPart;
         const costOfIngerdient = Number(ingredient.amount) * Number(costPart);
         total += costOfIngerdient;
       });

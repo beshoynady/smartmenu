@@ -812,7 +812,7 @@ const SectionConsumption = () => {
                       const selectedStockItem = AllStockItems.find(
                         (item) => item._id === e.target.value
                       );
-                      setUnit(selectedStockItem.smallUnit);
+                      setUnit(selectedStockItem.ingredientUnit);
                     }}
                     required
                   >

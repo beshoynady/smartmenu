@@ -35,16 +35,16 @@ const StockMovementSchema = new mongoose.Schema(
     source: {
       type: String,
       enum: [
+        "OpeningBalance",
         "Purchase",
         "ReturnPurchase",
         "Issuance",
         "ReturnIssuance",
         "Wastage",
         "Damaged",
-        "stockAdjustment",
-        "OpeningBalance",
         "Transfer",
         "ReturnTransfer",
+        "stockAdjustment",
       ],
       required: true,
     },

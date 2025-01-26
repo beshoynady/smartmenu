@@ -27,7 +27,7 @@ const purchaseReturnInvoiceSchema = new mongoose.Schema({
             description: 'معرف الصنف المرتجع'
         },
         quantity: { type: Number, required: true, description: 'الكمية المرتجعة للصنف' },
-        largeUnit: { type: String, required: true, description: 'وحدة القياس الكبرى للصنف' },
+        storageUnit: { type: String, required: true, description: 'وحدة القياس الكبرى للصنف' },
         price: { type: Number, required: true, description: 'سعر الصنف المرتجع' },
         cost: { type: Number, required: true, description: 'تكلفة الصنف المرتجع' },
         expirationDate: { type: Date, description: 'تاريخ انتهاء صلاحية الصنف المرتجع' }

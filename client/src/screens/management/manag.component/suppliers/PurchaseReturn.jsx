@@ -158,12 +158,12 @@ const PurchaseReturn = () => {
       const oldBalance = stockItem.currentBalance
       const parts = stockItem.parts
       const currentBalance = Number(oldBalance) - Number(quantity);
-      const unit = stockItem.largeUnit
-      const costOfPart = Math.round((Number(costOfItem) / Number(parts)) * 100) / 100;
-      console.log({ itemPercentage, itemAdditionalCost, costOfItem, parts, price, costOfPart })
+      const unit = stockItem.storageUnit
+      const costPerPart = Math.round((Number(costOfItem) / Number(parts)) * 100) / 100;
+      console.log({ itemPercentage, itemAdditionalCost, costOfItem, parts, price, costPerPart })
       // Update the stock item's movement
       const changeItem = await axios.put(`${apiUrl}/api/stockitem/movement/${itemId}`,
-        { currentBalance, price, costOfPart }, config);
+        { currentBalance, price, costPerPart }, config);
       console.log(changeItem);
 
       if (changeItem.status === 200) {
@@ -191,10 +191,10 @@ const PurchaseReturn = () => {
 
         //   const newIngredients = arrayingredients.map((ingredient) => {
         //     if (ingredient.itemId === itemId) {
-        //       const costofitem = costOfPart;
+        //       const costofitem = costPerPart;
         //       const unit = ingredient.unit
         //       const amount = ingredient.amount
-        //       const totalcostofitem = amount * costOfPart
+        //       const totalcostofitem = amount * costPerPart
         //       return { itemId, name: itemName, amount, costofitem, unit, totalcostofitem };
         //     } else {
         //       return ingredient;
@@ -239,7 +239,7 @@ const PurchaseReturn = () => {
 
   const [returnedItems, setreturnedItems] = useState([]);
   const handleNewItem = () => {
-    setreturnedItems([...returnedItems, { itemId: '', quantity: 0, price: 0, largeUnit: '', cost: 0, expirationDate: '' }])
+    setreturnedItems([...returnedItems, { itemId: '', quantity: 0, price: 0, storageUnit: '', cost: 0, expirationDate: '' }])
   }
 
   const handleDeleteItem = (index) => {
@@ -252,7 +252,7 @@ const PurchaseReturn = () => {
     const stockitem = StockItems.filter(item => item._id === id)[0]
     const updatedItems = [...returnedItems]
     updatedItems[index].itemId = stockitem._id
-    updatedItems[index].largeUnit = stockitem.largeUnit
+    updatedItems[index].storageUnit = stockitem.storageUnit
     console.log({ updatedItems })
     setreturnedItems(updatedItems)
 
@@ -466,7 +466,7 @@ const PurchaseReturn = () => {
       const items = []
       returnedItems.map(item => {
         if (item.quantity > 0) {
-          const i = { itemId: item.itemId?._id, quantity: item.quantity, price: item.price, largeUnit: item.largeUnit, cost: item.cost, expirationDate: item.expirationDate }
+          const i = { itemId: item.itemId?._id, quantity: item.quantity, price: item.price, storageUnit: item.storageUnit, cost: item.cost, expirationDate: item.expirationDate }
           items.push(i)
           console.log({ i })
         }
@@ -959,7 +959,7 @@ const PurchaseReturn = () => {
                             <td><input type="text" className="form-control p-0 m-0" name="qty" value={item.itemId?.itemName} readOnly /></td>
                             <td><input type="text" required className="form-control p-0 m-0" max={item.quantity} value={item.quantity} name="qty" onChange={(e) => handleQuantity(Number(e.target.value), i)} /></td>
 
-                            <td><input type="text" readOnly value={item.largeUnit} className="form-control p-0 m-0" name="largeUnit" /></td>
+                            <td><input type="text" readOnly value={item.storageUnit} className="form-control p-0 m-0" name="storageUnit" /></td>
 
                             <td><input type="number" className="form-control p-0 m-0" name="price" required value={item.price} onChange={(e) => handlePrice(Number(e.target.value), i)} /></td>
 
@@ -1187,7 +1187,7 @@ const PurchaseReturn = () => {
                             <td><input type="text" className="form-control p-0 m-0" name="qty" value={item.itemId?.itemName} readOnly /></td>
                             <td><input type="text" className="form-control p-0 m-0" value={item.quantity} name="qty" readOnly /></td>
 
-                            <td><input type="text" readOnly value={item.largeUnit} className="form-control p-0 m-0" name="largeUnit" /></td>
+                            <td><input type="text" readOnly value={item.storageUnit} className="form-control p-0 m-0" name="storageUnit" /></td>
 
                             <td><input type="number" className="form-control p-0 m-0" name="price" readOnly value={item.price} /></td>
 
@@ -1358,7 +1358,7 @@ const PurchaseReturn = () => {
                                       </select>
                                     </td>
                                     <td><input type="number" required className="form-control border-primary m-0 p-2 h-auto" name="qty" onChange={(e) => handleQuantity(e.target.value, i)} /></td>
-                                    <td><input type="text" readOnly value={item.largeUnit} className="form-control border-primary m-0 p-2 h-auto" name="largeUnit" /></td>
+                                    <td><input type="text" readOnly value={item.storageUnit} className="form-control border-primary m-0 p-2 h-auto" name="storageUnit" /></td>
 
                                     <td><input type="number" className="form-control border-primary m-0 p-2 h-auto" name="price" required onChange={(e) => handlePrice(e.target.value, i)} /></td>
 

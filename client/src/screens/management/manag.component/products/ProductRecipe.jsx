@@ -436,7 +436,7 @@ const ProductRecipe = () => {
     let total = 0;
 
     ingredients?.forEach((ingredient) => {
-      const costPart = Number(ingredient.itemId?.costOfPart) || 0;
+      const costPart = Number(ingredient.itemId?.costPerPart) || 0;
       const amount = Number(ingredient.amount) || 0;
       const costOfIngredient = amount * costPart;
       total += costOfIngredient;
@@ -449,7 +449,7 @@ const ProductRecipe = () => {
     let total = 0;
 
     serviceDetails.dineIn?.forEach((dineIn) => {
-      const costPart = Number(AllStockItems.find(stock=>stock._id===dineIn.itemId)?.costOfPart) || 0;
+      const costPart = Number(AllStockItems.find(stock=>stock._id===dineIn.itemId)?.costPerPart) || 0;
       const amount = Number(dineIn.amount) || 0;
       const costOfDineIn = amount * costPart;
       total += costOfDineIn;
@@ -462,7 +462,7 @@ const ProductRecipe = () => {
     let total = 0;
 
     serviceDetails.delivery?.forEach((delivery) => {
-      const costPart = Number(AllStockItems.find(stock=>stock._id===delivery.itemId)?.costOfPart) || 0;
+      const costPart = Number(AllStockItems.find(stock=>stock._id===delivery.itemId)?.costPerPart) || 0;
       const amount = Number(delivery.amount) || 0;
       const costOfdelivery = amount * costPart;
       total += costOfdelivery;
@@ -475,7 +475,7 @@ const ProductRecipe = () => {
     let total = 0;
 
     serviceDetails.takeaway?.forEach((takeaway) => {
-      const costPart = Number(AllStockItems.find(stock=>stock._id===takeaway.itemId)?.costOfPart) || 0;
+      const costPart = Number(AllStockItems.find(stock=>stock._id===takeaway.itemId)?.costPerPart) || 0;
       const amount = Number(takeaway.amount) || 0;
       const costOftakeaway = amount * costPart;
       total += costOftakeaway;
@@ -914,10 +914,10 @@ const ProductRecipe = () => {
                           <td>{ingredient.name}</td>
                           <td>{ingredient.unit}</td>
                           <td>{ingredient.amount}</td>
-                          <td>{ingredient.itemId?.costOfPart}</td>
+                          <td>{ingredient.itemId?.costPerPart}</td>
                           <td>
                             {Number(ingredient.amount) *
-                              Number(ingredient.itemId?.costOfPart)}
+                              Number(ingredient.itemId?.costPerPart)}
                           </td>
                           <td>
                             <a
@@ -987,10 +987,10 @@ const ProductRecipe = () => {
                       <td>{dineIn.name}</td>
                       <td>{dineIn.unit}</td>
                       <td>{dineIn.amount}</td>
-                      <td>{AllStockItems.find(stock=>stock._id===dineIn.itemId)?.costOfPart}</td>
+                      <td>{AllStockItems.find(stock=>stock._id===dineIn.itemId)?.costPerPart}</td>
                       <td>
                         {Number(dineIn.amount) *
-                          Number(AllStockItems.find(stock=>stock._id===dineIn.itemId)?.costOfPart)}
+                          Number(AllStockItems.find(stock=>stock._id===dineIn.itemId)?.costPerPart)}
                       </td>
                       <td>
                         <a
@@ -1058,10 +1058,10 @@ const ProductRecipe = () => {
                       <td>{takeaway.name}</td>
                       <td>{takeaway.unit}</td>
                       <td>{takeaway.amount}</td>
-                      <td>{AllStockItems.find(stock=>stock._id===takeaway.itemId)?.costOfPart}</td>
+                      <td>{AllStockItems.find(stock=>stock._id===takeaway.itemId)?.costPerPart}</td>
                       <td>
                         {Number(takeaway.amount) *
-                          Number(AllStockItems.find(stock=>stock._id===takeaway.itemId)?.costOfPart)}
+                          Number(AllStockItems.find(stock=>stock._id===takeaway.itemId)?.costPerPart)}
                       </td>
                       <td>
                         <a
@@ -1129,10 +1129,10 @@ const ProductRecipe = () => {
                       <td>{delivery.name}</td>
                       <td>{delivery.unit}</td>
                       <td>{delivery.amount}</td>
-                      <td>{AllStockItems.find(stock=>stock._id===delivery.itemId)?.costOfPart}</td>
+                      <td>{AllStockItems.find(stock=>stock._id===delivery.itemId)?.costPerPart}</td>
                       <td>
                         {Number(delivery.amount) *
-                          Number(AllStockItems.find(stock=>stock._id===delivery.itemId)?.costOfPart)}
+                          Number(AllStockItems.find(stock=>stock._id===delivery.itemId)?.costPerPart)}
                       </td>
                       <td>
                         <a
@@ -1311,8 +1311,8 @@ const ProductRecipe = () => {
                       );
                       if (selectedItem) {
                         setname(selectedItem.itemName);
-                        setunit(selectedItem.smallUnit);
-                        setcostofitem(selectedItem.costOfPart);
+                        setunit(selectedItem.ingredientUnit);
+                        setcostofitem(selectedItem.costPerPart);
                       }
                     }}
                   >
@@ -1495,8 +1495,8 @@ const ProductRecipe = () => {
                       );
                       if (selectedItem) {
                         setname(selectedItem.itemName);
-                        setunit(selectedItem.smallUnit);
-                        setcostofitem(selectedItem.costOfPart);
+                        setunit(selectedItem.ingredientUnit);
+                        setcostofitem(selectedItem.costPerPart);
                       }
                     }}
                   >

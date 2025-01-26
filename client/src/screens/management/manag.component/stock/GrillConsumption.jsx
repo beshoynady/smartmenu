@@ -711,7 +711,7 @@ const GrillConsumption = () => {
                       setunit(
                         AllStockItems.filter(
                           (stock) => stock._id === e.target.value
-                        )[0].smallUnit
+                        )[0].ingredientUnit
                       );
                       setreceivedBy(employeeLoginInfo.id);
                       setstockItemName(

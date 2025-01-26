@@ -5,13 +5,13 @@ const StockItemsModel = require("../models/StockItems.model");
 const createStockItem = async (req, res) => {
   try {
     const {
-      itemCode,
+      SKU,
       itemName,
       categoryId,
       stores,
-      largeUnit,
+      storageUnit,
       parts,
-      smallUnit,
+      ingredientUnit,
       minThreshold,
       costMethod,
       suppliers,
@@ -20,21 +20,21 @@ const createStockItem = async (req, res) => {
     } = req.body;
     const createdBy = req.employee.id;
 
-    // Check for unique itemCode
-    const existingItem = await StockItemsModel.findOne({ itemCode });
+    // Check for unique SKU
+    const existingItem = await StockItemsModel.findOne({ SKU });
     if (existingItem) {
       return res.status(400).json({ error: "Item code already exists" });
     }
 
     // Create new stock item
     const newStockItem = await StockItemsModel.create({
-      itemCode,
+      SKU,
       itemName,
       categoryId,
       stores,
-      largeUnit,
+      storageUnit,
       parts,
-      smallUnit,
+      ingredientUnit,
       minThreshold,
       costMethod,
       suppliers,
@@ -92,7 +92,7 @@ const updateStockItem = async (req, res) => {
       return res.status(400).json({ error: "Invalid item ID format" });
     }
 
-    const existingItem = await StockItemsModel.findOne({ itemCode: updatedData.itemCode });
+    const existingItem = await StockItemsModel.findOne({ SKU: updatedData.SKU });
     if (existingItem && existingItem._id.toString() !== itemId) {
       return res.status(400).json({ error: "Item code already exists" });
     }

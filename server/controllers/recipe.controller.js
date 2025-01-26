@@ -166,19 +166,19 @@ const getOneRecipe = async (req, res) => {
       .populate("productId", "_id name")
       .populate(
         "ingredients.itemId",
-        "_id itemName costOfPart minThreshold"
+        "_id itemName costPerPart minThreshold"
       )
       .populate(
         "serviceDetails.dineIn.itemId",
-        "_id itemName costOfPart minThreshold"
+        "_id itemName costPerPart minThreshold"
       )
       .populate(
         "serviceDetails.takeaway.itemId",
-        "_id itemName costOfPart minThreshold"
+        "_id itemName costPerPart minThreshold"
       )
       .populate(
         "serviceDetails.delivery.itemId",
-        "_id itemName costOfPart minThreshold"
+        "_id itemName costPerPart minThreshold"
       );
 
     if (!recipe) {
@@ -198,19 +198,19 @@ const getAllRecipe = async (req, res) => {
       .populate("productId", "_id name")
       .populate(
         "ingredients.itemId",
-        "_id itemName costOfPart minThreshold"
+        "_id itemName costPerPart minThreshold"
       )
       .populate(
         "serviceDetails.dineIn.itemId",
-        "_id itemName costOfPart minThreshold"
+        "_id itemName costPerPart minThreshold"
       )
       .populate(
         "serviceDetails.takeaway.itemId",
-        "_id itemName costOfPart minThreshold"
+        "_id itemName costPerPart minThreshold"
       )
       .populate(
         "serviceDetails.delivery.itemId",
-        "_id itemName costOfPart minThreshold"
+        "_id itemName costPerPart minThreshold"
       );
 
     res.status(200).json(recipes);
