@@ -24,8 +24,6 @@ const PurchaseReturn = () => {
     setEndPagination,
     handleGetTokenAndConfig,
     apiUrl,
-    handleGetTokenAndConfig,
-    apiUrl,
   } = useContext(dataContext);
 
   const purchaseReturnPermission = permissionsList?.filter(
