@@ -16,15 +16,11 @@ const Waiter = () => {
     BarSocket,
     GrillSocket,
     waiterSocket,
-  } = useContext(dataContext);
+  apiUrl,
+handleGetTokenAndConfig,
+} = useContext(dataContext);
 
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const token = localStorage.getItem("token_e");
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
+  
 
   // Refs for buttons
   const start = useRef();
@@ -36,11 +32,7 @@ const Waiter = () => {
 
   // Function to fetch pending orders and payments
   const fetchActivePreparationTickets = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const res = await axios.get(
         apiUrl + "/api/preparationticket/activepreparationtickets",
@@ -113,11 +105,7 @@ const Waiter = () => {
 
   const updateOrderOnWay = async (id) => {
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
       const preparationStatus = "On the way";
       try {
         await axios.put(
@@ -188,11 +176,7 @@ const Waiter = () => {
 
   const helpOnWay = async (id) => {
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
       const helpStatus = "On the way";
       const res = await axios.put(
         `${apiUrl}/api/preparationticket/${id}`,
@@ -212,11 +196,7 @@ const Waiter = () => {
 
   const helpDone = async (id) => {
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
       const helpStatus = "Assistance done";
       await axios.put(
         `${apiUrl}/api/preparationticket/${id}`,

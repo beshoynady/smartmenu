@@ -7,14 +7,6 @@ import "./Orders.css";
 import InvoiceComponent from "../invoice/invoice";
 
 const Orders = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const token = localStorage.getItem("token_e"); // Retrieve the token from localStorage
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-
   const {
     restaurantData,
     permissionsList,
@@ -31,6 +23,8 @@ const Orders = () => {
     endPagination,
     setStartPagination,
     setEndPagination,
+    apiUrl,
+    handleGetTokenAndConfig,
   } = useContext(dataContext);
 
   const [showModal, setShowModal] = useState(false);
@@ -40,14 +34,11 @@ const Orders = () => {
   // Fetch orders from API
   const getOrders = async () => {
     // Check if the user is authenticated
-    if (!token) {
-      toast.error("يرجى تسجيل الدخول مرة أخرى."); // Show an error message if token is missing
-      return;
-    }
-  
+    const config = handleGetTokenAndConfig();
+
     try {
       const response = await axios.get(`${apiUrl}/api/order`, config); // Construct API URL
-  
+
       // Check if there are orders in the response
       const ordersData = response.data;
       if (ordersData && ordersData.length > 0) {
@@ -78,18 +69,14 @@ const Orders = () => {
       }
     }
   };
-  
+
   const [listProductsOrder, setlistProductsOrder] = useState([]);
   const [orderData, setorderData] = useState("");
   const [ivocedate, setivocedate] = useState(new Date());
 
   // Fetch orders from API
   const getOrderDataBySerial = async (serial) => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const res = await axios.get(apiUrl + "/api/order", config);
       const order = res.data.find((order) => order.serial === serial);
@@ -120,57 +107,53 @@ const Orders = () => {
   const [orderId, setOrderId] = useState("");
 
   // Delete order
-    const handleDeleteOrder = async (event) => {
-      event.preventDefault();
-    
-      // Check if the user is authenticated
-      if (!token) {
-        toast.error("يرجى تسجيل الدخول مرة أخرى."); // Show an error message if token is missing
-        return;
-      }
-    
-      try {
-        const orderIdToDelete = orderId; // Use a clear and descriptive variable name
-        const deleteUrl = `${apiUrl}/api/order/${orderIdToDelete}`; // Construct the API URL
-    
-        // Send a DELETE request to the server
-        await axios.delete(deleteUrl, config);
-    
-        // Refresh the orders list after deletion
-        await getOrders();
-    
-        // Show a success message
-        toast.success("تم حذف الطلب بنجاح.");
-      } catch (error) {
-        // Handle specific error scenarios based on status code
-        if (error.response) {
-          // Server responded with a status code outside the 2xx range
-          const { status, data } = error.response;
-          if (status === 401) {
-            toast.error("غير مصرح. يرجى تسجيل الدخول مرة أخرى.");
-          } else if (status === 404) {
-            await getOrders();
-            toast.error("الطلب غير موجود. قد يكون تم حذفه مسبقًا.");
-          } else {
-            await getOrders();
-            toast.error(data?.message || "حدث خطأ غير متوقع.");
-          }
-        } else if (error.request) {
+  const handleDeleteOrder = async (event) => {
+    event.preventDefault();
+
+    // Check if the user is authenticated
+    const config = handleGetTokenAndConfig();
+
+    try {
+      const orderIdToDelete = orderId; // Use a clear and descriptive variable name
+      const deleteUrl = `${apiUrl}/api/order/${orderIdToDelete}`; // Construct the API URL
+
+      // Send a DELETE request to the server
+      await axios.delete(deleteUrl, config);
+
+      // Refresh the orders list after deletion
+      await getOrders();
+
+      // Show a success message
+      toast.success("تم حذف الطلب بنجاح.");
+    } catch (error) {
+      // Handle specific error scenarios based on status code
+      if (error.response) {
+        // Server responded with a status code outside the 2xx range
+        const { status, data } = error.response;
+        if (status === 401) {
+          toast.error("غير مصرح. يرجى تسجيل الدخول مرة أخرى.");
+        } else if (status === 404) {
           await getOrders();
-          // Request was made but no response was received
-          console.error("No response received:", error.request);
-          toast.error("فشل الاتصال بالخادم. يرجى التحقق من الشبكة.");
+          toast.error("الطلب غير موجود. قد يكون تم حذفه مسبقًا.");
         } else {
           await getOrders();
-          // Something else went wrong during the request setup
-          console.error("Request setup error:", error.message);
-          toast.error("حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.");
+          toast.error(data?.message || "حدث خطأ غير متوقع.");
         }
-      } finally{
+      } else if (error.request) {
         await getOrders();
+        // Request was made but no response was received
+        console.error("No response received:", error.request);
+        toast.error("فشل الاتصال بالخادم. يرجى التحقق من الشبكة.");
+      } else {
+        await getOrders();
+        // Something else went wrong during the request setup
+        console.error("Request setup error:", error.message);
+        toast.error("حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.");
       }
-    };
-    
+    } finally {
+      await getOrders();
+    }
+  };
 
   const [selectedIds, setSelectedIds] = useState([]);
   const handleCheckboxChange = (e) => {
@@ -188,11 +171,7 @@ const Orders = () => {
   const deleteSelectedIds = async (e) => {
     e.preventDefault();
     console.log(selectedIds);
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       for (const Id of selectedIds) {
         await axios.delete(`${apiUrl}/api/order/${Id}`, config);
@@ -376,7 +355,8 @@ const Orders = () => {
                     </button>
                     <button
                       type="button"
-                      className="btn btn-warning h-100 p-2" onClick={getOrders}
+                      className="btn btn-warning h-100 p-2"
+                      onClick={getOrders}
                     >
                       استعادة
                     </button>
@@ -444,9 +424,7 @@ const Orders = () => {
                         <td>{order.status}</td>
                         <td>{order.cashier && order.cashier.fullname}</td>
                         <td>{order.payment_status}</td>
-                        <td>
-                          {formatDateTime(order.payment_date)}
-                        </td>
+                        <td>{formatDateTime(order.payment_date)}</td>
 
                         <td>
                           {/* <a href="#editOrderModal" className="edit" data-toggle="modal"><i className="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a> */}

@@ -11,13 +11,7 @@ const BarSocket = io(`${process.env.REACT_APP_API_URL}/bar`, {
 });
 
 const Bar = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const token = localStorage.getItem("token_e");
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
+  
 
   const {
     formatDate,
@@ -29,7 +23,9 @@ const Bar = () => {
     BarSocket,
     GrillSocket,
     waiterSocket,
-  } = useContext(dataContext);
+  apiUrl,
+handleGetTokenAndConfig,
+} = useContext(dataContext);
 
   const start = useRef();
   const ready = useRef();
@@ -42,11 +38,7 @@ const Bar = () => {
 
   const getAllRecipe = async () => {
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
 
       const getAllRecipe = await axios.get(`${apiUrl}/api/recipe`, config);
       const allRecipeData = getAllRecipe.data;
@@ -59,11 +51,7 @@ const Bar = () => {
 
   const getAllOrders = async () => {
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
 
       // Fetch orders from the API
       const ordersResponse = await axios.get(`${apiUrl}/api/order/limit/50`);
@@ -190,11 +178,7 @@ const Bar = () => {
 
   const getBarConsumption = async () => {
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مرة أخرى");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
 
       setFilteredBarConsumptionToday([]);
       console.log("Fetching Bar consumption...");
@@ -225,11 +209,7 @@ const Bar = () => {
 
   const orderInProgress = async (id) => {
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
       const preparationStatus = { "preparationStatus.Bar": "Preparing" };
       const response = await axios.put(
         `${apiUrl}/api/order/${id}`,
@@ -250,10 +230,7 @@ const Bar = () => {
   };
 
   const updateOrderDone = async (id, type) => {
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره أخرى");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
 
     try {
       // 1. Fetch order and product data
@@ -433,11 +410,7 @@ const Bar = () => {
 
   const getAllWaiters = async () => {
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
 
       const allEmployees = await axios.get(apiUrl + "/api/employee", config);
 
@@ -458,11 +431,7 @@ const Bar = () => {
   // Determines the next available waiter to take an order
   const specifiedWaiter = async (id) => {
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
 
       if (allWaiters.length === 0) {
         // Handle case where token is not available

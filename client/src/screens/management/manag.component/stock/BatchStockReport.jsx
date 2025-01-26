@@ -5,13 +5,7 @@ import { toast } from "react-toastify";
 import "../orders/Orders.css";
 
 const BatchStockReport = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const token = localStorage.getItem("token_e");
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
+  
 
   const {
     permissionsList,
@@ -29,7 +23,9 @@ const BatchStockReport = () => {
     filterByDateRange,
     setStartDate,
     setEndDate,
-  } = useContext(dataContext);
+  apiUrl,
+handleGetTokenAndConfig,
+} = useContext(dataContext);
 
   const stockMovementPermission =
     permissionsList &&
@@ -72,11 +68,7 @@ const BatchStockReport = () => {
 
   const getallStockaction = async () => {
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
       const response = await axios.get(apiUrl + "/api/stockmovement/", config);
       console.log(response.data);
       const stockActions = await response.data;
@@ -93,10 +85,7 @@ const BatchStockReport = () => {
   const [allStores, setAllStores] = useState([]);
 
   const getAllStores = async () => {
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
 
     try {
       const response = await axios.get(apiUrl + "/api/store/", config);
@@ -110,11 +99,7 @@ const BatchStockReport = () => {
   const [StockItems, setStockItems] = useState([]);
   
   const getStockItems = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/stockitem/", config);
       if (response) {
@@ -129,10 +114,7 @@ const BatchStockReport = () => {
   const [allCategoryStock, setAllCategoryStock] = useState([]);
 
   const getAllCategoryStock = async () => {
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
 
     try {
       const response = await axios.get(apiUrl + "/api/categoryStock/", config);

@@ -5,14 +5,7 @@ import { dataContext } from "../../../../App";
 import "../orders/Orders.css";
 
 const MenuCategory = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const token = localStorage.getItem("token_e");
-
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
+ 
 
   const {
     allProducts,
@@ -22,7 +15,9 @@ const MenuCategory = () => {
     endPagination,
     setStartPagination,
     setEndPagination,
-  } = useContext(dataContext);
+  apiUrl,
+handleGetTokenAndConfig,
+} = useContext(dataContext);
 
   const [categoryName, setcategoryName] = useState("");
   const [mainCategory, setmainCategory] = useState({});
@@ -34,11 +29,7 @@ const MenuCategory = () => {
   const [allCategory, setAllCategory] = useState([]);
 
   const getallCategory = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const res = await axios.get(apiUrl + "/api/menucategory/");
       if (res) {
@@ -73,11 +64,7 @@ const MenuCategory = () => {
   // Function to edit a category
   const editCategory = async (e) => {
     e.preventDefault();
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const bodydata = {
         name: categoryName,
@@ -113,11 +100,7 @@ const MenuCategory = () => {
 
   const deleteCategory = async (e) => {
     e.preventDefault();
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const deleted = await axios.delete(
         apiUrl + "/api/menucategory/" + categoryId
@@ -177,11 +160,7 @@ const MenuCategory = () => {
 
   const handleOrderCategory = async (e) => {
     e.preventDefault();
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       console.log({ allCategory });
       // Initialize a variable to track if all requests are done
@@ -224,11 +203,7 @@ const MenuCategory = () => {
   const handleCategoryChange = async (e) => {
     e.preventDefault();
     const id = e.target.value;
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       // Iterate over all categories
       for (let index = 0; index < allCategory.length; index++) {
@@ -266,10 +241,7 @@ const MenuCategory = () => {
 
   const createCategory = async (event) => {
     event.preventDefault();
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره أخرى");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     const categoryData = {
       name: categoryName,
       isMain,

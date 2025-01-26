@@ -5,14 +5,7 @@ import { toast } from "react-toastify";
 import "../orders/Orders.css";
 
 const CustomerMessage = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const token = localStorage.getItem("token_e");
-
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
+ 
 
   const {
     setStartDate,
@@ -30,7 +23,9 @@ const CustomerMessage = () => {
     endPagination,
     setStartPagination,
     setEndPagination,
-  } = useContext(dataContext);
+  apiUrl,
+handleGetTokenAndConfig,
+} = useContext(dataContext);
 
   const permissionUserMassage = permissionsList?.filter(
     (permission) => permission.resource === "Messages"
@@ -49,11 +44,7 @@ const CustomerMessage = () => {
       return;
     }
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
       const response = await axios.get(`${apiUrl}/api/message`, config);
       setAllCustomerMessage(response.data);
     } catch (error) {
@@ -63,11 +54,7 @@ const CustomerMessage = () => {
 
   const updateisSeenMessage = async (e, mes) => {
     e.preventDefault()
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     if (permissionUserMassage && !permissionUserMassage.show) {
       toast.warn("ليس لك صلاحية لتعديل رسائل المستخدمين");
       return;
@@ -92,11 +79,7 @@ const CustomerMessage = () => {
 
   const deleteCustomerMessage = async (e) => {
     e.preventDefault();
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     if (permissionUserMassage && !permissionUserMassage.delete) {
       toast.warn("ليس لك صلاحية لحذف رسائل المستخدمين");
       return;
@@ -147,11 +130,7 @@ const CustomerMessage = () => {
     }
     console.log(selectedIds);
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
 
       for (const Id of selectedIds) {
         await axios.delete(`${apiUrl}/api/message/${Id}`, config);

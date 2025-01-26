@@ -5,14 +5,6 @@ import { toast } from "react-toastify";
 import "../orders/Orders.css";
 
 const StockMovement = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const token = localStorage.getItem("token_e");
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-
   const {
     permissionsList,
     employeeLoginInfo,
@@ -29,6 +21,8 @@ const StockMovement = () => {
     filterByDateRange,
     setStartDate,
     setEndDate,
+    apiUrl,
+    handleGetTokenAndConfig,
   } = useContext(dataContext);
 
   const stockMovementPermission =
@@ -40,11 +34,7 @@ const StockMovement = () => {
   // const [allrecipes, setAllRecipes] = useState([]);
 
   // const getallrecipes = async () => {
-  //   if (!token) {
-  //     // Handle case where token is not available
-  //     toast.error("رجاء تسجيل الدخول مره اخري");
-  //     return;
-  //   }
+// const config = handleGetTokenAndConfig();
   //   try {
   //     const response = await axios.get(`${apiUrl}/api/recipe`, config);
   //     if (response) {
@@ -119,10 +109,7 @@ const StockMovement = () => {
 
   const createStockAction = async (e) => {
     e.preventDefault();
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     if (stockMovementPermission && !stockMovementPermission.create) {
       toast.warn("ليس لك صلاحية لانشاء حركه المخزن");
       return;
@@ -232,7 +219,6 @@ const StockMovement = () => {
         }
       } else if (costMethod === "Weighted Average") {
         const batches = AllStockactionsStore.filter((stockAction) => {
-          
           const isValidAction =
             stockAction && stockAction.itemId && stockAction.itemId._id;
           const isMatchingItem =
@@ -294,23 +280,21 @@ const StockMovement = () => {
           );
         }
       }
-     
-     if(source === "Issuance"){
-      const costPerPart = outbound.unitCost
-      console.log({costPerPart})
-       const setcostUnit = await axios.put(
-        `${apiUrl}/api/stockitem/${itemId}`,
-        {
-          costPerPart
-        },
-        config
-      );
-      if(setcostUnit){
-        toast.info('تم تعديل تكلفه الوحده')
+
+      if (source === "Issuance") {
+        const costPerPart = outbound.unitCost;
+        console.log({ costPerPart });
+        const setcostUnit = await axios.put(
+          `${apiUrl}/api/stockitem/${itemId}`,
+          {
+            costPerPart,
+          },
+          config
+        );
+        if (setcostUnit) {
+          toast.info("تم تعديل تكلفه الوحده");
+        }
       }
-
-     } 
-
     } else if (source === "ReturnIssuance") {
       inbound.quantity = quantity;
       inbound.unitCost = lastStockAction ? lastStockAction.unitCost : 0;
@@ -418,11 +402,7 @@ const StockMovement = () => {
   const updateStockaction = async (e, employeeId) => {
     e.preventDefault();
 
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     if (stockMovementPermission && !stockMovementPermission.update) {
       toast.warn("ليس لك صلاحية لتعديل حركه المخزن");
       return;
@@ -460,11 +440,7 @@ const StockMovement = () => {
 
   const getallStockaction = async () => {
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
       const response = await axios.get(apiUrl + "/api/stockmovement/", config);
       console.log(response.data);
       const Stockactions = await response.data;
@@ -476,11 +452,7 @@ const StockMovement = () => {
 
   const deleteStockaction = async (e) => {
     e.preventDefault();
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     if (stockMovementPermission && !stockMovementPermission.delete) {
       toast.warn("ليس لك صلاحية لحذف حركه المخزن");
       return;
@@ -514,10 +486,7 @@ const StockMovement = () => {
   const [allStores, setAllStores] = useState([]);
 
   const getAllStores = async () => {
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
 
     try {
       const response = await axios.get(apiUrl + "/api/store/", config);
@@ -530,11 +499,7 @@ const StockMovement = () => {
 
   const [StockItems, setStockItems] = useState([]);
   const getStockItems = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/stockitem/", config);
       if (response) {
@@ -549,10 +514,7 @@ const StockMovement = () => {
   const [allCategoryStock, setAllCategoryStock] = useState([]);
 
   const getAllCategoryStock = async () => {
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
 
     try {
       const response = await axios.get(apiUrl + "/api/categoryStock/", config);
@@ -588,11 +550,7 @@ const StockMovement = () => {
 
   const [AllCashRegisters, setAllCashRegisters] = useState([]);
   const getAllCashRegisters = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/cashregister", config);
       setAllCashRegisters(response.data.reverse());
@@ -679,16 +637,15 @@ const StockMovement = () => {
                 </h2>
               </div>
               <div className="col-12 col-md-6 p-0 m-0 d-flex flex-wrap aliegn-items-center justify-content-end print-hide">
-                {stockMovementPermission &&
-                  stockMovementPermission.create && (
-                    <a
-                      href="#addStockactionModal"
-                      className="d-flex align-items-center justify-content-center h-100 m-0 btn btn-success"
-                      data-toggle="modal"
-                    >
-                      <span>انشاء حركه مخزن</span>
-                    </a>
-                  )}
+                {stockMovementPermission && stockMovementPermission.create && (
+                  <a
+                    href="#addStockactionModal"
+                    className="d-flex align-items-center justify-content-center h-100 m-0 btn btn-success"
+                    data-toggle="modal"
+                  >
+                    <span>انشاء حركه مخزن</span>
+                  </a>
+                )}
                 {/* {stockMovementPermission &&
                   stockMovementPermission.delete && (
                     <a

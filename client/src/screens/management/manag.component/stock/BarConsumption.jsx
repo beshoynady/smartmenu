@@ -5,13 +5,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "../orders/Orders.css";
 
 const BarConsumption = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const token = localStorage.getItem("token_e");
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
+  
 
   const {
     restaurantData,
@@ -29,7 +23,9 @@ const BarConsumption = () => {
     endPagination,
     setStartPagination,
     setEndPagination,
-  } = useContext(dataContext);
+  apiUrl,
+handleGetTokenAndConfig,
+} = useContext(dataContext);
 
   const BarUsegePermission =
     permissionsList &&
@@ -68,10 +64,7 @@ const BarConsumption = () => {
     }
     if (consumption) {
       try {
-        if (!token) {
-          // Handle case where token is not available
-          toast.error("رجاء تسجيل الدخول مره اخري");
-        }
+        const config = handleGetTokenAndConfig();
         if (BarUsegePermission && !BarUsegePermission.update) {
           toast.warn("ليس لك صلاحية لتعديل عنصر لمخزن الاستهلاك");
           return;
@@ -109,10 +102,7 @@ const BarConsumption = () => {
       }
     } else {
       try {
-        if (!token) {
-          // Handle case where token is not available
-          toast.error("رجاء تسجيل الدخول مره اخري");
-        }
+        const config = handleGetTokenAndConfig();
         if (BarUsegePermission && !BarUsegePermission.create) {
           toast.warn("ليس لك صلاحية لاضافه عنصر لمخزن الاستهلاك");
           return;
@@ -155,11 +145,7 @@ const BarConsumption = () => {
   const updateBarItem = async (e) => {
     e.preventDefault();
     console.log("updateBarItem");
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
 
     if (BarUsegePermission && !BarUsegePermission.update) {
       toast.warn("ليس لك صلاحية لتعديل عنصر لمخزن الاستهلاك");
@@ -178,10 +164,7 @@ const BarConsumption = () => {
       );
       if (update.status === 200) {
         //   try {
-        //     if (!token) {
-        //       // Handle case where token is not available
-        //       toast.error('رجاء تسجيل الدخول مره اخري');
-        //     }
+        //     // const config = handleGetTokenAndConfig();
         //     // Make a POST request to add an item
         //     const response = await axios.post(apiUrl + '/api/consumption', {
         //       stockItemId,
@@ -220,11 +203,7 @@ const BarConsumption = () => {
   const [AllStockItems, setAllStockItems] = useState([]);
   // Function to retrieve all stock items
   const getStockItems = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/stockitem/", config);
 
@@ -244,11 +223,7 @@ const BarConsumption = () => {
   };
 
   const deleteBarItem = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     if (BarUsegePermission && !BarUsegePermission.delete) {
       toast.warn("ليس لك صلاحية لحذف عنصر من مخزن الاستهلاك");
       return;
@@ -273,10 +248,7 @@ const BarConsumption = () => {
   // // Function to retrieve all category stock
   // const getAllCategoryStock = async () => {
   //   try{
-  // if (!token) {
-  // Handle case where token is not available
-  //   toast.error('رجاء تسجيل الدخول مره اخري');
-  // }
+// const config = handleGetTokenAndConfig();
   //     const res = await axios.get(apiUrl+'/api/categoryStock/');
   //     setAllCategoryStock(res.data);
   //   } catch (error) {
@@ -293,11 +265,7 @@ const BarConsumption = () => {
   const [BarConsumptionForView, setBarConsumptionForView] = useState([]);
 
   const getBarConsumption = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     if (BarUsegePermission && !BarUsegePermission.read) {
       toast.warn("ليس لك صلاحية لعرض عناصر لمخزن الاستهلاك");
       return;

@@ -9,8 +9,12 @@ import menu from "../../../../image/emenu.jpg";
 import pos from "../../../../image/pos.jpg";
 
 const Login = () => {
-  const { getUserInfoFromToken, setisLoading } = useContext(dataContext);
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const {
+    getUserInfoFromToken,
+    setisLoading,
+    apiUrl,
+    handleGetTokenAndConfig,
+  } = useContext(dataContext);
 
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
@@ -29,7 +33,6 @@ const Login = () => {
       console.error("Network Error:", error);
       toast.error("حدث خطأ في الشبكة.");
       setShowCreateButton(true);
-
     } finally {
       setisLoading(false);
     }
@@ -48,10 +51,14 @@ const Login = () => {
     }
 
     try {
-      const response = await axios.post(`${apiUrl}/api/employee/login`, {
-        phone,
-        password,
-      },{ withCredentials: true });
+      const response = await axios.post(
+        `${apiUrl}/api/employee/login`,
+        {
+          phone,
+          password,
+        },
+        { withCredentials: true }
+      );
       if (response && response.data) {
         const { data } = response;
         toast.success("تم تسجيل الدخول بنجاح");
@@ -75,8 +82,10 @@ const Login = () => {
 
   const handleCreateFirstEmployee = async () => {
     try {
-      const fristEmployee = await axios.post(`${apiUrl}/api/employee/create-first`);
-      console.log({fristEmployee})
+      const fristEmployee = await axios.post(
+        `${apiUrl}/api/employee/create-first`
+      );
+      console.log({ fristEmployee });
       toast.success("تم إنشاء أول موظف بنجاح");
       checkIfEmployeesExist();
     } catch (error) {

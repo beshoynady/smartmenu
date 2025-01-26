@@ -6,15 +6,6 @@ import { toast } from "react-toastify";
 import "../orders/Orders.css";
 
 const Purchase = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
-
-  const token = localStorage.getItem("token_e");
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-
   const {
     restaurantData,
     permissionsList,
@@ -31,6 +22,8 @@ const Purchase = () => {
     endPagination,
     setStartPagination,
     setEndPagination,
+    apiUrl,
+    handleGetTokenAndConfig,
   } = useContext(dataContext);
 
   const purchasePermission = permissionsList?.filter(
@@ -40,11 +33,7 @@ const Purchase = () => {
   const [AllStockactions, setAllStockactions] = useState([]);
 
   const getallStockaction = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/stockmovement/", config);
       console.log(response.data);
@@ -58,11 +47,7 @@ const Purchase = () => {
   const [AllSuppliers, setAllSuppliers] = useState([]);
   // Function to retrieve all suppliers
   const getAllSuppliers = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/supplier/", config);
 
@@ -89,11 +74,7 @@ const Purchase = () => {
   const [AllCashRegisters, setAllCashRegisters] = useState([]);
   // Fetch all cash registers
   const getAllCashRegisters = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/cashregister", config);
       setAllCashRegisters(response.data.reverse());
@@ -105,11 +86,7 @@ const Purchase = () => {
   const [allrecipes, setAllRecipes] = useState([]);
 
   const getallrecipes = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const response = await axios.get(`${apiUrl}/api/recipe`, config);
       console.log(response);
@@ -123,11 +100,7 @@ const Purchase = () => {
 
   const [StockItems, setStockItems] = useState([]);
   const getaStockItems = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/stockitem/", config);
       if (response) {
@@ -144,11 +117,7 @@ const Purchase = () => {
   const [storeId, setstoreId] = useState(0);
 
   const createStockAction = async (item) => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const itemId = item.itemId;
       const quantity = item.quantity;
@@ -279,11 +248,7 @@ const Purchase = () => {
   const [previousBalance, setPreviousBalance] = useState(0);
 
   const handleAddSupplierTransactionPurchase = async (invoiceNumber) => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       let newCurrentBalance = 0;
       const transactionType = "Purchase";
@@ -529,11 +494,7 @@ const Purchase = () => {
 
   const createPurchaseInvoice = async (e, receiverId) => {
     e.preventDefault();
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     if (
       purchasePermission &&
       purchasePermission &&
@@ -617,11 +578,7 @@ const Purchase = () => {
       toast.warn("ليس لك صلاحية لعرض فاتورة مشتريات");
       return;
     }
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const resInvoice = await axios.get(
         `${apiUrl}/api/purchaseinvoice/${id}`,
@@ -649,11 +606,7 @@ const Purchase = () => {
       toast.warn("ليس لك صلاحية لعرض فاتورة مشتريات");
       return;
     }
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/purchaseinvoice", config);
       console.log({ response });
@@ -726,11 +679,7 @@ const Purchase = () => {
 
   const confirmPayment = async (e) => {
     e.preventDefault();
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
 
     // Check if required variables are defined and valid
     if (
@@ -808,10 +757,7 @@ const Purchase = () => {
   const [allStores, setAllStores] = useState([]);
 
   const getAllStores = async () => {
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
 
     try {
       const response = await axios.get(apiUrl + "/api/store/", config);

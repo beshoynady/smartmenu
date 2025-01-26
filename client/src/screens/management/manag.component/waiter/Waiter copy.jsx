@@ -14,15 +14,9 @@ const Waiter = () => {
     BarSocket,
     GrillSocket,
     waiterSocket,
+    apiUrl,
+    handleGetTokenAndConfig,
   } = useContext(dataContext);
-
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const token = localStorage.getItem("token_e");
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
 
   // Refs for buttons
   const start = useRef();
@@ -35,11 +29,7 @@ const Waiter = () => {
   // Function to fetch pending orders and payments
   const fetchPendingData = async () => {
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
       const res = await axios.get(apiUrl + "/api/order/limit/50", config);
       const filterMyOrder = res.data?.filter(
         (order) => order.waiter?._id === employeeLoginInfo.id
@@ -66,11 +56,7 @@ const Waiter = () => {
   // Function to fetch internal orders
   const fetchInternalOrders = async () => {
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
       const res = await axios.get(apiUrl + "/api/order/limit/50", config);
 
       const filterMyOrder = res.data?.filter(
@@ -110,11 +96,7 @@ const Waiter = () => {
 
   const updateOrderOnWay = async (id, products) => {
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
       const preparationSection = [];
       products.forEach((product) => {
         const section = product.productId?.preparationSection;
@@ -200,11 +182,7 @@ const Waiter = () => {
 
   const helpOnWay = async (id) => {
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
       const helpStatus = "On the way";
       const res = await axios.put(
         `${apiUrl}/api/order/${id}`,
@@ -224,11 +202,7 @@ const Waiter = () => {
 
   const helpDone = async (id) => {
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
       const helpStatus = "Assistance done";
       await axios.put(`${apiUrl}/api/order/${id}`, { helpStatus }, config);
       fetchPendingData();

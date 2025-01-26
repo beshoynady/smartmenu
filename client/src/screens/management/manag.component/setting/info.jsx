@@ -4,14 +4,6 @@ import { dataContext } from "../../../../App";
 import { toast } from "react-toastify";
 
 const Info = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const token = localStorage.getItem("token_e");
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-
   const {
     restaurantData,
     permissionsList,
@@ -28,16 +20,14 @@ const Info = () => {
     endPagination,
     setStartPagination,
     setEndPagination,
+    apiUrl,
+    handleGetTokenAndConfig,
   } = useContext(dataContext);
 
   const [shifts, setShifts] = useState([]);
 
   const getAllShifts = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const response = await axios.get(`${apiUrl}/api/shift`, config);
       const data = await response.data;
@@ -92,11 +82,7 @@ const Info = () => {
 
   const handleCreateShifts = async (e) => {
     e.preventDefault();
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       shifts.map(async (shift) => {
         const id = shift._id ? shift._id : null;
@@ -139,11 +125,7 @@ const Info = () => {
   const [areas, setAreas] = useState([]);
 
   const getAllDeliveryAreas = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const response = await axios.get(`${apiUrl}/api/deliveryarea`, config);
       const data = await response.data;
@@ -197,11 +179,7 @@ const Info = () => {
 
   const handleDeliveryArea = async (e) => {
     e.preventDefault();
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       areas.map(async (area, i) => {
         console.log({ area });
@@ -293,11 +271,7 @@ const Info = () => {
 
   const handleFeatures = async (e) => {
     e.preventDefault();
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       console.log({ features });
       const response = await axios.put(
@@ -355,11 +329,7 @@ const Info = () => {
 
   const handleAcceptedPayments = async (e) => {
     e.preventDefault();
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       console.log({ acceptedPayments });
       const response = await axios.put(
@@ -413,11 +383,7 @@ const Info = () => {
 
   const handleCreateRestaurant = async (e) => {
     e.preventDefault();
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const address = {
         country: country ? country : null,
@@ -492,11 +458,7 @@ const Info = () => {
 
   const handleContactSocialmedia = async (e) => {
     e.preventDefault();
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const contact = {
         phone: [...phone],
@@ -582,11 +544,7 @@ const Info = () => {
 
   const handleOpeningHours = async (e) => {
     e.preventDefault();
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const response = await axios.put(
         `${apiUrl}/api/restaurant/${restaurantId}`,
@@ -605,11 +563,7 @@ const Info = () => {
   };
 
   const getRestaurant = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const response = await axios.get(`${apiUrl}/api/restaurant/`, config);
       const restaurantData = response.data[0];
@@ -687,10 +641,7 @@ const Info = () => {
   const updateSubscriptionDates = async (e) => {
     console.log({ subscriptionStart, subscriptionEnd });
     e.preventDefault();
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     if (employeeLoginInfo.role !== "programer") {
       toast.error("ليس لك صلاحية لتعديل بيانات الاشتراك");
       return;

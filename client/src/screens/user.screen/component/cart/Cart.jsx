@@ -12,13 +12,7 @@ import "./Cart.css";
 import html2pdf from "html2pdf.js";
 
 const Cart = (props) => {
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const token = localStorage.getItem("token_e");
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
+  
 
   const {
     restaurantData,
@@ -43,7 +37,9 @@ const Cart = (props) => {
     createDeliveryOrderByClient,
     createOrderForTableByClient,
     checkout,
-  } = useContext(dataContext);
+  apiUrl,
+handleGetTokenAndConfig,
+} = useContext(dataContext);
 
   const open_cart = props.opencart;
   const ordersText = useRef();

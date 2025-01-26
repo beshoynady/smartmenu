@@ -5,15 +5,6 @@ import { dataContext } from "../../../../App";
 import "../orders/Orders.css";
 
 const PreparationSection = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const token = localStorage.getItem("token_e");
-
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-
   const {
     allProducts,
     setisLoading,
@@ -22,6 +13,8 @@ const PreparationSection = () => {
     endPagination,
     setStartPagination,
     setEndPagination,
+    apiUrl,
+    handleGetTokenAndConfig,
   } = useContext(dataContext);
 
   const [preparationSectionName, setpreparationSectionName] = useState("");
@@ -34,10 +27,7 @@ const PreparationSection = () => {
   const createPreparationSection = async (event) => {
     event.preventDefault();
 
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره أخرى");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
 
     const PreparationSectionData = {
       name: preparationSectionName,
@@ -87,10 +77,7 @@ const PreparationSection = () => {
   };
 
   const getAllPreparationSections = async () => {
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره اخرى");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
 
     try {
       const res = await axios.get(`${apiUrl}/api/preparationsection`, config);
@@ -110,10 +97,7 @@ const PreparationSection = () => {
   const editPreparationSection = async (event) => {
     event.preventDefault();
 
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره اخرى");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
 
     const bodyData = {
       name: preparationSectionName,
@@ -142,10 +126,7 @@ const PreparationSection = () => {
   const deletePreparationSection = async (event) => {
     event.preventDefault();
 
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره اخرى");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
 
     try {
       const deleted = await axios.delete(
@@ -165,11 +146,7 @@ const PreparationSection = () => {
   };
 
   const searchByPreparationSectionName = (name) => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     if (!name) {
       getAllPreparationSections();
     } else {

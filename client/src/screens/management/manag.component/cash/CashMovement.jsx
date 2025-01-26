@@ -5,14 +5,6 @@ import { toast } from "react-toastify";
 import "../orders/Orders.css";
 
 const CashMovement = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const token = localStorage.getItem("token_e");
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-
   const {
     permissionsList,
     setStartDate,
@@ -28,6 +20,8 @@ const CashMovement = () => {
     endPagination,
     setStartPagination,
     setEndPagination,
+    apiUrl,
+    handleGetTokenAndConfig,
   } = useContext(dataContext);
 
   const cashMovementPermissions = permissionsList?.filter(
@@ -38,8 +32,6 @@ const CashMovement = () => {
     (permission) => permission.resource === "Cash Register"
   )[0];
 
-
-
   const [cashRegister, setcashRegister] = useState("");
   const [employeeCashRegisters, setemployeeCashRegisters] = useState([]);
   const [CashRegisterBalance, setCashRegisterBalance] = useState();
@@ -49,11 +41,7 @@ const CashMovement = () => {
   // Fetch all cash registers
 
   const getAllCashRegisters = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     if (cashRegisterPermissions && cashRegisterPermissions.read === false) {
       toast.warn("ليس لك صلاحية لعرض حسابات الخزينه");
       return;
@@ -64,7 +52,7 @@ const CashMovement = () => {
 
       const response = await axios.get(apiUrl + "/api/cashregister", config);
       const cashRegisterData = response.data.reverse();
-      setlistOfCashRegisters(cashRegisterData)
+      setlistOfCashRegisters(cashRegisterData);
 
       if (cashRegisterData.length > 0) {
         if (
@@ -90,11 +78,7 @@ const CashMovement = () => {
   };
 
   const handlecashRegister = async (id) => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     if (cashRegisterPermissions && cashRegisterPermissions.read === false) {
       toast.warn("ليس لك صلاحية لعرض حسابات الخزينه");
       return;
@@ -120,11 +104,7 @@ const CashMovement = () => {
 
   const [AllCashMovement, setAllCashMovement] = useState([]);
   const getCashMovement = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
 
     if (cashMovementPermissions && cashMovementPermissions.read === false) {
       toast.warn("ليس لك صلاحية لعرض حسابات الخزينه");
@@ -176,8 +156,8 @@ const CashMovement = () => {
     "دفع مشتريات",
     "استرداد",
   ];
-  const operationStatusEN = ['Pending', 'Completed', 'Rejected'];
-  const operationStatusAr = ['انتظار', 'مكتمل', 'مرفوض'];
+  const operationStatusEN = ["Pending", "Completed", "Rejected"];
+  const operationStatusAr = ["انتظار", "مكتمل", "مرفوض"];
   const [createdBy, setcreatedBy] = useState("");
   const [amount, setAmount] = useState();
   const [type, setType] = useState("");
@@ -185,11 +165,7 @@ const CashMovement = () => {
 
   // Function to add cash movement and update balance
   const addCashMovementAndUpdateBalance = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     if (cashMovementPermissions && cashMovementPermissions.create === false) {
       toast.warn("ليس لك صلاحية لانشاء حركه في حسابات الخزينه");
       return;
@@ -275,10 +251,7 @@ const CashMovement = () => {
     e.preventDefault();
 
     try {
-      if (!token) {
-        toast.error("رجاء تسجيل الدخول مرة أخرى");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
       if (cashMovementPermissions && cashMovementPermissions.create === false) {
         toast.warn("ليس لك صلاحية لانشاء حركه في حسابات الخزينه");
         return;
@@ -343,10 +316,7 @@ const CashMovement = () => {
 
   const accepteTransferCash = async (id, statusTransfer) => {
     try {
-      if (!token) {
-        toast.error("رجاء تسجيل الدخول مرة أخرى");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
 
       // Fetch details of the cash movement
       const receivcashMovementResponse = await axios.get(
@@ -684,7 +654,15 @@ const CashMovement = () => {
                               : "No register found"}
                           </td>
                           {/* <td>{movement.registerId?.employee?.fullname}</td> */}
-                          <td>{operationTypesAR[operationTypesEN.findIndex(type => type === movement.type)]}</td>
+                          <td>
+                            {
+                              operationTypesAR[
+                                operationTypesEN.findIndex(
+                                  (type) => type === movement.type
+                                )
+                              ]
+                            }
+                          </td>
                           <td>{movement.createdBy?.fullname}</td>
                           <td>{movement.amount}</td>
                           <td>{movement.description}</td>
@@ -716,8 +694,15 @@ const CashMovement = () => {
                                 </button>
                               </>
                             ) : (
-                              <td>{operationStatusAr[operationStatusEN.findIndex(status => status === movement.status)]}</td>
-                              
+                              <td>
+                                {
+                                  operationStatusAr[
+                                    operationStatusEN.findIndex(
+                                      (status) => status === movement.status
+                                    )
+                                  ]
+                                }
+                              </td>
                             )}
                           </td>
                           <td>{formatDateTime(movement.createdAt)}</td>
@@ -798,7 +783,6 @@ const CashMovement = () => {
           </div>
         </div>
       </div>
-
 
       <div id="DepositModal" className="modal fade">
         <div className="modal-dialog modal-lg">
@@ -1114,7 +1098,6 @@ const CashMovement = () => {
         </div>
       </div>
 
-      
       {/* <div id="deleteStockactionModal" className="modal fade">
                 <div className="modal-dialog modal-lg">
                   <div className="modal-content shadow-lg border-0 rounded ">

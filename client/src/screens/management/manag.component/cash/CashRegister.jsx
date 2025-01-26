@@ -5,13 +5,7 @@ import { toast } from "react-toastify";
 import "../orders/Orders.css";
 
 const CashRegister = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const token = localStorage.getItem("token_e"); // Retrieve the token from localStorage
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
+  
 
   const {
     permissionsList,
@@ -21,7 +15,9 @@ const CashRegister = () => {
     endPagination,
     setStartPagination,
     setEndPagination,
-  } = useContext(dataContext);
+  apiUrl,
+handleGetTokenAndConfig,
+} = useContext(dataContext);
 
   const cashRegisterPermissions = permissionsList?.filter(
     (permission) => permission.resource === "Cash Register"
@@ -53,11 +49,7 @@ const CashRegister = () => {
 
   // Fetch employees
   const getEmployees = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
 
     try {
       const response = await axios.get(`${apiUrl}/api/employee`, config);
@@ -75,10 +67,7 @@ const CashRegister = () => {
 
   // Fetch all cash registers
   const getAllCashRegisters = async () => {
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره أخرى");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     if (cashRegisterPermissions && cashRegisterPermissions.read === false) {
       toast.warn("ليس لك صلاحية لعرض حسابات الخزينه");
       return;
@@ -96,10 +85,7 @@ const CashRegister = () => {
 
   // Fetch a cash register by ID
   const getCashRegisterById = async () => {
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره أخرى");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     if (cashRegisterPermissions && cashRegisterPermissions.read === false) {
       toast.warn("ليس لك صلاحية لعرض حساب الخزينه");
       return;
@@ -119,10 +105,7 @@ const CashRegister = () => {
   const createCashRegister = async (e) => {
     e.preventDefault();
     const newCashRegister = { name, balance, employee };
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره أخرى");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     if (cashRegisterPermissions && cashRegisterPermissions.create === false) {
       toast.warn("ليس لك صلاحية لإنشاء حسابات الخزينه");
       return;
@@ -140,10 +123,7 @@ const CashRegister = () => {
   const updateCashRegister = async (e) => {
     e.preventDefault();
     const updatedCashRegister = { name, balance, employee };
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره أخرى");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     if (cashRegisterPermissions && cashRegisterPermissions.update === false) {
       toast.warn("ليس لك صلاحية لتحديث حسابات الخزينه");
       return;
@@ -164,10 +144,7 @@ const CashRegister = () => {
   // Delete a cash register
   const deleteCashRegister = async (e) => {
     e.preventDefault();
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره أخرى");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     if (cashRegisterPermissions && cashRegisterPermissions.delete === false) {
       toast.warn("ليس لك صلاحية لحذف حسابات الخزينه");
       return;
@@ -195,10 +172,7 @@ const CashRegister = () => {
   // Delete selected cash registers
   const deleteSelectedIds = async (e) => {
     e.preventDefault();
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره أخرى");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     if (cashRegisterPermissions && cashRegisterPermissions.delete === false) {
       toast.warn("ليس لك صلاحية لحذف حسابات الخزينه");
       return;

@@ -5,14 +5,6 @@ import { toast } from "react-toastify";
 import "../orders/Orders.css";
 
 const StockItem = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const token = localStorage.getItem("token_e"); // Retrieve the token from localStorage
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-
   const {
     restaurantData,
     permissionsList,
@@ -29,6 +21,8 @@ const StockItem = () => {
     endPagination,
     setStartPagination,
     setEndPagination,
+    apiUrl,
+    handleGetTokenAndConfig,
   } = useContext(dataContext);
 
   const stockItemPermission =
@@ -67,11 +61,12 @@ const StockItem = () => {
     if (isChecked) {
       setstores((prevStores) => [...prevStores, { storeId: selectedStoreId }]);
     } else {
-      const removeStoreId= stores.filter((store) => store.storeId !== selectedStoreId)
+      const removeStoreId = stores.filter(
+        (store) => store.storeId !== selectedStoreId
+      );
       setstores(removeStoreId);
     }
   };
-  
 
   const generateSKU = () => {
     if (!categoryId) {
@@ -102,10 +97,7 @@ const StockItem = () => {
 
   const createItem = async (e) => {
     e.preventDefault();
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     if (stockItemPermission && !stockItemPermission.create) {
       toast.warn("ليس لك صلاحية لانشاء عنصر جديد في المخزن");
       return;
@@ -177,11 +169,7 @@ const StockItem = () => {
   // Function to edit a stock item
   const editStockItem = async (e) => {
     e.preventDefault();
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     if (stockItemPermission && !stockItemPermission.update) {
       toast.warn("ليس لك صلاحية لتعديل عناصر المخزن");
       return;
@@ -238,11 +226,7 @@ const StockItem = () => {
   // Function to delete a stock item
   const deleteStockItem = async (e) => {
     e.preventDefault();
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     if (stockItemPermission && !stockItemPermission.delete) {
       toast.warn("ليس لك صلاحية لحذف عنصر من المخزن");
       return;
@@ -273,11 +257,7 @@ const StockItem = () => {
 
   // Function to retrieve all stock items
   const getStockItems = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     if (stockItemPermission && !stockItemPermission.read) {
       toast.warn("ليس لك صلاحية لعرض عناصر المخزن");
       return;
@@ -308,11 +288,7 @@ const StockItem = () => {
   const [AllCategoryStock, setAllCategoryStock] = useState([]);
   // Function to retrieve all category stock
   const getAllCategoryStock = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     setisLoading(true);
     try {
       const response = await axios.get(apiUrl + "/api/categoryStock/", config);
@@ -328,10 +304,7 @@ const StockItem = () => {
   const [allStores, setAllStores] = useState([]);
 
   const getAllStores = async () => {
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
 
     try {
       const response = await axios.get(apiUrl + "/api/store/", config);
@@ -357,10 +330,12 @@ const StockItem = () => {
     setCostMethod(item.costMethod);
     setNotes(item.notes);
     setisActive(item.isActive);
-    console.log({stores:item.stores})
+    console.log({ stores: item.stores });
     if (item.stores && item.stores.length > 0) {
-      const listOfStores = item.stores.map((store) => ({ storeId: store.storeId._id }));
-      console.log({listOfStores})
+      const listOfStores = item.stores.map((store) => ({
+        storeId: store.storeId._id,
+      }));
+      console.log({ listOfStores });
       setstores(listOfStores);
     }
   };
@@ -391,7 +366,6 @@ const StockItem = () => {
   // Function to retrieve all suppliers
   const getAllSuppliers = async () => {
     try {
-
       const response = await axios.get(apiUrl + "/api/supplier/", config);
 
       if (!response || !response.data) {
@@ -961,7 +935,10 @@ const StockItem = () => {
                           name="stores"
                           value={store._id}
                           className="form-check-input"
-                          checked={stores.find((s) => s.storeId === store._id) !== undefined}
+                          checked={
+                            stores.find((s) => s.storeId === store._id) !==
+                            undefined
+                          }
                           onChange={handleStoreSelection}
                         />
                         <label

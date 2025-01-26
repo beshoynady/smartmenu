@@ -5,14 +5,7 @@ import { toast } from "react-toastify";
 import "../orders/Orders.css";
 
 const Users = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const token = localStorage.getItem("token_e");
-
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
+ 
 
   const {
     setStartDate,
@@ -30,7 +23,9 @@ const Users = () => {
     endPagination,
     setStartPagination,
     setEndPagination,
-  } = useContext(dataContext);
+  apiUrl,
+handleGetTokenAndConfig,
+} = useContext(dataContext);
 
   const permissionUser = permissionsList?.filter(
     (permission) => permission.resource === "Users"
@@ -40,11 +35,7 @@ const Users = () => {
 
   const getAllUsers = async () => {
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
       if (permissionUser && !permissionUser.read) {
         toast.warn("ليس لك صلاحية لعرض بيانات المستخدمين");
         return;
@@ -62,11 +53,7 @@ const Users = () => {
       return;
     }
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
 
       // Get the value from the event
       const isVarified = e.target.value;
@@ -98,11 +85,7 @@ const Users = () => {
       return;
     }
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
 
       // put the value from the event
       const isActive = e.target.value;
@@ -143,11 +126,7 @@ const Users = () => {
       return;
     }
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
 
       const response = await axios.put(`${apiUrl}/api/user/${userid}`, {
         username,
@@ -191,11 +170,7 @@ const Users = () => {
   const [Areas, setAreas] = useState([]);
   const getAllDeliveryAreas = async () => {
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
       const response = await axios.get(`${apiUrl}/api/deliveryarea`);
       const data = await response.data;
       // console.log({ data })

@@ -9,13 +9,7 @@ import POSCard from "./POS-Card";
 import InvoiceComponent from "../invoice/invoice";
 
 const POS = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const token = localStorage.getItem("token_e"); // Retrieve the token from localStorage
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
+  
 
   const {
     restaurantData,
@@ -75,7 +69,9 @@ const POS = () => {
     handlePayExtras,
     splitInvoice,
     subtotalSplitOrder,
-  } = useContext(dataContext);
+  apiUrl,
+handleGetTokenAndConfig,
+} = useContext(dataContext);
 
   const [showModal, setShowModal] = useState(false);
 
@@ -291,10 +287,7 @@ const POS = () => {
 
   const RevenueRecording = async (total, revenue) => {
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-      }
+      const config = handleGetTokenAndConfig();
       if (registerSelected) {
         // احسب الرصيد المحدث
         const oldBalance = registers.find(
@@ -348,10 +341,7 @@ const POS = () => {
   const changePaymentorderstauts = async (e) => {
     e.preventDefault();
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-      }
+      const config = handleGetTokenAndConfig();
       if (!registerSelected) {
         toast.warn("لم يتم التعرف علي خزينه لتسجيل فيها اليرادات");
         return;

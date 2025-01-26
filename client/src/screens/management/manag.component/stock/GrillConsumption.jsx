@@ -5,13 +5,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "../orders/Orders.css";
 
 const GrillConsumption = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const token = localStorage.getItem("token_e");
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
+  
 
   const {
     restaurantData,
@@ -29,7 +23,9 @@ const GrillConsumption = () => {
     endPagination,
     setStartPagination,
     setEndPagination,
-  } = useContext(dataContext);
+  apiUrl,
+handleGetTokenAndConfig,
+} = useContext(dataContext);
 
 
   const GrillUsegePermission =
@@ -69,10 +65,7 @@ const GrillConsumption = () => {
     }
     if (consumption) {
       try {
-        if (!token) {
-          // Handle case where token is not available
-          toast.error("رجاء تسجيل الدخول مره اخري");
-        }
+        const config = handleGetTokenAndConfig();
         if (GrillUsegePermission && !GrillUsegePermission.update) {
           toast.warn("ليس لك صلاحية لتعديل عنصر بمخزن الاستهلاك");
           return;
@@ -110,10 +103,7 @@ const GrillConsumption = () => {
       }
     } else {
       try {
-        if (!token) {
-          // Handle case where token is not available
-          toast.error("رجاء تسجيل الدخول مره اخري");
-        }
+        const config = handleGetTokenAndConfig();
         if (GrillUsegePermission && !GrillUsegePermission.create) {
           toast.warn("ليس لك صلاحيه لاضافه عنصر بمخزن الاستهلاك");
           return;
@@ -156,11 +146,7 @@ const GrillConsumption = () => {
   const updategrillItem = async (e) => {
     e.preventDefault();
     console.log("updategrillItem");
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     if (GrillUsegePermission && !GrillUsegePermission.update) {
       toast.warn("ليس لك صلاحية لتعديل عنصر بمخزن الاستهلاك");
       return;
@@ -222,11 +208,7 @@ const GrillConsumption = () => {
   const [AllStockItems, setAllStockItems] = useState([]);
   // Function to retrieve all stock items
   const getStockItems = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/stockitem/", config);
 
@@ -246,11 +228,7 @@ const GrillConsumption = () => {
   };
 
   const deletegrillItem = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     if (GrillUsegePermission && !GrillUsegePermission.delete) {
       toast.warn("ليس لك صلاحية لحذف عنصر بمخزن الاستهلاك");
       return;
@@ -275,10 +253,7 @@ const GrillConsumption = () => {
   // // Function to retrieve all category stock
   // const getAllCategoryStock = async () => {
   //   try{
-  // if (!token) {
-  // Handle case where token is not available
-  //   toast.error('رجاء تسجيل الدخول مره اخري');
-  // }
+// const config = handleGetTokenAndConfig();
   //     const res = await axios.get(apiUrl+'/api/categoryStock/');
   //     setAllCategoryStock(res.data);
   //   } catch (error) {
@@ -295,11 +270,7 @@ const GrillConsumption = () => {
   const [grillConsumptionForView, setgrillConsumptionForView] = useState([]);
 
   const getGrillConsumption = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       console.log("Fetching grill consumption...");
       const response = await axios.get(apiUrl + "/api/consumption", config);

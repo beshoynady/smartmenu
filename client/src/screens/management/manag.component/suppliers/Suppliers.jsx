@@ -5,13 +5,7 @@ import { toast } from "react-toastify";
 import "../orders/Orders.css";
 
 const Suppliers = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const token = localStorage.getItem("token_e"); // Retrieve the token from localStorage
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
+  
 
   const {
     permissionsList,
@@ -23,7 +17,9 @@ const Suppliers = () => {
     endPagination,
     setStartPagination,
     setEndPagination,
-  } = useContext(dataContext);
+  apiUrl,
+handleGetTokenAndConfig,
+} = useContext(dataContext);
 
   const supplierDataPermission =
     permissionsList &&
@@ -103,10 +99,7 @@ const Suppliers = () => {
   // Function to create a Supplier
   const createSupplier = async (e) => {
     e.preventDefault();
-    if (!token) {
-        toast.error("رجاء تسجيل الدخول مره أخرى");
-        return;
-    }
+    const config = handleGetTokenAndConfig();
 
     // تحقق من الصلاحيات قبل المتابعة
     if (supplierDataPermission && !supplierDataPermission.create) {
@@ -156,10 +149,7 @@ const Suppliers = () => {
 
 // دالة فرعية لإنشاء معاملة رصيد افتتاحي
 const createOpeningBalanceTransaction = async (supplierId, currentBalance) => {
-    if (!token) {
-        toast.error("رجاء تسجيل الدخول مره أخرى");
-        return;
-    }
+    const config = handleGetTokenAndConfig();
 
     const transactionData = {
         supplier: supplierId,
@@ -220,11 +210,7 @@ const addSupplierToStockItem = async (supplierId) => {
 
   const updateSupplier = async (e) => {
     e.preventDefault();
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       if (supplierDataPermission && !supplierDataPermission.update) {
         toast.warn("ليس لك صلاحية لتعديل حساب الموردين");
@@ -264,11 +250,7 @@ const addSupplierToStockItem = async (supplierId) => {
   // Function to delete a supplier
   const deleteSupplier = async (e) => {
     e.preventDefault();
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       if (supplierDataPermission && !supplierDataPermission.delete) {
         toast.warn("ليس لك صلاحية لحذف حساب الموردين");
@@ -297,11 +279,7 @@ const addSupplierToStockItem = async (supplierId) => {
   const [AllSuppliers, setAllSuppliers] = useState([]);
   // Function to retrieve all suppliers
   const getAllSuppliers = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       if (supplierDataPermission && !supplierDataPermission.read) {
         toast.warn("ليس لك صلاحية لعرض حسابات الموردين");
@@ -330,11 +308,7 @@ const addSupplierToStockItem = async (supplierId) => {
   };
 
   const getOneSuppliers = async (id) => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       if (supplierDataPermission && !supplierDataPermission.read) {
         toast.warn("ليس لك صلاحية لعرض حساب الموردين");
@@ -376,11 +350,7 @@ const addSupplierToStockItem = async (supplierId) => {
 
   // Function to retrieve all stock items
   const getStockItems = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/stockitem/", config);
 
@@ -406,11 +376,7 @@ const addSupplierToStockItem = async (supplierId) => {
 
   // Function to retrieve all category stock
   const getAllCategoryStock = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const res = await axios.get(apiUrl + "/api/categoryStock/", config);
       setAllCategoryStock(res.data);

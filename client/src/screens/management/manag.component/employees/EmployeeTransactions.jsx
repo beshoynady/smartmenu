@@ -7,15 +7,6 @@ import { useReactToPrint } from "react-to-print";
 import "../orders/Orders.css";
 
 const EmployeeTransactions = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const token = localStorage.getItem("token_e");
-
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-
   const {
     permissionsList,
     setStartDate,
@@ -31,6 +22,8 @@ const EmployeeTransactions = () => {
     endPagination,
     setStartPagination,
     setEndPagination,
+    apiUrl,
+    handleGetTokenAndConfig,
   } = useContext(dataContext);
 
   const employeeTransactionsPermission =
@@ -53,11 +46,7 @@ const EmployeeTransactions = () => {
 
   const addEmployeeTransactions = async (e) => {
     e.preventDefault();
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     setisLoading(true);
     try {
       if (
@@ -94,11 +83,7 @@ const EmployeeTransactions = () => {
 
   const updateEmployeeTransactions = async (e) => {
     e.preventDefault();
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     setisLoading(true);
     try {
       if (
@@ -134,11 +119,7 @@ const EmployeeTransactions = () => {
 
   const deleteEmployeeTransactions = async (e) => {
     e.preventDefault();
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     setisLoading(true);
     try {
       if (
@@ -165,11 +146,7 @@ const EmployeeTransactions = () => {
   };
 
   const getEmployeeTransactions = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     setisLoading(true);
     try {
       if (
@@ -194,11 +171,7 @@ const EmployeeTransactions = () => {
   };
 
   const filterCurrentEmployeeTransactions = async (transaction) => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const now = new Date();
       const currentMonth = now.getMonth();

@@ -4,13 +4,7 @@ import { dataContext } from "../../../../App";
 import { toast } from "react-toastify";
 
 const Grill = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const token = localStorage.getItem("token_e");
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
+  
 
   const {
     formatDate,
@@ -22,7 +16,9 @@ const Grill = () => {
     BarSocket,
     GrillSocket,
     waiterSocket,
-  } = useContext(dataContext);
+  apiUrl,
+handleGetTokenAndConfig,
+} = useContext(dataContext);
 
   const start = useRef();
   const ready = useRef();
@@ -30,10 +26,7 @@ const Grill = () => {
   const [allPreparationSections, setAllPreparationSections] = useState([]);
 
   const getAllPreparationSections = async () => {
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره اخرى");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
 
     try {
       const res = await axios.get(`${apiUrl}/api/preparationsection`, config);
@@ -62,11 +55,7 @@ const Grill = () => {
 
   const getAllRecipe = async () => {
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
 
       const getAllRecipe = await axios.get(`${apiUrl}/api/recipe`, config);
       const allRecipeData = getAllRecipe.data;
@@ -79,11 +68,7 @@ const Grill = () => {
 
   const getAllPreparationTicket = async (Section) => {
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
 
       // Fetch Tickets from the API
       const Response = await axios.get(
@@ -213,11 +198,7 @@ const Grill = () => {
 
   const getKitchenConsumption = async () => {
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مرة أخرى");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
 
       setFilteredKitchenConsumptionToday([]);
       // console.log("Fetching kitchen consumption...");
@@ -250,11 +231,7 @@ const Grill = () => {
 
   const TicketInProgress = async (id) => {
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
       const preparationStatus = "Preparing";
       const response = await axios.put(
         `${apiUrl}/api/preparationticket/${id}`,
@@ -276,10 +253,7 @@ const Grill = () => {
   };
 
   const updateTicketDone = async (id, type) => {
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره أخرى");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
 
     try {
       // 1. Fetch Ticket and product data
@@ -472,11 +446,7 @@ const Grill = () => {
 
   const getAllWaiters = async () => {
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
 
       const allEmployees = await axios.get(apiUrl + "/api/employee", config);
 
@@ -497,11 +467,7 @@ const Grill = () => {
   // Determines the next available waiter to take an Ticket
   const specifiedWaiter = async (id) => {
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
       if (allWaiters.length === 0) {
         // Handle case where token is not available
         toast.warn(

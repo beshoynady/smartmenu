@@ -5,24 +5,13 @@ import { toast } from "react-toastify";
 import "../orders/Orders.css";
 
 const PermissionsComponent = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const token = localStorage.getItem("token_e");
-
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
+ 
 
   const [listOfEmployees, setListOfEmployees] = useState([]);
 
   const getEmployees = async () => {
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
       const response = await axios.get(`${apiUrl}/api/employee`, config);
       console.log({ employee: response });
       if (response.status === 200) {
@@ -41,11 +30,7 @@ const PermissionsComponent = () => {
 
   const getPermissions = async () => {
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
       const response = await axios.get(`${apiUrl}/api/permission`, config);
 
       if (response.status === 200) {
@@ -244,11 +229,7 @@ const PermissionsComponent = () => {
     // console.log({ permissionEmployee });
 
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
       if (!employeeid || !Permissions || Permissions.length === 0) {
         toast.error(
           "اختار الموظف و الصلاحيات بشكل صحيح! اعد تحميل الصفحة ثم اعد المحاوله مره اخري."
@@ -338,11 +319,7 @@ const PermissionsComponent = () => {
 
   const getEmployeesById = (id) => {
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
       if (!id) {
         setselectedEmployee(null);
         setemployeeid("");

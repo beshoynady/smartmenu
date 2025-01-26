@@ -12,14 +12,7 @@ import "../orders/Orders.css";
 
 
 const ProductRecipe = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
-
-  const token = localStorage.getItem("token_e");
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
+  
   const {
     restaurantData,
     permissionsList,
@@ -36,7 +29,9 @@ const ProductRecipe = () => {
     endPagination,
     setStartPagination,
     setEndPagination,
-  } = useContext(dataContext);
+  apiUrl,
+handleGetTokenAndConfig,
+} = useContext(dataContext);
 
   const productRecipePermission =
     permissionsList &&
@@ -45,11 +40,7 @@ const ProductRecipe = () => {
   const [listofProducts, setlistofProducts] = useState([]);
 
   const getallproducts = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/product/");
       const products = await response.data;
@@ -76,11 +67,7 @@ const ProductRecipe = () => {
 
   const [listofcategories, setlistofcategories] = useState([]);
   const getallCategories = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/menucategory/");
       const categories = await response.data;
@@ -95,11 +82,7 @@ const ProductRecipe = () => {
   const [AllStockItems, setAllStockItems] = useState([]);
 
   const getallStockItem = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/stockitem/", config);
       const StockItems = await response.data;
@@ -136,11 +119,7 @@ const ProductRecipe = () => {
 
   const addRecipeItem = async (e) => {
     e.preventDefault();
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       if (productRecipePermission && !productRecipePermission.create) {
         toast.warn("ليس لك صلاحية لانشاء الوصفات");
@@ -272,10 +251,7 @@ const ProductRecipe = () => {
   };
   const addServiceItem = async (e) => {
     e.preventDefault();
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
 
     try {
       if (productRecipePermission && !productRecipePermission.create) {
@@ -326,11 +302,7 @@ const ProductRecipe = () => {
 
   // const addServiceItem = async (e) => {
   //   e.preventDefault();
-  //   if (!token) {
-  //     // Handle case where token is not available
-  //     toast.error("رجاء تسجيل الدخول مره اخري");
-  //     return;
-  //   }
+// const config = handleGetTokenAndConfig();
   //   try {
   //     if (productRecipePermission && !productRecipePermission.create) {
   //       toast.warn("ليس لك صلاحية لانشاء الوصفات");
@@ -381,11 +353,7 @@ const ProductRecipe = () => {
   const editRecipe = async (e) => {
     try {
       e.preventDefault();
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
       if (productRecipePermission && !productRecipePermission.update) {
         toast.warn("ليس لك صلاحية لتعديل الوصفات");
         return;
@@ -485,11 +453,7 @@ const ProductRecipe = () => {
   };
 
   const getProductRecipe = async (productId, sizeId) => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       if (productRecipePermission && !productRecipePermission.read) {
         toast.warn("ليس لك صلاحية لعرض الوصفات");
@@ -614,11 +578,7 @@ const ProductRecipe = () => {
 
   const deleteAllRecipe = async (e) => {
     e.preventDefault();
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       if (productRecipePermission && !productRecipePermission.delete) {
         toast.warn("ليس لك صلاحية لحذف الوصفات");

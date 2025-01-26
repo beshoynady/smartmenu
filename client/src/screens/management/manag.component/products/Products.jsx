@@ -5,13 +5,7 @@ import { dataContext } from "../../../../App";
 import "../orders/Orders.css";
 
 const Products = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const token = localStorage.getItem("token_e");
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
+  
 
   const {
     restaurantData,
@@ -29,7 +23,9 @@ const Products = () => {
     endPagination,
     setStartPagination,
     setEndPagination,
-  } = useContext(dataContext);
+  apiUrl,
+handleGetTokenAndConfig,
+} = useContext(dataContext);
 
   const productPermission =
     permissionsList &&
@@ -134,10 +130,7 @@ const Products = () => {
   const [allPreparationSections, setAllPreparationSections] = useState([]);
 
   const getAllPreparationSections = async () => {
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره اخرى");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
 
     try {
       const res = await axios.get(`${apiUrl}/api/preparationsection`, config);
@@ -157,10 +150,7 @@ const Products = () => {
   const createProduct = async (e) => {
     e.preventDefault();
 
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
 
     try {
       if (productPermission && !productPermission.create) {
@@ -311,11 +301,7 @@ const Products = () => {
   const [productId, setproductId] = useState("");
   const editProduct = async (e) => {
     e.preventDefault();
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       if (productPermission && !productPermission.update) {
         toast.warn("ليس لك صلاحية لتعديل الاصناف");
@@ -393,11 +379,7 @@ const Products = () => {
   const [listofProductsAddon, setlistofProductsAddon] = useState([]);
 
   const getallproducts = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/product/");
       if (response) {
@@ -418,11 +400,7 @@ const Products = () => {
 
   const [allOrders, setAllOrders] = useState([]);
   const getAllOrders = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/order", config);
 
@@ -477,11 +455,7 @@ const Products = () => {
 
   const deleteProduct = async (e) => {
     e.preventDefault();
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       if (productPermission && !productPermission.delete) {
         toast.warn("ليس لك صلاحية لحذف الاصناف");
@@ -502,11 +476,7 @@ const Products = () => {
 
   const [listofcategories, setlistofcategories] = useState([]);
   const getallCategories = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/menucategory/", config);
       const categories = await response.data;

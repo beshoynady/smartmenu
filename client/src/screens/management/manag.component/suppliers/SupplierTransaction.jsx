@@ -7,25 +7,14 @@ import '../orders/Orders.css'
 
 
 const SupplierTransaction = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
-
-  const token = localStorage.getItem('token_e');
-  const config = {
-    headers: {
-      'Authorization': `Bearer ${token}`,
-    },
-  };
+  
   
   const{restaurantData, permissionsList,setStartDate, setEndDate, filterByDateRange, filterByTime, employeeLoginInfo,  formatDate, formatDateTime, setisLoading, EditPagination, startPagination, endPagination, setStartPagination, setEndPagination } = useContext(dataContext)
 
   const [AllSupplierTransaction, setAllSupplierTransaction] = useState([])
   const getAllSupplierTransaction = async () => {
     try{
-      if (!token) {
-        // Handle case where token is not available
-        toast.error('رجاء تسجيل الدخول مره اخري');
-        return
-      }
+      const config = handleGetTokenAndConfig();
       const response = await axios.get(`${apiUrl}/api/suppliertransaction`, config);
       console.log({ response });
       if (response.status === 200) {
@@ -70,11 +59,7 @@ const SupplierTransaction = () => {
   // Function to retrieve all suppliers
   const getAllSuppliers = async () => {
     try{
-      if (!token) {
-        // Handle case where token is not available
-        toast.error('رجاء تسجيل الدخول مره اخري');
-        return
-      }
+      const config = handleGetTokenAndConfig();
       const response = await axios.get(apiUrl + '/api/supplier/', config);
 
       if (!response || !response.data) {
@@ -113,11 +98,7 @@ const SupplierTransaction = () => {
   const handleAddSupplierTransaction = async (e) => {
     e.preventDefault();
     try{
-      if (!token) {
-        // Handle case where token is not available
-        toast.error('رجاء تسجيل الدخول مره اخري');
-        return
-      }
+      const config = handleGetTokenAndConfig();
       const requestData = { invoiceNumber, supplier, transactionDate, transactionType, amount, previousBalance, currentBalance, paymentMethod, notes };
 
       console.log({ requestData })
@@ -172,11 +153,7 @@ const SupplierTransaction = () => {
   const [allPurchaseInvoice, setAllPurchaseInvoice] = useState([])
   const getAllPurchases = async () => {
     try{
-      if (!token) {
-        // Handle case where token is not available
-        toast.error('رجاء تسجيل الدخول مره اخري');
-        return
-      }
+      const config = handleGetTokenAndConfig();
       const response = await axios.get(apiUrl + '/api/purchaseinvoice', config);
       console.log({ response })
       if (response.status === 200) {

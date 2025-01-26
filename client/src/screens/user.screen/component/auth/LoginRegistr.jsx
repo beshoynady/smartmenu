@@ -6,7 +6,26 @@ import { toast } from "react-toastify";
 import "./LoginRegistr.css";
 
 const LoginRegistr = (props) => {
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const {
+    setStartDate,
+    setEndDate,
+    filterByDateRange,
+    filterByTime,
+    restaurantData,
+    formatDateTime,
+    permissionsList,
+    setisLoading,
+    formatDate,
+    formatTime,
+    EditPagination,
+    startPagination,
+    endPagination,
+    setStartPagination,
+    setEndPagination,
+    getUserInfoFromToken,
+    apiUrl,
+    handleGetTokenAndConfig,
+  } = useContext(dataContext);
 
   const openlogin = props.openlogin;
   const [openform, setopenform] = useState(props.openlogin);
@@ -62,7 +81,7 @@ const LoginRegistr = (props) => {
         phone,
         password,
       });
-      console.log({response})
+      console.log({ response });
       // Handle response data
       if (response && response.data) {
         const { accessToken, findUser } = response.data;
@@ -151,185 +170,175 @@ const LoginRegistr = (props) => {
   }, []);
 
   return (
-    <dataContext.Consumer>
-      {({ getUserInfoFromToken }) => {
-        return (
-          <div
-            className="auth-section"
-            ref={authform}
-            style={{ display: openlogin ? "flex" : "none" }}
-          >
-            <div className="wrapper">
-              <div className="form-container">
-                <div className="slide-controls">
-                  <input type="radio" name="slide" id="signup" />
-                  <input type="radio" name="slide" id="login" defaultChecked />
-                  <label
-                    htmlFor="login"
-                    className="slide login"
-                    onClick={() => (loginForm.current.style.marginRight = "0%")}
-                  >
-                    دخول
-                  </label>
-                  <label
-                    htmlFor="signup"
-                    className="slide signup"
-                    onClick={() =>
-                      (loginForm.current.style.marginRight = "-50%")
-                    }
-                  >
-                    عضو جديد
-                  </label>
-                </div>
-
-                <div className="form-inner">
-                  <form
-                    ref={loginForm}
-                    className="login"
-                    onSubmit={(e) =>
-                      login(e, phone, password, getUserInfoFromToken)
-                    }
-                  >
-                    <div className="field">
-                      <input
-                        type="text"
-                        placeholder="Phone"
-                        required
-                        onChange={(e) => setphone(e.target.value)}
-                      />
-                    </div>
-                    <div className="field password-field">
-                      <input
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Password"
-                        required
-                        onChange={(e) => setpassword(e.target.value)}
-                      />
-                      <i
-                        className={`eye-icon ${
-                          showPassword ? "fa-eye" : "fa-eye-slash"
-                        }`}
-                        onClick={handleClickShowPassword}
-                      />
-                    </div>
-                    <div className="field w-100 d-flex align-items-center justify-content-center">
-                      <input
-                        className="btn btn-info w-50"
-                        type="submit"
-                        value="Login"
-                        onClick={closeform}
-                      />
-                    </div>
-                  </form>
-
-                  <form
-                    className="signup"
-                    style={{ overflow: "auto" }}
-                    onSubmit={(e) =>
-                      signup(
-                        e,
-                        username,
-                        phone,
-                        deliveryArea,
-                        address,
-                        email,
-                        password,
-                        passconfirm
-                      )
-                    }
-                  >
-                    <div className="field">
-                      <input
-                        type="text"
-                        placeholder="اسمك"
-                        required
-                        onChange={(e) => setusername(e.target.value)}
-                      />
-                    </div>
-                    <div className="field">
-                      <input
-                        type="text"
-                        placeholder="الايميل"
-                        onChange={(e) => setemail(e.target.value)}
-                      />
-                    </div>
-                    <div className="field">
-                      <input
-                        type="text"
-                        placeholder="الموبايل"
-                        required
-                        onChange={(e) => setphone(e.target.value)}
-                      />
-                    </div>
-                    <div className="field">
-                      <select
-                        className="field"
-                        onChange={(e) => setdeliveryArea(e.target.value)}
-                      >
-                        <option>اختر المنطقة</option>
-                        {areas ? (
-                          areas.map((area, i) => (
-                            <option value={area._id} key={i}>
-                              {area.name}
-                            </option>
-                          ))
-                        ) : (
-                          <option>لا توجد مناطق توصيل متاحة</option>
-                        )}
-                      </select>
-                    </div>
-                    <div className="field">
-                      <textarea
-                        placeholder="العنوان بالتفصيل"
-                        cols="42"
-                        rows="2"
-                        required
-                        onChange={(e) => setaddress(e.target.value)}
-                      />
-                    </div>
-                    <div className="field password-field">
-                      <input
-                        type={showPassword ? "text" : "password"}
-                        placeholder="الباسورد"
-                        required
-                        onChange={(e) => setpassword(e.target.value)}
-                      />
-                      <i
-                        className={`eye-icon ${
-                          showPassword ? "fa-eye" : "fa-eye-slash"
-                        }`}
-                        onClick={handleClickShowPassword}
-                      />
-                    </div>
-                    <div className="field password-field">
-                      <input
-                        type={showPassword ? "text" : "password"}
-                        placeholder="تاكيد الباسورد"
-                        required
-                        onChange={(e) => setpassconfirm(e.target.value)}
-                      />
-                      <i
-                        className={`eye-icon ${
-                          showPassword ? "fa-eye" : "fa-eye-slash"
-                        }`}
-                        onClick={handleClickShowPassword}
-                      />
-                    </div>
-                    <div className="field w-100 d-flex align-items-center justify-content-center">
-                      <input
-                        className="btn btn-info w-50"
-                        type="submit"
-                        value="Signup"
-                      />
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div>
+    <div
+      className="auth-section"
+      ref={authform}
+      style={{ display: openlogin ? "flex" : "none" }}
+    >
+      <div className="wrapper">
+        <div className="form-container">
+          <div className="slide-controls">
+            <input type="radio" name="slide" id="signup" />
+            <input type="radio" name="slide" id="login" defaultChecked />
+            <label
+              htmlFor="login"
+              className="slide login"
+              onClick={() => (loginForm.current.style.marginRight = "0%")}
+            >
+              دخول
+            </label>
+            <label
+              htmlFor="signup"
+              className="slide signup"
+              onClick={() => (loginForm.current.style.marginRight = "-50%")}
+            >
+              عضو جديد
+            </label>
           </div>
-        );
-      }}
-    </dataContext.Consumer>
+
+          <div className="form-inner">
+            <form
+              ref={loginForm}
+              className="login"
+              onSubmit={(e) => login(e, phone, password, getUserInfoFromToken)}
+            >
+              <div className="field">
+                <input
+                  type="text"
+                  placeholder="Phone"
+                  required
+                  onChange={(e) => setphone(e.target.value)}
+                />
+              </div>
+              <div className="field password-field">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                  required
+                  onChange={(e) => setpassword(e.target.value)}
+                />
+                <i
+                  className={`eye-icon ${
+                    showPassword ? "fa-eye" : "fa-eye-slash"
+                  }`}
+                  onClick={handleClickShowPassword}
+                />
+              </div>
+              <div className="field w-100 d-flex align-items-center justify-content-center">
+                <input
+                  className="btn btn-info w-50"
+                  type="submit"
+                  value="Login"
+                  onClick={closeform}
+                />
+              </div>
+            </form>
+
+            <form
+              className="signup"
+              style={{ overflow: "auto" }}
+              onSubmit={(e) =>
+                signup(
+                  e,
+                  username,
+                  phone,
+                  deliveryArea,
+                  address,
+                  email,
+                  password,
+                  passconfirm
+                )
+              }
+            >
+              <div className="field">
+                <input
+                  type="text"
+                  placeholder="اسمك"
+                  required
+                  onChange={(e) => setusername(e.target.value)}
+                />
+              </div>
+              <div className="field">
+                <input
+                  type="text"
+                  placeholder="الايميل"
+                  onChange={(e) => setemail(e.target.value)}
+                />
+              </div>
+              <div className="field">
+                <input
+                  type="text"
+                  placeholder="الموبايل"
+                  required
+                  onChange={(e) => setphone(e.target.value)}
+                />
+              </div>
+              <div className="field">
+                <select
+                  className="field"
+                  onChange={(e) => setdeliveryArea(e.target.value)}
+                >
+                  <option>اختر المنطقة</option>
+                  {areas ? (
+                    areas.map((area, i) => (
+                      <option value={area._id} key={i}>
+                        {area.name}
+                      </option>
+                    ))
+                  ) : (
+                    <option>لا توجد مناطق توصيل متاحة</option>
+                  )}
+                </select>
+              </div>
+              <div className="field">
+                <textarea
+                  placeholder="العنوان بالتفصيل"
+                  cols="42"
+                  rows="2"
+                  required
+                  onChange={(e) => setaddress(e.target.value)}
+                />
+              </div>
+              <div className="field password-field">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="الباسورد"
+                  required
+                  onChange={(e) => setpassword(e.target.value)}
+                />
+                <i
+                  className={`eye-icon ${
+                    showPassword ? "fa-eye" : "fa-eye-slash"
+                  }`}
+                  onClick={handleClickShowPassword}
+                />
+              </div>
+              <div className="field password-field">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="تاكيد الباسورد"
+                  required
+                  onChange={(e) => setpassconfirm(e.target.value)}
+                />
+                <i
+                  className={`eye-icon ${
+                    showPassword ? "fa-eye" : "fa-eye-slash"
+                  }`}
+                  onClick={handleClickShowPassword}
+                />
+              </div>
+              <div className="field w-100 d-flex align-items-center justify-content-center">
+                <input
+                  className="btn btn-info w-50"
+                  type="submit"
+                  value="Signup"
+                />
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

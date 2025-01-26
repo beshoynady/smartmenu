@@ -5,13 +5,7 @@ import { dataContext } from "../../../../App";
 import "../orders/Orders.css";
 
 const ReservationTables = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const token = localStorage.getItem("token_e"); // Retrieve the token from localStorage
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
+  
   const {
     setisLoading,
     EditPagination,
@@ -35,7 +29,9 @@ const ReservationTables = () => {
     formatTime,
     filterByDateRange,
     filterByTime,
-  } = useContext(dataContext);
+  apiUrl,
+handleGetTokenAndConfig,
+} = useContext(dataContext);
 
   const createdBy = employeeLoginInfo?.id;
   const [reservationId, setReservationId] = useState("");
@@ -266,10 +262,7 @@ const ReservationTables = () => {
   //   e.preventDefault();
   //   console.log(selectedIds)
   //   try{
-  // if (!token) {
-  // Handle case where token is not available
-  //   toast.error('رجاء تسجيل الدخول مره اخري');
-  // }
+// const config = handleGetTokenAndConfig();
   //     for (const Id of selectedIds) {
   //       await axios.delete(`${apiUrl}/api/order/${Id}`);
   //     }

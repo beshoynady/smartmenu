@@ -9,14 +9,7 @@ import '../orders/Orders.css'
 
 
 const PurchaseReturn = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
-
-  const token = localStorage.getItem('token_e');
-  const config = {
-    headers: {
-      'Authorization': `Bearer ${token}`,
-    },
-  };
+  
 
 
   const { restaurantData, permissionsList, setStartDate, setEndDate, filterByDateRange, filterByTime, employeeLoginInfo,
@@ -31,11 +24,7 @@ const PurchaseReturn = () => {
   const [AllStockactions, setAllStockactions] = useState([]);
 
   const getallStockaction = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error('رجاء تسجيل الدخول مره اخري');
-      return
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + '/api/stockmovement/', config);
       console.log(response.data)
@@ -50,11 +39,7 @@ const PurchaseReturn = () => {
   const [AllSuppliers, setAllSuppliers] = useState([]);
   // Function to retrieve all suppliers
   const getAllSuppliers = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error('رجاء تسجيل الدخول مره اخري');
-      return
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + '/api/supplier/', config);
 
@@ -81,11 +66,7 @@ const PurchaseReturn = () => {
   const [AllCashRegisters, setAllCashRegisters] = useState([]);
   // Fetch all cash registers
   const getAllCashRegisters = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error('رجاء تسجيل الدخول مره اخري');
-      return
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + '/api/cashregister', config);
       setAllCashRegisters(response.data.reverse());
@@ -97,11 +78,7 @@ const PurchaseReturn = () => {
   const [allrecipes, setAllRecipes] = useState([]);
 
   const getallrecipes = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error('رجاء تسجيل الدخول مره اخري');
-      return
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const response = await axios.get(`${apiUrl}/api/recipe`, config);
       console.log(response)
@@ -115,11 +92,7 @@ const PurchaseReturn = () => {
 
   const [StockItems, setStockItems] = useState([]);
   const getaStockItems = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error('رجاء تسجيل الدخول مره اخري');
-      return
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + '/api/stockitem/', config);
       if (response) {
@@ -134,11 +107,7 @@ const PurchaseReturn = () => {
 
 
   const createStockAction = async (item, receiverid) => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error('رجاء تسجيل الدخول مره اخري');
-      return
-    }
+    const config = handleGetTokenAndConfig();
     
     try {
       const itemId = item.itemId;
@@ -386,10 +355,7 @@ const PurchaseReturn = () => {
 
   //   e.preventDefault()
   //   try{
-  // if (!token) {
-  // Handle case where token is not available
-  //   toast.error('رجاء تسجيل الدخول مره اخري');
-  // }
+// const config = handleGetTokenAndConfig();
   //     const newInvoice = {
   //       originalInvoice,
   //       returnDate,
@@ -431,11 +397,7 @@ const PurchaseReturn = () => {
   const [returnInvoice, setreturnInvoice] = useState({})
 
   const getReturnInvoice = async (id) => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error('رجاء تسجيل الدخول مره اخري');
-      return
-    }
+    const config = handleGetTokenAndConfig();
     try {
       if(purchaseReturnPermission&&!purchaseReturnPermission.read){
         toast.warn('ليس لك صلاحية لعرض فواتير المرتجع');
@@ -452,11 +414,7 @@ const PurchaseReturn = () => {
 
   const createPurchaseReturn = async (e, receiverId) => {
     e.preventDefault()
-    if (!token) {
-      // Handle case where token is not available
-      toast.error('رجاء تسجيل الدخول مره اخري');
-      return
-    }
+    const config = handleGetTokenAndConfig();
     try {
       if(purchaseReturnPermission&&!purchaseReturnPermission.create){
         toast.warn('ليس لك صلاحية لانشاء فواتير المرتجع');
@@ -521,11 +479,7 @@ const PurchaseReturn = () => {
 
   const [allPurchasesReturn, setAllPurchasesReturn] = useState([])
   const getAllPurchasesReturn = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error('رجاء تسجيل الدخول مره اخري');
-      return
-    }
+    const config = handleGetTokenAndConfig();
     try {
       if(purchaseReturnPermission&&!purchaseReturnPermission.read){
         toast.warn('ليس لك صلاحية لعرض فواتير المرتجع');
@@ -546,11 +500,7 @@ const PurchaseReturn = () => {
 
   const [allPurchaseInvoice, setAllPurchaseInvoice] = useState([])
   const getAllPurchases = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error('رجاء تسجيل الدخول مره اخري');
-      return
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + '/api/purchaseinvoice', config);
       console.log({ response })
@@ -586,11 +536,7 @@ const PurchaseReturn = () => {
     e.preventDefault();
     const updatedbalance = Number(CashRegisterBalance) + Number(refundedAmount); // Calculate the updated balance
 
-    if (!token) {
-      // Handle case where token is not available
-      toast.error('رجاء تسجيل الدخول مره اخري');
-      return
-    }
+    const config = handleGetTokenAndConfig();
     try {
 
       // await handleAddSupplierTransactionPaymentPurchase()
@@ -630,11 +576,7 @@ const PurchaseReturn = () => {
   };
 
   const confirmDeduct = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error('رجاء تسجيل الدخول مره اخري');
-      return
-    }
+    const config = handleGetTokenAndConfig();
     try {
       let newCurrentBalance = 0
 

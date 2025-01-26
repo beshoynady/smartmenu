@@ -15,15 +15,11 @@ const cashierSocket = io(`${process.env.REACT_APP_API_URL}/cashier`, {
 });
 
 const Home = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const token = localStorage.getItem("token_e");
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
+  
 
-  const { restaurantData, userLoginInfo } = useContext(dataContext);
+  const { restaurantData, userLoginInfo apiUrl,
+handleGetTokenAndConfig,
+} = useContext(dataContext);
   const { id } = useParams();
   const navigate = useNavigate(); // Use useNavigate hook
   const [table, setTable] = useState(null);

@@ -6,14 +6,7 @@ import { Link } from "react-router-dom";
 import "./SideBar.css";
 
 const SideBar = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const token = localStorage.getItem("token_e");
-
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
+ 
 
   const arrowRefs = {
     arrowsetting: useRef(),

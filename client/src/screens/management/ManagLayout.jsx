@@ -11,7 +11,9 @@ import { ToastContainer } from "react-toastify";
 
 
 const ManagLayout = () => {
-  const { employeeLoginInfo } = useContext(dataContext);
+  const { employeeLoginInfo apiUrl,
+handleGetTokenAndConfig,
+} = useContext(dataContext);
 
   const isLoggedIn = employeeLoginInfo?.isAdmin && employeeLoginInfo?.isActive;
 

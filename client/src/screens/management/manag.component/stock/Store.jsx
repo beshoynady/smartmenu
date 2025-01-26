@@ -5,13 +5,7 @@ import { toast } from "react-toastify";
 import "../orders/Orders.css";
 
 const Store = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const token = localStorage.getItem("token_e");
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
+  
 
   const {
     employeeLoginInfo,
@@ -24,7 +18,9 @@ const Store = () => {
     endPagination,
     setStartPagination,
     setEndPagination,
-  } = useContext(dataContext);
+  apiUrl,
+handleGetTokenAndConfig,
+} = useContext(dataContext);
 
   const storePermissions = permissionsList?.find(
     (permission) => permission.resource === "store"
@@ -78,10 +74,7 @@ const Store = () => {
 
   // Fetch all stores
   const getAllStores = async () => {
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
 
     try {
       if (!hasPermission("read")) return;
@@ -95,10 +88,7 @@ const Store = () => {
 
   // Fetch all employees
   const getEmployees = async () => {
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
 
     try {
       const response = await axios.get(`${apiUrl}/api/employee`, config);
@@ -116,10 +106,7 @@ const Store = () => {
 
   // Fetch all stock items
   const getAllStockItems = async () => {
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
 
     try {
       const response = await axios.get(`${apiUrl}/api/stockitem/`, config);
@@ -149,10 +136,7 @@ const Store = () => {
   // Create store
   const createStore = async (e) => {
     e.preventDefault();
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
 
     if (!hasPermission("create") || !validateFields()) return;
 
@@ -178,10 +162,7 @@ const Store = () => {
   // Edit store
   const editStore = async (e) => {
     e.preventDefault();
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
 
     if (!hasPermission("update")) return;
 
@@ -209,10 +190,7 @@ const Store = () => {
   const deleteStore = async (e) => {
     e.preventDefault();
 
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
 
     if (!hasPermission("delete")) return;
 

@@ -18,13 +18,7 @@ import {
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const ManagerDash = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const token = localStorage.getItem("token_e");
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
+  
 
   const {
     restaurantData,
@@ -43,7 +37,9 @@ const ManagerDash = () => {
     BarSocket,
     GrillSocket,
     waiterSocket,
-  } = useContext(dataContext);
+  apiUrl,
+handleGetTokenAndConfig,
+} = useContext(dataContext);
 
   const [showModal, setShowModal] = useState(false);
 
@@ -61,10 +57,7 @@ const ManagerDash = () => {
 
   const fetchOrdersData = async () => {
     try {
-      if (!token) {
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
 
       // Fetch orders from API
       const res = await axios.get(apiUrl + "/api/order", config);
@@ -175,10 +168,7 @@ const ManagerDash = () => {
   const [allPreparationSections, setAllPreparationSections] = useState([]);
 
   const getAllPreparationSections = async () => {
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره اخرى");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
 
     try {
       const res = await axios.get(`${apiUrl}/api/preparationsection`, config);
@@ -196,11 +186,7 @@ const ManagerDash = () => {
   };
 
   // const changeOrderStatus = async (event, orderId, orderProducts) => {
-  //   if (!token) {
-  //     // Notify the user to re-login if the token is missing
-  //     toast.error("رجاء تسجيل الدخول مره أخرى");
-  //     return;
-  //   }
+  //   const config = handleGetTokenAndConfig();
   
   //   const cashier = employeeLoginInfo.id; // Get cashier ID
   //   const status = event.target.value; // New order status
@@ -286,10 +272,7 @@ const ManagerDash = () => {
   
 
   // const changeOrderStatus = async (e, orderId)  => {
-  //   if (!token) {
-  //     // Handle case where token is not available
-  //       toast.error("رجاء تسجيل الدخول مره اخري");
-  //     }
+// const config = handleGetTokenAndConfig();
   //     const status = e.target.value;
   //     const cashier= employeeLoginInfo.id
   //     const isActive = status === "Cancelled" ? false : true;
@@ -380,10 +363,7 @@ const ManagerDash = () => {
   const changeOrderStatus = async (e, orderId) => {
     try {
       // Check if the token is available
-      if (!token) {
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
   
       const status = e.target.value; // Get the new status from the event
       const cashier = employeeLoginInfo.id; // Current cashier ID
@@ -496,10 +476,7 @@ const ManagerDash = () => {
 
   const fetchActiveEmployees = async () => {
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-      }
+      const config = handleGetTokenAndConfig();
       const allEmployees = await axios.get(apiUrl + "/api/employee", config);
       const activeEmployees = allEmployees.data.filter(
         (employee) => employee.isActive === true
@@ -535,11 +512,7 @@ const ManagerDash = () => {
 
   const specifiedWaiter = async (id) => {
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
       if (!allWaiters.length > 0) {
         toast.warn("لا يوجد ويتر نشط الان ");
         return "";
@@ -601,10 +574,7 @@ const ManagerDash = () => {
 
   const sendWaiter = async (id) => {
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-      }
+      const config = handleGetTokenAndConfig();
       const waiter = await specifiedWaiter(id);
       if (!waiter) {
         return;
@@ -638,10 +608,7 @@ const ManagerDash = () => {
 
   const putdeliveryman = async (id, orderid) => {
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-      }
+      const config = handleGetTokenAndConfig();
       const deliveryMan = id;
       const order = await axios.put(
         apiUrl + "/api/order/" + orderid,
@@ -699,10 +666,7 @@ const ManagerDash = () => {
 
   const RevenueRecording = async (total, revenue) => {
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-      }
+      const config = handleGetTokenAndConfig();
       if (registerSelected) {
         // احسب الرصيد المحدث
         const oldBalance = registers.find(
@@ -768,10 +732,7 @@ const ManagerDash = () => {
   const changePaymentorderstauts = async (e) => {
     e.preventDefault();
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-      }
+      const config = handleGetTokenAndConfig();
       if (!registerSelected) {
         toast.warn("لم يتم التعرف علي خزينه لتسجيل فيها اليرادات");
         return;
@@ -813,10 +774,7 @@ const ManagerDash = () => {
   // Fetch orders from API
   const getOrderDetalis = async (serial) => {
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-      }
+      const config = handleGetTokenAndConfig();
       const res = await axios.get(apiUrl + "/api/order", config);
       const order = res.data.find((o) => o.serial === serial);
       if (order) {
@@ -896,10 +854,7 @@ const ManagerDash = () => {
   const aproveOrder = async (e, cashier) => {
     e.preventDefault();
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-      }
+      const config = handleGetTokenAndConfig();
 
       // Fetch order data by ID
       const order = await axios.get(

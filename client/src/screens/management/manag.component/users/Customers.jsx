@@ -5,13 +5,7 @@ import { dataContext } from "../../../../App";
 import "../orders/Orders.css";
 
 const Customers = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const token = localStorage.getItem("token_e"); // Retrieve the token from localStorage
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
+  
 
   const {
     setStartDate,
@@ -29,7 +23,9 @@ const Customers = () => {
     endPagination,
     setStartPagination,
     setEndPagination,
-  } = useContext(dataContext);
+  apiUrl,
+handleGetTokenAndConfig,
+} = useContext(dataContext);
 
   const permissionCustomer = permissionsList?.filter(
     (permission) => permission.resource === "Customers"
@@ -177,11 +173,7 @@ const Customers = () => {
 
   const [Areas, setAreas] = useState([]);
   const getAllDeliveryAreas = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const response = await axios.get(`${apiUrl}/api/deliveryarea`);
       const data = await response.data;

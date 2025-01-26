@@ -8,14 +8,7 @@ import { date } from 'joi';
 
 
 const DailyExpense = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
-
-  const token = localStorage.getItem('token_e');
-  const config = {
-    headers: {
-      'Authorization': `Bearer ${token}`,
-    },
-  };
+  
 
   const{restaurantData, permissionsList,setStartDate, setEndDate, filterByDateRange, filterByTime,
     employeeLoginInfo, formatDate, formatDateTime, setisLoading, EditPagination, startPagination,
@@ -46,11 +39,7 @@ const DailyExpense = () => {
   const [AllcashRegisters, setAllcashRegisters] = useState([]);
 
   const getAllcashRegisters = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error('رجاء تسجيل الدخول مره اخري');
-      return
-    }
+    const config = handleGetTokenAndConfig();
     try {
 
       const response = await axios.get(apiUrl + '/api/cashRegister', config);
@@ -75,11 +64,7 @@ const DailyExpense = () => {
 
 
   const getallExpenses = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error('رجاء تسجيل الدخول مره اخري');
-      return
-    }
+    const config = handleGetTokenAndConfig();
     try {
 
       const response = await axios.get(apiUrl + '/api/expenses/', config);
@@ -96,11 +81,7 @@ const DailyExpense = () => {
     const updatedBalance = CashRegisterBalance - amount;
 
     try {
-      // Check if the token is available
-      if (!token) {
-        toast.error('رجاء تسجيل الدخول مره أخرى');
-        return;
-      }
+      const config = handleGetTokenAndConfig();
 
       // Check if the user has permission to create daily expenses
       if (permissionDailyExpense && !permissionDailyExpense.create) {
@@ -167,11 +148,7 @@ const DailyExpense = () => {
 
   const editDailyExpense = async (e) => {
     e.preventDefault();
-    if (!token) {
-      // Handle case where token is not available
-      toast.error('رجاء تسجيل الدخول مره اخري');
-      return
-    }
+    const config = handleGetTokenAndConfig();
     try {
       if (permissionDailyExpense && !permissionDailyExpense.update) {
         toast.warn('ليس لك الصلاحية لتعديل المصروفات');
@@ -234,11 +211,7 @@ const DailyExpense = () => {
 
   const deleteDailyExpense = async (e) => {
     e.preventDefault();
-    if (!token) {
-      // Handle case where token is not available
-      toast.error('رجاء تسجيل الدخول مره اخري');
-      return
-    }
+    const config = handleGetTokenAndConfig();
     try {
 
       if (permissionDailyExpense && !permissionDailyExpense.delete) {
@@ -284,11 +257,7 @@ const DailyExpense = () => {
 
 
   const getallDailyExpenses = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error('رجاء تسجيل الدخول مره اخري');
-      return
-    }
+    const config = handleGetTokenAndConfig();
     try {
       if (permissionDailyExpense && !permissionDailyExpense.read) {
         toast.warn('ليس لك الصلاحية لعرض المصروفات');

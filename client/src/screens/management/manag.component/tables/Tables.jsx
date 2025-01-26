@@ -6,13 +6,7 @@ import { toast } from "react-toastify";
 import "../orders/Orders.css";
 
 const Tables = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const token = localStorage.getItem("token_e");
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
+  
   const {
     permissionsList,
     restaurantData,
@@ -29,7 +23,9 @@ const Tables = () => {
     endPagination,
     setStartPagination,
     setEndPagination,
-  } = useContext(dataContext);
+  apiUrl,
+handleGetTokenAndConfig,
+} = useContext(dataContext);
 
   const tablePermission =
     permissionsList &&
@@ -50,10 +46,7 @@ const Tables = () => {
   const createTable = async (e) => {
     e.preventDefault();
 
-    if (!token) {
-      toast.error("يجب تسجيل الدخول لإتمام العملية");
-      throw new Error("Authentication required");
-    }
+const config = handleGetTokenAndConfig();
 
     if (tablePermission && !tablePermission.create) {
       toast.warn("ليس لك صلاحية لانشاء طاوله جديدة");
@@ -115,10 +108,7 @@ const Tables = () => {
     e.preventDefault();
 
     // Check if the user is authenticated
-    if (!token) {
-      toast.error("يجب تسجيل الدخول لإتمام العملية.");
-      throw new Error("Authentication required");
-    }
+    const config = handleGetTokenAndConfig();
     if (tablePermission && !tablePermission.update) {
       toast.warn("ليس لك صلاحية لتعديل بيانات طاوله ");
       return;
@@ -178,11 +168,7 @@ const Tables = () => {
   // Function to create QR code for the table URL
   const createQR = async (e) => {
     e.preventDefault();
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
 
     try {
       const URL = `https://${window.location.hostname}/${tableCode}`;
@@ -204,11 +190,7 @@ const Tables = () => {
   // Function to create web QR code
   const changeCode = async (e, tableid) => {
     e.preventDefault();
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
 
     const generateTableCode = () => {
       return [...Array(20)]
@@ -241,11 +223,7 @@ const Tables = () => {
 
   const createwebQR = async (e) => {
     e.preventDefault();
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       const URL = `https://${window.location.hostname}/`;
       const response = await axios.post(
@@ -272,11 +250,7 @@ const Tables = () => {
 
   // Function to get all tables
   const getAllTable = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     if (tablePermission && !tablePermission.read) {
       toast.warn("ليس لك صلاحية لعرض بيانات الطاولات");
       return;
@@ -297,11 +271,7 @@ const Tables = () => {
   // Function to delete a table
   const deleteTable = async (e) => {
     e.preventDefault();
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     if (tablePermission && !tablePermission.delete) {
       toast.warn("ليس لك صلاحية لحذف طاوله ");
       return;
@@ -367,11 +337,7 @@ const Tables = () => {
   const deleteSelectedIds = async (e) => {
     e.preventDefault();
     console.log(selectedIds);
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     if (tablePermission && !tablePermission.delete) {
       toast.warn("ليس لك صلاحية لحذف طاوله ");
       return;

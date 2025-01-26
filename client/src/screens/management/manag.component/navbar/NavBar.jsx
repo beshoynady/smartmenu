@@ -51,16 +51,11 @@ const NavBar = () => {
     BarSocket,
     GrillSocket,
     waiterSocket,
-  } = useContext(dataContext);
+  apiUrl,
+handleGetTokenAndConfig,
+} = useContext(dataContext);
 
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const token = localStorage.getItem("token_e");
-
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
+ 
 
   const permissionUserMassage = permissionsList?.filter(
     (permission) => permission.resource === "Messages"
@@ -80,11 +75,7 @@ const NavBar = () => {
       return;
     }
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
       const response = await axios.get(`${apiUrl}/api/message`, config);
       const data = await response.data.reverse();
       const messageNotSeen = data.filter((mas) => mas.isSeen === false);
@@ -100,11 +91,7 @@ const NavBar = () => {
       return;
     }
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
       const response = await axios.put(
         `${apiUrl}/api/message/${id}`,
         { isSeen: true },

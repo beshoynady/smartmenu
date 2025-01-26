@@ -180,11 +180,20 @@ function App() {
   axios.defaults.withCredentials = true;
 
   const apiUrl = process.env.REACT_APP_API_URL;
-  const token = localStorage.getItem("token_e");
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+
+  const handleGetTokenAndConfig = async () => {
+    await verifyToken();
+    const token = localStorage.getItem("token_e");
+     if (!token) {
+      toast.error("!رجاء تسجيل الدخول مره اخري");
+      return null;
+    }
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    return config;
   };
 
   const [isRefresh, setIsRefresh] = useState(false);
@@ -527,10 +536,7 @@ function App() {
   const [allEmployees, setAllEmployees] = useState([]);
   const getAllEmployees = async () => {
     try {
-      if (!token) {
-        // Handle case where token is not available
-        throw new Error("توكن غير متاح");
-      }
+      const config = handleGetTokenAndConfig();
       const response = await axios.get(`${apiUrl}/api/employee`, config);
 
       if (response.status === 200) {
@@ -1624,10 +1630,7 @@ function App() {
   const [newlistofproductorder, setnewlistofproductorder] = useState([]);
   const getOrderProductForTable = async (e, tableId) => {
     e.preventDefault();
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
 
     // setisLoading(true)
     try {
@@ -1667,11 +1670,7 @@ function App() {
   };
 
   const putNumOfPaid = (id, sizeid, numOfPaid) => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       console.log({ listProductsOrder, newlistofproductorder });
 
@@ -1713,11 +1712,7 @@ function App() {
   const [subtotalSplitOrder, setsubtotalSplitOrder] = useState(0);
 
   const calcSubtotalSplitOrder = (products = newlistofproductorder) => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       let total = 0;
 
@@ -1878,7 +1873,6 @@ function App() {
 
   const [isTokenValid, setIsTokenValid] = useState(true);
 
-
   const refreshToken = async () => {
     try {
       const response = await axios.post(
@@ -1894,19 +1888,19 @@ function App() {
     } catch (error) {
       console.error("Error refreshing token:", error);
       toast.error("انتهت صلاحية الجلسة. الرجاء تسجيل الدخول مرة أخرى.");
-      return <Navigate to='/login' />;
+      return <Navigate to="/login" />;
     }
   };
 
   const verifyToken = async () => {
     const employeeToken = localStorage.getItem("token_e");
     if (!employeeToken) {
-      await refreshToken(); 
+      await refreshToken();
     } else {
       const decodedToken = jwt_decode(employeeToken);
-      const currentTime = Date.now() / 1000; 
+      const currentTime = Date.now() / 1000;
       if (decodedToken.exp < currentTime) {
-        await refreshToken(); 
+        await refreshToken();
       }
     }
   };
@@ -2240,9 +2234,9 @@ function App() {
   // عند التحقق من التوكن
   useEffect(() => {
     const initializeSession = async () => {
-    setisLoading(true);
-      await verifyToken(); 
-      await getUserInfoFromToken(); 
+      setisLoading(true);
+      await verifyToken();
+      await getUserInfoFromToken();
       setisLoading(false);
     };
 
@@ -2301,6 +2295,8 @@ function App() {
         apiUrl,
 
         // الدوال المتعلقة بالمصادقة
+        apiUrl,
+        handleGetTokenAndConfig,
         userLoginInfo,
         employeeLoginInfo,
         permissionsList,
@@ -2590,7 +2586,7 @@ function App() {
               path="menucategory"
               element={
                 <Suspense fallback={<LoadingPage />}>
-                  <MenuCategory/>
+                  <MenuCategory />
                 </Suspense>
               }
             />

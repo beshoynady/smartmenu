@@ -8,13 +8,7 @@ import InvoiceComponent from "../invoice/invoice";
 import PreparationSection from "../products/PreparationSection";
 
 const PreparationTicket = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const token = localStorage.getItem("token_e"); // Retrieve the token from localStorage
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
+  
 
   const {
     restaurantData,
@@ -32,7 +26,9 @@ const PreparationTicket = () => {
     endPagination,
     setStartPagination,
     setEndPagination,
-  } = useContext(dataContext);
+  apiUrl,
+handleGetTokenAndConfig,
+} = useContext(dataContext);
 
   const [showModal, setShowModal] = useState(false);
 
@@ -41,10 +37,7 @@ const PreparationTicket = () => {
 
   // Fetch all preparation sections
   const fetchPreparationSections = async () => {
-    if (!token) {
-      toast.error("Please log in again.");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
 
     try {
       const response = await axios.get(
@@ -66,10 +59,7 @@ const PreparationTicket = () => {
 
 
   const fetchPreparationTickets = async () => {
-    if (!token) {
-      toast.error("Please log in again.");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
 
     try {
       const response = await axios.get(
@@ -112,10 +102,7 @@ const PreparationTicket = () => {
       event.preventDefault();
     
       // Check if the user is authenticated
-      if (!token) {
-        toast.error("يرجى تسجيل الدخول مرة أخرى."); // Show an error message if token is missing
-        return;
-      }
+      const config = handleGetTokenAndConfig();
     
       try {
         const PreparationTicketIdToDelete = PreparationTicketId; // Use a clear and descriptive variable name
@@ -176,11 +163,7 @@ const PreparationTicket = () => {
   const deleteSelectedIds = async (e) => {
     e.preventDefault();
     console.log(selectedIds);
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     try {
       for (const Id of selectedIds) {
         await axios.delete(`${apiUrl}/api/preparationticket/${Id}`, config);

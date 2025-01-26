@@ -5,13 +5,7 @@ import { toast } from "react-toastify";
 import "../orders/Orders.css";
 
 const CategoryStock = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const token = localStorage.getItem("token_e"); // Retrieve the token from localStorage
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
+  
 
   const {
     restaurantData,
@@ -29,7 +23,9 @@ const CategoryStock = () => {
     endPagination,
     setStartPagination,
     setEndPagination,
-  } = useContext(dataContext);
+  apiUrl,
+handleGetTokenAndConfig,
+} = useContext(dataContext);
 
   const stockCategoriesPermission =
     permissionsList &&
@@ -45,10 +41,7 @@ const CategoryStock = () => {
   const [allStockItems, setAllStockItems] = useState([]);
 
   const getAllCategoryStock = async () => {
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
 
     try {
       if (stockCategoriesPermission && !stockCategoriesPermission.read) {
@@ -65,10 +58,7 @@ const CategoryStock = () => {
 
   const getAllStockItem = async () => {
     try {
-      if (!token) {
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
       const response = await axios.get(apiUrl + "/api/stockitem/", config);
       if (response) {
         const stockItems = response.data.reverse();
@@ -83,10 +73,7 @@ const CategoryStock = () => {
 
   const createCategoryStock = async (e) => {
     e.preventDefault();
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
 
     try {
       if (stockCategoriesPermission && !stockCategoriesPermission.create) {
@@ -128,10 +115,7 @@ const CategoryStock = () => {
 
   const editCategoryStock = async (e) => {
     e.preventDefault();
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
 
     try {
       if (stockCategoriesPermission && !stockCategoriesPermission.update) {
@@ -160,10 +144,7 @@ const CategoryStock = () => {
   const deleteCategoryStock = async (e) => {
     e.preventDefault();
 
-    if (!token) {
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
 
     try {
       if (stockCategoriesPermission && !stockCategoriesPermission.delete) {

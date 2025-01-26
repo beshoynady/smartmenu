@@ -7,14 +7,7 @@ import { useReactToPrint } from "react-to-print";
 import "../orders/Orders.css";
 
 const Employees = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const token = localStorage.getItem("token_e");
-
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
+ 
   const [isExecuting, setIsExecuting] = useState(false);
 
   const {
@@ -27,7 +20,9 @@ const Employees = () => {
     endPagination,
     setStartPagination,
     setEndPagination,
-  } = useContext(dataContext);
+  apiUrl,
+handleGetTokenAndConfig,
+} = useContext(dataContext);
 
   const notify = (message, type) => {
     toast[type](message);
@@ -53,11 +48,7 @@ const Employees = () => {
   const [listOfEmployees, setListOfEmployees] = useState([]);
 
   const getEmployees = async () => {
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     if (permissionsForEmployee && permissionsForEmployee.read === false) {
       notify("ليس لك صلاحية لعرض بيانات الموظفين", "info");
       return;
@@ -84,11 +75,7 @@ const Employees = () => {
 
   const getShifts = async () => {
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
       const response = await axios.get(`${apiUrl}/api/shift`, config);
       if (response.status === 200 && response.data) {
         const { data } = response;
@@ -164,11 +151,7 @@ const Employees = () => {
     }
 
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
       setIsExecuting(true);
 
       const newEmployee = await axios.post(
@@ -208,11 +191,7 @@ const Employees = () => {
 
   const editEmployee = async (e) => {
     e.preventDefault();
-    if (!token) {
-      // Handle case where token is not available
-      toast.error("رجاء تسجيل الدخول مره اخري");
-      return;
-    }
+    const config = handleGetTokenAndConfig();
     if (permissionsForEmployee && permissionsForEmployee.update === false) {
       notify("ليس لك صلاحية لتعديل حساب الموظف", "info");
       return;
@@ -368,11 +347,7 @@ const Employees = () => {
   const deleteEmployee = async (e) => {
     e.preventDefault();
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
       if (permissionsForEmployee && permissionsForEmployee.delete === true) {
         const deleted = await axios.delete(
           `${apiUrl}/api/employee/${employeeid}`,
@@ -406,11 +381,7 @@ const Employees = () => {
     e.preventDefault();
     console.log(selectedIds);
     try {
-      if (!token) {
-        // Handle case where token is not available
-        toast.error("رجاء تسجيل الدخول مره اخري");
-        return;
-      }
+      const config = handleGetTokenAndConfig();
 
       for (const Id of selectedIds) {
         await axios.delete(`${apiUrl}/api/order/${Id}`, config);
