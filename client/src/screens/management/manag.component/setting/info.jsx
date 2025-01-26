@@ -229,10 +229,10 @@ const Info = () => {
   const [aboutText, setaboutText] = useState("");
   const [website, setwebsite] = useState("");
   const [locationUrl, setlocationUrl] = useState("");
-  const [dineIn, setdineIn] = useState("");
-  const [takeAway, settakeAway] = useState("");
-  const [deliveryService, setdeliveryService] = useState("");
-  const [usesReservationSystem, setusesReservationSystem] = useState("");
+  const [dineIn, setdineIn] = useState(false);
+  const [takeAway, settakeAway] = useState(false);
+  const [deliveryService, setdeliveryService] = useState(false);
+  const [usesReservationSystem, setusesReservationSystem] = useState(false);
   const [salesTaxRate, setsalesTaxRate] = useState(0);
   const [serviceTaxRate, setserviceTaxRate] = useState(0);
 
