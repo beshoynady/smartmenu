@@ -438,7 +438,7 @@ function App() {
   const [allMenuCategories, setAllMenuCategories] = useState([]);
   const getAllMenuCategories = async () => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       // Fetch all categories from the API
       const response = await axios.get(apiUrl + "/api/menucategory", config);
 
@@ -476,7 +476,7 @@ function App() {
   const [allOrders, setAllOrders] = useState([]);
   const getAllOrders = async () => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       // Fetch all orders from the API
       const response = await axios.get(apiUrl + "/api/order", config);
       console.log({ order: response });
@@ -538,7 +538,7 @@ function App() {
   const [allEmployees, setAllEmployees] = useState([]);
   const getAllEmployees = async () => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const response = await axios.get(`${apiUrl}/api/employee`, config);
 
       if (response.status === 200) {
@@ -1060,7 +1060,7 @@ function App() {
   ) => {
     try {
       setisLoading(true);
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       // console.log({ itemsInCart })
       // Find the user's orders
       const userOrders =
@@ -1330,7 +1330,7 @@ function App() {
   const createWaiterOrderForTable = async (tableId, waiterId) => {
     setisLoading(true);
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       // Check for active orders for the table
       const tableOrder =
         allOrders &&
@@ -1449,6 +1449,8 @@ function App() {
   ) => {
     // setisLoading(true)
     try {
+      const config = await handleGetTokenAndConfig();
+
       const dayOrders =
         allOrders &&
         allOrders.filter(
@@ -1633,7 +1635,7 @@ function App() {
   const [newlistofproductorder, setnewlistofproductorder] = useState([]);
   const getOrderProductForTable = async (e, tableId) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     // setisLoading(true)
     try {
@@ -1673,7 +1675,7 @@ function App() {
   };
 
   const putNumOfPaid = (id, sizeid, numOfPaid) => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       console.log({ listProductsOrder, newlistofproductorder });
 
@@ -1715,7 +1717,7 @@ function App() {
   const [subtotalSplitOrder, setsubtotalSplitOrder] = useState(0);
 
   const calcSubtotalSplitOrder = (products = newlistofproductorder) => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       let total = 0;
 
@@ -1953,7 +1955,7 @@ function App() {
   const getPermissions = async (decodedToken) => {
     try {
       const id = decodedToken.id;
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       if (id) {
         const response = await axios.get(
           `${apiUrl}/api/permission/employee/${id}`,
@@ -2037,6 +2039,8 @@ function App() {
   const [allReservations, setAllReservations] = useState([]);
   const getAllReservations = async () => {
     try {
+      const config = await handleGetTokenAndConfig();
+
       const response = await axios.get(`${apiUrl}/api/reservation`, config);
       if (response.data) {
         setAllReservations(response.data);
@@ -2052,7 +2056,7 @@ function App() {
 
   const getAvailableTables = (reservationDate, startTime, endTime) => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       // Filter reservations by selected date and time range
       const filterReservationsByTime = allReservations.filter((reservation) => {
         const reservationDateObj = new Date(reservation.reservationDate);
@@ -2082,16 +2086,16 @@ function App() {
             endSelectedTime >= endReservationTime)
         );
       });
-      console.log({ filterReservationsByTime });
+      // console.log({ filterReservationsByTime });
       // Create a list of all tableIds
       const allTableIds = allTable.map((table) => table._id);
-      console.log({ allTableIds });
+      // console.log({ allTableIds });
 
       // Create a list of reserved tableIds in the selected time range
       const reservedTableIds = filterReservationsByTime.map(
         (reservation) => reservation.tableId
       );
-      console.log({ reservedTableIds });
+      // console.log({ reservedTableIds });
 
       // Find the difference between allTableIds and reservedTableIds to get available tableIds
       const availableTableIds = allTableIds.filter(
