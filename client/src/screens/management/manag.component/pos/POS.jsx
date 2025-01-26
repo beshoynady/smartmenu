@@ -149,6 +149,7 @@ const POS = () => {
       return;
     }
     try {
+      const config = await handleGetTokenAndConfig();
       const response = await axios.get(
         `${apiUrl}/api/customer/phone/${phone}`,
         config

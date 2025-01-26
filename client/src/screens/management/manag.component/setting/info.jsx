@@ -149,6 +149,7 @@ const Info = () => {
   };
 
   const removeArea = async (index, id) => {
+    const config = await handleGetTokenAndConfig();
     const updatedAreas = areas.filter((area, i) => i !== index);
     if (id) {
       const response = await axios.delete(

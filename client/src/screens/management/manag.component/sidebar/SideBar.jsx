@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext } from "react";apiUrl 
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { dataContext } from "../../../../App";
 
 import { Link } from "react-router-dom";
