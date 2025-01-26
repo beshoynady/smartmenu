@@ -51,7 +51,7 @@ const ExpenseItem = () => {
   const createExpense = async (e) => {
     e.preventDefault();
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       if (permissionExpense && !permissionExpense.create) {
         toast.warn("ليس لك الصلاحية لتسجيل المصروفات");
         return;
@@ -77,7 +77,7 @@ const ExpenseItem = () => {
   const editExpense = async (e) => {
     e.preventDefault();
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       if (permissionExpense && !permissionExpense.update) {
         toast.warn("ليس لك الصلاحية لتعديل المصروفات");
         return;
@@ -107,7 +107,7 @@ const ExpenseItem = () => {
   const deleteExpense = async (e) => {
     e.preventDefault();
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       if (permissionExpense && !permissionExpense.delete) {
         toast.warn("ليس لك الصلاحية لحذف المصروفات");
         return;
@@ -135,7 +135,7 @@ const ExpenseItem = () => {
 
   const getAllExpenses = async () => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       if (permissionExpense && !permissionExpense.read) {
         toast.warn("ليس لك الصلاحية لعرض المصروفات");
         return;
@@ -153,7 +153,7 @@ const ExpenseItem = () => {
   const [allDailyExpenses, setAllDailyExpenses] = useState([]);
   const getallDailyExpenses = async () => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const response = await axios.get(apiUrl + "/api/dailyexpense/", config);
       const dailyExpenses = await response.data.reverse();
       console.log(response.data);

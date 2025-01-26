@@ -56,7 +56,7 @@ handleGetTokenAndConfig,
   const handleSectionItem = async (e) => {
     e.preventDefault();
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
   
       const today = new Date().toISOString().split("T")[0];
       
@@ -166,7 +166,7 @@ handleGetTokenAndConfig,
     e.preventDefault()
 
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
 
       if (SectionUsegePermission && !SectionUsegePermission.update) {
         toast.warn("ليس لديك صلاحية لتعديل عنصر لمخزن الاستهلاك");
@@ -196,7 +196,7 @@ handleGetTokenAndConfig,
 
   const deleteSectionItem = async (e) => {
     e.preventDefault()
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     if (SectionUsegePermission && !SectionUsegePermission.delete) {
       toast.warn("ليس لك صلاحية لحذف عنصر بمخزن الاستهلاك");
       return;
@@ -220,7 +220,7 @@ handleGetTokenAndConfig,
   const [AllStockItems, setAllStockItems] = useState([]);
   // Function to retrieve all stock items
   const getStockItems = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/stockitem/", config);
 
@@ -242,7 +242,7 @@ handleGetTokenAndConfig,
   const [preparationSections, setPreparationSections] = useState([]);
   // Fetch all preparation sections
   const fetchPreparationSections = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     try {
       const response = await axios.get(
@@ -266,7 +266,7 @@ handleGetTokenAndConfig,
   // Function to retrieve all category stock
   const getAllCategoryStock = async () => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const res = await axios.get(apiUrl + "/api/categoryStock/");
       setAllCategoryStock(res.data);
     } catch (error) {
@@ -282,7 +282,7 @@ handleGetTokenAndConfig,
     []
   );
   const getAllConsumption = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     if (SectionUsegePermission && !SectionUsegePermission.read) {
       toast.warn("ليس لك صلاحية لعرض عناصر لمخزن الاستهلاك");
       return;
@@ -305,7 +305,7 @@ handleGetTokenAndConfig,
   const [selectedSectionId, setSelectedSectionId] = useState(null);
 
   const getSectionConsumption = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     if (SectionUsegePermission && !SectionUsegePermission.read) {
       toast.warn("ليس لك صلاحية لعرض عناصر لمخزن الاستهلاك");
       return;

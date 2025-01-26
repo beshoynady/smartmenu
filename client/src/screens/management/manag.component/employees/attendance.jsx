@@ -60,7 +60,7 @@ const AttendanceManagement = () => {
       return;
     }
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       let newattendanceData = {
         employee,
         shift: shift._id,
@@ -117,7 +117,7 @@ const AttendanceManagement = () => {
       return;
     }
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       let newattendanceData = {
         departureDate,
         isOvertime,
@@ -156,7 +156,7 @@ const AttendanceManagement = () => {
       return;
     }
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const response = await axios.get(`${apiUrl}/api/attendance`, config);
       console.log({ response });
       if (response.status === 200) {
@@ -212,7 +212,7 @@ const AttendanceManagement = () => {
     };
     console.log({ editattendanceData });
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const response = await axios.put(
         `${apiUrl}/api/attendance/${recordId}`,
         editattendanceData,
@@ -240,7 +240,7 @@ const AttendanceManagement = () => {
     }
     e.preventDefault();
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const response = await axios.delete(
         `${apiUrl}/api/attendance/${recordId}`,
         config
@@ -264,7 +264,7 @@ const AttendanceManagement = () => {
       return;
     }
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const response = await axios.get(`${apiUrl}/api/employee`, config);
       const data = response.data;
       setListOfEmployees(data);
@@ -278,7 +278,7 @@ const AttendanceManagement = () => {
 
   const getShifts = async () => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const response = await axios.get(`${apiUrl}/api/shift`, config);
       if (response.status === 200 && response.data) {
         const { data } = response;

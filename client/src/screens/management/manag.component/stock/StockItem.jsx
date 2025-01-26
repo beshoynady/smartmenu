@@ -97,7 +97,7 @@ const StockItem = () => {
 
   const createItem = async (e) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     if (stockItemPermission && !stockItemPermission.create) {
       toast.warn("ليس لك صلاحية لانشاء عنصر جديد في المخزن");
       return;
@@ -169,7 +169,7 @@ const StockItem = () => {
   // Function to edit a stock item
   const editStockItem = async (e) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     if (stockItemPermission && !stockItemPermission.update) {
       toast.warn("ليس لك صلاحية لتعديل عناصر المخزن");
       return;
@@ -226,7 +226,7 @@ const StockItem = () => {
   // Function to delete a stock item
   const deleteStockItem = async (e) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     if (stockItemPermission && !stockItemPermission.delete) {
       toast.warn("ليس لك صلاحية لحذف عنصر من المخزن");
       return;
@@ -257,7 +257,7 @@ const StockItem = () => {
 
   // Function to retrieve all stock items
   const getStockItems = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     if (stockItemPermission && !stockItemPermission.read) {
       toast.warn("ليس لك صلاحية لعرض عناصر المخزن");
       return;
@@ -288,7 +288,7 @@ const StockItem = () => {
   const [AllCategoryStock, setAllCategoryStock] = useState([]);
   // Function to retrieve all category stock
   const getAllCategoryStock = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     setisLoading(true);
     try {
       const response = await axios.get(apiUrl + "/api/categoryStock/", config);
@@ -304,7 +304,7 @@ const StockItem = () => {
   const [allStores, setAllStores] = useState([]);
 
   const getAllStores = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     try {
       const response = await axios.get(apiUrl + "/api/store/", config);
@@ -366,7 +366,7 @@ const StockItem = () => {
   // Function to retrieve all suppliers
   const getAllSuppliers = async () => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const response = await axios.get(apiUrl + "/api/supplier/", config);
 
       if (!response || !response.data) {

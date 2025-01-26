@@ -59,7 +59,7 @@ const PayRoll = () => {
   // Fetch employees data from the API
   const [ListOfEmployee, setListOfEmployee] = useState([]);
   const getEmployees = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/employee", config);
       const responseData = response.data;
@@ -75,7 +75,7 @@ const PayRoll = () => {
   const [shifts, setshifts] = useState([]);
 
   const getShifts = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const response = await axios.get(`${apiUrl}/api/shift`, config);
       if (response.status === 200 && response.data) {
@@ -94,7 +94,7 @@ const PayRoll = () => {
   const [currentPayRoll, setcurrentPayRoll] = useState([]);
 
   const getPayRoll = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/payroll", config);
       console.log({ response });
@@ -125,7 +125,7 @@ const PayRoll = () => {
 
   const getAllExpenses = async () => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const response = await axios.get(apiUrl + "/api/expenses/", config);
       const expenses = await response.data;
       console.log(response.data);
@@ -145,7 +145,7 @@ const PayRoll = () => {
   );
 
   const getEmployeTransactions = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const response = await axios.get(
         apiUrl + "/api/employeetransactions",
@@ -174,7 +174,7 @@ const PayRoll = () => {
     //   toast.info('ليس لك صلاحية لعرض السجلات')
     //   return
     // }
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const response = await axios.get(`${apiUrl}/api/attendance`, config);
       console.log({ response });
@@ -203,7 +203,7 @@ const PayRoll = () => {
       return;
     }
 
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       setIsExecuting(true);
       toast.warn("انتظر قليلا .. لا تقم باعادة التحميل و غلق الصفحة");
@@ -375,7 +375,7 @@ const PayRoll = () => {
 
         if (isSalary && !isSalaryPaid) {
           try {
-            const config = handleGetTokenAndConfig();
+            const config = await handleGetTokenAndConfig();
             const result = await axios.put(
               `${apiUrl}/api/payroll/employee/${employeeId}`,
               {
@@ -418,7 +418,7 @@ const PayRoll = () => {
           getEmployees();
         } else if (!isSalary && !isSalaryPaid) {
           try {
-            const config = handleGetTokenAndConfig();
+            const config = await handleGetTokenAndConfig();
             const result = await axios.post(
               `${apiUrl}/api/payroll`,
               {
@@ -478,7 +478,7 @@ const PayRoll = () => {
     name,
     paidMonth
   ) => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       // Fetch all cash registers
       const response = await axios.get(apiUrl + "/api/cashRegister", config);
@@ -527,7 +527,7 @@ const PayRoll = () => {
     const updatedBalance = balance - amount;
     console.log({ updatedBalance });
 
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const cashMovement = await axios.post(
         apiUrl + "/api/cashMovement/",
@@ -578,7 +578,7 @@ const PayRoll = () => {
   // Function to process and pay employee salary
   const paidSalary = async (e, id) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     if (amount > balance) {
       toast.error("رصيد الخزينه لا يكفي لدفع هذا الراتب");
       return;

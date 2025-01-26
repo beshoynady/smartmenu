@@ -6,7 +6,6 @@ import { toast } from "react-toastify";
 import "../orders/Orders.css";
 
 const Tables = () => {
-  
   const {
     permissionsList,
     restaurantData,
@@ -23,9 +22,9 @@ const Tables = () => {
     endPagination,
     setStartPagination,
     setEndPagination,
-  apiUrl,
-handleGetTokenAndConfig,
-} = useContext(dataContext);
+    apiUrl,
+    handleGetTokenAndConfig,
+  } = useContext(dataContext);
 
   const tablePermission =
     permissionsList &&
@@ -46,7 +45,7 @@ handleGetTokenAndConfig,
   const createTable = async (e) => {
     e.preventDefault();
 
-const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     if (tablePermission && !tablePermission.create) {
       toast.warn("ليس لك صلاحية لانشاء طاوله جديدة");
@@ -108,7 +107,7 @@ const config = handleGetTokenAndConfig();
     e.preventDefault();
 
     // Check if the user is authenticated
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     if (tablePermission && !tablePermission.update) {
       toast.warn("ليس لك صلاحية لتعديل بيانات طاوله ");
       return;
@@ -168,7 +167,7 @@ const config = handleGetTokenAndConfig();
   // Function to create QR code for the table URL
   const createQR = async (e) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     try {
       const URL = `https://${window.location.hostname}/${tableCode}`;
@@ -190,7 +189,7 @@ const config = handleGetTokenAndConfig();
   // Function to create web QR code
   const changeCode = async (e, tableid) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     const generateTableCode = () => {
       return [...Array(20)]
@@ -223,7 +222,7 @@ const config = handleGetTokenAndConfig();
 
   const createwebQR = async (e) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const URL = `https://${window.location.hostname}/`;
       const response = await axios.post(
@@ -250,7 +249,7 @@ const config = handleGetTokenAndConfig();
 
   // Function to get all tables
   const getAllTable = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     if (tablePermission && !tablePermission.read) {
       toast.warn("ليس لك صلاحية لعرض بيانات الطاولات");
       return;
@@ -271,7 +270,7 @@ const config = handleGetTokenAndConfig();
   // Function to delete a table
   const deleteTable = async (e) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     if (tablePermission && !tablePermission.delete) {
       toast.warn("ليس لك صلاحية لحذف طاوله ");
       return;
@@ -337,7 +336,7 @@ const config = handleGetTokenAndConfig();
   const deleteSelectedIds = async (e) => {
     e.preventDefault();
     console.log(selectedIds);
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     if (tablePermission && !tablePermission.delete) {
       toast.warn("ليس لك صلاحية لحذف طاوله ");
       return;

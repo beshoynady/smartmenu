@@ -43,7 +43,7 @@ const EmployeeTransactions = () => {
 
   const addEmployeeTransactions = async (e) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     setisLoading(true);
     try {
       if (
@@ -80,7 +80,7 @@ const EmployeeTransactions = () => {
 
   const updateEmployeeTransactions = async (e) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     setisLoading(true);
     try {
       if (
@@ -116,7 +116,7 @@ const EmployeeTransactions = () => {
 
   const deleteEmployeeTransactions = async (e) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     setisLoading(true);
     try {
       if (
@@ -143,7 +143,7 @@ const EmployeeTransactions = () => {
   };
 
   const getEmployeeTransactions = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     setisLoading(true);
     try {
       if (
@@ -168,7 +168,7 @@ const EmployeeTransactions = () => {
   };
 
   const filterCurrentEmployeeTransactions = async (transaction) => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const now = new Date();
       const currentMonth = now.getMonth();

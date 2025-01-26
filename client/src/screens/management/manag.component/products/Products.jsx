@@ -130,7 +130,7 @@ handleGetTokenAndConfig,
   const [allPreparationSections, setAllPreparationSections] = useState([]);
 
   const getAllPreparationSections = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     try {
       const res = await axios.get(`${apiUrl}/api/preparationsection`, config);
@@ -150,7 +150,7 @@ handleGetTokenAndConfig,
   const createProduct = async (e) => {
     e.preventDefault();
 
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     try {
       if (productPermission && !productPermission.create) {
@@ -301,7 +301,7 @@ handleGetTokenAndConfig,
   const [productId, setproductId] = useState("");
   const editProduct = async (e) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       if (productPermission && !productPermission.update) {
         toast.warn("ليس لك صلاحية لتعديل الاصناف");
@@ -379,7 +379,7 @@ handleGetTokenAndConfig,
   const [listofProductsAddon, setlistofProductsAddon] = useState([]);
 
   const getallproducts = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/product/");
       if (response) {
@@ -400,7 +400,7 @@ handleGetTokenAndConfig,
 
   const [allOrders, setAllOrders] = useState([]);
   const getAllOrders = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/order", config);
 
@@ -455,7 +455,7 @@ handleGetTokenAndConfig,
 
   const deleteProduct = async (e) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       if (productPermission && !productPermission.delete) {
         toast.warn("ليس لك صلاحية لحذف الاصناف");
@@ -476,7 +476,7 @@ handleGetTokenAndConfig,
 
   const [listofcategories, setlistofcategories] = useState([]);
   const getallCategories = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/menucategory/", config);
       const categories = await response.data;

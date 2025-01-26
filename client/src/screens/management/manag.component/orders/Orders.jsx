@@ -31,7 +31,7 @@ const Orders = () => {
   // Fetch orders from API
   const getOrders = async () => {
     // Check if the user is authenticated
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     try {
       const response = await axios.get(`${apiUrl}/api/order`, config); // Construct API URL
@@ -73,7 +73,7 @@ const Orders = () => {
 
   // Fetch orders from API
   const getOrderDataBySerial = async (serial) => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const res = await axios.get(apiUrl + "/api/order", config);
       const order = res.data.find((order) => order.serial === serial);
@@ -108,7 +108,7 @@ const Orders = () => {
     event.preventDefault();
 
     // Check if the user is authenticated
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     try {
       const orderIdToDelete = orderId; // Use a clear and descriptive variable name
@@ -168,7 +168,7 @@ const Orders = () => {
   const deleteSelectedIds = async (e) => {
     e.preventDefault();
     console.log(selectedIds);
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       for (const Id of selectedIds) {
         await axios.delete(`${apiUrl}/api/order/${Id}`, config);

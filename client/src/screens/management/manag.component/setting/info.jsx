@@ -27,7 +27,7 @@ const Info = () => {
   const [shifts, setShifts] = useState([]);
 
   const getAllShifts = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const response = await axios.get(`${apiUrl}/api/shift`, config);
       const data = await response.data;
@@ -48,7 +48,7 @@ const Info = () => {
   };
 
   const removeShift = async (index, id) => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     const updatedShifts = shifts.filter((_, i) => i !== index);
     if (id) {
       const response = await axios.delete(`${apiUrl}/api/shift/${id}`, config);
@@ -83,7 +83,7 @@ const Info = () => {
 
   const handleCreateShifts = async (e) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       shifts.map(async (shift) => {
         const id = shift._id ? shift._id : null;
@@ -126,7 +126,7 @@ const Info = () => {
   const [areas, setAreas] = useState([]);
 
   const getAllDeliveryAreas = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const response = await axios.get(`${apiUrl}/api/deliveryarea`, config);
       const data = await response.data;
@@ -180,7 +180,7 @@ const Info = () => {
 
   const handleDeliveryArea = async (e) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       areas.map(async (area, i) => {
         console.log({ area });
@@ -272,7 +272,7 @@ const Info = () => {
 
   const handleFeatures = async (e) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       console.log({ features });
       const response = await axios.put(
@@ -330,7 +330,7 @@ const Info = () => {
 
   const handleAcceptedPayments = async (e) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       console.log({ acceptedPayments });
       const response = await axios.put(
@@ -384,7 +384,7 @@ const Info = () => {
 
   const handleCreateRestaurant = async (e) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const address = {
         country: country ? country : null,
@@ -459,7 +459,7 @@ const Info = () => {
 
   const handleContactSocialmedia = async (e) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const contact = {
         phone: [...phone],
@@ -545,7 +545,7 @@ const Info = () => {
 
   const handleOpeningHours = async (e) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const response = await axios.put(
         `${apiUrl}/api/restaurant/${restaurantId}`,
@@ -564,7 +564,7 @@ const Info = () => {
   };
 
   const getRestaurant = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const response = await axios.get(`${apiUrl}/api/restaurant/`, config);
       const restaurantData = response.data[0];
@@ -642,7 +642,7 @@ const Info = () => {
   const updateSubscriptionDates = async (e) => {
     console.log({ subscriptionStart, subscriptionEnd });
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     if (employeeLoginInfo.role !== "programer") {
       toast.error("ليس لك صلاحية لتعديل بيانات الاشتراك");
       return;

@@ -74,7 +74,7 @@ handleGetTokenAndConfig,
 
   // Fetch all stores
   const getAllStores = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     try {
       if (!hasPermission("read")) return;
@@ -88,7 +88,7 @@ handleGetTokenAndConfig,
 
   // Fetch all employees
   const getEmployees = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     try {
       const response = await axios.get(`${apiUrl}/api/employee`, config);
@@ -106,7 +106,7 @@ handleGetTokenAndConfig,
 
   // Fetch all stock items
   const getAllStockItems = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     try {
       const response = await axios.get(`${apiUrl}/api/stockitem/`, config);
@@ -136,7 +136,7 @@ handleGetTokenAndConfig,
   // Create store
   const createStore = async (e) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     if (!hasPermission("create") || !validateFields()) return;
 
@@ -162,7 +162,7 @@ handleGetTokenAndConfig,
   // Edit store
   const editStore = async (e) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     if (!hasPermission("update")) return;
 
@@ -190,7 +190,7 @@ handleGetTokenAndConfig,
   const deleteStore = async (e) => {
     e.preventDefault();
 
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     if (!hasPermission("delete")) return;
 

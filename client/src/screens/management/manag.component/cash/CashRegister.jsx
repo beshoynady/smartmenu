@@ -49,7 +49,7 @@ handleGetTokenAndConfig,
 
   // Fetch employees
   const getEmployees = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     try {
       const response = await axios.get(`${apiUrl}/api/employee`, config);
@@ -67,7 +67,7 @@ handleGetTokenAndConfig,
 
   // Fetch all cash registers
   const getAllCashRegisters = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     if (cashRegisterPermissions && cashRegisterPermissions.read === false) {
       toast.warn("ليس لك صلاحية لعرض حسابات الخزينه");
       return;
@@ -85,7 +85,7 @@ handleGetTokenAndConfig,
 
   // Fetch a cash register by ID
   const getCashRegisterById = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     if (cashRegisterPermissions && cashRegisterPermissions.read === false) {
       toast.warn("ليس لك صلاحية لعرض حساب الخزينه");
       return;
@@ -105,7 +105,7 @@ handleGetTokenAndConfig,
   const createCashRegister = async (e) => {
     e.preventDefault();
     const newCashRegister = { name, balance, employee };
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     if (cashRegisterPermissions && cashRegisterPermissions.create === false) {
       toast.warn("ليس لك صلاحية لإنشاء حسابات الخزينه");
       return;
@@ -123,7 +123,7 @@ handleGetTokenAndConfig,
   const updateCashRegister = async (e) => {
     e.preventDefault();
     const updatedCashRegister = { name, balance, employee };
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     if (cashRegisterPermissions && cashRegisterPermissions.update === false) {
       toast.warn("ليس لك صلاحية لتحديث حسابات الخزينه");
       return;
@@ -144,7 +144,7 @@ handleGetTokenAndConfig,
   // Delete a cash register
   const deleteCashRegister = async (e) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     if (cashRegisterPermissions && cashRegisterPermissions.delete === false) {
       toast.warn("ليس لك صلاحية لحذف حسابات الخزينه");
       return;
@@ -172,7 +172,7 @@ handleGetTokenAndConfig,
   // Delete selected cash registers
   const deleteSelectedIds = async (e) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     if (cashRegisterPermissions && cashRegisterPermissions.delete === false) {
       toast.warn("ليس لك صلاحية لحذف حسابات الخزينه");
       return;

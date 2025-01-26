@@ -35,7 +35,7 @@ handleGetTokenAndConfig,
   // // Function to fetch pending orders and payments
   // const fetchPendingData = async () => {
   //   try{
-// const config = handleGetTokenAndConfig();
+// const config = await handleGetTokenAndConfig();
   //     const res = await axios.get(apiUrl+'/api/order');
   //     const recentStatus = res.data.filter((order) => order.status === 'Pending');
   //     const recentPaymentStatus = res.data.filter((order) => order.payment_status === 'Pending');
@@ -53,7 +53,7 @@ handleGetTokenAndConfig,
 
   const fetchDeliveryOrders = async () => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const orders = await axios.get(apiUrl + "/api/order", config);
       const activeOrders = orders.data.filter(
         (order) => order.isActive === true && order.orderType === "Delivery"
@@ -70,7 +70,7 @@ handleGetTokenAndConfig,
 
   const updateOrderOnWay = async (e, id) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const status = "On the way";
       const response = await axios.get(`${apiUrl}/api/order/${id}`, config);
@@ -100,7 +100,7 @@ handleGetTokenAndConfig,
   const updateOrderDelivered = async (e, id) => {
     e.preventDefault();
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const response = await axios.get(`${apiUrl}/api/order/${id}`, config);
       const orderData = response.data;
       if (orderData.deliveryMan._id !== employeeLoginInfo.id) {
@@ -135,7 +135,7 @@ handleGetTokenAndConfig,
   // Fetch orders from API
   const getOrderDetalis = async (id) => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const res = await axios.get(apiUrl + "/api/order/" + id, config);
       const order = res.data;
       if (order) {

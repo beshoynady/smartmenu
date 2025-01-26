@@ -12,8 +12,6 @@ import "./Cart.css";
 import html2pdf from "html2pdf.js";
 
 const Cart = (props) => {
-  
-
   const {
     restaurantData,
     setsalesTax,
@@ -23,7 +21,6 @@ const Cart = (props) => {
     formatDateTime,
     clientInfo,
     userLoginInfo,
-
     itemsInCart,
     costOrder,
     deleteItemFromCart,
@@ -37,9 +34,9 @@ const Cart = (props) => {
     createDeliveryOrderByClient,
     createOrderForTableByClient,
     checkout,
-  apiUrl,
-handleGetTokenAndConfig,
-} = useContext(dataContext);
+    apiUrl,
+    handleGetTokenAndConfig,
+  } = useContext(dataContext);
 
   const open_cart = props.opencart;
   const ordersText = useRef();
@@ -69,6 +66,7 @@ handleGetTokenAndConfig,
 
   const tableInfo = async () => {
     try {
+      const config = await handleGetTokenAndConfig();
       const response = await axios.get(`${apiUrl}/api/table`, config);
       if (response.data) {
         const allTable = response.data;

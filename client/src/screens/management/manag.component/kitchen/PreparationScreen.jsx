@@ -4,10 +4,15 @@ import { dataContext } from "../../../../App";
 import { toast } from "react-toastify";
 
 const PreparationScreen = () => {
-  
-
-  const { formatTime, formatDate, isRefresh, setIsRefresh, waiterSocket } =
-    useContext(dataContext);
+  const {
+    formatTime,
+    formatDate,
+    isRefresh,
+    setIsRefresh,
+    waiterSocket,
+    apiUrl,
+    handleGetTokenAndConfig,
+  } = useContext(dataContext);
 
   const [preparationSections, setPreparationSections] = useState([]);
   const [selectedSectionId, setSelectedSectionId] = useState(null);
@@ -34,7 +39,7 @@ const PreparationScreen = () => {
 
   // Fetch all preparation sections
   const fetchPreparationSections = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     try {
       const response = await axios.get(
@@ -56,7 +61,7 @@ const PreparationScreen = () => {
 
   const getAllRecipe = async () => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
 
       const getAllRecipe = await axios.get(`${apiUrl}/api/recipe`, config);
       const allRecipeData = getAllRecipe.data;
@@ -69,7 +74,7 @@ const PreparationScreen = () => {
 
   // Fetch tickets and consumption items for the selected section
   const fetchSectionData = async (sectionId) => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     try {
       const response = await axios.get(
@@ -164,7 +169,7 @@ const PreparationScreen = () => {
 
   const getSectionConsumption = async () => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
 
       setFilteredSectionConsumptionToday([]);
       // console.log("Fetching Section consumption...");
@@ -195,7 +200,7 @@ const PreparationScreen = () => {
 
   const getAllWaiters = async () => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
 
       const allEmployees = await axios.get(apiUrl + "/api/employee", config);
 
@@ -216,7 +221,7 @@ const PreparationScreen = () => {
   // Determines the next available waiter to take an Ticket
   const specifiedWaiter = async (TicketId) => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       if (allWaiters.length === 0) {
         // Handle case where token is not available
         toast.warn(
@@ -283,7 +288,7 @@ const PreparationScreen = () => {
   };
 
   const TicketInProgress = async (ticketId, status) => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     try {
       const response = await axios.put(
@@ -305,7 +310,7 @@ const PreparationScreen = () => {
   };
 
   const updateTicketDone = async (ticketId) => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     try {
       // 1. Fetch Ticket and product data
@@ -541,12 +546,10 @@ const PreparationScreen = () => {
       {/* Section selection and ticket stats */}
       <div
         className=" d-flex col-lg-2 col-sm-3 flex-column align-items-start justify-content-between p-1 mb-3"
-        style={{ alignItems: "flex-end", maxWidth: "150px"  }}
+        style={{ alignItems: "flex-end", maxWidth: "150px" }}
       >
         {/* Section selection */}
-        <div
-          className="d-flex flex-column align-items-end bg-white shadow-sm rounded p-2 mb-3 w-100"
-        >
+        <div className="d-flex flex-column align-items-end bg-white shadow-sm rounded p-2 mb-3 w-100">
           <label
             htmlFor="section-select"
             className="w-100 fw-bold text-dark text-center"
@@ -571,36 +574,24 @@ const PreparationScreen = () => {
         </div>
 
         {/* Ticket stats */}
-        <div
-          className="w-100 d-flex flex-column align-items-end justify-content-between flex-wrap"
-        >
-          <div
-            className="ticket-box text-center bg-light shadow-sm rounded w-100 p-2 mb-2"
-          >
+        <div className="w-100 d-flex flex-column align-items-end justify-content-between flex-wrap">
+          <div className="ticket-box text-center bg-light shadow-sm rounded w-100 p-2 mb-2">
             <h6 className="text-dark">انتظار الموافقة</h6>
             <p className="text-primary">{sectionStats.waitingApproval}</p>
           </div>
-          <div
-            className="ticket-box text-center bg-light shadow-sm rounded w-100 p-2 mb-2"
-          >
+          <div className="ticket-box text-center bg-light shadow-sm rounded w-100 p-2 mb-2">
             <h6 className="text-dark">جاري التنفيذ</h6>
             <p className="text-warning">{sectionStats.inProgress}</p>
           </div>
-          <div
-            className="ticket-box text-center bg-light shadow-sm rounded w-100 p-2 mb-2"
-          >
+          <div className="ticket-box text-center bg-light shadow-sm rounded w-100 p-2 mb-2">
             <h6 className="text-dark">انتظار الاستلام</h6>
             <p className="text-warning">{sectionStats.waitingPickup}</p>
           </div>
-          <div
-            className="ticket-box text-center bg-light shadow-sm rounded w-100 p-2 mb-2"
-          >
+          <div className="ticket-box text-center bg-light shadow-sm rounded w-100 p-2 mb-2">
             <h6 className="text-dark">تم التنفيذ</h6>
             <p className="text-success">{sectionStats.completed}</p>
           </div>
-          <div
-            className="ticket-box text-center bg-light shadow-sm rounded w-100 p-2 mb-2"
-          >
+          <div className="ticket-box text-center bg-light shadow-sm rounded w-100 p-2 mb-2">
             <h6 className="text-dark">مرفوض</h6>
             <p className="text-danger">{sectionStats.rejected}</p>
           </div>
@@ -1117,145 +1108,144 @@ const PreparationScreen = () => {
                 التذاكر الملغاة
               </h5>
               <div className="d-flex flex-wrap ">
-              {TicketsToday.filter(
-                (ticket) => ticket.preparationStatus === "Rejected"
-              ).length === 0 ? (
-                <p>لا توجد تذاكر ملغاة.</p>
-              ) : (
-                TicketsToday.map((ticket, index) => {
-                  if (ticket.preparationStatus === "Rejected") {
-                    return (
-                      <div
-                        className="col-lg-3 col-md-4 col-sm-6 col-12 mb-4 ml-2 card text-white bg-success p-0 m-0"
-                        key={index}
-                      >
+                {TicketsToday.filter(
+                  (ticket) => ticket.preparationStatus === "Rejected"
+                ).length === 0 ? (
+                  <p>لا توجد تذاكر ملغاة.</p>
+                ) : (
+                  TicketsToday.map((ticket, index) => {
+                    if (ticket.preparationStatus === "Rejected") {
+                      return (
                         <div
-                          className="card-body text-right d-flex justify-content-between p-0 m-1"
-                          style={{ fontSize: "14px", fontWeight: "500" }}
+                          className="col-lg-3 col-md-4 col-sm-6 col-12 mb-4 ml-2 card text-white bg-success p-0 m-0"
+                          key={index}
                         >
-                          {/* معلومات الطاولة والطلب */}
-                          <div className="col-6 p-0">
-                            <p className="card-text">
-                              {ticket.table
-                                ? `طاولة: ${ticket.table.tableNumber}`
-                                : ticket.user
-                                ? `العميل: ${ticket.user.username}`
-                                : ""}
-                            </p>
-                            <p className="card-text">
-                              رقم الطلب: {ticket.order?.TicketNum || ""}
-                            </p>
-                            <p className="card-text">
-                              الفاتورة: {ticket.order?.serial || ""}
-                            </p>
-                            <p className="card-text">
-                              نوع الطلب: {ticket.order?.orderType || ""}
-                            </p>
-                          </div>
-
-                          {/* معلومات الويتر والتوقيت */}
-                          <div className="col-6 p-0">
-                            {ticket.waiter && (
+                          <div
+                            className="card-body text-right d-flex justify-content-between p-0 m-1"
+                            style={{ fontSize: "14px", fontWeight: "500" }}
+                          >
+                            {/* معلومات الطاولة والطلب */}
+                            <div className="col-6 p-0">
                               <p className="card-text">
-                                الويتر: {ticket.waiter.username}
+                                {ticket.table
+                                  ? `طاولة: ${ticket.table.tableNumber}`
+                                  : ticket.user
+                                  ? `العميل: ${ticket.user.username}`
+                                  : ""}
                               </p>
-                            )}
-                            <p className="card-text">
-                              الاستلام: {formatTime(ticket.createdAt)}
-                            </p>
-                            <p className="card-text">
-                              الانتظار: {waitingTime(ticket.updateAt)} دقيقة
-                            </p>
+                              <p className="card-text">
+                                رقم الطلب: {ticket.order?.TicketNum || ""}
+                              </p>
+                              <p className="card-text">
+                                الفاتورة: {ticket.order?.serial || ""}
+                              </p>
+                              <p className="card-text">
+                                نوع الطلب: {ticket.order?.orderType || ""}
+                              </p>
+                            </div>
+
+                            {/* معلومات الويتر والتوقيت */}
+                            <div className="col-6 p-0">
+                              {ticket.waiter && (
+                                <p className="card-text">
+                                  الويتر: {ticket.waiter.username}
+                                </p>
+                              )}
+                              <p className="card-text">
+                                الاستلام: {formatTime(ticket.createdAt)}
+                              </p>
+                              <p className="card-text">
+                                الانتظار: {waitingTime(ticket.updateAt)} دقيقة
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* قائمة المنتجات */}
+                          <ul className="list-group list-group-flush">
+                            {ticket.products.map((product, i) => (
+                              <li
+                                className="list-group-item d-flex flex-column justify-content-between align-items-center p-1"
+                                key={i}
+                                style={
+                                  product.isAdd
+                                    ? { backgroundColor: "red", color: "white" }
+                                    : { color: "black" }
+                                }
+                              >
+                                <div className="d-flex justify-content-between align-items-center w-100 p-1">
+                                  <p
+                                    style={{
+                                      fontSize: "1.2em",
+                                      fontWeight: "bold",
+                                    }}
+                                  >
+                                    {i + 1}- {product.name} {product.size || ""}
+                                  </p>
+                                  <span
+                                    style={{
+                                      fontSize: "1.2em",
+                                      fontWeight: "bold",
+                                    }}
+                                  >
+                                    × {product.quantity}
+                                  </span>
+                                </div>
+                                <div
+                                  style={{
+                                    fontSize: "1.2em",
+                                    fontWeight: "bold",
+                                  }}
+                                >
+                                  {product.notes}
+                                </div>
+
+                                {/* الإضافات الخاصة بالمنتج */}
+                                {product.extras &&
+                                  product.extras.length > 0 &&
+                                  product.extras.map((extra, j) =>
+                                    !extra.isDone ? (
+                                      <li
+                                        className="list-group-item d-flex flex-column justify-content-between align-items-center p-1"
+                                        key={`${i}-${j}`}
+                                        style={
+                                          product.isAdd
+                                            ? {
+                                                backgroundColor: "red",
+                                                color: "white",
+                                              }
+                                            : { color: "black" }
+                                        }
+                                      >
+                                        <div className="d-flex justify-content-between align-items-center w-100 p-1">
+                                          {extra.extraDetails.map((detail) => (
+                                            <p
+                                              className="badge badge-secondary m-1"
+                                              key={detail.extraid}
+                                            >
+                                              {detail.name}
+                                            </p>
+                                          ))}
+                                        </div>
+                                      </li>
+                                    ) : null
+                                  )}
+                              </li>
+                            ))}
+                          </ul>
+
+                          {/* زر الرفض */}
+                          <div className="text-center w-100 d-flex flex-row">
+                            <button className="btn w-100 btn-warning h-100 btn-lg">
+                              مرفوض
+                            </button>
                           </div>
                         </div>
-
-                        {/* قائمة المنتجات */}
-                        <ul className="list-group list-group-flush">
-                          {ticket.products.map((product, i) => (
-                            <li
-                              className="list-group-item d-flex flex-column justify-content-between align-items-center p-1"
-                              key={i}
-                              style={
-                                product.isAdd
-                                  ? { backgroundColor: "red", color: "white" }
-                                  : { color: "black" }
-                              }
-                            >
-                              <div className="d-flex justify-content-between align-items-center w-100 p-1">
-                                <p
-                                  style={{
-                                    fontSize: "1.2em",
-                                    fontWeight: "bold",
-                                  }}
-                                >
-                                  {i + 1}- {product.name} {product.size || ""}
-                                </p>
-                                <span
-                                  style={{
-                                    fontSize: "1.2em",
-                                    fontWeight: "bold",
-                                  }}
-                                >
-                                  × {product.quantity}
-                                </span>
-                              </div>
-                              <div
-                                style={{
-                                  fontSize: "1.2em",
-                                  fontWeight: "bold",
-                                }}
-                              >
-                                {product.notes}
-                              </div>
-
-                              {/* الإضافات الخاصة بالمنتج */}
-                              {product.extras &&
-                                product.extras.length > 0 &&
-                                product.extras.map((extra, j) =>
-                                  !extra.isDone ? (
-                                    <li
-                                      className="list-group-item d-flex flex-column justify-content-between align-items-center p-1"
-                                      key={`${i}-${j}`}
-                                      style={
-                                        product.isAdd
-                                          ? {
-                                              backgroundColor: "red",
-                                              color: "white",
-                                            }
-                                          : { color: "black" }
-                                      }
-                                    >
-                                      <div className="d-flex justify-content-between align-items-center w-100 p-1">
-                                        {extra.extraDetails.map((detail) => (
-                                          <p
-                                            className="badge badge-secondary m-1"
-                                            key={detail.extraid}
-                                          >
-                                            {detail.name}
-                                          </p>
-                                        ))}
-                                      </div>
-                                    </li>
-                                  ) : null
-                                )}
-                            </li>
-                          ))}
-                        </ul>
-
-                        {/* زر الرفض */}
-                        <div className="text-center w-100 d-flex flex-row">
-                          <button className="btn w-100 btn-warning h-100 btn-lg">
-                            مرفوض
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  }
-                  return null;
-                })
-              )}
-                </div>
-
+                      );
+                    }
+                    return null;
+                  })
+                )}
+              </div>
             </div>
           )}
 

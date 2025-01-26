@@ -68,7 +68,7 @@ handleGetTokenAndConfig,
 
   const getallStockaction = async () => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const response = await axios.get(apiUrl + "/api/stockmovement/", config);
       console.log(response.data);
       const stockActions = await response.data;
@@ -85,7 +85,7 @@ handleGetTokenAndConfig,
   const [allStores, setAllStores] = useState([]);
 
   const getAllStores = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     try {
       const response = await axios.get(apiUrl + "/api/store/", config);
@@ -99,7 +99,7 @@ handleGetTokenAndConfig,
   const [StockItems, setStockItems] = useState([]);
   
   const getStockItems = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/stockitem/", config);
       if (response) {
@@ -114,7 +114,7 @@ handleGetTokenAndConfig,
   const [allCategoryStock, setAllCategoryStock] = useState([]);
 
   const getAllCategoryStock = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     try {
       const response = await axios.get(apiUrl + "/api/categoryStock/", config);

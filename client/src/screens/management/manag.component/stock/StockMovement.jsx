@@ -31,7 +31,7 @@ const StockMovement = () => {
   // const [allrecipes, setAllRecipes] = useState([]);
 
   // const getallrecipes = async () => {
-// const config = handleGetTokenAndConfig();
+// const config = await handleGetTokenAndConfig();
   //   try {
   //     const response = await axios.get(`${apiUrl}/api/recipe`, config);
   //     if (response) {
@@ -106,7 +106,7 @@ const StockMovement = () => {
 
   const createStockAction = async (e) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     if (stockMovementPermission && !stockMovementPermission.create) {
       toast.warn("ليس لك صلاحية لانشاء حركه المخزن");
       return;
@@ -399,7 +399,7 @@ const StockMovement = () => {
   const updateStockaction = async (e, employeeId) => {
     e.preventDefault();
 
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     if (stockMovementPermission && !stockMovementPermission.update) {
       toast.warn("ليس لك صلاحية لتعديل حركه المخزن");
       return;
@@ -437,7 +437,7 @@ const StockMovement = () => {
 
   const getallStockaction = async () => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const response = await axios.get(apiUrl + "/api/stockmovement/", config);
       console.log(response.data);
       const Stockactions = await response.data;
@@ -449,7 +449,7 @@ const StockMovement = () => {
 
   const deleteStockaction = async (e) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     if (stockMovementPermission && !stockMovementPermission.delete) {
       toast.warn("ليس لك صلاحية لحذف حركه المخزن");
       return;
@@ -483,7 +483,7 @@ const StockMovement = () => {
   const [allStores, setAllStores] = useState([]);
 
   const getAllStores = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     try {
       const response = await axios.get(apiUrl + "/api/store/", config);
@@ -496,7 +496,7 @@ const StockMovement = () => {
 
   const [StockItems, setStockItems] = useState([]);
   const getStockItems = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/stockitem/", config);
       if (response) {
@@ -511,7 +511,7 @@ const StockMovement = () => {
   const [allCategoryStock, setAllCategoryStock] = useState([]);
 
   const getAllCategoryStock = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     try {
       const response = await axios.get(apiUrl + "/api/categoryStock/", config);
@@ -547,7 +547,7 @@ const StockMovement = () => {
 
   const [AllCashRegisters, setAllCashRegisters] = useState([]);
   const getAllCashRegisters = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/cashregister", config);
       setAllCashRegisters(response.data.reverse());

@@ -38,7 +38,7 @@ handleGetTokenAndConfig,
 
   const getAllRecipe = async () => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
 
       const getAllRecipe = await axios.get(`${apiUrl}/api/recipe`, config);
       const allRecipeData = getAllRecipe.data;
@@ -51,7 +51,7 @@ handleGetTokenAndConfig,
 
   const getAllOrders = async () => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
 
       // Fetch orders from the API
       const ordersResponse = await axios.get(`${apiUrl}/api/order/limit/50`);
@@ -178,7 +178,7 @@ handleGetTokenAndConfig,
 
   const getBarConsumption = async () => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
 
       setFilteredBarConsumptionToday([]);
       console.log("Fetching Bar consumption...");
@@ -209,7 +209,7 @@ handleGetTokenAndConfig,
 
   const orderInProgress = async (id) => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const preparationStatus = { "preparationStatus.Bar": "Preparing" };
       const response = await axios.put(
         `${apiUrl}/api/order/${id}`,
@@ -230,7 +230,7 @@ handleGetTokenAndConfig,
   };
 
   const updateOrderDone = async (id, type) => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     try {
       // 1. Fetch order and product data
@@ -410,7 +410,7 @@ handleGetTokenAndConfig,
 
   const getAllWaiters = async () => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
 
       const allEmployees = await axios.get(apiUrl + "/api/employee", config);
 
@@ -431,7 +431,7 @@ handleGetTokenAndConfig,
   // Determines the next available waiter to take an order
   const specifiedWaiter = async (id) => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
 
       if (allWaiters.length === 0) {
         // Handle case where token is not available

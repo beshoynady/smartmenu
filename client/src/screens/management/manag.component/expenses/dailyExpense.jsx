@@ -66,7 +66,7 @@ const DailyExpense = () => {
   const [AllcashRegisters, setAllcashRegisters] = useState([]);
 
   const getAllcashRegisters = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/cashRegister", config);
       setAllcashRegisters(response.data.reverse());
@@ -92,7 +92,7 @@ const DailyExpense = () => {
   };
 
   const getallExpenses = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/expenses/", config);
       setAllExpenses(response.data.reverse());
@@ -108,7 +108,7 @@ const DailyExpense = () => {
     const updatedBalance = CashRegisterBalance - amount;
 
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
 
       // Check if the user has permission to create daily expenses
       if (permissionDailyExpense && !permissionDailyExpense.create) {
@@ -174,7 +174,7 @@ const DailyExpense = () => {
 
   const editDailyExpense = async (e) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       if (permissionDailyExpense && !permissionDailyExpense.update) {
         toast.warn("ليس لك الصلاحية لتعديل المصروفات");
@@ -249,7 +249,7 @@ const DailyExpense = () => {
 
   const deleteDailyExpense = async (e) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       if (permissionDailyExpense && !permissionDailyExpense.delete) {
         toast.warn("ليس لك الصلاحية لحذف المصروفات");
@@ -300,7 +300,7 @@ const DailyExpense = () => {
   };
 
   const getallDailyExpenses = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       if (permissionDailyExpense && !permissionDailyExpense.read) {
         toast.warn("ليس لك الصلاحية لعرض المصروفات");

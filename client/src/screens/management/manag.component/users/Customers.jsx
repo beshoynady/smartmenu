@@ -5,8 +5,6 @@ import { dataContext } from "../../../../App";
 import "../orders/Orders.css";
 
 const Customers = () => {
-  
-
   const {
     setStartDate,
     setEndDate,
@@ -23,9 +21,9 @@ const Customers = () => {
     endPagination,
     setStartPagination,
     setEndPagination,
-  apiUrl,
-handleGetTokenAndConfig,
-} = useContext(dataContext);
+    apiUrl,
+    handleGetTokenAndConfig,
+  } = useContext(dataContext);
 
   const permissionCustomer = permissionsList?.filter(
     (permission) => permission.resource === "Customers"
@@ -50,6 +48,8 @@ handleGetTokenAndConfig,
   const getAllCustomers = async () => {
     // setisLoading(true);
     try {
+      const config = await handleGetTokenAndConfig();
+
       const response = await axios.get(`${apiUrl}/api/customer`, config);
       console.log({ AllCustomers: response });
       const data = await response.data;
@@ -70,6 +70,8 @@ handleGetTokenAndConfig,
   const createCustomer = async (e) => {
     e.preventDefault();
     try {
+      const config = await handleGetTokenAndConfig();
+
       if (
         !customerData.name &&
         !customerData.phone &&
@@ -107,6 +109,8 @@ handleGetTokenAndConfig,
   const updateCustomer = async (e) => {
     e.preventDefault();
     try {
+      const config = await handleGetTokenAndConfig();
+
       const response = await axios.put(
         `${apiUrl}/api/customer/${customerId}`,
         customerData,
@@ -122,6 +126,8 @@ handleGetTokenAndConfig,
 
   const deleteCustomer = async (id) => {
     try {
+      const config = await handleGetTokenAndConfig();
+
       await axios.delete(`${apiUrl}/api/customer/${customerId}`, config);
       getAllCustomers();
       toast.success("تم حذف العميل بنجاح.");
@@ -141,6 +147,8 @@ handleGetTokenAndConfig,
     }
 
     try {
+      const config = await handleGetTokenAndConfig();
+
       const response = await axios.get(
         `${apiUrl}/api/customer/phone/${phone}`,
         config
@@ -173,7 +181,7 @@ handleGetTokenAndConfig,
 
   const [Areas, setAreas] = useState([]);
   const getAllDeliveryAreas = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const response = await axios.get(`${apiUrl}/api/deliveryarea`);
       const data = await response.data;

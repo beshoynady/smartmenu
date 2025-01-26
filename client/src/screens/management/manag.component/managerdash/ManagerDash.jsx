@@ -55,7 +55,7 @@ const ManagerDash = () => {
 
   const fetchOrdersData = async () => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
 
       // Fetch orders from API
       const res = await axios.get(apiUrl + "/api/order", config);
@@ -166,7 +166,7 @@ const ManagerDash = () => {
   const [allPreparationSections, setAllPreparationSections] = useState([]);
 
   const getAllPreparationSections = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     try {
       const res = await axios.get(`${apiUrl}/api/preparationsection`, config);
@@ -184,7 +184,7 @@ const ManagerDash = () => {
   };
 
   // const changeOrderStatus = async (event, orderId, orderProducts) => {
-  //   const config = handleGetTokenAndConfig();
+  //   const config = await handleGetTokenAndConfig();
 
   //   const cashier = employeeLoginInfo.id; // Get cashier ID
   //   const status = event.target.value; // New order status
@@ -269,7 +269,7 @@ const ManagerDash = () => {
   // };
 
   // const changeOrderStatus = async (e, orderId)  => {
-  // const config = handleGetTokenAndConfig();
+  // const config = await handleGetTokenAndConfig();
   //     const status = e.target.value;
   //     const cashier= employeeLoginInfo.id
   //     const isActive = status === "Cancelled" ? false : true;
@@ -359,7 +359,7 @@ const ManagerDash = () => {
   const changeOrderStatus = async (e, orderId) => {
     try {
       // Check if the token is available
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
 
       const status = e.target.value; // Get the new status from the event
       const cashier = employeeLoginInfo.id; // Current cashier ID
@@ -475,7 +475,7 @@ const ManagerDash = () => {
 
   const fetchActiveEmployees = async () => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const allEmployees = await axios.get(apiUrl + "/api/employee", config);
       const activeEmployees = allEmployees.data.filter(
         (employee) => employee.isActive === true
@@ -511,7 +511,7 @@ const ManagerDash = () => {
 
   const specifiedWaiter = async (id) => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       if (!allWaiters.length > 0) {
         toast.warn("لا يوجد ويتر نشط الان ");
         return "";
@@ -573,7 +573,7 @@ const ManagerDash = () => {
 
   const sendWaiter = async (id) => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const waiter = await specifiedWaiter(id);
       if (!waiter) {
         return;
@@ -607,7 +607,7 @@ const ManagerDash = () => {
 
   const putdeliveryman = async (id, orderid) => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const deliveryMan = id;
       const order = await axios.put(
         apiUrl + "/api/order/" + orderid,
@@ -634,7 +634,7 @@ const ManagerDash = () => {
     }
 
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const response = await axios.get(
         `${apiUrl}/api/cashregister/employee/${id}`,
         config
@@ -666,7 +666,7 @@ const ManagerDash = () => {
 
   const RevenueRecording = async (total, revenue) => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       if (registerSelected) {
         // احسب الرصيد المحدث
         const oldBalance = registers.find(
@@ -732,7 +732,7 @@ const ManagerDash = () => {
   const changePaymentorderstauts = async (e) => {
     e.preventDefault();
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       if (!registerSelected) {
         toast.warn("لم يتم التعرف علي خزينه لتسجيل فيها اليرادات");
         return;
@@ -774,7 +774,7 @@ const ManagerDash = () => {
   // Fetch orders from API
   const getOrderDetalis = async (serial) => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const res = await axios.get(apiUrl + "/api/order", config);
       const order = res.data.find((o) => o.serial === serial);
       if (order) {
@@ -854,7 +854,7 @@ const ManagerDash = () => {
   const aproveOrder = async (e, cashier) => {
     e.preventDefault();
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
 
       // Fetch order data by ID
       const order = await axios.get(

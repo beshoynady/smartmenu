@@ -5,7 +5,6 @@ import { dataContext } from "../../../../App";
 import "../orders/Orders.css";
 
 const ReservationTables = () => {
-  
   const {
     setisLoading,
     EditPagination,
@@ -29,9 +28,9 @@ const ReservationTables = () => {
     formatTime,
     filterByDateRange,
     filterByTime,
-  apiUrl,
-handleGetTokenAndConfig,
-} = useContext(dataContext);
+    apiUrl,
+    handleGetTokenAndConfig,
+  } = useContext(dataContext);
 
   const createdBy = employeeLoginInfo?.id;
   const [reservationId, setReservationId] = useState("");
@@ -151,6 +150,7 @@ handleGetTokenAndConfig,
         toast.error("رجاء اختيار الحجز بشكل صحيح");
         return;
       }
+      const config = await handleGetTokenAndConfig();
 
       const response = await axios.put(
         `${apiUrl}/api/reservation/${id}`,
@@ -262,7 +262,7 @@ handleGetTokenAndConfig,
   //   e.preventDefault();
   //   console.log(selectedIds)
   //   try{
-// const config = handleGetTokenAndConfig();
+  // const config = await handleGetTokenAndConfig();
   //     for (const Id of selectedIds) {
   //       await axios.delete(`${apiUrl}/api/order/${Id}`);
   //     }

@@ -1,17 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { dataContext } from "../../../../App";
 import { toast } from "react-toastify";
 import "../orders/Orders.css";
 
 const PermissionsComponent = () => {
- 
+  const {
+    employeeLoginInfo,
+    formatDateTime,
+    setisLoading,
+    EditPagination,
+    startPagination,
+    endPagination,
+    setStartPagination,
+    setEndPagination,
+    apiUrl,
+    handleGetTokenAndConfig,
+  } = useContext(dataContext);
 
   const [listOfEmployees, setListOfEmployees] = useState([]);
 
   const getEmployees = async () => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const response = await axios.get(`${apiUrl}/api/employee`, config);
       console.log({ employee: response });
       if (response.status === 200) {
@@ -30,7 +41,7 @@ const PermissionsComponent = () => {
 
   const getPermissions = async () => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const response = await axios.get(`${apiUrl}/api/permission`, config);
 
       if (response.status === 200) {
@@ -189,47 +200,47 @@ const PermissionsComponent = () => {
     setPermissions([...updatePermissions]);
   };
 
-
   const addAllPermissions = (action) => {
     let updatePermissions = [...Permissions];
-  
+
     permissionsListEn.map((permission) => {
-      const findPermission = updatePermissions.find((pe) => pe.resource === permission);
+      const findPermission = updatePermissions.find(
+        (pe) => pe.resource === permission
+      );
       if (findPermission) {
         if (action === "create") {
-          findPermission.create = findPermission.create? false: true;
-          findPermission.read = true; 
+          findPermission.create = findPermission.create ? false : true;
+          findPermission.read = true;
         }
         if (action === "read") {
-          findPermission.read = findPermission.read? false: true; 
+          findPermission.read = findPermission.read ? false : true;
         }
         if (action === "update") {
-          findPermission.update = findPermission.update? false: true;
-          findPermission.read = true; 
+          findPermission.update = findPermission.update ? false : true;
+          findPermission.read = true;
         }
         if (action === "delete") {
-          findPermission.delete = findPermission.delete? false: true;
-          findPermission.read = true; 
+          findPermission.delete = findPermission.delete ? false : true;
+          findPermission.read = true;
         }
       } else {
-        let newPermission ={}
-        newPermission.resource= permission
+        let newPermission = {};
+        newPermission.resource = permission;
         newPermission[action] = true;
         newPermission.read = true;
         updatePermissions.push(newPermission);
       }
     });
-  
+
     setPermissions([...updatePermissions]);
   };
-  
 
   const addPermissions = async (e) => {
     e.preventDefault();
     // console.log({ permissionEmployee });
 
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       if (!employeeid || !Permissions || Permissions.length === 0) {
         toast.error(
           "اختار الموظف و الصلاحيات بشكل صحيح! اعد تحميل الصفحة ثم اعد المحاوله مره اخري."
@@ -319,7 +330,6 @@ const PermissionsComponent = () => {
 
   const getEmployeesById = (id) => {
     try {
-      const config = handleGetTokenAndConfig();
       if (!id) {
         setselectedEmployee(null);
         setemployeeid("");
@@ -482,7 +492,10 @@ const PermissionsComponent = () => {
                       <th scope="col" style={{ width: "30%" }}>
                         اسم
                       </th>
-                      <th scope="col" onClick={()=>addAllPermissions("create")}>
+                      <th
+                        scope="col"
+                        onClick={() => addAllPermissions("create")}
+                      >
                         إنشاء{" "}
                         <i
                           className="fas fa-plus-circle"
@@ -491,7 +504,10 @@ const PermissionsComponent = () => {
                           title="Permission to create"
                         ></i>
                       </th>
-                      <th scope="col" onClick={()=>addAllPermissions("update")}>
+                      <th
+                        scope="col"
+                        onClick={() => addAllPermissions("update")}
+                      >
                         تعديل{" "}
                         <i
                           className="fas fa-edit"
@@ -500,7 +516,7 @@ const PermissionsComponent = () => {
                           title="Permission to edit"
                         ></i>
                       </th>
-                      <th scope="col" onClick={()=>addAllPermissions("read")}>
+                      <th scope="col" onClick={() => addAllPermissions("read")}>
                         عرض{" "}
                         <i
                           className="fas fa-eye"
@@ -509,7 +525,10 @@ const PermissionsComponent = () => {
                           title="Permission to view"
                         ></i>
                       </th>
-                      <th scope="col" onClick={()=>addAllPermissions("delete")}>
+                      <th
+                        scope="col"
+                        onClick={() => addAllPermissions("delete")}
+                      >
                         حذف{" "}
                         <i
                           className="fas fa-trash-alt"

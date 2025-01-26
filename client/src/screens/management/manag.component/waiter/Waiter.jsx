@@ -16,11 +16,9 @@ const Waiter = () => {
     BarSocket,
     GrillSocket,
     waiterSocket,
-  apiUrl,
-handleGetTokenAndConfig,
-} = useContext(dataContext);
-
-  
+    apiUrl,
+    handleGetTokenAndConfig,
+  } = useContext(dataContext);
 
   // Refs for buttons
   const start = useRef();
@@ -32,7 +30,7 @@ handleGetTokenAndConfig,
 
   // Function to fetch pending orders and payments
   const fetchActivePreparationTickets = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const res = await axios.get(
         apiUrl + "/api/preparationticket/activepreparationtickets",
@@ -61,11 +59,8 @@ handleGetTokenAndConfig,
   // // Function to fetch internal orders
   // const fetchInternalOrders = async () => {
   //   try {
-  //     if (!token) {
-  //       // Handle case where token is not available
-  //       toast.error("رجاء تسجيل الدخول مره اخري");
-  //       return;
-  //     }
+  // const config = await handleGetTokenAndConfig();
+
   //     const res = await axios.get(apiUrl + "/api/preparationticket/limit/50", config);
 
   //     const filterMyOrder = res.data?.filter(
@@ -105,12 +100,12 @@ handleGetTokenAndConfig,
 
   const updateOrderOnWay = async (id) => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const preparationStatus = "On the way";
       try {
         await axios.put(
           `${apiUrl}/api/preparationticket/${id}`,
-          {preparationStatus},
+          { preparationStatus },
           config
         );
       } catch (error) {
@@ -128,6 +123,8 @@ handleGetTokenAndConfig,
 
   const updateOrderDelivered = async (ticketId) => {
     try {
+      const config = await handleGetTokenAndConfig();
+
       const fetchPreparationTicketData = await axios.get(
         `${apiUrl}/api/preparationticket/${ticketId}`,
         config
@@ -176,7 +173,7 @@ handleGetTokenAndConfig,
 
   const helpOnWay = async (id) => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const helpStatus = "On the way";
       const res = await axios.put(
         `${apiUrl}/api/preparationticket/${id}`,
@@ -196,7 +193,7 @@ handleGetTokenAndConfig,
 
   const helpDone = async (id) => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const helpStatus = "Assistance done";
       await axios.put(
         `${apiUrl}/api/preparationticket/${id}`,

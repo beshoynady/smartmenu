@@ -5,8 +5,6 @@ import { toast, ToastContainer } from "react-toastify";
 import "../orders/Orders.css";
 
 const GrillConsumption = () => {
-  
-
   const {
     restaurantData,
     permissionsList,
@@ -23,17 +21,15 @@ const GrillConsumption = () => {
     endPagination,
     setStartPagination,
     setEndPagination,
-  apiUrl,
-handleGetTokenAndConfig,
-} = useContext(dataContext);
-
+    apiUrl,
+    handleGetTokenAndConfig,
+  } = useContext(dataContext);
 
   const GrillUsegePermission =
     permissionsList &&
     permissionsList.filter(
       (permission) => permission.resource === "Grill Usage"
     )[0];
-
 
   const [stockItemId, setstockItemId] = useState("");
   const [stockItemName, setstockItemName] = useState("");
@@ -65,7 +61,7 @@ handleGetTokenAndConfig,
     }
     if (consumption) {
       try {
-        const config = handleGetTokenAndConfig();
+        const config = await handleGetTokenAndConfig();
         if (GrillUsegePermission && !GrillUsegePermission.update) {
           toast.warn("ليس لك صلاحية لتعديل عنصر بمخزن الاستهلاك");
           return;
@@ -103,7 +99,7 @@ handleGetTokenAndConfig,
       }
     } else {
       try {
-        const config = handleGetTokenAndConfig();
+        const config = await handleGetTokenAndConfig();
         if (GrillUsegePermission && !GrillUsegePermission.create) {
           toast.warn("ليس لك صلاحيه لاضافه عنصر بمخزن الاستهلاك");
           return;
@@ -146,7 +142,7 @@ handleGetTokenAndConfig,
   const updategrillItem = async (e) => {
     e.preventDefault();
     console.log("updategrillItem");
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     if (GrillUsegePermission && !GrillUsegePermission.update) {
       toast.warn("ليس لك صلاحية لتعديل عنصر بمخزن الاستهلاك");
       return;
@@ -162,10 +158,8 @@ handleGetTokenAndConfig,
       );
       if (update.status === 200) {
         try {
-          if (!token) {
-            // Handle case where token is not available
-            toast.error("رجاء تسجيل الدخول مره اخري");
-          }
+          const config = await handleGetTokenAndConfig();
+
           // Make a POST request to add an item
           const response = await axios.post(
             apiUrl + "/api/consumption",
@@ -208,7 +202,7 @@ handleGetTokenAndConfig,
   const [AllStockItems, setAllStockItems] = useState([]);
   // Function to retrieve all stock items
   const getStockItems = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/stockitem/", config);
 
@@ -228,7 +222,7 @@ handleGetTokenAndConfig,
   };
 
   const deletegrillItem = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     if (GrillUsegePermission && !GrillUsegePermission.delete) {
       toast.warn("ليس لك صلاحية لحذف عنصر بمخزن الاستهلاك");
       return;
@@ -253,7 +247,7 @@ handleGetTokenAndConfig,
   // // Function to retrieve all category stock
   // const getAllCategoryStock = async () => {
   //   try{
-// const config = handleGetTokenAndConfig();
+  // const config = await handleGetTokenAndConfig();
   //     const res = await axios.get(apiUrl+'/api/categoryStock/');
   //     setAllCategoryStock(res.data);
   //   } catch (error) {
@@ -270,7 +264,7 @@ handleGetTokenAndConfig,
   const [grillConsumptionForView, setgrillConsumptionForView] = useState([]);
 
   const getGrillConsumption = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       console.log("Fetching grill consumption...");
       const response = await axios.get(apiUrl + "/api/consumption", config);

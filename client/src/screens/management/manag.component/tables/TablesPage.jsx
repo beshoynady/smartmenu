@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import { toast } from "react-toastify";
 import { dataContext } from "../../../../App";
 
 const TablesPage = () => {
@@ -18,7 +17,10 @@ const TablesPage = () => {
     incrementProductQuantity,
     decrementProductQuantity,
     setproductNote,
-    addNoteToProduct, handleGetTokenAndConfig, apiUrl } = useContext(dataContext)
+    addNoteToProduct,
+    handleGetTokenAndConfig,
+    apiUrl,
+  } = useContext(dataContext);
 
   // State for tables, active orders, products in active orders, and consumption in active orders
   const [activeTable, setactiveTable] = useState([]);
@@ -29,7 +31,7 @@ const TablesPage = () => {
   // Fetches orders from the API
   const getOrdersFromAPI = async () => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       // Fetch orders data from the API endpoint
       const orders = await axios.get(apiUrl + "/api/order");
       // Set all orders fetched from the API
@@ -39,7 +41,7 @@ const TablesPage = () => {
       const activeOrders = orders.data.filter(
         (order) => order.isActive === true
       );
-      console.log({ activeOrders });
+      // console.log({ activeOrders });
       // Set active orders
       setOrderActive(activeOrders);
 
@@ -48,7 +50,7 @@ const TablesPage = () => {
         (activeOrder) => activeOrder.table != null
       );
 
-      console.log({ getactiveTable });
+      // console.log({ getactiveTable });
       // Set table IDs
       setactiveTable(getactiveTable);
     } catch (error) {

@@ -33,7 +33,7 @@ const PurchaseReturn = () => {
   const [AllStockactions, setAllStockactions] = useState([]);
 
   const getallStockaction = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/stockmovement/", config);
       console.log(response.data);
@@ -47,7 +47,7 @@ const PurchaseReturn = () => {
   const [AllSuppliers, setAllSuppliers] = useState([]);
   // Function to retrieve all suppliers
   const getAllSuppliers = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/supplier/", config);
 
@@ -74,7 +74,7 @@ const PurchaseReturn = () => {
   const [AllCashRegisters, setAllCashRegisters] = useState([]);
   // Fetch all cash registers
   const getAllCashRegisters = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/cashregister", config);
       setAllCashRegisters(response.data.reverse());
@@ -86,7 +86,7 @@ const PurchaseReturn = () => {
   const [allrecipes, setAllRecipes] = useState([]);
 
   const getallrecipes = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const response = await axios.get(`${apiUrl}/api/recipe`, config);
       console.log(response);
@@ -100,7 +100,7 @@ const PurchaseReturn = () => {
 
   const [StockItems, setStockItems] = useState([]);
   const getaStockItems = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/stockitem/", config);
       if (response) {
@@ -113,7 +113,7 @@ const PurchaseReturn = () => {
   };
 
   const createStockAction = async (item, receiverid) => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     try {
       const itemId = item.itemId;
@@ -391,7 +391,7 @@ const PurchaseReturn = () => {
 
   //   e.preventDefault()
   //   try{
-  // const config = handleGetTokenAndConfig();
+  // const config = await handleGetTokenAndConfig();
   //     const newInvoice = {
   //       originalInvoice,
   //       returnDate,
@@ -433,7 +433,7 @@ const PurchaseReturn = () => {
   const [returnInvoice, setreturnInvoice] = useState({});
 
   const getReturnInvoice = async (id) => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       if (purchaseReturnPermission && !purchaseReturnPermission.read) {
         toast.warn("ليس لك صلاحية لعرض فواتير المرتجع");
@@ -455,7 +455,7 @@ const PurchaseReturn = () => {
 
   const createPurchaseReturn = async (e, receiverId) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       if (purchaseReturnPermission && !purchaseReturnPermission.create) {
         toast.warn("ليس لك صلاحية لانشاء فواتير المرتجع");
@@ -533,7 +533,7 @@ const PurchaseReturn = () => {
 
   const [allPurchasesReturn, setAllPurchasesReturn] = useState([]);
   const getAllPurchasesReturn = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       if (purchaseReturnPermission && !purchaseReturnPermission.read) {
         toast.warn("ليس لك صلاحية لعرض فواتير المرتجع");
@@ -554,7 +554,7 @@ const PurchaseReturn = () => {
 
   const [allPurchaseInvoice, setAllPurchaseInvoice] = useState([]);
   const getAllPurchases = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/purchaseinvoice", config);
       console.log({ response });
@@ -593,7 +593,7 @@ const PurchaseReturn = () => {
     e.preventDefault();
     const updatedbalance = Number(CashRegisterBalance) + Number(refundedAmount); // Calculate the updated balance
 
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       // await handleAddSupplierTransactionPaymentPurchase()
 
@@ -637,7 +637,7 @@ const PurchaseReturn = () => {
   };
 
   const confirmDeduct = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       let newCurrentBalance = 0;
 

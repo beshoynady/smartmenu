@@ -41,7 +41,7 @@ const CashMovement = () => {
   // Fetch all cash registers
 
   const getAllCashRegisters = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     if (cashRegisterPermissions && cashRegisterPermissions.read === false) {
       toast.warn("ليس لك صلاحية لعرض حسابات الخزينه");
       return;
@@ -78,7 +78,7 @@ const CashMovement = () => {
   };
 
   const handlecashRegister = async (id) => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     if (cashRegisterPermissions && cashRegisterPermissions.read === false) {
       toast.warn("ليس لك صلاحية لعرض حسابات الخزينه");
       return;
@@ -104,7 +104,7 @@ const CashMovement = () => {
 
   const [AllCashMovement, setAllCashMovement] = useState([]);
   const getCashMovement = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     if (cashMovementPermissions && cashMovementPermissions.read === false) {
       toast.warn("ليس لك صلاحية لعرض حسابات الخزينه");
@@ -165,7 +165,7 @@ const CashMovement = () => {
 
   // Function to add cash movement and update balance
   const addCashMovementAndUpdateBalance = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     if (cashMovementPermissions && cashMovementPermissions.create === false) {
       toast.warn("ليس لك صلاحية لانشاء حركه في حسابات الخزينه");
       return;
@@ -251,7 +251,7 @@ const CashMovement = () => {
     e.preventDefault();
 
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       if (cashMovementPermissions && cashMovementPermissions.create === false) {
         toast.warn("ليس لك صلاحية لانشاء حركه في حسابات الخزينه");
         return;
@@ -316,7 +316,7 @@ const CashMovement = () => {
 
   const accepteTransferCash = async (id, statusTransfer) => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
 
       // Fetch details of the cash movement
       const receivcashMovementResponse = await axios.get(

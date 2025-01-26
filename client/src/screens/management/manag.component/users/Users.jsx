@@ -35,7 +35,7 @@ handleGetTokenAndConfig,
 
   const getAllUsers = async () => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       if (permissionUser && !permissionUser.read) {
         toast.warn("ليس لك صلاحية لعرض بيانات المستخدمين");
         return;
@@ -53,7 +53,7 @@ handleGetTokenAndConfig,
       return;
     }
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
 
       // Get the value from the event
       const isVarified = e.target.value;
@@ -85,7 +85,7 @@ handleGetTokenAndConfig,
       return;
     }
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
 
       // put the value from the event
       const isActive = e.target.value;
@@ -126,7 +126,7 @@ handleGetTokenAndConfig,
       return;
     }
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
 
       const response = await axios.put(`${apiUrl}/api/user/${userid}`, {
         username,
@@ -170,7 +170,7 @@ handleGetTokenAndConfig,
   const [Areas, setAreas] = useState([]);
   const getAllDeliveryAreas = async () => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const response = await axios.get(`${apiUrl}/api/deliveryarea`);
       const data = await response.data;
       // console.log({ data })

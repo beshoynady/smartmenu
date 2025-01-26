@@ -75,7 +75,7 @@ handleGetTokenAndConfig,
       return;
     }
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const response = await axios.get(`${apiUrl}/api/message`, config);
       const data = await response.data.reverse();
       const messageNotSeen = data.filter((mas) => mas.isSeen === false);
@@ -91,7 +91,7 @@ handleGetTokenAndConfig,
       return;
     }
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const response = await axios.put(
         `${apiUrl}/api/message/${id}`,
         { isSeen: true },

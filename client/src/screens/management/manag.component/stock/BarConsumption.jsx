@@ -64,7 +64,7 @@ handleGetTokenAndConfig,
     }
     if (consumption) {
       try {
-        const config = handleGetTokenAndConfig();
+        const config = await handleGetTokenAndConfig();
         if (BarUsegePermission && !BarUsegePermission.update) {
           toast.warn("ليس لك صلاحية لتعديل عنصر لمخزن الاستهلاك");
           return;
@@ -102,7 +102,7 @@ handleGetTokenAndConfig,
       }
     } else {
       try {
-        const config = handleGetTokenAndConfig();
+        const config = await handleGetTokenAndConfig();
         if (BarUsegePermission && !BarUsegePermission.create) {
           toast.warn("ليس لك صلاحية لاضافه عنصر لمخزن الاستهلاك");
           return;
@@ -145,7 +145,7 @@ handleGetTokenAndConfig,
   const updateBarItem = async (e) => {
     e.preventDefault();
     console.log("updateBarItem");
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     if (BarUsegePermission && !BarUsegePermission.update) {
       toast.warn("ليس لك صلاحية لتعديل عنصر لمخزن الاستهلاك");
@@ -164,7 +164,7 @@ handleGetTokenAndConfig,
       );
       if (update.status === 200) {
         //   try {
-        //     // const config = handleGetTokenAndConfig();
+        //     // const config = await handleGetTokenAndConfig();
         //     // Make a POST request to add an item
         //     const response = await axios.post(apiUrl + '/api/consumption', {
         //       stockItemId,
@@ -203,7 +203,7 @@ handleGetTokenAndConfig,
   const [AllStockItems, setAllStockItems] = useState([]);
   // Function to retrieve all stock items
   const getStockItems = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/stockitem/", config);
 
@@ -223,7 +223,7 @@ handleGetTokenAndConfig,
   };
 
   const deleteBarItem = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     if (BarUsegePermission && !BarUsegePermission.delete) {
       toast.warn("ليس لك صلاحية لحذف عنصر من مخزن الاستهلاك");
       return;
@@ -248,7 +248,7 @@ handleGetTokenAndConfig,
   // // Function to retrieve all category stock
   // const getAllCategoryStock = async () => {
   //   try{
-// const config = handleGetTokenAndConfig();
+// const config = await handleGetTokenAndConfig();
   //     const res = await axios.get(apiUrl+'/api/categoryStock/');
   //     setAllCategoryStock(res.data);
   //   } catch (error) {
@@ -265,7 +265,7 @@ handleGetTokenAndConfig,
   const [BarConsumptionForView, setBarConsumptionForView] = useState([]);
 
   const getBarConsumption = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     if (BarUsegePermission && !BarUsegePermission.read) {
       toast.warn("ليس لك صلاحية لعرض عناصر لمخزن الاستهلاك");
       return;

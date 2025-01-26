@@ -37,7 +37,7 @@ handleGetTokenAndConfig,
 
   // Fetch all preparation sections
   const fetchPreparationSections = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     try {
       const response = await axios.get(
@@ -59,7 +59,7 @@ handleGetTokenAndConfig,
 
 
   const fetchPreparationTickets = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     try {
       const response = await axios.get(
@@ -102,7 +102,7 @@ handleGetTokenAndConfig,
       event.preventDefault();
     
       // Check if the user is authenticated
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
     
       try {
         const PreparationTicketIdToDelete = PreparationTicketId; // Use a clear and descriptive variable name
@@ -163,7 +163,7 @@ handleGetTokenAndConfig,
   const deleteSelectedIds = async (e) => {
     e.preventDefault();
     console.log(selectedIds);
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       for (const Id of selectedIds) {
         await axios.delete(`${apiUrl}/api/preparationticket/${Id}`, config);

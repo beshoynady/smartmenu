@@ -24,7 +24,7 @@ const PreparationSection = () => {
   const createPreparationSection = async (event) => {
     event.preventDefault();
 
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     const PreparationSectionData = {
       name: preparationSectionName,
@@ -74,7 +74,7 @@ const PreparationSection = () => {
   };
 
   const getAllPreparationSections = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     try {
       const res = await axios.get(`${apiUrl}/api/preparationsection`, config);
@@ -94,7 +94,7 @@ const PreparationSection = () => {
   const editPreparationSection = async (event) => {
     event.preventDefault();
 
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     const bodyData = {
       name: preparationSectionName,
@@ -123,7 +123,7 @@ const PreparationSection = () => {
   const deletePreparationSection = async (event) => {
     event.preventDefault();
 
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     try {
       const deleted = await axios.delete(
@@ -143,7 +143,7 @@ const PreparationSection = () => {
   };
 
   const searchByPreparationSectionName = (name) => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     if (!name) {
       getAllPreparationSections();
     } else {

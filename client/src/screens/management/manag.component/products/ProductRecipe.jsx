@@ -10,9 +10,7 @@ import { dataContext } from "../../../../App";
 import { toast } from "react-toastify";
 import "../orders/Orders.css";
 
-
 const ProductRecipe = () => {
-  
   const {
     restaurantData,
     permissionsList,
@@ -29,9 +27,9 @@ const ProductRecipe = () => {
     endPagination,
     setStartPagination,
     setEndPagination,
-  apiUrl,
-handleGetTokenAndConfig,
-} = useContext(dataContext);
+    apiUrl,
+    handleGetTokenAndConfig,
+  } = useContext(dataContext);
 
   const productRecipePermission =
     permissionsList &&
@@ -40,7 +38,7 @@ handleGetTokenAndConfig,
   const [listofProducts, setlistofProducts] = useState([]);
 
   const getallproducts = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/product/");
       const products = await response.data;
@@ -67,7 +65,7 @@ handleGetTokenAndConfig,
 
   const [listofcategories, setlistofcategories] = useState([]);
   const getallCategories = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/menucategory/");
       const categories = await response.data;
@@ -82,7 +80,7 @@ handleGetTokenAndConfig,
   const [AllStockItems, setAllStockItems] = useState([]);
 
   const getallStockItem = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/stockitem/", config);
       const StockItems = await response.data;
@@ -119,7 +117,7 @@ handleGetTokenAndConfig,
 
   const addRecipeItem = async (e) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       if (productRecipePermission && !productRecipePermission.create) {
         toast.warn("ليس لك صلاحية لانشاء الوصفات");
@@ -251,7 +249,7 @@ handleGetTokenAndConfig,
   };
   const addServiceItem = async (e) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     try {
       if (productRecipePermission && !productRecipePermission.create) {
@@ -302,7 +300,7 @@ handleGetTokenAndConfig,
 
   // const addServiceItem = async (e) => {
   //   e.preventDefault();
-// const config = handleGetTokenAndConfig();
+  // const config = await handleGetTokenAndConfig();
   //   try {
   //     if (productRecipePermission && !productRecipePermission.create) {
   //       toast.warn("ليس لك صلاحية لانشاء الوصفات");
@@ -353,7 +351,7 @@ handleGetTokenAndConfig,
   const editRecipe = async (e) => {
     try {
       e.preventDefault();
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       if (productRecipePermission && !productRecipePermission.update) {
         toast.warn("ليس لك صلاحية لتعديل الوصفات");
         return;
@@ -417,7 +415,11 @@ handleGetTokenAndConfig,
     let total = 0;
 
     serviceDetails.dineIn?.forEach((dineIn) => {
-      const costPart = Number(AllStockItems.find(stock=>stock._id===dineIn.itemId)?.costPerPart) || 0;
+      const costPart =
+        Number(
+          AllStockItems.find((stock) => stock._id === dineIn.itemId)
+            ?.costPerPart
+        ) || 0;
       const amount = Number(dineIn.amount) || 0;
       const costOfDineIn = amount * costPart;
       total += costOfDineIn;
@@ -430,7 +432,11 @@ handleGetTokenAndConfig,
     let total = 0;
 
     serviceDetails.delivery?.forEach((delivery) => {
-      const costPart = Number(AllStockItems.find(stock=>stock._id===delivery.itemId)?.costPerPart) || 0;
+      const costPart =
+        Number(
+          AllStockItems.find((stock) => stock._id === delivery.itemId)
+            ?.costPerPart
+        ) || 0;
       const amount = Number(delivery.amount) || 0;
       const costOfdelivery = amount * costPart;
       total += costOfdelivery;
@@ -443,7 +449,11 @@ handleGetTokenAndConfig,
     let total = 0;
 
     serviceDetails.takeaway?.forEach((takeaway) => {
-      const costPart = Number(AllStockItems.find(stock=>stock._id===takeaway.itemId)?.costPerPart) || 0;
+      const costPart =
+        Number(
+          AllStockItems.find((stock) => stock._id === takeaway.itemId)
+            ?.costPerPart
+        ) || 0;
       const amount = Number(takeaway.amount) || 0;
       const costOftakeaway = amount * costPart;
       total += costOftakeaway;
@@ -453,7 +463,7 @@ handleGetTokenAndConfig,
   };
 
   const getProductRecipe = async (productId, sizeId) => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       if (productRecipePermission && !productRecipePermission.read) {
         toast.warn("ليس لك صلاحية لعرض الوصفات");
@@ -516,7 +526,6 @@ handleGetTokenAndConfig,
     }
   };
 
-
   const [sizes, setsizes] = useState([]);
 
   const handleSelectedProduct = (id) => {
@@ -546,6 +555,8 @@ handleGetTokenAndConfig,
 
   const deleteRecipe = async (e) => {
     e.preventDefault();
+    const config = await handleGetTokenAndConfig();
+
     if (productRecipePermission && !productRecipePermission.delete) {
       toast.warn("ليس لك صلاحية لحذف الوصفات");
       return;
@@ -578,7 +589,7 @@ handleGetTokenAndConfig,
 
   const deleteAllRecipe = async (e) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       if (productRecipePermission && !productRecipePermission.delete) {
         toast.warn("ليس لك صلاحية لحذف الوصفات");
@@ -924,9 +935,11 @@ handleGetTokenAndConfig,
                     }
                   })
                 : ""}
-              <tr><td colSpan="8" style={{ textAlign: "center" }}>
-                اضافات خاصه بطلبات الصاله
-              </td></tr>
+              <tr>
+                <td colSpan="8" style={{ textAlign: "center" }}>
+                  اضافات خاصه بطلبات الصاله
+                </td>
+              </tr>
               {serviceDetails.dineIn?.length > 0 &&
                 serviceDetails.dineIn.map((dineIn, i) => {
                   return (
@@ -947,10 +960,20 @@ handleGetTokenAndConfig,
                       <td>{dineIn.name}</td>
                       <td>{dineIn.unit}</td>
                       <td>{dineIn.amount}</td>
-                      <td>{AllStockItems.find(stock=>stock._id===dineIn.itemId)?.costPerPart}</td>
+                      <td>
+                        {
+                          AllStockItems.find(
+                            (stock) => stock._id === dineIn.itemId
+                          )?.costPerPart
+                        }
+                      </td>
                       <td>
                         {Number(dineIn.amount) *
-                          Number(AllStockItems.find(stock=>stock._id===dineIn.itemId)?.costPerPart)}
+                          Number(
+                            AllStockItems.find(
+                              (stock) => stock._id === dineIn.itemId
+                            )?.costPerPart
+                          )}
                       </td>
                       <td>
                         <a
@@ -995,9 +1018,11 @@ handleGetTokenAndConfig,
                     </tr>
                   );
                 })}
-              <tr><td colSpan="8" style={{ textAlign: "center" }}>
-                اضافات خاصه بطلبات التيك اوي
-              </td></tr>
+              <tr>
+                <td colSpan="8" style={{ textAlign: "center" }}>
+                  اضافات خاصه بطلبات التيك اوي
+                </td>
+              </tr>
               {serviceDetails.takeaway?.length > 0 &&
                 serviceDetails.takeaway.map((takeaway, i) => {
                   return (
@@ -1018,10 +1043,20 @@ handleGetTokenAndConfig,
                       <td>{takeaway.name}</td>
                       <td>{takeaway.unit}</td>
                       <td>{takeaway.amount}</td>
-                      <td>{AllStockItems.find(stock=>stock._id===takeaway.itemId)?.costPerPart}</td>
+                      <td>
+                        {
+                          AllStockItems.find(
+                            (stock) => stock._id === takeaway.itemId
+                          )?.costPerPart
+                        }
+                      </td>
                       <td>
                         {Number(takeaway.amount) *
-                          Number(AllStockItems.find(stock=>stock._id===takeaway.itemId)?.costPerPart)}
+                          Number(
+                            AllStockItems.find(
+                              (stock) => stock._id === takeaway.itemId
+                            )?.costPerPart
+                          )}
                       </td>
                       <td>
                         <a
@@ -1066,9 +1101,11 @@ handleGetTokenAndConfig,
                     </tr>
                   );
                 })}
-              <tr><td colSpan="8" style={{ textAlign: "center" }}>
-                اضافات خاصه بطلبات الديليفري
-              </td></tr>
+              <tr>
+                <td colSpan="8" style={{ textAlign: "center" }}>
+                  اضافات خاصه بطلبات الديليفري
+                </td>
+              </tr>
               {serviceDetails.delivery?.length > 0 &&
                 serviceDetails.delivery.map((delivery, i) => {
                   return (
@@ -1089,10 +1126,20 @@ handleGetTokenAndConfig,
                       <td>{delivery.name}</td>
                       <td>{delivery.unit}</td>
                       <td>{delivery.amount}</td>
-                      <td>{AllStockItems.find(stock=>stock._id===delivery.itemId)?.costPerPart}</td>
+                      <td>
+                        {
+                          AllStockItems.find(
+                            (stock) => stock._id === delivery.itemId
+                          )?.costPerPart
+                        }
+                      </td>
                       <td>
                         {Number(delivery.amount) *
-                          Number(AllStockItems.find(stock=>stock._id===delivery.itemId)?.costPerPart)}
+                          Number(
+                            AllStockItems.find(
+                              (stock) => stock._id === delivery.itemId
+                            )?.costPerPart
+                          )}
                       </td>
                       <td>
                         <a

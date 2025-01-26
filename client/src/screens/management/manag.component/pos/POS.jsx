@@ -9,8 +9,6 @@ import POSCard from "./POS-Card";
 import InvoiceComponent from "../invoice/invoice";
 
 const POS = () => {
-  
-
   const {
     restaurantData,
     setsalesTax,
@@ -69,9 +67,9 @@ const POS = () => {
     handlePayExtras,
     splitInvoice,
     subtotalSplitOrder,
-  apiUrl,
-handleGetTokenAndConfig,
-} = useContext(dataContext);
+    apiUrl,
+    handleGetTokenAndConfig,
+  } = useContext(dataContext);
 
   const [showModal, setShowModal] = useState(false);
 
@@ -157,7 +155,7 @@ handleGetTokenAndConfig,
       );
 
       const customer = response.data;
-      
+
       if (customer) {
         setisClientFounded(true);
         setcustomerId(customer._id);
@@ -191,7 +189,9 @@ handleGetTokenAndConfig,
 
   const createCustomer = async (e) => {
     e.preventDefault();
+
     try {
+      const config = await handleGetTokenAndConfig();
       if (!clientname && !clientphone && !deliveryAreaId && !clientaddress) {
         toast.warn("تاكد من الاسم و الموبايل و منطقه التوصل و العنوان ");
       }
@@ -219,6 +219,8 @@ handleGetTokenAndConfig,
   const updateCustomer = async (e) => {
     e.preventDefault();
     try {
+      const config = await handleGetTokenAndConfig();
+
       const response = await axios.put(
         `${apiUrl}/api/customer/${customerId}`,
         {
@@ -249,6 +251,8 @@ handleGetTokenAndConfig,
     }
 
     try {
+      const config = await handleGetTokenAndConfig();
+
       const response = await axios.get(
         `${apiUrl}/api/cashregister/employee/${id}`,
         config
@@ -287,7 +291,7 @@ handleGetTokenAndConfig,
 
   const RevenueRecording = async (total, revenue) => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       if (registerSelected) {
         // احسب الرصيد المحدث
         const oldBalance = registers.find(
@@ -341,7 +345,7 @@ handleGetTokenAndConfig,
   const changePaymentorderstauts = async (e) => {
     e.preventDefault();
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       if (!registerSelected) {
         toast.warn("لم يتم التعرف علي خزينه لتسجيل فيها اليرادات");
         return;
@@ -486,7 +490,7 @@ handleGetTokenAndConfig,
               ? itemsInCart.map((item, index) => (
                   <div className="card mb-3" key={index}>
                     {/* extraArea */}
-                    
+
                     {product &&
                     item.sizeId &&
                     sizeId === item.sizeId &&
@@ -562,7 +566,7 @@ handleGetTokenAndConfig,
                                         style={{
                                           width: "50%",
                                           paddingLeft: "5px",
-                                          scrollbarWidth:"thin"
+                                          scrollbarWidth: "thin",
                                         }}
                                       >
                                         <input
@@ -710,7 +714,7 @@ handleGetTokenAndConfig,
                                           style={{
                                             width: "50%",
                                             paddingLeft: "5px",
-                                            scrollbarWidth:"thin"
+                                            scrollbarWidth: "thin",
                                           }}
                                         >
                                           {console.log({ productExtras })}
@@ -1152,9 +1156,9 @@ handleGetTokenAndConfig,
         </div>
 
         <div className="h-auto w-100">
-
           {/* order info */}
-          <div className="row d-flex align-items-start px-2 m-0"
+          <div
+            className="row d-flex align-items-start px-2 m-0"
             style={{ direction: "rtl" }}
           >
             <div className="col p-0 m-0">
@@ -1230,7 +1234,6 @@ handleGetTokenAndConfig,
             </div>
           </div>
 
-          
           {/* button */}
           <div className="d-flex flex-wrap g-2 align-items-center justify-content-between w-100 p-0 m-0">
             {ordertype === "Internal" ? (
@@ -1386,9 +1389,6 @@ handleGetTokenAndConfig,
           </div>
         </div>
       </div>
-
-
-
 
       {/* الفاتوره */}
 

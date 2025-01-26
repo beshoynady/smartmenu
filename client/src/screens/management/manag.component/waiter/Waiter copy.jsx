@@ -26,7 +26,7 @@ const Waiter = () => {
   // Function to fetch pending orders and payments
   const fetchPendingData = async () => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const res = await axios.get(apiUrl + "/api/order/limit/50", config);
       const filterMyOrder = res.data?.filter(
         (order) => order.waiter?._id === employeeLoginInfo.id
@@ -53,7 +53,7 @@ const Waiter = () => {
   // Function to fetch internal orders
   const fetchInternalOrders = async () => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const res = await axios.get(apiUrl + "/api/order/limit/50", config);
 
       const filterMyOrder = res.data?.filter(
@@ -93,7 +93,7 @@ const Waiter = () => {
 
   const updateOrderOnWay = async (id, products) => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const preparationSection = [];
       products.forEach((product) => {
         const section = product.productId?.preparationSection;
@@ -179,7 +179,7 @@ const Waiter = () => {
 
   const helpOnWay = async (id) => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const helpStatus = "On the way";
       const res = await axios.put(
         `${apiUrl}/api/order/${id}`,
@@ -199,7 +199,7 @@ const Waiter = () => {
 
   const helpDone = async (id) => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const helpStatus = "Assistance done";
       await axios.put(`${apiUrl}/api/order/${id}`, { helpStatus }, config);
       fetchPendingData();

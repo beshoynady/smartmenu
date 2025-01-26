@@ -5,8 +5,6 @@ import { toast } from "react-toastify";
 import "../orders/Orders.css";
 
 const Suppliers = () => {
-  
-
   const {
     permissionsList,
     employeeLoginInfo,
@@ -17,9 +15,9 @@ const Suppliers = () => {
     endPagination,
     setStartPagination,
     setEndPagination,
-  apiUrl,
-handleGetTokenAndConfig,
-} = useContext(dataContext);
+    apiUrl,
+    handleGetTokenAndConfig,
+  } = useContext(dataContext);
 
   const supplierDataPermission =
     permissionsList &&
@@ -51,12 +49,9 @@ handleGetTokenAndConfig,
   const [email, setemail] = useState("");
 
   const [address, setAddress] = useState("");
-  
-
-
 
   const [itemsSupplied, setItemsSupplied] = useState(["اضف خامة"]);
-    
+
   const handleAddItemsSupplied = () => {
     setItemsSupplied([...itemsSupplied, "اضف خامة"]);
   };
@@ -99,118 +94,132 @@ handleGetTokenAndConfig,
   // Function to create a Supplier
   const createSupplier = async (e) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     // تحقق من الصلاحيات قبل المتابعة
     if (supplierDataPermission && !supplierDataPermission.create) {
-        toast.warn("ليس لديك صلاحية لإنشاء حساب الموردين");
-        return;
+      toast.warn("ليس لديك صلاحية لإنشاء حساب الموردين");
+      return;
     }
 
     // إعداد بيانات المورد
     const supplierData = {
-        name,
-        contact: { phone, whatsapp, email },
-        address,
-        paymentType,
-        itemsSupplied,
-        currentBalance,
-        financialInfo,
-        notes,
+      name,
+      contact: { phone, whatsapp, email },
+      address,
+      paymentType,
+      itemsSupplied,
+      currentBalance,
+      financialInfo,
+      notes,
     };
 
     try {
-        // إرسال طلب إنشاء المورد
-        const response = await axios.post(`${apiUrl}/api/supplier/`, supplierData, config);
+      // إرسال طلب إنشاء المورد
+      const response = await axios.post(
+        `${apiUrl}/api/supplier/`,
+        supplierData,
+        config
+      );
 
-        if (response && response.status === 201) {
-            const supplierId = response.data?._id;
-            if(itemsSupplied.length > 0){
-              await addSupplierToStockItem(supplierId);
-           } else {
-              toast.warn("انت لم تضيف لهذا المورد مواد المخزن");
-           }
-            // إذا كان هناك رصيد ابتدائي، يتم تسجيل معاملة الرصيد
-            if (currentBalance > 0) {
-                await createOpeningBalanceTransaction(supplierId, currentBalance);
-            }
-
-            // إخطار بنجاح العملية
-            toast.success("تم إنشاء المورد بنجاح");
-            getAllSuppliers();
+      if (response && response.status === 201) {
+        const supplierId = response.data?._id;
+        if (itemsSupplied.length > 0) {
+          await addSupplierToStockItem(supplierId);
         } else {
-            throw new Error("فشل في إنشاء المورد");
+          toast.warn("انت لم تضيف لهذا المورد مواد المخزن");
         }
-    } catch (error) {
-        console.error(error);
-        toast.error("فشل في إنشاء المورد");
-    }
-};
+        // إذا كان هناك رصيد ابتدائي، يتم تسجيل معاملة الرصيد
+        if (currentBalance > 0) {
+          await createOpeningBalanceTransaction(supplierId, currentBalance);
+        }
 
-// دالة فرعية لإنشاء معاملة رصيد افتتاحي
-const createOpeningBalanceTransaction = async (supplierId, currentBalance) => {
-    const config = handleGetTokenAndConfig();
+        // إخطار بنجاح العملية
+        toast.success("تم إنشاء المورد بنجاح");
+        getAllSuppliers();
+      } else {
+        throw new Error("فشل في إنشاء المورد");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("فشل في إنشاء المورد");
+    }
+  };
+
+  // دالة فرعية لإنشاء معاملة رصيد افتتاحي
+  const createOpeningBalanceTransaction = async (
+    supplierId,
+    currentBalance
+  ) => {
+    const config = await handleGetTokenAndConfig();
 
     const transactionData = {
-        supplier: supplierId,
-        transactionDate: new Date(),
-        transactionType: 'OpeningBalance',
-        amount: currentBalance,
-        previousBalance: 0,
-        currentBalance,
-        paymentMethod: '',
-        notes,
+      supplier: supplierId,
+      transactionDate: new Date(),
+      transactionType: "OpeningBalance",
+      amount: currentBalance,
+      previousBalance: 0,
+      currentBalance,
+      paymentMethod: "",
+      notes,
     };
 
     try {
-        const response = await axios.post(`${apiUrl}/api/suppliertransaction`, transactionData, config);
+      const response = await axios.post(
+        `${apiUrl}/api/suppliertransaction`,
+        transactionData,
+        config
+      );
 
-        console.error({response});
-        if (response && response.status === 201) {
-            toast.success("تم تسجيل معاملة الرصيد الافتتاحي بنجاح");
-        } else {
-            throw new Error("فشل في تسجيل معاملة الرصيد الافتتاحي");
-        }
+      console.error({ response });
+      if (response && response.status === 201) {
+        toast.success("تم تسجيل معاملة الرصيد الافتتاحي بنجاح");
+      } else {
+        throw new Error("فشل في تسجيل معاملة الرصيد الافتتاحي");
+      }
     } catch (error) {
-        console.error(error);
-        toast.error("حدث خطأ أثناء تسجيل معاملة الرصيد الافتتاحي");
+      console.error(error);
+      toast.error("حدث خطأ أثناء تسجيل معاملة الرصيد الافتتاحي");
     }
-};
+  };
 
-const addSupplierToStockItem = async (supplierId) => {
-  if (itemsSupplied) {
-    for (const item of itemsSupplied) {
-      const oldSupplier = AllStockItems.find(i => i._id === item)?.suppliers
-      const suppliers = oldSupplier?[...oldSupplier, supplierId]:[supplierId];
-      console.log({itemsSupplied,oldSupplier, suppliers})
-      try {
-        const response = await axios.put(
-          `${apiUrl}/api/stockitem/${item}`,
-          { suppliers },
-          config
-        );
-        console.log({itemsSupplied, suppliers,response})
-        if(response){
-          toast.success("تم تحديث عنصر المخزون بنجاح");
+  const addSupplierToStockItem = async (supplierId) => {
+    const config = await handleGetTokenAndConfig();
+
+    if (itemsSupplied) {
+      for (const item of itemsSupplied) {
+        const oldSupplier = AllStockItems.find(
+          (i) => i._id === item
+        )?.suppliers;
+        const suppliers = oldSupplier
+          ? [...oldSupplier, supplierId]
+          : [supplierId];
+        // console.log({ itemsSupplied, oldSupplier, suppliers });
+        try {
+          const response = await axios.put(
+            `${apiUrl}/api/stockitem/${item}`,
+            { suppliers },
+            config
+          );
+          console.log({ itemsSupplied, suppliers, response });
+          if (response) {
+            toast.success("تم تحديث عنصر المخزون بنجاح");
+          }
+          // Notify on success
+        } catch (error) {
+          // Notify on error
+          console.log({ error });
+          toast.error("فشل في تحديث عنصر المخزون");
         }
-        // Notify on success
-      } catch (error) {
-        // Notify on error
-        console.log({error})
-        toast.error("فشل في تحديث عنصر المخزون");
       }
     }
-  }
-};
-
-
-
+  };
 
   //Function to edit a Supplier item
 
   const updateSupplier = async (e) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       if (supplierDataPermission && !supplierDataPermission.update) {
         toast.warn("ليس لك صلاحية لتعديل حساب الموردين");
@@ -245,12 +254,10 @@ const addSupplierToStockItem = async (supplierId) => {
     }
   };
 
-
-
   // Function to delete a supplier
   const deleteSupplier = async (e) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       if (supplierDataPermission && !supplierDataPermission.delete) {
         toast.warn("ليس لك صلاحية لحذف حساب الموردين");
@@ -279,7 +286,7 @@ const addSupplierToStockItem = async (supplierId) => {
   const [AllSuppliers, setAllSuppliers] = useState([]);
   // Function to retrieve all suppliers
   const getAllSuppliers = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       if (supplierDataPermission && !supplierDataPermission.read) {
         toast.warn("ليس لك صلاحية لعرض حسابات الموردين");
@@ -308,7 +315,7 @@ const addSupplierToStockItem = async (supplierId) => {
   };
 
   const getOneSuppliers = async (id) => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       if (supplierDataPermission && !supplierDataPermission.read) {
         toast.warn("ليس لك صلاحية لعرض حساب الموردين");
@@ -350,7 +357,7 @@ const addSupplierToStockItem = async (supplierId) => {
 
   // Function to retrieve all stock items
   const getStockItems = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/stockitem/", config);
 
@@ -376,7 +383,7 @@ const addSupplierToStockItem = async (supplierId) => {
 
   // Function to retrieve all category stock
   const getAllCategoryStock = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const res = await axios.get(apiUrl + "/api/categoryStock/", config);
       setAllCategoryStock(res.data);

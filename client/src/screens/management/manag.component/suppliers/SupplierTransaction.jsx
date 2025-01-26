@@ -28,7 +28,7 @@ const SupplierTransaction = () => {
   const [AllSupplierTransaction, setAllSupplierTransaction] = useState([]);
   const getAllSupplierTransaction = async () => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const response = await axios.get(
         `${apiUrl}/api/suppliertransaction`,
         config
@@ -75,7 +75,7 @@ const SupplierTransaction = () => {
   // Function to retrieve all suppliers
   const getAllSuppliers = async () => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const response = await axios.get(apiUrl + "/api/supplier/", config);
 
       if (!response || !response.data) {
@@ -119,7 +119,7 @@ const SupplierTransaction = () => {
   const handleAddSupplierTransaction = async (e) => {
     e.preventDefault();
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const requestData = {
         invoiceNumber,
         supplier,
@@ -193,7 +193,7 @@ const SupplierTransaction = () => {
   const [allPurchaseInvoice, setAllPurchaseInvoice] = useState([]);
   const getAllPurchases = async () => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const response = await axios.get(apiUrl + "/api/purchaseinvoice", config);
       console.log({ response });
       if (response.status === 200) {

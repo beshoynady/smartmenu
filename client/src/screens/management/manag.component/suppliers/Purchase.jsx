@@ -30,7 +30,7 @@ const Purchase = () => {
   const [AllStockactions, setAllStockactions] = useState([]);
 
   const getallStockaction = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/stockmovement/", config);
       console.log(response.data);
@@ -44,7 +44,7 @@ const Purchase = () => {
   const [AllSuppliers, setAllSuppliers] = useState([]);
   // Function to retrieve all suppliers
   const getAllSuppliers = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/supplier/", config);
 
@@ -71,7 +71,7 @@ const Purchase = () => {
   const [AllCashRegisters, setAllCashRegisters] = useState([]);
   // Fetch all cash registers
   const getAllCashRegisters = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/cashregister", config);
       setAllCashRegisters(response.data.reverse());
@@ -83,7 +83,7 @@ const Purchase = () => {
   const [allrecipes, setAllRecipes] = useState([]);
 
   const getallrecipes = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const response = await axios.get(`${apiUrl}/api/recipe`, config);
       console.log(response);
@@ -97,7 +97,7 @@ const Purchase = () => {
 
   const [StockItems, setStockItems] = useState([]);
   const getaStockItems = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/stockitem/", config);
       if (response) {
@@ -114,7 +114,7 @@ const Purchase = () => {
   const [storeId, setstoreId] = useState(0);
 
   const createStockAction = async (item) => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const itemId = item.itemId;
       const quantity = item.quantity;
@@ -245,7 +245,7 @@ const Purchase = () => {
   const [previousBalance, setPreviousBalance] = useState(0);
 
   const handleAddSupplierTransactionPurchase = async (invoiceNumber) => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       let newCurrentBalance = 0;
       const transactionType = "Purchase";
@@ -491,7 +491,7 @@ const Purchase = () => {
 
   const createPurchaseInvoice = async (e, receiverId) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     if (
       purchasePermission &&
       purchasePermission &&
@@ -575,7 +575,7 @@ const Purchase = () => {
       toast.warn("ليس لك صلاحية لعرض فاتورة مشتريات");
       return;
     }
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const resInvoice = await axios.get(
         `${apiUrl}/api/purchaseinvoice/${id}`,
@@ -603,7 +603,7 @@ const Purchase = () => {
       toast.warn("ليس لك صلاحية لعرض فاتورة مشتريات");
       return;
     }
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     try {
       const response = await axios.get(apiUrl + "/api/purchaseinvoice", config);
       console.log({ response });
@@ -676,7 +676,7 @@ const Purchase = () => {
 
   const confirmPayment = async (e) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     // Check if required variables are defined and valid
     if (
@@ -754,7 +754,7 @@ const Purchase = () => {
   const [allStores, setAllStores] = useState([]);
 
   const getAllStores = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     try {
       const response = await axios.get(apiUrl + "/api/store/", config);

@@ -41,7 +41,7 @@ handleGetTokenAndConfig,
   const [allStockItems, setAllStockItems] = useState([]);
 
   const getAllCategoryStock = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     try {
       if (stockCategoriesPermission && !stockCategoriesPermission.read) {
@@ -58,7 +58,7 @@ handleGetTokenAndConfig,
 
   const getAllStockItem = async () => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const response = await axios.get(apiUrl + "/api/stockitem/", config);
       if (response) {
         const stockItems = response.data.reverse();
@@ -73,7 +73,7 @@ handleGetTokenAndConfig,
 
   const createCategoryStock = async (e) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     try {
       if (stockCategoriesPermission && !stockCategoriesPermission.create) {
@@ -115,7 +115,7 @@ handleGetTokenAndConfig,
 
   const editCategoryStock = async (e) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     try {
       if (stockCategoriesPermission && !stockCategoriesPermission.update) {
@@ -144,7 +144,7 @@ handleGetTokenAndConfig,
   const deleteCategoryStock = async (e) => {
     e.preventDefault();
 
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     try {
       if (stockCategoriesPermission && !stockCategoriesPermission.delete) {

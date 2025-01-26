@@ -4,8 +4,6 @@ import { dataContext } from "../../../../App";
 import { toast } from "react-toastify";
 
 const Grill = () => {
-  
-
   const {
     formatDate,
     formatTime,
@@ -16,9 +14,9 @@ const Grill = () => {
     BarSocket,
     GrillSocket,
     waiterSocket,
-  apiUrl,
-handleGetTokenAndConfig,
-} = useContext(dataContext);
+    apiUrl,
+    handleGetTokenAndConfig,
+  } = useContext(dataContext);
 
   const start = useRef();
   const ready = useRef();
@@ -26,7 +24,7 @@ handleGetTokenAndConfig,
   const [allPreparationSections, setAllPreparationSections] = useState([]);
 
   const getAllPreparationSections = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     try {
       const res = await axios.get(`${apiUrl}/api/preparationsection`, config);
@@ -55,7 +53,7 @@ handleGetTokenAndConfig,
 
   const getAllRecipe = async () => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
 
       const getAllRecipe = await axios.get(`${apiUrl}/api/recipe`, config);
       const allRecipeData = getAllRecipe.data;
@@ -68,7 +66,7 @@ handleGetTokenAndConfig,
 
   const getAllPreparationTicket = async (Section) => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
 
       // Fetch Tickets from the API
       const Response = await axios.get(
@@ -83,14 +81,12 @@ handleGetTokenAndConfig,
       setAllPreparationTicket(PreparationTicket);
       const kitchenPreparationTicket = PreparationTicket.filter(
         (ticket) =>
-          ticket.preparationSection._id === Section &&
-          ticket.isActive === true
+          ticket.preparationSection._id === Section && ticket.isActive === true
       );
 
       console.log({ kitchenPreparationTicket });
       // Set active Tickets state
       setPreparationTicketActive(kitchenPreparationTicket);
-
 
       const getAllRecipe = await axios.get(`${apiUrl}/api/recipe`, config);
       const allRecipeData = await getAllRecipe.data;
@@ -198,7 +194,7 @@ handleGetTokenAndConfig,
 
   const getKitchenConsumption = async () => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
 
       setFilteredKitchenConsumptionToday([]);
       // console.log("Fetching kitchen consumption...");
@@ -231,7 +227,7 @@ handleGetTokenAndConfig,
 
   const TicketInProgress = async (id) => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const preparationStatus = "Preparing";
       const response = await axios.put(
         `${apiUrl}/api/preparationticket/${id}`,
@@ -253,7 +249,7 @@ handleGetTokenAndConfig,
   };
 
   const updateTicketDone = async (id, type) => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
 
     try {
       // 1. Fetch Ticket and product data
@@ -446,7 +442,7 @@ handleGetTokenAndConfig,
 
   const getAllWaiters = async () => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
 
       const allEmployees = await axios.get(apiUrl + "/api/employee", config);
 
@@ -467,7 +463,7 @@ handleGetTokenAndConfig,
   // Determines the next available waiter to take an Ticket
   const specifiedWaiter = async (id) => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       if (allWaiters.length === 0) {
         // Handle case where token is not available
         toast.warn(
@@ -570,14 +566,15 @@ handleGetTokenAndConfig,
         <div className="d-flex flex-column align-items-start bg-white shadow-sm rounded p-2 me-3">
           <label
             htmlFor="section-select"
-            className="fw-bold text-dark" style={{ fontSize: "1.2rem" }}
+            className="fw-bold text-dark"
+            style={{ fontSize: "1.2rem" }}
           >
             اختر القسم:
           </label>
           <select
             id="section-select"
             className="form-select"
-            onChange={(e) => getAllPreparationTicket(e.target.value)} 
+            onChange={(e) => getAllPreparationTicket(e.target.value)}
           >
             <option value="" disabled selected>
               اختر القسم

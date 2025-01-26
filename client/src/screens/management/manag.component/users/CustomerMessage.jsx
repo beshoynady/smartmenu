@@ -44,7 +44,7 @@ handleGetTokenAndConfig,
       return;
     }
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const response = await axios.get(`${apiUrl}/api/message`, config);
       setAllCustomerMessage(response.data);
     } catch (error) {
@@ -54,7 +54,7 @@ handleGetTokenAndConfig,
 
   const updateisSeenMessage = async (e, mes) => {
     e.preventDefault()
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     if (permissionUserMassage && !permissionUserMassage.show) {
       toast.warn("ليس لك صلاحية لتعديل رسائل المستخدمين");
       return;
@@ -79,7 +79,7 @@ handleGetTokenAndConfig,
 
   const deleteCustomerMessage = async (e) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     if (permissionUserMassage && !permissionUserMassage.delete) {
       toast.warn("ليس لك صلاحية لحذف رسائل المستخدمين");
       return;
@@ -130,7 +130,7 @@ handleGetTokenAndConfig,
     }
     console.log(selectedIds);
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
 
       for (const Id of selectedIds) {
         await axios.delete(`${apiUrl}/api/message/${Id}`, config);

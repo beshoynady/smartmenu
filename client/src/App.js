@@ -1675,7 +1675,6 @@ function App() {
   };
 
   const putNumOfPaid = (id, sizeid, numOfPaid) => {
-    const config = await handleGetTokenAndConfig();
     try {
       console.log({ listProductsOrder, newlistofproductorder });
 
@@ -1717,7 +1716,6 @@ function App() {
   const [subtotalSplitOrder, setsubtotalSplitOrder] = useState(0);
 
   const calcSubtotalSplitOrder = (products = newlistofproductorder) => {
-    const config = await handleGetTokenAndConfig();
     try {
       let total = 0;
 
@@ -2056,7 +2054,6 @@ function App() {
 
   const getAvailableTables = (reservationDate, startTime, endTime) => {
     try {
-      const config = await handleGetTokenAndConfig();
       // Filter reservations by selected date and time range
       const filterReservationsByTime = allReservations.filter((reservation) => {
         const reservationDateObj = new Date(reservation.reservationDate);

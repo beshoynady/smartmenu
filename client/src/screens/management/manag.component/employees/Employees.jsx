@@ -48,7 +48,7 @@ handleGetTokenAndConfig,
   const [listOfEmployees, setListOfEmployees] = useState([]);
 
   const getEmployees = async () => {
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     if (permissionsForEmployee && permissionsForEmployee.read === false) {
       notify("ليس لك صلاحية لعرض بيانات الموظفين", "info");
       return;
@@ -75,7 +75,7 @@ handleGetTokenAndConfig,
 
   const getShifts = async () => {
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       const response = await axios.get(`${apiUrl}/api/shift`, config);
       if (response.status === 200 && response.data) {
         const { data } = response;
@@ -151,7 +151,7 @@ handleGetTokenAndConfig,
     }
 
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       setIsExecuting(true);
 
       const newEmployee = await axios.post(
@@ -191,7 +191,7 @@ handleGetTokenAndConfig,
 
   const editEmployee = async (e) => {
     e.preventDefault();
-    const config = handleGetTokenAndConfig();
+    const config = await handleGetTokenAndConfig();
     if (permissionsForEmployee && permissionsForEmployee.update === false) {
       notify("ليس لك صلاحية لتعديل حساب الموظف", "info");
       return;
@@ -347,7 +347,7 @@ handleGetTokenAndConfig,
   const deleteEmployee = async (e) => {
     e.preventDefault();
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
       if (permissionsForEmployee && permissionsForEmployee.delete === true) {
         const deleted = await axios.delete(
           `${apiUrl}/api/employee/${employeeid}`,
@@ -381,7 +381,7 @@ handleGetTokenAndConfig,
     e.preventDefault();
     console.log(selectedIds);
     try {
-      const config = handleGetTokenAndConfig();
+      const config = await handleGetTokenAndConfig();
 
       for (const Id of selectedIds) {
         await axios.delete(`${apiUrl}/api/order/${Id}`, config);
