@@ -17,7 +17,7 @@ const cashierSocket = io(`${process.env.REACT_APP_API_URL}/cashier`, {
 const Home = () => {
   
 
-  const { restaurantData, userLoginInfo apiUrl,
+  const { restaurantData, userLoginInfo, apiUrl,
 handleGetTokenAndConfig,
 } = useContext(dataContext);
   const { id } = useParams();
