@@ -1,21 +1,38 @@
-import React, { useState, useEffect, useContext } from 'react'
-import axios from 'axios'
-import { dataContext } from '../../../../App'
-import { toast } from 'react-toastify';
-import '../orders/Orders.css'
-
-
+import React, { useState, useEffect, useContext } from "react";
+import axios from "axios";
+import { dataContext } from "../../../../App";
+import { toast } from "react-toastify";
+import "../orders/Orders.css";
 
 const SupplierTransaction = () => {
-  
-  
-  const{restaurantData, permissionsList,setStartDate, setEndDate, filterByDateRange, filterByTime, employeeLoginInfo,  formatDate, formatDateTime, setisLoading, EditPagination, startPagination, endPagination, setStartPagination, setEndPagination, handleGetTokenAndConfig, apiUrl, handleGetTokenAndConfig, apiUrl } = useContext(dataContext)
+  const {
+    restaurantData,
+    permissionsList,
+    setStartDate,
+    setEndDate,
+    filterByDateRange,
+    filterByTime,
+    employeeLoginInfo,
+    formatDate,
+    formatDateTime,
+    setisLoading,
+    EditPagination,
+    startPagination,
+    endPagination,
+    setStartPagination,
+    setEndPagination,
+    handleGetTokenAndConfig,
+    apiUrl,
+  } = useContext(dataContext);
 
-  const [AllSupplierTransaction, setAllSupplierTransaction] = useState([])
+  const [AllSupplierTransaction, setAllSupplierTransaction] = useState([]);
   const getAllSupplierTransaction = async () => {
-    try{
+    try {
       const config = handleGetTokenAndConfig();
-      const response = await axios.get(`${apiUrl}/api/suppliertransaction`, config);
+      const response = await axios.get(
+        `${apiUrl}/api/suppliertransaction`,
+        config
+      );
       console.log({ response });
       if (response.status === 200) {
         const data = response.data;
@@ -23,15 +40,15 @@ const SupplierTransaction = () => {
         calcTotalpurchPayment(data);
       }
     } catch (error) {
-      toast.error('حدث خطأ أثناء جلب بيانات تعاملات الموردين! يرجى إعادة تحميل الصفحة');
+      toast.error(
+        "حدث خطأ أثناء جلب بيانات تعاملات الموردين! يرجى إعادة تحميل الصفحة"
+      );
     }
   };
 
-
-
-  const [totalPurchases, settotalPurchases] = useState(0)
-  const [totalPayment, settotalPayment] = useState(0)
-  const [totalBalanceDue, settotalBalanceDue] = useState(0)
+  const [totalPurchases, settotalPurchases] = useState(0);
+  const [totalPayment, settotalPayment] = useState(0);
+  const [totalBalanceDue, settotalBalanceDue] = useState(0);
   const calcTotalpurchPayment = (array) => {
     let totalPurchases = 0;
     let totalPayment = 0;
@@ -39,11 +56,11 @@ const SupplierTransaction = () => {
 
     if (array.length > 0) {
       array.forEach((item) => {
-        if (item.transactionType === 'Purchase') {
+        if (item.transactionType === "Purchase") {
           totalPurchases += item.amount;
-        } else if (item.transactionType === 'Payment') {
+        } else if (item.transactionType === "Payment") {
           totalPayment += item.amount;
-        } else if (item.transactionType === 'BalanceDue') {
+        } else if (item.transactionType === "BalanceDue") {
           totalBalanceDue += item.balanceDue;
         }
       });
@@ -54,23 +71,22 @@ const SupplierTransaction = () => {
     settotalBalanceDue(totalBalanceDue);
   };
 
-
   const [AllSuppliers, setAllSuppliers] = useState([]);
   // Function to retrieve all suppliers
   const getAllSuppliers = async () => {
-    try{
+    try {
       const config = handleGetTokenAndConfig();
-      const response = await axios.get(apiUrl + '/api/supplier/', config);
+      const response = await axios.get(apiUrl + "/api/supplier/", config);
 
       if (!response || !response.data) {
         // Handle unexpected response or empty data
-        throw new Error('استجابة غير متوقعة أو بيانات فارغة');
+        throw new Error("استجابة غير متوقعة أو بيانات فارغة");
       }
 
       const suppliers = response.data.reverse();
       if (suppliers.length > 0) {
         setAllSuppliers(suppliers);
-        toast.success('تم استرداد جميع الموردين بنجاح');
+        toast.success("تم استرداد جميع الموردين بنجاح");
       }
 
       // Notify on success
@@ -78,106 +94,134 @@ const SupplierTransaction = () => {
       console.error(error);
 
       // Notify on error
-      toast.error('فشل في استرداد الموردين');
+      toast.error("فشل في استرداد الموردين");
     }
   };
 
-
-  const [listtransactionType, setlistTransactionType] = useState(['OpeningBalance', 'Purchase', 'Payment', 'PurchaseReturn', 'Refund']);
-  const [invoiceNumber, setInvoiceNumber] = useState('');
-  const [supplier, setSupplier] = useState('');
-  const [transactionDate, setTransactionDate] = useState('');
-  const [transactionType, setTransactionType] = useState('');
+  const [listtransactionType, setlistTransactionType] = useState([
+    "OpeningBalance",
+    "Purchase",
+    "Payment",
+    "PurchaseReturn",
+    "Refund",
+  ]);
+  const [invoiceNumber, setInvoiceNumber] = useState("");
+  const [supplier, setSupplier] = useState("");
+  const [transactionDate, setTransactionDate] = useState("");
+  const [transactionType, setTransactionType] = useState("");
   const [amount, setAmount] = useState(0);
   const [previousBalance, setPreviousBalance] = useState(0);
   const [currentBalance, setCurrentBalance] = useState(0);
-  const [paymentMethod, setPaymentMethod] = useState('');
-  const [notes, setNotes] = useState('');
-  const [recordedBy, setRecordedBy] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [notes, setNotes] = useState("");
+  const [recordedBy, setRecordedBy] = useState("");
 
   const handleAddSupplierTransaction = async (e) => {
     e.preventDefault();
-    try{
+    try {
       const config = handleGetTokenAndConfig();
-      const requestData = { invoiceNumber, supplier, transactionDate, transactionType, amount, previousBalance, currentBalance, paymentMethod, notes };
+      const requestData = {
+        invoiceNumber,
+        supplier,
+        transactionDate,
+        transactionType,
+        amount,
+        previousBalance,
+        currentBalance,
+        paymentMethod,
+        notes,
+      };
 
-      console.log({ requestData })
+      console.log({ requestData });
 
-      const response = await axios.post(`${apiUrl}/api/suppliertransaction`, requestData, config);
-      console.log({ response })
+      const response = await axios.post(
+        `${apiUrl}/api/suppliertransaction`,
+        requestData,
+        config
+      );
+      console.log({ response });
       if (response.status === 201) {
-        toast.success('تم انشاء العملية بنجاح');
+        toast.success("تم انشاء العملية بنجاح");
       } else {
-        toast.error('حدث خطأ أثناء انشاء العملية');
+        toast.error("حدث خطأ أثناء انشاء العملية");
       }
     } catch (error) {
-      toast.error('حدث خطأ أثناء انشاء العملية');
+      toast.error("حدث خطأ أثناء انشاء العملية");
     }
   };
 
-
   const [supplierInfo, setsupplierInfo] = useState({});
   const handleSupplier = (id) => {
-    setSupplier(id)
-    const findSupplier = AllSuppliers.filter(supplier => supplier._id === id)[0]
-    setsupplierInfo(findSupplier)
-    setPreviousBalance(findSupplier.currentBalance)
-    filterSupplierTransactionBySupplier(id)
-  }
+    setSupplier(id);
+    const findSupplier = AllSuppliers.filter(
+      (supplier) => supplier._id === id
+    )[0];
+    setsupplierInfo(findSupplier);
+    setPreviousBalance(findSupplier.currentBalance);
+    filterSupplierTransactionBySupplier(id);
+  };
 
   const handlecurrentBalance = (m) => {
-    setAmount(Number(m))
-    const totalBalance = Number(m) + Number(previousBalance)
-    setCurrentBalance(totalBalance)
-  }
-
+    setAmount(Number(m));
+    const totalBalance = Number(m) + Number(previousBalance);
+    setCurrentBalance(totalBalance);
+  };
 
   const filterSupplierTransactionBySupplier = (supplierId) => {
-    const filteredTransactions = AllSupplierTransaction.filter(transaction => transaction.supplier === supplierId);
+    const filteredTransactions = AllSupplierTransaction.filter(
+      (transaction) => transaction.supplier === supplierId
+    );
     setAllSupplierTransaction(filteredTransactions);
     calcTotalpurchPayment(filteredTransactions);
-    filterPurchaseInvoiceBySupplier(supplierId)
-  }
+    filterPurchaseInvoiceBySupplier(supplierId);
+  };
 
   const filterSupplierTransactionByTransactionType = (transactionType) => {
-    const filter = AllSupplierTransaction.filter(transaction => transaction.transactionType === transactionType)
-    setAllSupplierTransaction(filter)
-  }
+    const filter = AllSupplierTransaction.filter(
+      (transaction) => transaction.transactionType === transactionType
+    );
+    setAllSupplierTransaction(filter);
+  };
 
   const filterSupplierTransactionByInvoiceNumber = (invoiceNumber) => {
-    const filter = AllSupplierTransaction.filter(transaction => transaction.invoiceNumber === invoiceNumber)
-    setAllSupplierTransaction(filter)
-  }
+    const filter = AllSupplierTransaction.filter(
+      (transaction) => transaction.invoiceNumber === invoiceNumber
+    );
+    setAllSupplierTransaction(filter);
+  };
 
-
-  const [allPurchaseInvoice, setAllPurchaseInvoice] = useState([])
+  const [allPurchaseInvoice, setAllPurchaseInvoice] = useState([]);
   const getAllPurchases = async () => {
-    try{
+    try {
       const config = handleGetTokenAndConfig();
-      const response = await axios.get(apiUrl + '/api/purchaseinvoice', config);
-      console.log({ response })
+      const response = await axios.get(apiUrl + "/api/purchaseinvoice", config);
+      console.log({ response });
       if (response.status === 200) {
-        setAllPurchaseInvoice(response.data.reverse())
+        setAllPurchaseInvoice(response.data.reverse());
       } else {
-        toast.error('فشل جلب جميع فواتير المشتريات ! اعد تحميل الصفحة')
+        toast.error("فشل جلب جميع فواتير المشتريات ! اعد تحميل الصفحة");
       }
     } catch (error) {
-      toast.error('حدث خطأ اثناء جلب فواتير المشتريات ! اعد تحميل الصفحة')
+      toast.error("حدث خطأ اثناء جلب فواتير المشتريات ! اعد تحميل الصفحة");
     }
-  }
+  };
 
-  const [allPurchaseInvoiceFilterd, setAllPurchaseInvoiceFilterd] = useState([])
+  const [allPurchaseInvoiceFilterd, setAllPurchaseInvoiceFilterd] = useState(
+    []
+  );
   const filterPurchaseInvoiceBySupplier = (supplier) => {
-    const filterPurchaseInvoice = allPurchaseInvoice.filter(invoice => invoice.supplier._id === supplier)
-    console.log({ filterPurchaseInvoice })
-    setAllPurchaseInvoiceFilterd(filterPurchaseInvoice)
-  }
+    const filterPurchaseInvoice = allPurchaseInvoice.filter(
+      (invoice) => invoice.supplier._id === supplier
+    );
+    console.log({ filterPurchaseInvoice });
+    setAllPurchaseInvoiceFilterd(filterPurchaseInvoice);
+  };
 
   useEffect(() => {
-    getAllSuppliers()
-    getAllPurchases()
-    getAllSupplierTransaction()
-  }, [])
+    getAllSuppliers();
+    getAllPurchases();
+    getAllSupplierTransaction();
+  }, []);
 
   return (
     <div className="w-100 px-3 d-flex align-itmes-center justify-content-start">
@@ -186,10 +230,19 @@ const SupplierTransaction = () => {
           <div className="table-title">
             <div className="w-100 d-flex flex-wrap align-items-center justify-content-between">
               <div className="text-right">
-                <h2>ادارة <b>تعاملات الموردين</b></h2>
+                <h2>
+                  ادارة <b>تعاملات الموردين</b>
+                </h2>
               </div>
               <div className="col-12 col-md-6 p-0 m-0 d-flex flex-wrap aliegn-items-center justify-content-end print-hide">
-                <a href="#addSupplierTransactionModal" className="d-flex align-items-center justify-content-center h-100 m-0 btn btn-success" data-toggle="modal"> <span>اضافه معاملة جديدة</span></a>
+                <a
+                  href="#addSupplierTransactionModal"
+                  className="d-flex align-items-center justify-content-center h-100 m-0 btn btn-success"
+                  data-toggle="modal"
+                >
+                  {" "}
+                  <span>اضافه معاملة جديدة</span>
+                </a>
 
                 {/* <a href="#deleteSupplierTransactionModal" className="d-flex align-items-center justify-content-center h-100 m-0 btn btn-danger" data-toggle="modal"> <span>حذف</span></a> */}
               </div>
@@ -199,73 +252,113 @@ const SupplierTransaction = () => {
           <div className="table-filter print-hide">
             <div className="col-12 text-dark d-flex flex-wrap align-items-center justify-content-start p-0 m-0">
               <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
-                <label className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">عرض</label>
+                <label className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
+                  عرض
+                </label>
                 <select
-                  className="form-control border-primary m-0 p-2 h-auto" onChange={(e) => { setStartPagination(0);
+                  className="form-control border-primary m-0 p-2 h-auto"
+                  onChange={(e) => {
+                    setStartPagination(0);
                     setEndPagination(e.target.value);
                   }}
                 >
-                  {
-                    (() => {
-                      const options = [];
-                      for (let i = 5; i < 100; i += 5) {
-                        options.push(<option key={i} value={i}>{i}</option>);
-                      }
-                      return options;
-                    })()
-                  }
+                  {(() => {
+                    const options = [];
+                    for (let i = 5; i < 100; i += 5) {
+                      options.push(
+                        <option key={i} value={i}>
+                          {i}
+                        </option>
+                      );
+                    }
+                    return options;
+                  })()}
                 </select>
-                
               </div>
               <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
-                <label className="form-label text-wrap text-right fw-bolder p-0 m-0" htmlFor="supplierSelect">المورد</label>
+                <label
+                  className="form-label text-wrap text-right fw-bolder p-0 m-0"
+                  htmlFor="supplierSelect"
+                >
+                  المورد
+                </label>
                 <select
-                  className="form-control border-primary m-0 p-2 h-auto" 
+                  className="form-control border-primary m-0 p-2 h-auto"
                   id="supplierSelect"
                   onChange={(e) => handleSupplier(e.target.value)}
                 >
                   <option>كل الموردين</option>
                   {AllSuppliers.map((supplier, i) => (
-                    <option value={supplier._id} key={i}>{supplier.name}</option>
+                    <option value={supplier._id} key={i}>
+                      {supplier.name}
+                    </option>
                   ))}
                 </select>
               </div>
               <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
-                <label className="form-label text-wrap text-right fw-bolder p-0 m-0" htmlFor="transactionTypeSelect">نوع العملية</label>
+                <label
+                  className="form-label text-wrap text-right fw-bolder p-0 m-0"
+                  htmlFor="transactionTypeSelect"
+                >
+                  نوع العملية
+                </label>
                 <select
-                  className="form-control border-primary m-0 p-2 h-auto" 
+                  className="form-control border-primary m-0 p-2 h-auto"
                   id="transactionTypeSelect"
-                  onChange={(e) => filterSupplierTransactionByTransactionType(e.target.value)}
+                  onChange={(e) =>
+                    filterSupplierTransactionByTransactionType(e.target.value)
+                  }
                 >
                   <option>جميع العمليات</option>
                   {listtransactionType.map((type, i) => (
-                    <option value={type} key={i}>{type}</option>
+                    <option value={type} key={i}>
+                      {type}
+                    </option>
                   ))}
                 </select>
               </div>
               <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
-                <label className="form-label text-wrap text-right fw-bolder p-0 m-0" htmlFor="invoiceNumberSelect">رقم الفاتورة</label>
+                <label
+                  className="form-label text-wrap text-right fw-bolder p-0 m-0"
+                  htmlFor="invoiceNumberSelect"
+                >
+                  رقم الفاتورة
+                </label>
                 <select
-                  className="form-control border-primary m-0 p-2 h-auto" 
+                  className="form-control border-primary m-0 p-2 h-auto"
                   id="invoiceNumberSelect"
-                  onChange={(e) => filterSupplierTransactionByInvoiceNumber(e.target.value)}
+                  onChange={(e) =>
+                    filterSupplierTransactionByInvoiceNumber(e.target.value)
+                  }
                 >
                   <option>اختر رقم الفاتورة</option>
-                  {
-                    allPurchaseInvoiceFilterd.length > 0 ? allPurchaseInvoiceFilterd.map((Invoice, i) => (
-                      <option value={Invoice._id} key={i}>{Invoice.invoiceNumber}</option>
-                    ))
-                      : allPurchaseInvoice.map((Invoice, i) => (
-                        <option value={Invoice._id} key={i}>{Invoice.invoiceNumber}</option>
+                  {allPurchaseInvoiceFilterd.length > 0
+                    ? allPurchaseInvoiceFilterd.map((Invoice, i) => (
+                        <option value={Invoice._id} key={i}>
+                          {Invoice.invoiceNumber}
+                        </option>
                       ))
-                  }
+                    : allPurchaseInvoice.map((Invoice, i) => (
+                        <option value={Invoice._id} key={i}>
+                          {Invoice.invoiceNumber}
+                        </option>
+                      ))}
                 </select>
               </div>
 
-              <div className='col-12 text-dark d-flex flex-wrap align-items-center justify-content-start p-0 m-0 mt-3'>
+              <div className="col-12 text-dark d-flex flex-wrap align-items-center justify-content-start p-0 m-0 mt-3">
                 <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
-                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">فلتر حسب الوقت</label>
-                  <select className="form-control border-primary m-0 p-2 h-auto"  onChange={(e) => setAllSupplierTransaction(filterByTime(e.target.value, AllSupplierTransaction))}>
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    فلتر حسب الوقت
+                  </label>
+                  <select
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    onChange={(e) =>
+                      setAllSupplierTransaction(
+                        filterByTime(e.target.value, AllSupplierTransaction)
+                      )
+                    }
+                  >
                     <option value="">اختر</option>
                     <option value="today">اليوم</option>
                     <option value="week">هذا الأسبوع</option>
@@ -275,23 +368,52 @@ const SupplierTransaction = () => {
                 </div>
 
                 <div className="d-flex align-items-stretch justify-content-between flex-nowrap p-0 m-0 px-1">
-                  <label className="form-label text-nowrap d-flex align-items-center justify-content-center p-0 m-0 ml-1"><strong>مدة محددة:</strong></label>
+                  <label className="form-label text-nowrap d-flex align-items-center justify-content-center p-0 m-0 ml-1">
+                    <strong>مدة محددة:</strong>
+                  </label>
 
                   <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
-                    <label className="form-label text-wrap text-right fw-bolder p-0 m-0">من</label>
-                    <input type="date" className="form-control border-primary m-0 p-2 h-auto" onChange={(e) => setStartDate(e.target.value)} placeholder="اختر التاريخ" />
+                    <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                      من
+                    </label>
+                    <input
+                      type="date"
+                      className="form-control border-primary m-0 p-2 h-auto"
+                      onChange={(e) => setStartDate(e.target.value)}
+                      placeholder="اختر التاريخ"
+                    />
                   </div>
 
                   <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
-                    <label className="form-label text-wrap text-right fw-bolder p-0 m-0">إلى</label>
-                    <input type="date" className="form-control border-primary m-0 p-2 h-auto" onChange={(e) => setEndDate(e.target.value)} placeholder="اختر التاريخ" />
+                    <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                      إلى
+                    </label>
+                    <input
+                      type="date"
+                      className="form-control border-primary m-0 p-2 h-auto"
+                      onChange={(e) => setEndDate(e.target.value)}
+                      placeholder="اختر التاريخ"
+                    />
                   </div>
 
                   <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
-                    <button type="button" className="btn btn-primary h-100 p-2 " onClick={() => setAllSupplierTransaction(filterByDateRange(AllSupplierTransaction))}>
+                    <button
+                      type="button"
+                      className="btn btn-primary h-100 p-2 "
+                      onClick={() =>
+                        setAllSupplierTransaction(
+                          filterByDateRange(AllSupplierTransaction)
+                        )
+                      }
+                    >
                       <i className="fa fa-search"></i>
                     </button>
-                    <button type="button" className="btn btn-warning h-100 p-2" onClick={getAllSupplierTransaction}>استعادة
+                    <button
+                      type="button"
+                      className="btn btn-warning h-100 p-2"
+                      onClick={getAllSupplierTransaction}
+                    >
+                      استعادة
                     </button>
                   </div>
                 </div>
@@ -299,7 +421,12 @@ const SupplierTransaction = () => {
 
               <div className="col-12 text-dark d-flex flex-wrap align-items-center justify-content-start p-0 m-0 mt-3">
                 <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
-                  <label htmlFor="totalPurchasesInput" className="form-label text-wrap text-right fw-bolder p-0 m-0">اجمالي المشتريات</label>
+                  <label
+                    htmlFor="totalPurchasesInput"
+                    className="form-label text-wrap text-right fw-bolder p-0 m-0"
+                  >
+                    اجمالي المشتريات
+                  </label>
                   <input
                     type="text"
                     className="form-control border-primary m-0 p-2 h-auto"
@@ -309,7 +436,12 @@ const SupplierTransaction = () => {
                   />
                 </div>
                 <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
-                  <label htmlFor="totalPaymentInput" className="form-label text-wrap text-right fw-bolder p-0 m-0">اجمالي المدفوع</label>
+                  <label
+                    htmlFor="totalPaymentInput"
+                    className="form-label text-wrap text-right fw-bolder p-0 m-0"
+                  >
+                    اجمالي المدفوع
+                  </label>
                   <input
                     type="text"
                     className="form-control border-primary m-0 p-2 h-auto"
@@ -319,7 +451,12 @@ const SupplierTransaction = () => {
                   />
                 </div>
                 <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
-                  <label htmlFor="totalBalanceDueInput" className="form-label text-wrap text-right fw-bolder p-0 m-0">اجمالي المستحق</label>
+                  <label
+                    htmlFor="totalBalanceDueInput"
+                    className="form-label text-wrap text-right fw-bolder p-0 m-0"
+                  >
+                    اجمالي المستحق
+                  </label>
                   <input
                     type="text"
                     className="form-control border-primary m-0 p-2 h-auto"
@@ -329,7 +466,12 @@ const SupplierTransaction = () => {
                   />
                 </div>
                 <div className="filter-group d-flex flex-wrap align-items-center justify-content-between p-0 mb-1">
-                  <label htmlFor="previousBalanceInput" className="form-label text-wrap text-right fw-bolder p-0 m-0">الرصيد الكلي</label>
+                  <label
+                    htmlFor="previousBalanceInput"
+                    className="form-label text-wrap text-right fw-bolder p-0 m-0"
+                  >
+                    الرصيد الكلي
+                  </label>
                   <input
                     type="text"
                     className="form-control border-primary m-0 p-2 h-auto"
@@ -339,7 +481,6 @@ const SupplierTransaction = () => {
                   />
                 </div>
               </div>
-
             </div>
           </div>
 
@@ -361,49 +502,101 @@ const SupplierTransaction = () => {
               </tr>
             </thead>
             <tbody>
-              {AllSupplierTransaction && AllSupplierTransaction.map((Transaction, i) => {
-                if (i >= startPagination & i < endPagination) {
-                  return (
-                    <tr key={i}>
-                      <td>{i + 1}</td>
-                      <td>{formatDate(Transaction.transactionDate)}</td>
-                      <td>{Transaction.supplier?.name}</td>
-                      <td>{Transaction.invoiceNumber?.invoiceNumber}</td>
-                      <td>{Transaction.transactionType}</td>
-                      <td>{Transaction.amount}</td>
-                      <td>{Transaction.previousBalance}</td>
-                      <td>{Transaction.currentBalance}</td>
-                      <td>{Transaction.paymentMethod}</td>
-                      <td>{Transaction.recordedBy?.fullname}</td>
-                      <td>{Transaction.createdAt && formatDateTime(Transaction.createdAt)}</td>
-                      <td>
-                        {/* <a href="#editSupplierTransactionModal" className="edit" data-toggle="modal" onClick={() => { setStockItemid(item._id); setcategoryId(item.categoryId); setitemName(item.itemName); setBalance(item.Balance); setlargeUnit(item.storageUnit); setsmallUnit(item.ingredientUnit); setprice(item.price); setparts(item.parts); setcostPerPart(item.costPerPart); setminThreshold(item.minThreshold); settotalCost(item.totalCost) }}><i className="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+              {AllSupplierTransaction &&
+                AllSupplierTransaction.map((Transaction, i) => {
+                  if ((i >= startPagination) & (i < endPagination)) {
+                    return (
+                      <tr key={i}>
+                        <td>{i + 1}</td>
+                        <td>{formatDate(Transaction.transactionDate)}</td>
+                        <td>{Transaction.supplier?.name}</td>
+                        <td>{Transaction.invoiceNumber?.invoiceNumber}</td>
+                        <td>{Transaction.transactionType}</td>
+                        <td>{Transaction.amount}</td>
+                        <td>{Transaction.previousBalance}</td>
+                        <td>{Transaction.currentBalance}</td>
+                        <td>{Transaction.paymentMethod}</td>
+                        <td>{Transaction.recordedBy?.fullname}</td>
+                        <td>
+                          {Transaction.createdAt &&
+                            formatDateTime(Transaction.createdAt)}
+                        </td>
+                        <td>
+                          {/* <a href="#editSupplierTransactionModal" className="edit" data-toggle="modal" onClick={() => { setStockItemid(item._id); setcategoryId(item.categoryId); setitemName(item.itemName); setBalance(item.Balance); setlargeUnit(item.storageUnit); setsmallUnit(item.ingredientUnit); setprice(item.price); setparts(item.parts); setcostPerPart(item.costPerPart); setminThreshold(item.minThreshold); settotalCost(item.totalCost) }}><i className="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
                                 <a href="#deleteSupplierTransactionModal" className="delete" data-toggle="modal" onClick={() => setStockItemid(item._id)}><i className="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a> */}
-                      </td>
-                    </tr>
-                  )
-                }
-              })
-              }
+                        </td>
+                      </tr>
+                    );
+                  }
+                })}
             </tbody>
           </table>
           <div className="clearfix">
-            <div className="hint-text text-dark">عرض <b>{AllSupplierTransaction.length > endPagination ? endPagination : AllSupplierTransaction.length}</b> من <b>{AllSupplierTransaction.length}</b> عنصر</div>
+            <div className="hint-text text-dark">
+              عرض{" "}
+              <b>
+                {AllSupplierTransaction.length > endPagination
+                  ? endPagination
+                  : AllSupplierTransaction.length}
+              </b>{" "}
+              من <b>{AllSupplierTransaction.length}</b> عنصر
+            </div>
             <ul className="pagination">
-              <li onClick={EditPagination} className="page-item disabled"><a href="#">السابق</a></li>
-              <li onClick={EditPagination} className={`page-item ${endPagination === 5 ? 'active' : ''}`}><a href="#" className="page-link">1</a></li>
-              <li onClick={EditPagination} className={`page-item ${endPagination === 10 ? 'active' : ''}`}><a href="#" className="page-link">2</a></li>
-              <li onClick={EditPagination} className={`page-item ${endPagination === 15 ? 'active' : ''}`}><a href="#" className="page-link">3</a></li>
-              <li onClick={EditPagination} className={`page-item ${endPagination === 20 ? 'active' : ''}`}><a href="#" className="page-link">4</a></li>
-              <li onClick={EditPagination} className={`page-item ${endPagination === 25 ? 'active' : ''}`}><a href="#" className="page-link">5</a></li>
-              <li onClick={EditPagination} className={`page-item ${endPagination === 30 ? 'active' : ''}`}><a href="#" className="page-link">التالي</a></li>
-
+              <li onClick={EditPagination} className="page-item disabled">
+                <a href="#">السابق</a>
+              </li>
+              <li
+                onClick={EditPagination}
+                className={`page-item ${endPagination === 5 ? "active" : ""}`}
+              >
+                <a href="#" className="page-link">
+                  1
+                </a>
+              </li>
+              <li
+                onClick={EditPagination}
+                className={`page-item ${endPagination === 10 ? "active" : ""}`}
+              >
+                <a href="#" className="page-link">
+                  2
+                </a>
+              </li>
+              <li
+                onClick={EditPagination}
+                className={`page-item ${endPagination === 15 ? "active" : ""}`}
+              >
+                <a href="#" className="page-link">
+                  3
+                </a>
+              </li>
+              <li
+                onClick={EditPagination}
+                className={`page-item ${endPagination === 20 ? "active" : ""}`}
+              >
+                <a href="#" className="page-link">
+                  4
+                </a>
+              </li>
+              <li
+                onClick={EditPagination}
+                className={`page-item ${endPagination === 25 ? "active" : ""}`}
+              >
+                <a href="#" className="page-link">
+                  5
+                </a>
+              </li>
+              <li
+                onClick={EditPagination}
+                className={`page-item ${endPagination === 30 ? "active" : ""}`}
+              >
+                <a href="#" className="page-link">
+                  التالي
+                </a>
+              </li>
             </ul>
           </div>
         </div>
       </div>
-
-
 
       <div id="addSupplierTransactionModal" className="modal fade">
         <div className="modal-dialog modal-lg">
@@ -411,64 +604,149 @@ const SupplierTransaction = () => {
             <form onSubmit={handleAddSupplierTransaction}>
               <div className="modal-header d-flex flex-wrap align-items-center text-light bg-primary">
                 <h4 className="modal-title">اضافه تعامل جديد</h4>
-                <button type="button" className="close m-0 p-1" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <button
+                  type="button"
+                  className="close m-0 p-1"
+                  data-dismiss="modal"
+                  aria-hidden="true"
+                >
+                  &times;
+                </button>
               </div>
               <div className="modal-body d-flex flex-wrap align-items-center p-3 text-right">
                 <div className="form-group col-12 col-md-6">
-                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">تاريخ العملية</label>
-                  <input type="date" className="form-control border-primary m-0 p-2 h-auto" value={transactionDate} onChange={(e) => setTransactionDate(e.target.value)} />
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    تاريخ العملية
+                  </label>
+                  <input
+                    type="date"
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    value={transactionDate}
+                    onChange={(e) => setTransactionDate(e.target.value)}
+                  />
                 </div>
                 <div className="form-group col-12 col-md-6">
-                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">المورد</label>
-                  <select required className="form-control border-primary m-0 p-2 h-auto"  id="supplierSelect" onChange={(e) => handleSupplier(e.target.value)}>
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    المورد
+                  </label>
+                  <select
+                    required
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    id="supplierSelect"
+                    onChange={(e) => handleSupplier(e.target.value)}
+                  >
                     <option>اختر المورد</option>
                     {AllSuppliers.map((supplier, i) => (
-                      <option value={supplier._id} key={i}>{supplier.name}</option>
+                      <option value={supplier._id} key={i}>
+                        {supplier.name}
+                      </option>
                     ))}
                   </select>
                 </div>
                 <div className="form-group col-12 col-md-6">
-                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">نوع العملية</label>
-                  <select required className="form-control border-primary m-0 p-2 h-auto"  id="supplierSelect" onChange={(e) => setTransactionType(e.target.value)}>
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    نوع العملية
+                  </label>
+                  <select
+                    required
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    id="supplierSelect"
+                    onChange={(e) => setTransactionType(e.target.value)}
+                  >
                     <option>اختر نوع العملية</option>
                     {listtransactionType.map((type, i) => (
-                      <option value={type} key={i}>{type}</option>
+                      <option value={type} key={i}>
+                        {type}
+                      </option>
                     ))}
                   </select>
                 </div>
                 <div className="form-group col-12 col-md-6">
-                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">رقم الفاتورة</label>
-                  <select required className="form-control border-primary m-0 p-2 h-auto"  id="supplierSelect" onChange={(e) => setInvoiceNumber(e.target.value)} >
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    رقم الفاتورة
+                  </label>
+                  <select
+                    required
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    id="supplierSelect"
+                    onChange={(e) => setInvoiceNumber(e.target.value)}
+                  >
                     <option>اختر رقم الفاتورة</option>
                     {allPurchaseInvoiceFilterd.map((Invoice, i) => (
-                      <option value={Invoice._id} key={i}>{Invoice.invoiceNumber}</option>
+                      <option value={Invoice._id} key={i}>
+                        {Invoice.invoiceNumber}
+                      </option>
                     ))}
                   </select>
                 </div>
                 <div className="form-group col-12 col-md-6">
-                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">المبلغ</label>
-                  <input type="number" className="form-control border-primary m-0 p-2 h-auto" defaultValue={amount} onChange={(e) => handlecurrentBalance(e.target.value)} />
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    المبلغ
+                  </label>
+                  <input
+                    type="number"
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    defaultValue={amount}
+                    onChange={(e) => handlecurrentBalance(e.target.value)}
+                  />
                 </div>
                 <div className="form-group col-12 col-md-6">
-                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">الرصيد السابق</label>
-                  <input type="text" className="form-control border-primary m-0 p-2 h-auto" value={previousBalance} readOnly />
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    الرصيد السابق
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    value={previousBalance}
+                    readOnly
+                  />
                 </div>
                 <div className="form-group col-12 col-md-6">
-                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">الرصيد الحالي</label>
-                  <input type="text" className="form-control border-primary m-0 p-2 h-auto" value={currentBalance} readOnly />
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    الرصيد الحالي
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    value={currentBalance}
+                    readOnly
+                  />
                 </div>
                 <div className="form-group col-12 col-md-6">
-                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">طريقة الدفع</label>
-                  <input type="text" className="form-control border-primary m-0 p-2 h-auto" defaultValue={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)} />
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    طريقة الدفع
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    defaultValue={paymentMethod}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                  />
                 </div>
                 <div className="form-group col-12 col-md-6">
-                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">ملاحظات</label>
-                  <input type="text" className="form-control border-primary m-0 p-2 h-auto" value={notes} onChange={(e) => setNotes(e.target.value)} />
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    ملاحظات
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
+                  />
                 </div>
               </div>
               <div className="modal-footer d-flex flex-nowrap align-items-center justify-content-between m-0 p-1">
-                <input type="submit" className="btn btn-success col-6 h-100 px-2 py-3 m-0" value="اضافه" />
-                <input type="button" className="btn btn-danger col-6 h-100 px-2 py-3 m-0" data-dismiss="modal" value="إغلاق" />
+                <input
+                  type="submit"
+                  className="btn btn-success col-6 h-100 px-2 py-3 m-0"
+                  value="اضافه"
+                />
+                <input
+                  type="button"
+                  className="btn btn-danger col-6 h-100 px-2 py-3 m-0"
+                  data-dismiss="modal"
+                  value="إغلاق"
+                />
               </div>
             </form>
           </div>
@@ -568,7 +846,7 @@ const SupplierTransaction = () => {
                 </div>
               </div> */}
     </div>
-  )
-}
+  );
+};
 
-export default SupplierTransaction
+export default SupplierTransaction;

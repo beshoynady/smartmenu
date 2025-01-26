@@ -54,7 +54,7 @@ const POSCard = () => {
                       <img
                         src={`${apiUrl}/images/${product.image}`}
                         className="img-fluid h-100 w-100"
-                        alt="Delicious soup"
+                        alt={product.name}
                         style={{ objectFit: "cover" }}
                       />
                     </div>
