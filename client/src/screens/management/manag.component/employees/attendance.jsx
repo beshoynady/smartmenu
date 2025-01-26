@@ -22,10 +22,7 @@ const AttendanceManagement = () => {
     startPagination,
     endPagination,
     setStartPagination,
-    setEndPagination,
-    apiUrl,
-    handleGetTokenAndConfig,
-  } = useContext(dataContext);
+    setEndPagination, handleGetTokenAndConfig, apiUrl } = useContext(dataContext)
 
   const permissionsForAttendance = permissionsList?.filter(
     (permission) => permission.resource === "Attendance"

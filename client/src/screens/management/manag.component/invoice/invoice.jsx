@@ -8,10 +8,7 @@ const InvoiceComponent = ({ ModalId, orderData, showModal, setShowModal }) => {
   const {
     restaurantData,
     formatdate,
-    formatDateTime,
-    apiUrl,
-    handleGetTokenAndConfig,
-  } = useContext(dataContext);
+    formatDateTime, handleGetTokenAndConfig, apiUrl } = useContext(dataContext)
 
   const {
     serial,

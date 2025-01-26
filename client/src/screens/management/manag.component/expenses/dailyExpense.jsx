@@ -12,7 +12,7 @@ const DailyExpense = () => {
 
   const{restaurantData, permissionsList,setStartDate, setEndDate, filterByDateRange, filterByTime,
     employeeLoginInfo, formatDate, formatDateTime, setisLoading, EditPagination, startPagination,
-    endPagination, setStartPagination, setEndPagination } = useContext(dataContext)
+    endPagination, setStartPagination, setEndPagination, handleGetTokenAndConfig, apiUrl, handleGetTokenAndConfig, apiUrl } = useContext(dataContext)
 
   const permissionDailyExpense = permissionsList && permissionsList.filter(permission => permission.resource === 'Daily Expenses')[0]
 

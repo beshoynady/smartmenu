@@ -21,10 +21,7 @@ const Purchase = () => {
     startPagination,
     endPagination,
     setStartPagination,
-    setEndPagination,
-    apiUrl,
-    handleGetTokenAndConfig,
-  } = useContext(dataContext);
+    setEndPagination, handleGetTokenAndConfig, apiUrl } = useContext(dataContext)
 
   const purchasePermission = permissionsList?.filter(
     (permission) => permission.resource === "Purchases"

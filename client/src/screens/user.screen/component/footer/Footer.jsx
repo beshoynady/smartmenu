@@ -8,7 +8,7 @@ import { dataContext } from '../../../../App'
 
 const Footer = () => {
 
-  const { restaurantData } = useContext(dataContext)
+  const { restaurantData, handleGetTokenAndConfig, apiUrl, handleGetTokenAndConfig, apiUrl } = useContext(dataContext)
 
   
   return (

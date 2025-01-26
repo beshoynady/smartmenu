@@ -21,10 +21,7 @@ const EmployeeTransactions = () => {
     startPagination,
     endPagination,
     setStartPagination,
-    setEndPagination,
-    apiUrl,
-    handleGetTokenAndConfig,
-  } = useContext(dataContext);
+    setEndPagination, handleGetTokenAndConfig, apiUrl } = useContext(dataContext)
 
   const employeeTransactionsPermission =
     permissionsList &&

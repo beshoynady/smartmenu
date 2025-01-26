@@ -7,13 +7,9 @@ import NavBar from "./manag.component/navbar/NavBar";
 import SideBar from "./manag.component/sidebar/SideBar";
 import { ToastContainer } from "react-toastify";
 
-
-
-
 const ManagLayout = () => {
-  const { employeeLoginInfo, apiUrl,
-handleGetTokenAndConfig,
-} = useContext(dataContext);
+  const { employeeLoginInfo, apiUrl, handleGetTokenAndConfig } =
+    useContext(dataContext);
 
   const isLoggedIn = employeeLoginInfo?.isAdmin && employeeLoginInfo?.isActive;
 

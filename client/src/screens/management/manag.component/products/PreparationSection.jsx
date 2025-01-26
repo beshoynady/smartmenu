@@ -12,10 +12,7 @@ const PreparationSection = () => {
     startPagination,
     endPagination,
     setStartPagination,
-    setEndPagination,
-    apiUrl,
-    handleGetTokenAndConfig,
-  } = useContext(dataContext);
+    setEndPagination, handleGetTokenAndConfig, apiUrl } = useContext(dataContext)
 
   const [preparationSectionName, setpreparationSectionName] = useState("");
   const [isActive, setisActive] = useState(false);

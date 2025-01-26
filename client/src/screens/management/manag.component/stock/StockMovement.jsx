@@ -20,10 +20,7 @@ const StockMovement = () => {
     filterByTime,
     filterByDateRange,
     setStartDate,
-    setEndDate,
-    apiUrl,
-    handleGetTokenAndConfig,
-  } = useContext(dataContext);
+    setEndDate, handleGetTokenAndConfig, apiUrl } = useContext(dataContext)
 
   const stockMovementPermission =
     permissionsList &&

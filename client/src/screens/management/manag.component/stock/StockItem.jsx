@@ -21,8 +21,8 @@ const StockItem = () => {
     endPagination,
     setStartPagination,
     setEndPagination,
-    apiUrl,
     handleGetTokenAndConfig,
+    apiUrl,
   } = useContext(dataContext);
 
   const stockItemPermission =
@@ -366,6 +366,7 @@ const StockItem = () => {
   // Function to retrieve all suppliers
   const getAllSuppliers = async () => {
     try {
+      const config = handleGetTokenAndConfig();
       const response = await axios.get(apiUrl + "/api/supplier/", config);
 
       if (!response || !response.data) {

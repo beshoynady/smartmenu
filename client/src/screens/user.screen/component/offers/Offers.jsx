@@ -30,10 +30,7 @@ export default function Offers() {
     incrementProductQuantity,
     decrementProductQuantity,
     setproductNote,
-    addNoteToProduct,
-    apiUrl,
-    handleGetTokenAndConfig,
-  } = useContext(dataContext);
+    addNoteToProduct, handleGetTokenAndConfig, apiUrl } = useContext(dataContext)
 
   const [noteArea, setnoteArea] = useState(false);
   const [extraArea, setextraArea] = useState(false);

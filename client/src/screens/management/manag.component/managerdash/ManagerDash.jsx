@@ -18,8 +18,6 @@ import {
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const ManagerDash = () => {
-  
-
   const {
     restaurantData,
     employeeLoginInfo,
@@ -37,9 +35,9 @@ const ManagerDash = () => {
     BarSocket,
     GrillSocket,
     waiterSocket,
-  apiUrl,
-handleGetTokenAndConfig,
-} = useContext(dataContext);
+    apiUrl,
+    handleGetTokenAndConfig,
+  } = useContext(dataContext);
 
   const [showModal, setShowModal] = useState(false);
 
@@ -187,36 +185,36 @@ handleGetTokenAndConfig,
 
   // const changeOrderStatus = async (event, orderId, orderProducts) => {
   //   const config = handleGetTokenAndConfig();
-  
+
   //   const cashier = employeeLoginInfo.id; // Get cashier ID
   //   const status = event.target.value; // New order status
   //   const isActive = status !== "Cancelled"; // Set active state based on status
-  
+
   //   // Mark all products as sent
   //   const updatedProducts = orderProducts.map((product) => ({
   //     ...product,
   //     isSend: true,
   //   }));
-  
+
   //   console.log({ updatedProducts });
-  
+
   //   // Prepare the payload for updating the order
   //   const payload = { status, isActive, cashier };
   //   if (status !== "Cancelled") {
   //     payload.products = updatedProducts;
   //   }
-  
+
   //   try {
   //     // Update the order status via API
   //     const response = await axios.put(`${apiUrl}/api/order/${orderId}`, payload, config);
-  
+
   //     if (response) {
   //       // Handle order cancellation scenario
   //       if (status === "Cancelled") {
   //         toast.success("تم تغيير حالة الطلب بنجاح");
   //         return;
   //       }
-  
+
   //       // Handle other statuses (e.g., Approved)
   //       if (preparationSection?.length > 0) {
   //         preparationSection.forEach((section) => {
@@ -224,7 +222,7 @@ handleGetTokenAndConfig,
   //             (product) =>
   //               product.productId?.preparationSection === section && !product.isSend
   //           );
-  
+
   //           if (sectionProducts.length > 0) {
   //             axios
   //               .post(
@@ -252,11 +250,11 @@ handleGetTokenAndConfig,
   //           }
   //         });
   //       }
-  
+
   //       // Refresh order data and notify the user
   //       fetchOrdersData();
   //       toast.success("تم تغيير حالة الطلب بنجاح");
-  
+
   //       // Notify the kitchen for new orders
   //       if (status === "Approved") {
   //         kitchenSocket.emit("orderkitchen", "استلام أوردر جديد");
@@ -269,10 +267,9 @@ handleGetTokenAndConfig,
   //     toast.error("حدث خطأ أثناء تغيير حالة الطلب");
   //   }
   // };
-  
 
   // const changeOrderStatus = async (e, orderId)  => {
-// const config = handleGetTokenAndConfig();
+  // const config = handleGetTokenAndConfig();
   //     const status = e.target.value;
   //     const cashier= employeeLoginInfo.id
   //     const isActive = status === "Cancelled" ? false : true;
@@ -289,7 +286,7 @@ handleGetTokenAndConfig,
   //           toast.error("حدث خطأ أثناء تغيير حالة الطلب");
   //         }
   //       }else{
-          
+
   //         try {
   //           const getOrder = await axios.get(
   //             `${apiUrl}/api/order/${orderId}`,
@@ -344,9 +341,9 @@ handleGetTokenAndConfig,
   //           config
   //         );
   //         fetchOrdersData();
-  
+
   //         toast.success("تم تغيير حالة الطلب بنجاح");
-  
+
   //         if (status === "Approved") {
   //           kitchenSocket.emit("orderkitchen", "استلام اوردر جديد");
   //           setupdate(!update);
@@ -359,16 +356,15 @@ handleGetTokenAndConfig,
   //     }
   // };
 
-
   const changeOrderStatus = async (e, orderId) => {
     try {
       // Check if the token is available
       const config = handleGetTokenAndConfig();
-  
+
       const status = e.target.value; // Get the new status from the event
       const cashier = employeeLoginInfo.id; // Current cashier ID
       const isActive = status !== "Cancelled"; // Determine if the order is active
-  
+
       // If the order is canceled
       if (status === "Cancelled") {
         try {
@@ -386,21 +382,24 @@ handleGetTokenAndConfig,
         }
         return;
       }
-  
+
       // For other statuses
       // Fetch the order details
-      const getOrder = await axios.get(`${apiUrl}/api/order/${orderId}`, config);
+      const getOrder = await axios.get(
+        `${apiUrl}/api/order/${orderId}`,
+        config
+      );
       const orderProducts = getOrder.data.products; // Extract the products from the order
       console.log({ orderProducts });
-  
+
       // Filter products that are not yet sent to preparation
       const newProducts = orderProducts.filter((product) => !product.isSend);
-  
+
       // Iterate over all preparation sections
       allPreparationSections &&
         allPreparationSections.forEach((section) => {
           const sectionProducts = [];
-  
+
           // Filter products that belong to the current preparation section
           newProducts.forEach((product) => {
             if (
@@ -413,7 +412,7 @@ handleGetTokenAndConfig,
               });
             }
           });
-  
+
           // Create a preparation ticket for the section if there are products
           if (sectionProducts.length > 0) {
             axios
@@ -438,23 +437,23 @@ handleGetTokenAndConfig,
               });
           }
         });
-  
+
       // Update the isSend status for all products
       const updatedProducts = orderProducts.map((product) => ({
         ...product,
         isSend: true, // Mark the product as sent
       }));
-  
+
       // Update the order with the new products and status
       await axios.put(
         `${apiUrl}/api/order/${orderId}`,
         { status, isActive, cashier, products: updatedProducts },
         config
       );
-  
+
       fetchOrdersData();
       toast.success("تم تغيير حالة الطلب بنجاح");
-  
+
       // Emit event to kitchen if status is "Approved"
       if (status === "Approved") {
         kitchenSocket.emit("orderkitchen", "استلام اوردر جديد");
@@ -467,7 +466,7 @@ handleGetTokenAndConfig,
       toast.error("حدث خطأ أثناء تغيير حالة الطلب");
     }
   };
-  
+
   const paymentstatus = ["Pending", "Paid"];
   const paymentstatusAr = ["انظار دفع", "دفع"];
 
@@ -635,6 +634,7 @@ handleGetTokenAndConfig,
     }
 
     try {
+      const config = handleGetTokenAndConfig();
       const response = await axios.get(
         `${apiUrl}/api/cashregister/employee/${id}`,
         config
@@ -1198,10 +1198,7 @@ handleGetTokenAndConfig,
                                   className="form-control border-primary m-0 p-2 h-auto"
                                   name="status"
                                   onChange={(e) => {
-                                    changeOrderStatus(
-                                      e,
-                                      recent._id,
-                                    );
+                                    changeOrderStatus(e, recent._id);
                                   }}
                                 >
                                   <option value={recent.status}>

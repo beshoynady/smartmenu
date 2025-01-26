@@ -22,10 +22,7 @@ const LoginRegistr = (props) => {
     endPagination,
     setStartPagination,
     setEndPagination,
-    getUserInfoFromToken,
-    apiUrl,
-    handleGetTokenAndConfig,
-  } = useContext(dataContext);
+    getUserInfoFromToken, handleGetTokenAndConfig, apiUrl } = useContext(dataContext)
 
   const openlogin = props.openlogin;
   const [openform, setopenform] = useState(props.openlogin);

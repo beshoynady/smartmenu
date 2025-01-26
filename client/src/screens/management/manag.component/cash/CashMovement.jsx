@@ -20,8 +20,8 @@ const CashMovement = () => {
     endPagination,
     setStartPagination,
     setEndPagination,
-    apiUrl,
     handleGetTokenAndConfig,
+    apiUrl,
   } = useContext(dataContext);
 
   const cashMovementPermissions = permissionsList?.filter(

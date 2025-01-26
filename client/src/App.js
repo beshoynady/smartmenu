@@ -184,7 +184,7 @@ function App() {
   const handleGetTokenAndConfig = async () => {
     await verifyToken();
     const token = localStorage.getItem("token_e");
-     if (!token) {
+    if (!token) {
       toast.error("!رجاء تسجيل الدخول مره اخري");
       return null;
     }
@@ -218,6 +218,7 @@ function App() {
   const [restaurantData, setrestaurantData] = useState({});
   const getRestaurant = async () => {
     try {
+      const config = await handleGetTokenAndConfig(); // Get the token and config
       const response = await axios.get(`${apiUrl}/api/restaurant/`, config);
       if (response.status === 200 && response.data.length > 0) {
         const restaurantData = response.data[0];
@@ -396,7 +397,6 @@ function App() {
     try {
       // Fetch products from the API
       const response = await axios.get(apiUrl + "/api/product");
-      console.log({ employees: response });
 
       // Check if response is successful
       if (response.status !== 200) {
@@ -438,6 +438,7 @@ function App() {
   const [allMenuCategories, setAllMenuCategories] = useState([]);
   const getAllMenuCategories = async () => {
     try {
+      const config = handleGetTokenAndConfig();
       // Fetch all categories from the API
       const response = await axios.get(apiUrl + "/api/menucategory", config);
 
@@ -475,6 +476,7 @@ function App() {
   const [allOrders, setAllOrders] = useState([]);
   const getAllOrders = async () => {
     try {
+      const config = handleGetTokenAndConfig();
       // Fetch all orders from the API
       const response = await axios.get(apiUrl + "/api/order", config);
       console.log({ order: response });
@@ -1058,7 +1060,7 @@ function App() {
   ) => {
     try {
       setisLoading(true);
-
+      const config = handleGetTokenAndConfig();
       // console.log({ itemsInCart })
       // Find the user's orders
       const userOrders =
@@ -1326,8 +1328,9 @@ function App() {
   const [serviceTax, setserviceTax] = useState(0);
 
   const createWaiterOrderForTable = async (tableId, waiterId) => {
-    // setisLoading(true)
+    setisLoading(true);
     try {
+      const config = handleGetTokenAndConfig();
       // Check for active orders for the table
       const tableOrder =
         allOrders &&
@@ -1950,7 +1953,7 @@ function App() {
   const getPermissions = async (decodedToken) => {
     try {
       const id = decodedToken.id;
-
+      const config = handleGetTokenAndConfig();
       if (id) {
         const response = await axios.get(
           `${apiUrl}/api/permission/employee/${id}`,
@@ -2049,6 +2052,7 @@ function App() {
 
   const getAvailableTables = (reservationDate, startTime, endTime) => {
     try {
+      const config = handleGetTokenAndConfig();
       // Filter reservations by selected date and time range
       const filterReservationsByTime = allReservations.filter((reservation) => {
         const reservationDateObj = new Date(reservation.reservationDate);

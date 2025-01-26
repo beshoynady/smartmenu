@@ -12,10 +12,7 @@ const PayRoll = () => {
     employeeLoginInfo,
     endPagination,
     setStartPagination,
-    setEndPagination,
-    apiUrl,
-    handleGetTokenAndConfig,
-  } = useContext(dataContext);
+    setEndPagination, handleGetTokenAndConfig, apiUrl } = useContext(dataContext)
 
   const payrollPermissions = permissionsList?.filter(
     (permission) => permission.resource === "Payroll"

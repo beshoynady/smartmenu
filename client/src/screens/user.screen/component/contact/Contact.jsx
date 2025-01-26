@@ -12,7 +12,7 @@ import facebook from "../../../../image/facebook.png";
 // });
 
 const Contact = () => {
-  const { restaurantData, apiUrl } = useContext(dataContext);
+  const { restaurantData, apiUrl, handleGetTokenAndConfig, apiUrl, handleGetTokenAndConfig, apiUrl } = useContext(dataContext);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");

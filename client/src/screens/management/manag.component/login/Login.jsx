@@ -11,10 +11,7 @@ import pos from "../../../../image/pos.jpg";
 const Login = () => {
   const {
     getUserInfoFromToken,
-    setisLoading,
-    apiUrl,
-    handleGetTokenAndConfig,
-  } = useContext(dataContext);
+    setisLoading, handleGetTokenAndConfig, apiUrl } = useContext(dataContext)
 
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");

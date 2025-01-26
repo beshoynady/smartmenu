@@ -5,7 +5,7 @@ import { dataContext } from '../../../../App'
 
 
 const Menu = () => {
-  const { allMenuCategories, setMenuCategoryId, filterByMenuCategoryId, menuCategoryId } = useContext(dataContext)
+  const { allMenuCategories, setMenuCategoryId, filterByMenuCategoryId, menuCategoryId, handleGetTokenAndConfig, apiUrl, handleGetTokenAndConfig, apiUrl } = useContext(dataContext)
   const [activeItem, setActiveItem] = useState(null);
   return (
     <section id='menu'>

@@ -16,10 +16,7 @@ const Userscreen = () => {
     restaurantData,
     allProducts,
     productsOffer,
-    sizesOffer,
-    apiUrl,
-    handleGetTokenAndConfig,
-  } = useContext(dataContext);
+    sizesOffer, handleGetTokenAndConfig, apiUrl } = useContext(dataContext)
 
   return (
     <div className="userscreen" style={{ direction: "rtl" }}>

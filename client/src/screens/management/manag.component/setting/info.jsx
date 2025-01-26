@@ -20,8 +20,8 @@ const Info = () => {
     endPagination,
     setStartPagination,
     setEndPagination,
-    apiUrl,
     handleGetTokenAndConfig,
+    apiUrl,
   } = useContext(dataContext);
 
   const [shifts, setShifts] = useState([]);
@@ -48,6 +48,7 @@ const Info = () => {
   };
 
   const removeShift = async (index, id) => {
+    const config = handleGetTokenAndConfig();
     const updatedShifts = shifts.filter((_, i) => i !== index);
     if (id) {
       const response = await axios.delete(`${apiUrl}/api/shift/${id}`, config);

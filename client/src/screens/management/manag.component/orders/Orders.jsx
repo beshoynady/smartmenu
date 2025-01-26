@@ -22,10 +22,7 @@ const Orders = () => {
     startPagination,
     endPagination,
     setStartPagination,
-    setEndPagination,
-    apiUrl,
-    handleGetTokenAndConfig,
-  } = useContext(dataContext);
+    setEndPagination, handleGetTokenAndConfig, apiUrl } = useContext(dataContext)
 
   const [showModal, setShowModal] = useState(false);
 

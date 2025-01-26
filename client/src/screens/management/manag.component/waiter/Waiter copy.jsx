@@ -13,10 +13,7 @@ const Waiter = () => {
     kitchenSocket,
     BarSocket,
     GrillSocket,
-    waiterSocket,
-    apiUrl,
-    handleGetTokenAndConfig,
-  } = useContext(dataContext);
+    waiterSocket, handleGetTokenAndConfig, apiUrl } = useContext(dataContext)
 
   // Refs for buttons
   const start = useRef();

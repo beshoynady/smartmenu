@@ -18,10 +18,7 @@ const TablesPage = () => {
     incrementProductQuantity,
     decrementProductQuantity,
     setproductNote,
-    addNoteToProduct,
-    apiUrl,
-    handleGetTokenAndConfig,
-  } = useContext(dataContext);
+    addNoteToProduct, handleGetTokenAndConfig, apiUrl } = useContext(dataContext)
 
   // State for tables, active orders, products in active orders, and consumption in active orders
   const [activeTable, setactiveTable] = useState([]);

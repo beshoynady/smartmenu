@@ -5,7 +5,7 @@ import { dataContext } from '../../../../App';
 
 const Reservation = () => {
 
-  const { allTable, getAvailableTables, availableTableIds, createReservations, updateReservation, getAllReservations, allReservations, getReservationById, deleteReservation, userLoginInfo } = useContext(dataContext)
+  const { allTable, getAvailableTables, availableTableIds, createReservations, updateReservation, getAllReservations, allReservations, getReservationById, deleteReservation, userLoginInfo, handleGetTokenAndConfig, apiUrl, handleGetTokenAndConfig, apiUrl } = useContext(dataContext)
 
   const userId = userLoginInfo?.userinfo?.id;
 

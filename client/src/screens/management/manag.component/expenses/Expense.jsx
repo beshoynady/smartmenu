@@ -17,10 +17,7 @@ const ExpenseItem = () => {
     endPagination,
     setStartPagination,
     setEndPagination,
-    formatDateTime,
-    apiUrl,
-    handleGetTokenAndConfig,
-  } = useContext(dataContext);
+    formatDateTime, handleGetTokenAndConfig, apiUrl } = useContext(dataContext)
 
   const permissionExpense =
     permissionsList &&
