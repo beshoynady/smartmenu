@@ -143,7 +143,6 @@ const PreparationSection = () => {
   };
 
   const searchByPreparationSectionName = (name) => {
-    const config = await handleGetTokenAndConfig();
     if (!name) {
       getAllPreparationSections();
     } else {
