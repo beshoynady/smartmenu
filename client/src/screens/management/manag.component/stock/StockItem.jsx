@@ -62,12 +62,12 @@ const StockItem = () => {
     const isChecked = e.target.checked;
 
     if (isChecked) {
-      setstores((prevStores) => [...prevStores, { storeId: selectedStoreId }]);
+      setStores((prevStores) => [...prevStores, { storeId: selectedStoreId }]);
     } else {
       const removeStoreId = stores.filter(
         (store) => store.storeId !== selectedStoreId
       );
-      setstores(removeStoreId);
+      setStores(removeStoreId);
     }
   };
 
@@ -175,7 +175,7 @@ const StockItem = () => {
     setstockitem({});
     setSKU("");
     setStockItemId("");
-    setstores([]);
+    setStores([]);
     setCategoryId("");
     setItemName("");
     setMinThreshold(0);
@@ -186,7 +186,7 @@ const StockItem = () => {
     setParts(0);
     setCostMethod("");
     setNotes("");
-    setisActive(true); // Set to active by default
+    setIsActive(true); // Set to active by default
   };
 
   // Function to edit a stock item
@@ -785,7 +785,7 @@ const StockItem = () => {
                     type="text"
                     className="form-control border-primary m-0 p-2 h-auto"
                     required
-                    onChange={(e) => setLargeUnit(e.target.value)}
+                    onChange={(e) => setStorageUnit(e.target.value)}
                   />
                 </div>
 
@@ -797,7 +797,7 @@ const StockItem = () => {
                     type="text"
                     className="form-control border-primary m-0 p-2 h-auto"
                     required
-                    onChange={(e) => setSmallUnit(e.target.value)}
+                    onChange={(e) => setIngredientUnit(e.target.value)}
                   />
                 </div>
 
@@ -863,7 +863,7 @@ const StockItem = () => {
                   </label>
                   <select
                     className="form-control border-primary m-0 p-2 h-auto"
-                    onChange={(e) => setisActive(e.target.value)}
+                    onChange={(e) => setIsActive(e.target.value)}
                   >
                     <option>اختر الحالة</option>
                     <option value={true}>نشط</option>
@@ -1075,7 +1075,7 @@ const StockItem = () => {
                   <select
                     className="form-control border-primary m-0 p-2 h-auto"
                     value={isActive}
-                    onChange={(e) => setisActive(e.target.value)}
+                    onChange={(e) => setIsActive(e.target.value)}
                   >
                     <option value={isActive}>
                       {isActive ? "نشط" : "غير نشط"}
