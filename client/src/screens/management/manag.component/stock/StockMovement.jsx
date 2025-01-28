@@ -281,14 +281,14 @@ const StockMovement = () => {
       if (source === "Issuance") {
         const costPerPart = outbound.unitCost;
         console.log({ costPerPart });
-        const setcostUnit = await axios.put(
+        const updateCostPerPart = await axios.put(
           `${apiUrl}/api/stockitem/${itemId}`,
           {
             costPerPart,
           },
           config
         );
-        if (setcostUnit) {
+        if (updateCostPerPart) {
           toast.info("تم تعديل تكلفه الوحده");
         }
       }

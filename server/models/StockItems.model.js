@@ -6,78 +6,82 @@ const StockItemSchema = new mongoose.Schema(
     itemName: {
       type: String,
       trim: true,
-      required: true,
+      required: [true, "Item name is required."],
       unique: true,
+      maxLength: [100, "Item name must not exceed 100 characters."],
     },
     SKU: {
       type: String,
       trim: true,
-      required: true,
+      required: [true, "SKU (Stock Keeping Unit) is required."],
       unique: true,
-      // A unique identifier for the stock item (SKU - Stock Keeping Unit).
+      maxLength: [50, "SKU must not exceed 50 characters."],
     },
     stores: [
       {
-        storeId: {
-          type: ObjectId,
-          ref: "Store",
-          required: true,
-        },
+        type: ObjectId,
+        ref: "Store",
+        required: [true, "Store ID is required."],
       },
     ],
     categoryId: {
       type: ObjectId,
       ref: "CategoryStock",
-      required: true,
-      // Reference to the category this stock item belongs to.
+      required: [true, "Category ID is required."],
     },
     storageUnit: {
       type: String,
-      required: true,
+      required: [true, "Storage unit is required."],
+      enum: {
+        values: ["Kg", "Litre", "Piece", "Box", "Packet"],
+        message:
+          "Storage unit must be one of ['Kg', 'Litre', 'Piece', 'Box', 'Packet'].",
+      },
     },
     parts: {
       type: Number,
-      required: true,
+      required: [true, "Number of parts is required."],
+      min: [1, "Parts must be at least 1."],
     },
     ingredientUnit: {
       type: String,
-      required: true,
+      required: [true, "Ingredient unit is required."],
     },
     minThreshold: {
       type: Number,
       default: 0,
-      min: 0,
-      // Minimum stock level to trigger a reorder
+      min: [0, "Minimum threshold cannot be negative."],
     },
     maxThreshold: {
       type: Number,
       default: 0,
-      min: 0,
-      // Maximum stock level to avoid overstocking.
+      min: [0, "Maximum threshold cannot be negative."],
+    },
+    reorderQuantity: {
+      type: Number,
+      default: 0,
+      min: [0, "Reorder quantity cannot be negative."],
+      // Quantity to reorder when stock falls below the minimum threshold.
     },
     costMethod: {
       type: String,
       enum: ["FIFO", "LIFO", "Weighted Average"],
-      required: true,
+      required: [true, "Cost method is required."],
     },
     costPerPart: {
       type: Number,
       default: 0,
+      min: [0, "Cost per part cannot be negative."],
     },
-    suppliers: [
-      {
-        type: ObjectId,
-        ref: "Supplier",
-      },
-    ],
     isActive: {
       type: Boolean,
       default: true,
+      required: [true, "Active status is required."],
     },
     createdBy: {
       type: ObjectId,
       ref: "Employee",
-      required: true,
+      required: [true, "Created by is required."],
     },
     updatedBy: {
       type: ObjectId,
@@ -86,12 +90,18 @@ const StockItemSchema = new mongoose.Schema(
     notes: {
       type: String,
       trim: true,
+      maxLength: [500, "Notes must not exceed 500 characters."],
     },
   },
   {
     timestamps: true,
   }
 );
+
+StockItemSchema.index({ itemName: 1 });
+StockItemSchema.index({ SKU: 1 });
+StockItemSchema.index({ categoryId: 1 });
+StockItemSchema.index({ "stores.storeId": 1 });
 
 const StockItemModel = mongoose.model("StockItem", StockItemSchema);
 module.exports = StockItemModel;

@@ -35,18 +35,21 @@ const StockItem = () => {
   const [SKU, setSKU] = useState(""); // For item code
   const [itemName, setItemName] = useState(""); // For item name
   const [categoryId, setCategoryId] = useState(""); // For category ID
-  const [stores, setstores] = useState([]);
-  const [storageUnit, setLargeUnit] = useState(""); // For large unit
-  const [parts, setParts] = useState(""); // For parts
-  const [ingredientUnit, setSmallUnit] = useState(""); // For small unit
-  const [costPerPart, setcostPerPart] = useState(0); // For small unit
-  const [minThreshold, setMinThreshold] = useState(""); // For minimum threshold
-  const [costMethod, setCostMethod] = useState(""); // For cost method (if necessary)
-  const [suppliers, setSuppliers] = useState([]); // For suppliers (if necessary)
-  const [isActive, setisActive] = useState(true); // For isActive (if necessary)
-  const [notes, setNotes] = useState(""); // For notes
+  const [stores, setStores] = useState([]); // For list of stores
+  const [storageUnit, setStorageUnit] = useState(""); // For storage unit (e.g., Kg, Litre, etc.)
+  const [parts, setParts] = useState(0); // For number of parts
+  const [ingredientUnit, setIngredientUnit] = useState(""); // For ingredient unit
+  const [costPerPart, setCostPerPart] = useState(0); // For cost per part
+  const [minThreshold, setMinThreshold] = useState(0); // For minimum threshold
+  const [maxThreshold, setMaxThreshold] = useState(0); // For maximum threshold
+  const [reorderQuantity, setReorderQuantity] = useState(0); // For reorder quantity
+  const [costMethod, setCostMethod] = useState(""); // For cost method (e.g., FIFO, LIFO)
+  const [suppliers, setSuppliers] = useState([]); // For suppliers
+  const [isActive, setIsActive] = useState(true); // For active status
+  const [notes, setNotes] = useState(""); // For notes or remarks
 
-  const [stockItemId, setStockItemId] = useState(""); // For stock item ID
+  const [stockItemId, setStockItemId] = useState(""); // For stock item ID (used when editing)
+
   const costMethodEN = ["FIFO", "LIFO", "Weighted Average"];
   const costMethodAR = [
     "الوارد اولا يصرف اولا",
@@ -97,22 +100,31 @@ const StockItem = () => {
 
   const createItem = async (e) => {
     e.preventDefault();
+
     const config = await handleGetTokenAndConfig();
+
     if (stockItemPermission && !stockItemPermission.create) {
-      toast.warn("ليس لك صلاحية لانشاء عنصر جديد في المخزن");
+      toast.warn("ليس لك صلاحية لإنشاء عنصر جديد في المخزن");
       return;
     }
-    try {
-      const isItemDuplicate =
-        AllStockItems &&
-        AllStockItems.some(
-          (item) => item.itemName === itemName || item.SKU === SKU
-        );
 
-      if (isItemDuplicate) {
-        toast.warn("هذا الاسم او الكود مكرر ! حاول مره اخري");
-        return;
-      }
+    const isItemDuplicate =
+      AllStockItems &&
+      AllStockItems.some(
+        (item) => item.itemName === itemName || item.SKU === SKU
+      );
+
+    if (isItemDuplicate) {
+      toast.warn("هذا الاسم أو الكود مكرر! حاول مرة أخرى");
+      return;
+    }
+
+    if (!SKU || !itemName || !categoryId || !stores.length) {
+      toast.warn("يرجى ملء جميع الحقول المطلوبة");
+      return;
+    }
+
+    try {
       setisLoading(true);
       console.log({ stores });
 
@@ -127,51 +139,68 @@ const StockItem = () => {
           parts,
           ingredientUnit,
           minThreshold,
+          maxThreshold,
+          reorderQuantity,
           costMethod,
+          costPerPart,
           isActive,
           notes,
         },
         config
       );
-      console.log(response.data);
 
-      if (response.data.error === "Item SKU already exists") {
-        toast.warn("هذا الكود موجود من قبل");
+      if (response.data.error) {
+        if (response.data.error === "Item SKU already exists") {
+          toast.warn("هذا الكود موجود من قبل");
+        } else {
+          toast.error("فشل في إنشاء عنصر المخزون: " + response.data.error);
+        }
+        setisLoading(false);
+        return;
       }
 
-      if (response) {
-        getStockItems();
-      }
+      getStockItems();
 
       toast.success("تم إنشاء عنصر المخزون بنجاح");
-      setisLoading(false);
+
+      resetFields();
     } catch (error) {
       console.log(error);
       setisLoading(false);
       toast.error("فشل في إنشاء عنصر المخزون");
-    } finally {
-      setstockitem({});
-      setSKU("");
-      setStockItemId("");
-      setstores([]);
-      setCategoryId("");
-      setItemName("");
-      setMinThreshold(0);
-      setLargeUnit("");
-      setSmallUnit("");
-      setParts(0);
-      setCostMethod("");
-      setNotes("");
-      setisActive("");
     }
+  };
+
+  const resetFields = () => {
+    setstockitem({});
+    setSKU("");
+    setStockItemId("");
+    setstores([]);
+    setCategoryId("");
+    setItemName("");
+    setMinThreshold(0);
+    setMaxThreshold(0);
+    setReorderQuantity(0);
+    setStorageUnit("");
+    setIngredientUnit("");
+    setParts(0);
+    setCostMethod("");
+    setNotes("");
+    setisActive(true); // Set to active by default
   };
 
   // Function to edit a stock item
   const editStockItem = async (e) => {
     e.preventDefault();
+
     const config = await handleGetTokenAndConfig();
     if (stockItemPermission && !stockItemPermission.update) {
       toast.warn("ليس لك صلاحية لتعديل عناصر المخزن");
+      return;
+    }
+
+    if (!SKU || !itemName || !categoryId || !stores.length) {
+      toast.warn("يرجى ملء جميع الحقول المطلوبة");
       return;
     }
 
@@ -188,38 +217,27 @@ const StockItem = () => {
           parts,
           ingredientUnit,
           minThreshold,
+          maxThreshold,
+          reorderQuantity,
           costMethod,
+          costPerPart,
           isActive,
           notes,
         },
         config
       );
+
       if (response) {
-        getStockItems(); // Update the list of stock items after editing
+        getStockItems();
       }
 
-      // Notify on success
       toast.success("تم تحديث عنصر المخزون بنجاح");
-      setisLoading(false);
     } catch (error) {
       console.log(error);
-      setisLoading(false);
-      // Notify on error
       toast.error("فشل في تحديث عنصر المخزون");
     } finally {
-      setstockitem({});
-      setSKU("");
-      setStockItemId("");
-      setstores([]);
-      setCategoryId("");
-      setItemName("");
-      setMinThreshold(0);
-      setLargeUnit("");
-      setSmallUnit("");
-      setParts(0);
-      setCostMethod("");
-      setNotes("");
-      setisActive("");
+      resetFields();
+      setisLoading(false);
     }
   };
 
@@ -324,20 +342,17 @@ const StockItem = () => {
     setCategoryId(item.categoryId?._id);
     setItemName(item.itemName);
     setMinThreshold(item.minThreshold);
-    setLargeUnit(item.storageUnit);
-    setSmallUnit(item.ingredientUnit);
+    setMaxThreshold(item.maxThreshold);
+    setReorderQuantity(item.reorderQuantity);
+    setStorageUnit(item.storageUnit);
+    setIngredientUnit(item.ingredientUnit);
     setParts(item.parts);
     setCostMethod(item.costMethod);
     setNotes(item.notes);
-    setisActive(item.isActive);
+    setIsActive(item.isActive);
+    setStores(item.stores);
+    setCostPerPart(item.costPerPart);
     console.log({ stores: item.stores });
-    if (item.stores && item.stores.length > 0) {
-      const listOfStores = item.stores.map((store) => ({
-        storeId: store.storeId._id,
-      }));
-      console.log({ listOfStores });
-      setstores(listOfStores);
-    }
   };
 
   const searchByitem = (name) => {
@@ -388,6 +403,7 @@ const StockItem = () => {
       toast.error("فشل في استرداد الموردين");
     }
   };
+
   useEffect(() => {
     getStockItems();
     getAllStores();
@@ -494,21 +510,25 @@ const StockItem = () => {
                 <th>الوحدة كبيرة</th>
                 <th>عدد الوحدات</th>
                 <th>الوحدة صغيرة</th>
-                <th>الحد الادني</th>
+                <th>الحد الأدني</th>
+                <th>الحد الأقصى</th>
+                <th>الكمية لإعادة الطلب</th>
                 <th>طريقة التكلفة</th>
-                <th>تكلفه الوحده</th>
+                <th>تكلفة الوحدة</th>
                 <th>الموردون</th>
                 <th>الحالة</th>
-                <th>اضيف بواسطه</th>
-                <th>تاريخ الاضافه</th>
+                <th>اضيف بواسطة</th>
+                <th>تاريخ الإضافة</th>
+                <th>عدل بواسطة</th>
+                <th>تاريخ التعديل</th>
                 <th>ملاحظات</th>
-                <th>اجراءات</th>
+                <th>إجراءات</th>
               </tr>
             </thead>
             <tbody>
               {AllStockItems &&
                 AllStockItems.map((item, i) => {
-                  if ((i >= startPagination) & (i < endPagination)) {
+                  if (i >= startPagination && i < endPagination) {
                     return (
                       <tr
                         key={i}
@@ -535,15 +555,11 @@ const StockItem = () => {
                         <td>{item.parts}</td>
                         <td>{item.ingredientUnit}</td>
                         <td>{item.minThreshold}</td>
+                        <td>{item.maxThreshold}</td>
+                        <td>{item.reorderQuantity}</td>
                         <td>{item.costMethod}</td>
                         <td>{item.costPerPart}</td>
                         <td>
-                          {/* {item.suppliers.map(
-                            (supplier, i) =>
-                              `${supplier.fullname}${
-                                i < suppliers.length ? "-" : ""
-                              } `
-                          )} */}
                           {AllSuppliers.filter((supplier) =>
                             supplier.itemsSupplied?.some(
                               (itemSupplied) => itemSupplied._id === item._id
@@ -555,48 +571,44 @@ const StockItem = () => {
                         <td>{item.isActive ? "نشط" : "غير نشط"}</td>
                         <td>{item.createdBy?.fullname}</td>
                         <td>{formatDateTime(item.createdAt)}</td>
+                        <td>{item.updatedBy?.fullname}</td>
+                        <td>{formatDateTime(item.updatedAt)}</td>
                         <td>{item.notes}</td>
                         <td>
-                          {stockItemPermission &&
-                            stockItemPermission &&
-                            stockItemPermission &&
-                            stockItemPermission.update && (
-                              <a
-                                href="#editStockItemModal"
-                                className="edit"
-                                data-toggle="modal"
-                                onClick={() => {
-                                  handelEditStockItemModal(
-                                    JSON.stringify(item)
-                                  );
-                                }}
+                          {stockItemPermission?.update && (
+                            <a
+                              href="#editStockItemModal"
+                              className="edit"
+                              data-toggle="modal"
+                              onClick={() => {
+                                handelEditStockItemModal(JSON.stringify(item));
+                              }}
+                            >
+                              <i
+                                className="material-icons"
+                                data-toggle="tooltip"
+                                title="Edit"
                               >
-                                <i
-                                  className="material-icons"
-                                  data-toggle="tooltip"
-                                  title="Edit"
-                                >
-                                  &#xE254;
-                                </i>
-                              </a>
-                            )}
-                          {stockItemPermission &&
-                            stockItemPermission.delete && (
-                              <a
-                                href="#deleteStockItemModal"
-                                className="delete"
-                                data-toggle="modal"
-                                onClick={() => setStockItemId(item._id)}
+                                &#xE254;
+                              </i>
+                            </a>
+                          )}
+                          {stockItemPermission?.delete && (
+                            <a
+                              href="#deleteStockItemModal"
+                              className="delete"
+                              data-toggle="modal"
+                              onClick={() => setStockItemId(item._id)}
+                            >
+                              <i
+                                className="material-icons"
+                                data-toggle="tooltip"
+                                title="Delete"
                               >
-                                <i
-                                  className="material-icons"
-                                  data-toggle="tooltip"
-                                  title="Delete"
-                                >
-                                  &#xE872;
-                                </i>
-                              </a>
-                            )}
+                                &#xE872;
+                              </i>
+                            </a>
+                          )}
                         </td>
                       </tr>
                     );
@@ -604,6 +616,7 @@ const StockItem = () => {
                 })}
             </tbody>
           </table>
+
           <div className="clearfix">
             <div className="hint-text text-dark">
               عرض{" "}
@@ -673,7 +686,7 @@ const StockItem = () => {
 
       <div id="addStockItemModal" className="modal fade">
         <div className="modal-dialog modal-lg">
-          <div className="modal-content shadow-lg border-0 rounded ">
+          <div className="modal-content shadow-lg border-0 rounded">
             <form onSubmit={createItem}>
               <div className="modal-header d-flex flex-wrap align-items-center text-light bg-primary">
                 <h4 className="modal-title">اضافه صنف بالمخزن</h4>
@@ -733,19 +746,17 @@ const StockItem = () => {
                     className="form-control border-primary m-0 p-2 h-auto"
                     name="category"
                     id="category"
-                    form="carform"
                     onChange={(e) => setCategoryId(e.target.value)}
                   >
                     <option>اختر التصنيف</option>
-                    {AllCategoryStock.map((category, i) => {
-                      return (
-                        <option value={category._id} key={i}>
-                          {category.categoryName}
-                        </option>
-                      );
-                    })}
+                    {AllCategoryStock.map((category, i) => (
+                      <option value={category._id} key={i}>
+                        {category.categoryName}
+                      </option>
+                    ))}
                   </select>
                 </div>
+
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
                     الكود
@@ -775,99 +786,91 @@ const StockItem = () => {
                     className="form-control border-primary m-0 p-2 h-auto"
                     required
                     onChange={(e) => setLargeUnit(e.target.value)}
-                  ></input>
+                  />
                 </div>
+
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
-                    الوحدة الصغيره
+                    الوحدة الصغيرة
                   </label>
                   <input
                     type="text"
                     className="form-control border-primary m-0 p-2 h-auto"
                     required
                     onChange={(e) => setSmallUnit(e.target.value)}
-                  ></input>
+                  />
                 </div>
+
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
-                    الحد الادني
+                    الحد الأدني
                   </label>
                   <input
                     type="number"
                     min={0}
                     className="form-control border-primary m-0 p-2 h-auto"
                     required
-                    onChange={(e) => {
-                      setMinThreshold(e.target.value);
-                    }}
+                    onChange={(e) => setMinThreshold(e.target.value)}
                   />
                 </div>
 
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
-                    عدد الوحدات
+                    الحد الأقصى
                   </label>
                   <input
-                    type="Number"
+                    type="number"
                     min={0}
                     className="form-control border-primary m-0 p-2 h-auto"
                     required
-                    onChange={(e) => {
-                      setParts(e.target.value);
-                    }}
+                    onChange={(e) => setMaxThreshold(e.target.value)}
                   />
                 </div>
 
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
-                    طريقه حساب التكلفه
+                    الكمية لإعادة الطلب
                   </label>
-                  <select
+                  <input
+                    type="number"
+                    min={0}
                     className="form-control border-primary m-0 p-2 h-auto"
-                    name="category"
-                    id="category"
-                    form="carform"
-                    onChange={(e) => setCostMethod(e.target.value)}
-                  >
-                    <option>اخترالطريقه'</option>
-                    {costMethodEN.map((method, i) => {
-                      return (
-                        <option value={method} key={i}>
-                          {costMethodAR[i]}
-                        </option>
-                      );
-                    })}
-                  </select>
+                    required
+                    onChange={(e) => setReorderQuantity(e.target.value)}
+                  />
                 </div>
+
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
-                    الحاله
+                    طريقة حساب التكلفة
                   </label>
                   <select
                     className="form-control border-primary m-0 p-2 h-auto"
-                    name="category"
-                    id="category"
-                    form="carform"
+                    onChange={(e) => setCostMethod(e.target.value)}
+                  >
+                    <option>اختر الطريقة</option>
+                    {costMethodEN.map((method, i) => (
+                      <option value={method} key={i}>
+                        {costMethodAR[i]}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="form-group col-12 col-md-6">
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    الحالة
+                  </label>
+                  <select
+                    className="form-control border-primary m-0 p-2 h-auto"
                     onChange={(e) => setisActive(e.target.value)}
                   >
-                    <option>اختر الحاله</option>
+                    <option>اختر الحالة</option>
                     <option value={true}>نشط</option>
                     <option value={false}>غير نشط</option>
                   </select>
                 </div>
 
-                <div className="form-group col-12 col-md-6">
-                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
-                    التاريخ
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control border-primary m-0 p-2 h-auto"
-                    Value={new Date().toLocaleDateString()}
-                    required
-                    readOnly
-                  />
-                </div>
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
                     الملاحظات
@@ -898,7 +901,7 @@ const StockItem = () => {
 
       <div id="editStockItemModal" className="modal fade">
         <div className="modal-dialog modal-lg">
-          <div className="modal-content shadow-lg border-0 rounded ">
+          <div className="modal-content shadow-lg border-0 rounded">
             <form onSubmit={(e) => editStockItem(e, employeeLoginInfo.id)}>
               <div className="modal-header d-flex flex-wrap align-items-center text-light bg-primary">
                 <h4 className="modal-title">تعديل صنف بالمخزن</h4>
@@ -958,18 +961,17 @@ const StockItem = () => {
                   </label>
                   <select
                     className="form-control border-primary m-0 p-2 h-auto"
+                    value={categoryId}
                     onChange={(e) => setCategoryId(e.target.value)}
                   >
                     <option value={stockitem.categoryId?._id}>
                       {stockitem.categoryId?.categoryName}
                     </option>
-                    {AllCategoryStock.map((category, i) => {
-                      return (
-                        <option value={category._id} key={i}>
-                          {category.categoryName}
-                        </option>
-                      );
-                    })}
+                    {AllCategoryStock.map((category, i) => (
+                      <option value={category._id} key={i}>
+                        {category.categoryName}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <div className="form-group col-12 col-md-6">
@@ -998,76 +1000,81 @@ const StockItem = () => {
                   <input
                     type="text"
                     className="form-control border-primary m-0 p-2 h-auto"
-                    defaultValue={storageUnit}
-                    onChange={(e) => setLargeUnit(e.target.value)}
-                  ></input>
+                    value={storageUnit}
+                    onChange={(e) => setStorageUnit(e.target.value)}
+                  />
                 </div>
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
-                    الوحدة الصغيره
+                    الوحدة الصغيرة
                   </label>
                   <input
                     type="text"
                     className="form-control border-primary m-0 p-2 h-auto"
-                    defaultValue={ingredientUnit}
-                    onChange={(e) => setSmallUnit(e.target.value)}
-                  ></input>
+                    value={ingredientUnit}
+                    onChange={(e) => setIngredientUnit(e.target.value)}
+                  />
                 </div>
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
-                    الحد الادني
+                    الحد الأدني
                   </label>
                   <input
                     type="number"
                     min={0}
                     className="form-control border-primary m-0 p-2 h-auto"
                     value={minThreshold}
-                    onChange={(e) => {
-                      setMinThreshold(e.target.value);
-                    }}
+                    onChange={(e) => setMinThreshold(e.target.value)}
                   />
                 </div>
-
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
-                    عدد الوحدات
+                    الحد الأقصى
                   </label>
                   <input
-                    type="Number"
+                    type="number"
                     min={0}
                     className="form-control border-primary m-0 p-2 h-auto"
-                    value={parts}
-                    onChange={(e) => {
-                      setParts(e.target.value);
-                    }}
+                    value={maxThreshold}
+                    onChange={(e) => setMaxThreshold(e.target.value)}
                   />
                 </div>
-
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
-                    طريقه حساب التكلفه
+                    كمية إعادة الطلب
+                  </label>
+                  <input
+                    type="number"
+                    min={0}
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    value={reorderQuantity}
+                    onChange={(e) => setReorderQuantity(e.target.value)}
+                  />
+                </div>
+                <div className="form-group col-12 col-md-6">
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    طريقة حساب التكلفة
                   </label>
                   <select
                     className="form-control border-primary m-0 p-2 h-auto"
+                    value={costMethod}
                     onChange={(e) => setCostMethod(e.target.value)}
                   >
                     <option value={costMethod}>{costMethod}</option>
-                    {costMethodEN.map((method, i) => {
-                      return (
-                        <option value={method} key={i}>
-                          {costMethodAR[i]}
-                        </option>
-                      );
-                    })}
+                    {costMethodEN.map((method, i) => (
+                      <option value={method} key={i}>
+                        {costMethodAR[i]}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
-                    الحاله
+                    الحالة
                   </label>
                   <select
                     className="form-control border-primary m-0 p-2 h-auto"
-                    defaultValue={isActive}
+                    value={isActive}
                     onChange={(e) => setisActive(e.target.value)}
                   >
                     <option value={isActive}>
@@ -1077,7 +1084,6 @@ const StockItem = () => {
                     <option value={false}>غير نشط</option>
                   </select>
                 </div>
-
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
                     التاريخ
@@ -1085,7 +1091,7 @@ const StockItem = () => {
                   <input
                     type="text"
                     className="form-control border-primary m-0 p-2 h-auto"
-                    Value={new Date().toLocaleDateString()}
+                    value={new Date().toLocaleDateString()}
                     readOnly
                   />
                 </div>
@@ -1095,6 +1101,7 @@ const StockItem = () => {
                   </label>
                   <textarea
                     className="form-control border-primary m-0 p-2 h-auto"
+                    value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                   />
                 </div>
