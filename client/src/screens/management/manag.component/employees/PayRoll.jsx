@@ -12,7 +12,10 @@ const PayRoll = () => {
     employeeLoginInfo,
     endPagination,
     setStartPagination,
-    setEndPagination, handleGetTokenAndConfig, apiUrl } = useContext(dataContext)
+    setEndPagination,
+    handleGetTokenAndConfig,
+    apiUrl,
+  } = useContext(dataContext);
 
   const payrollPermissions = permissionsList?.filter(
     (permission) => permission.resource === "Payroll"
@@ -828,7 +831,7 @@ const PayRoll = () => {
                               {Roll.isPaid === false ? (
                                 <td>
                                   <button
-                            data-target="paidModal"
+                                    data-target="paidModal"
                                     type="button"
                                     data-toggle="modal"
                                     className="btn btn-primary text-light h-100 px-2 py-3 m-0"
@@ -844,7 +847,7 @@ const PayRoll = () => {
                                     }
                                   >
                                     دفع
-                                  </a>
+                                  </button>
                                 </td>
                               ) : (
                                 <td>تم الدفع</td>
