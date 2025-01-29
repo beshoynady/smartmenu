@@ -62,10 +62,10 @@ const StockItem = () => {
     const isChecked = e.target.checked;
 
     if (isChecked) {
-      setStores((prevStores) => [...prevStores, { storeId: selectedStoreId }]);
+      setStores((prevStores) => [...prevStores, selectedStoreId ]);
     } else {
       const removeStoreId = stores.filter(
-        (store) => store.storeId !== selectedStoreId
+        (store) => store !== selectedStoreId
       );
       setStores(removeStoreId);
     }
@@ -547,7 +547,7 @@ const StockItem = () => {
                         <td>{item.itemName}</td>
                         <td>
                           {item.stores
-                            ?.map((store) => store.storeId?.storeName)
+                            ?.map((store) => store.storeName)
                             .join(" - ")}
                         </td>
                         <td>{item.categoryId?.categoryName}</td>
