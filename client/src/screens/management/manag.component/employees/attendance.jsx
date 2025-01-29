@@ -5,8 +5,6 @@ import "../orders/Orders.css";
 import { dataContext } from "../../../../App";
 
 const AttendanceManagement = () => {
-  
-
   const {
     setStartDate,
     setEndDate,
@@ -22,7 +20,10 @@ const AttendanceManagement = () => {
     startPagination,
     endPagination,
     setStartPagination,
-    setEndPagination, handleGetTokenAndConfig, apiUrl } = useContext(dataContext)
+    setEndPagination,
+    handleGetTokenAndConfig,
+    apiUrl,
+  } = useContext(dataContext);
 
   const permissionsForAttendance = permissionsList?.filter(
     (permission) => permission.resource === "Attendance"
@@ -707,21 +708,21 @@ const AttendanceManagement = () => {
                         </td>
                         <td>
                           {Record.arrivalDate && !Record.departureDate ? (
-                             <button
-data-target="#departureModal"
+                            <button
+                              data-target="#departureModal"
                               className="edit h-100 btn btn-info"
                               data-toggle="modal"
                               onClick={() => handleEditRecord(Record)}
                             >
                               انصراف
-                            </a>
+                            </button>
                           ) : (
                             ""
                           )}
                         </td>
                         <td className="d-flex flex-nowrap">
-                           <button
-data-target="#editRecordModal"
+                          <button
+                            data-target="#editRecordModal"
                             className="btn btn-sm btn-primary me-2"
                             data-toggle="modal"
                             onClick={() => handleEditRecord(Record)}
@@ -732,11 +733,11 @@ data-target="#editRecordModal"
                               title="Edit"
                             >
                               &#xE254;
-                                </i>
-                              </button>
+                            </i>
+                          </button>
 
-                           <button
-data-target="#deleteRecordModal"
+                          <button
+                            data-target="#deleteRecordModal"
                             className="btn btn-sm btn-danger"
                             data-toggle="modal"
                             onClick={() => setRecordId(Record._id)}
@@ -747,8 +748,8 @@ data-target="#deleteRecordModal"
                               title="Delete"
                             >
                               &#xE872;
-                                </i>
-                              </button>
+                            </i>
+                          </button>
                         </td>
                       </tr>
                     );
