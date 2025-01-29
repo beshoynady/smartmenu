@@ -96,7 +96,7 @@ const StockItem = () => {
     setSKU(SKUGenerated);
   };
 
-  const createItem = async (e) => {
+  const createStockItem = async (e) => {
     e.preventDefault();
 
     const config = await handleGetTokenAndConfig();
@@ -685,7 +685,7 @@ const StockItem = () => {
       <div id="addStockItemModal" className="modal fade">
         <div className="modal-dialog modal-lg">
           <div className="modal-content shadow-lg border-0 rounded">
-            <form onSubmit={createItem}>
+            <form onSubmit={createStockItem}>
               <div className="modal-header d-flex flex-wrap align-items-center text-light bg-primary">
                 <h4 className="modal-title">اضافه صنف بالمخزن</h4>
                 <button
