@@ -796,7 +796,7 @@ const Store = () => {
                   &times;
                 </button>
               </div>
-              <div className="modal-body d-flex flex-wrap align-items-center p-3 text-right">
+              <div className="modal-body d-flex flex-wrap align-items-center p-3 text-dark text-right">
                 <p>
                   هل أنت متأكد من حذف مخزن <strong>{storeName}</strong>؟
                 </p>
