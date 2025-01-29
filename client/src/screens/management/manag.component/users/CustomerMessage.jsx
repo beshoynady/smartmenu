@@ -5,8 +5,6 @@ import { toast } from "react-toastify";
 import "../orders/Orders.css";
 
 const CustomerMessage = () => {
- 
-
   const {
     setStartDate,
     setEndDate,
@@ -23,9 +21,9 @@ const CustomerMessage = () => {
     endPagination,
     setStartPagination,
     setEndPagination,
-  apiUrl,
-handleGetTokenAndConfig,
-} = useContext(dataContext);
+    apiUrl,
+    handleGetTokenAndConfig,
+  } = useContext(dataContext);
 
   const permissionUserMassage = permissionsList?.filter(
     (permission) => permission.resource === "Messages"
@@ -53,13 +51,13 @@ handleGetTokenAndConfig,
   };
 
   const updateisSeenMessage = async (e, mes) => {
-    e.preventDefault()
+    e.preventDefault();
     const config = await handleGetTokenAndConfig();
     if (permissionUserMassage && !permissionUserMassage.show) {
       toast.warn("ليس لك صلاحية لتعديل رسائل المستخدمين");
       return;
     }
-    const message = JSON.parse(mes)
+    const message = JSON.parse(mes);
     setName(message.name);
     setPhone(message.phone);
     setMessage(message.message);
@@ -272,7 +270,8 @@ handleGetTokenAndConfig,
                     </button>
                     <button
                       type="button"
-                      className="btn btn-warning h-100 p-2" onClick={getAllCustomerMessage}
+                      className="btn btn-warning h-100 p-2"
+                      onClick={getAllCustomerMessage}
                     >
                       استعادة
                     </button>
@@ -331,7 +330,7 @@ handleGetTokenAndConfig,
                       <td>{formatDateTime(message.createdAt)}</td>
                       <td>
                         <button
-                              data-target="#showMessageModal"
+                          data-target="#showMessageModal"
                           className="btn btn-sm btn-primary me-2"
                           data-toggle="modal"
                           onClick={(e) => {
@@ -345,9 +344,9 @@ handleGetTokenAndConfig,
                           >
                             visibility
                           </i>
-                        </a>
+                        </button>
                         <button
-                              data-target="#deletemessageModal"
+                          data-target="#deletemessageModal"
                           className="btn btn-sm btn-danger"
                           data-toggle="modal"
                           onClick={() => setmessageId(message._id)}
@@ -359,7 +358,7 @@ handleGetTokenAndConfig,
                           >
                             &#xE872;
                           </i>
-                        </a>
+                        </button>
                       </td>
                     </tr>
                   );

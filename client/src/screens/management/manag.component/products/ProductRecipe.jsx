@@ -1013,7 +1013,7 @@ data-target="#deleteProductModal"
                           >
                             &#xE872;
                           </i>
-                        </a>
+                        </button>
                       </td>
                     </tr>
                   );
@@ -1096,7 +1096,7 @@ data-target="#deleteProductModal"
                           >
                             &#xE872;
                           </i>
-                        </a>
+                        </button>
                       </td>
                     </tr>
                   );
@@ -1179,7 +1179,7 @@ data-target="#deleteProductModal"
                           >
                             &#xE872;
                           </i>
-                        </a>
+                        </button>
                       </td>
                     </tr>
                   );
