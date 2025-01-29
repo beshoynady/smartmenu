@@ -648,7 +648,7 @@ const Employees = () => {
                             {permissionsForEmployee?.update ? (
                               <button
                                 data-target="#editEmployeeModal"
-                                className="btn btn-sm btn-primary me-2"
+                                className="btn btn-sm btn-primary ml-2 "
                                 data-toggle="modal"
                               >
                                 <i

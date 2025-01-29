@@ -368,7 +368,7 @@ const Customers = () => {
                         <td>
                           <button
                             data-target="#editcustomerModal"
-                            className="btn btn-sm btn-primary me-2"
+                            className="btn btn-sm btn-primary ml-2 "
                             data-toggle="modal"
                           >
                             <i

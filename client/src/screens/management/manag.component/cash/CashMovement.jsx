@@ -707,7 +707,7 @@ const CashMovement = () => {
                           </td>
                           <td>{formatDateTime(movement.createdAt)}</td>
                           {/* <td>
-                                  <a href="#editStockactionModal" className="btn btn-sm btn-primary me-2" data-toggle="modal" onClick={() => { setactionId(action._id); setoldBalance(action.oldBalance); setoldCost(action.oldCost); setprice(action.price) }}><i className="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+                                  <a href="#editStockactionModal" className="btn btn-sm btn-primary ml-2 " data-toggle="modal" onClick={() => { setactionId(action._id); setoldBalance(action.oldBalance); setoldCost(action.oldCost); setprice(action.price) }}><i className="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
                                   <a href="#deleteStockactionModal" className="btn btn-sm btn-danger" data-toggle="modal" onClick={() => setactionId(action._id)}><i className="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
                                 </td> */}
                         </tr>

@@ -522,7 +522,7 @@ const ReservationTables = () => {
                       <td>
                         <button
                           data-target="#updatereservationModal"
-                          className="btn btn-sm btn-primary me-2"
+                          className="btn btn-sm btn-primary ml-2 "
                           data-toggle="modal"
                           onClick={(e) => {
                             setCustomerName(reservation.customerName);

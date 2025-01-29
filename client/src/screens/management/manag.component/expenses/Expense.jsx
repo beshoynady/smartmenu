@@ -405,7 +405,7 @@ const ExpenseItem = () => {
                           <td>
                              <button
 data-target="#editExpensesModal"
-                              className="btn btn-sm btn-primary me-2"
+                              className="btn btn-sm btn-primary ml-2 "
                               data-toggle="modal"
                               onClick={() => {
                                 setexpenseId(expense._id);

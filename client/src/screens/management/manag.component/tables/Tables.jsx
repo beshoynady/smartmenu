@@ -522,7 +522,7 @@ const Tables = () => {
                         <td>
                           <button
                             data-target="qrTableModal"
-                            className="btn btn-sm btn-primary me-2"
+                            className="btn btn-sm btn-primary ml-2 "
                             data-toggle="modal"
                             onClick={() => {
                               settableid(table._id);
@@ -543,7 +543,7 @@ const Tables = () => {
                         <td>
                           <button
                             data-target="#editTableModal"
-                            className="btn btn-sm btn-primary me-2"
+                            className="btn btn-sm btn-primary ml-2 "
                             data-toggle="modal"
                             onClick={() => {
                               settableid(table._id);

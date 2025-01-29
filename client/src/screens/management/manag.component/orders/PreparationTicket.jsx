@@ -420,7 +420,7 @@ handleGetTokenAndConfig,
                         </td>
 
                         <td>
-                          {/* <a href="#editOrderModal" className="btn btn-sm btn-primary me-2" data-toggle="modal"><i className="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a> */}
+                          {/* <a href="#editOrderModal" className="btn btn-sm btn-primary ml-2 " data-toggle="modal"><i className="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a> */}
                            <button
 data-target="#deletePreparationTicketModal"
                             className="btn btn-sm btn-danger"

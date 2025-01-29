@@ -331,7 +331,7 @@ const CustomerMessage = () => {
                       <td>
                         <button
                           data-target="#showMessageModal"
-                          className="btn btn-sm btn-primary me-2"
+                          className="btn btn-sm btn-primary ml-2 "
                           data-toggle="modal"
                           onClick={(e) => {
                             updateisSeenMessage(e, JSON.stringify(message));

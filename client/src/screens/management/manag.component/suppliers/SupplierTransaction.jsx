@@ -522,7 +522,7 @@ const SupplierTransaction = () => {
                             formatDateTime(Transaction.createdAt)}
                         </td>
                         <td>
-                          {/* <a href="#editSupplierTransactionModal" className="btn btn-sm btn-primary me-2" data-toggle="modal" onClick={() => { setStockItemid(item._id); setcategoryId(item.categoryId); setitemName(item.itemName); setBalance(item.Balance); setlargeUnit(item.storageUnit); setsmallUnit(item.ingredientUnit); setprice(item.price); setparts(item.parts); setcostPerPart(item.costPerPart); setminThreshold(item.minThreshold); settotalCost(item.totalCost) }}><i className="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+                          {/* <a href="#editSupplierTransactionModal" className="btn btn-sm btn-primary ml-2 " data-toggle="modal" onClick={() => { setStockItemid(item._id); setcategoryId(item.categoryId); setitemName(item.itemName); setBalance(item.Balance); setlargeUnit(item.storageUnit); setsmallUnit(item.ingredientUnit); setprice(item.price); setparts(item.parts); setcostPerPart(item.costPerPart); setminThreshold(item.minThreshold); settotalCost(item.totalCost) }}><i className="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
                                 <a href="#deleteSupplierTransactionModal" className="btn btn-sm btn-danger" data-toggle="modal" onClick={() => setStockItemid(item._id)}><i className="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a> */}
                         </td>
                       </tr>

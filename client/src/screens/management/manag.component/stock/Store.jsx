@@ -338,7 +338,7 @@ handleGetTokenAndConfig,
                         {storePermissions && storePermissions?.update && (
                            <button
 data-target="#editstoreModal"
-                            className="btn btn-sm btn-primary me-2"
+                            className="btn btn-sm btn-primary ml-2 "
                             data-toggle="modal"
                             onClick={() => {
                               setStoreId(store._id);

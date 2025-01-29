@@ -578,7 +578,7 @@ const StockItem = () => {
                           {stockItemPermission?.update && (
                             <button
                               data-target="#editStockItemModal"
-                              className="btn btn-sm btn-primary me-2"
+                              className="btn btn-sm btn-primary ml-2 "
                               data-toggle="modal"
                               onClick={() => {
                                 handelEditStockItemModal(JSON.stringify(item));

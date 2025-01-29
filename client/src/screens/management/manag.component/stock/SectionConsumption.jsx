@@ -612,7 +612,7 @@ handleGetTokenAndConfig,
                         <td>
                            <button
 data-target="#updateSectionItemModal"
-                            className="btn btn-sm btn-primary me-2"
+                            className="btn btn-sm btn-primary ml-2 "
                             data-toggle="modal"
                             onClick={() => {
                               setReceivedBy(employeeLoginInfo.id);

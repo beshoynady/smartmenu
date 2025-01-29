@@ -723,7 +723,7 @@ const AttendanceManagement = () => {
                         <td className="d-flex flex-nowrap">
                           <button
                             data-target="#editRecordModal"
-                            className="btn btn-sm btn-primary me-2"
+                            className="btn btn-sm btn-primary ml-2 "
                             data-toggle="modal"
                             onClick={() => handleEditRecord(Record)}
                           >

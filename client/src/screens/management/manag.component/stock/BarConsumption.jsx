@@ -539,7 +539,7 @@ const BarConsumption = () => {
                         <td>
                           <button
                             data-target="#updateBarItemModal"
-                            className="btn btn-sm btn-primary me-2"
+                            className="btn btn-sm btn-primary ml-2 "
                             data-toggle="modal"
                             onClick={() => {
                               setreceivedBy(employeeLoginInfo.id);

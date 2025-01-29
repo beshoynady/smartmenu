@@ -893,7 +893,7 @@ const ProductRecipe = () => {
                           <td>
                              <button
 data-target="#editRecipeModal"
-                              className="btn btn-sm btn-primary me-2"
+                              className="btn btn-sm btn-primary ml-2 "
                               data-toggle="modal"
                               onClick={() => {
                                 setrecipeid(ingredient._id);
@@ -978,7 +978,7 @@ data-target="#deleteProductModal"
                       <td>
                         <button
                               data-target="#editRecipeModal"
-                          className="btn btn-sm btn-primary me-2"
+                          className="btn btn-sm btn-primary ml-2 "
                           data-toggle="modal"
                           onClick={() => {
                             setrecipeid(dineIn._id);
@@ -1061,7 +1061,7 @@ data-target="#deleteProductModal"
                       <td>
                         <button
                               data-target="#editRecipeModal"
-                          className="btn btn-sm btn-primary me-2"
+                          className="btn btn-sm btn-primary ml-2 "
                           data-toggle="modal"
                           onClick={() => {
                             setrecipeid(takeaway._id);
@@ -1144,7 +1144,7 @@ data-target="#deleteProductModal"
                       <td>
                         <button
                               data-target="#editRecipeModal"
-                          className="btn btn-sm btn-primary me-2"
+                          className="btn btn-sm btn-primary ml-2 "
                           data-toggle="modal"
                           onClick={() => {
                             setrecipeid(delivery._id);

@@ -731,7 +731,7 @@ const Products = () => {
                             {productPermission && productPermission.update && (
                               <button
                                 data-target="#editProductModal"
-                                className="btn btn-sm btn-primary me-2"
+                                className="btn btn-sm btn-primary ml-2 "
                                 data-toggle="modal"
                                 onClick={() => {
                                   handelEditProductModal(product);
