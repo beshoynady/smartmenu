@@ -14,7 +14,7 @@ const StoreSchema = new mongoose.Schema(
       trim: true,
       required: true,
       unique: true,
-      match: /^[A-Z0-9]{1,10}$/,
+      match: /^[a-zA-Z0-9]{1,10}$/,
     },
     description: {
       type: String,
