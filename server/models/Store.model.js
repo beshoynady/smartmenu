@@ -11,10 +11,16 @@ const StoreSchema = new mongoose.Schema(
     },
     storeCode: {
       type: String,
-      trim: true,
       required: true,
       unique: true,
-      match: /^[a-zA-Z0-9]{1,10}$/,
+      uppercase: true,
+      trim: true,
+      validate: {
+        validator: function (value) {
+          return /^[A-Z0-9]{1,10}$/.test(value);
+        },
+        message: "storeCode must be 1-10 uppercase letters or digits only.",
+      },
     },
     description: {
       type: String,

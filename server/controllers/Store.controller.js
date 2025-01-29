@@ -9,8 +9,9 @@ const createStore = async (req, res, next) => {
       description,
       address,
       storekeeper,
-      status, // Optional field
+      status,
     } = req.body;
+
     const createdBy = req.employee.id; // Assume the logged-in employee's ID is available
 
     // Validate required fields
