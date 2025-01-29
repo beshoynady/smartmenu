@@ -520,8 +520,8 @@ const Tables = () => {
                         </td>
                         <td>{table.tableCode}</td>
                         <td>
-                           <button
-data-target="qrTableModal"
+                          <button
+                            data-target="qrTableModal"
                             className="btn btn-sm btn-primary me-2"
                             data-toggle="modal"
                             onClick={() => {
@@ -538,11 +538,11 @@ data-target="qrTableModal"
                             >
                               qr_code_2_add
                             </span>
-                          </a>
+                          </button>
                         </td>
                         <td>
-                           <button
-data-target="#editTableModal"
+                          <button
+                            data-target="#editTableModal"
                             className="btn btn-sm btn-primary me-2"
                             data-toggle="modal"
                             onClick={() => {
@@ -559,11 +559,11 @@ data-target="#editTableModal"
                               title="Edit"
                             >
                               &#xE254;
-                                </i>
-                              </button>
+                            </i>
+                          </button>
 
-                           <button
-data-target="#deleteTableModal"
+                          <button
+                            data-target="#deleteTableModal"
                             className="btn btn-sm btn-danger"
                             data-toggle="modal"
                             onClick={() => settableid(table._id)}
@@ -574,8 +574,8 @@ data-target="#deleteTableModal"
                               title="Delete"
                             >
                               &#xE872;
-                                </i>
-                              </button>
+                            </i>
+                          </button>
                         </td>
                       </tr>
                     );

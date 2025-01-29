@@ -5,8 +5,6 @@ import { dataContext } from "../../../../App";
 import "../orders/Orders.css";
 
 const Products = () => {
-  
-
   const {
     restaurantData,
     permissionsList,
@@ -23,9 +21,9 @@ const Products = () => {
     endPagination,
     setStartPagination,
     setEndPagination,
-  apiUrl,
-handleGetTokenAndConfig,
-} = useContext(dataContext);
+    apiUrl,
+    handleGetTokenAndConfig,
+  } = useContext(dataContext);
 
   const productPermission =
     permissionsList &&
@@ -732,8 +730,7 @@ handleGetTokenAndConfig,
                           <td>
                             {productPermission && productPermission.update && (
                               <button
-
-data-target="#editProductModal"
+                                data-target="#editProductModal"
                                 className="btn btn-sm btn-primary me-2"
                                 data-toggle="modal"
                                 onClick={() => {
@@ -747,12 +744,11 @@ data-target="#editProductModal"
                                 >
                                   &#xE254;
                                 </i>
-                              </a>
+                              </button>
                             )}
                             {productPermission && productPermission.delete && (
                               <button
-
-data-target="#deleteProductModal"
+                                data-target="#deleteProductModal"
                                 className="btn btn-sm btn-danger"
                                 data-toggle="modal"
                                 onClick={() => setproductId(product._id)}
@@ -1348,9 +1344,13 @@ data-target="#deleteProductModal"
                     form="carform"
                     onChange={(e) => setpreparationSection(e.target.value)}
                   >
-                    {preparationSection?<option value={preparationSection}>
-                      {preparationSection}
-                    </option>:'لم يتم تحديد قسم'}
+                    {preparationSection ? (
+                      <option value={preparationSection}>
+                        {preparationSection}
+                      </option>
+                    ) : (
+                      "لم يتم تحديد قسم"
+                    )}
 
                     {/* {preparationSectionList.map((section, i) => {
                       return (
@@ -1360,9 +1360,17 @@ data-target="#deleteProductModal"
                       );
                     })} */}
 
-                    {preparationSection?<option value={preparationSection._id}>
-                      {allPreparationSections.find(section=>section._id===preparationSection)?.name}
-                    </option>:'لم يتم تحديد قسم'}
+                    {preparationSection ? (
+                      <option value={preparationSection._id}>
+                        {
+                          allPreparationSections.find(
+                            (section) => section._id === preparationSection
+                          )?.name
+                        }
+                      </option>
+                    ) : (
+                      "لم يتم تحديد قسم"
+                    )}
                     {allPreparationSections.map((section, i) => {
                       return (
                         <option value={section._id} key={i}>

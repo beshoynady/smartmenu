@@ -21,7 +21,10 @@ const Purchase = () => {
     startPagination,
     endPagination,
     setStartPagination,
-    setEndPagination, handleGetTokenAndConfig, apiUrl } = useContext(dataContext)
+    setEndPagination,
+    handleGetTokenAndConfig,
+    apiUrl,
+  } = useContext(dataContext);
 
   const purchasePermission = permissionsList?.filter(
     (permission) => permission.resource === "Purchases"
@@ -1035,8 +1038,8 @@ const Purchase = () => {
                         <td>{invoice.notes}</td>
                         <td>
                           {purchasePermission && purchasePermission.read && (
-                             <button
-data-target="viewPurchaseModal"
+                            <button
+                              data-target="viewPurchaseModal"
                               data-toggle="modal"
                               onClick={() => {
                                 getInvoice(invoice._id);
@@ -1049,7 +1052,7 @@ data-target="viewPurchaseModal"
                               >
                                 &#xE417;
                               </i>
-                            </a>
+                            </button>
                           )}
                         </td>
                       </tr>

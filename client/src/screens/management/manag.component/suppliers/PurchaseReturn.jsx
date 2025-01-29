@@ -959,8 +959,7 @@ const PurchaseReturn = () => {
                           {purchaseReturnPermission &&
                             purchaseReturnPermission.read && (
                               <button
-
-data-target="#viewPurchaseReturnModal"
+                                data-target="#viewPurchaseReturnModal"
                                 data-toggle="modal"
                                 onClick={() => {
                                   getReturnInvoice(returnInvoice._id);
@@ -971,9 +970,9 @@ data-target="#viewPurchaseReturnModal"
                                   data-toggle="tooltip"
                                   title="aye"
                                 >
-                                  &#xE417;
+                                  &#xE417;{" "}
                                 </i>
-                              </a>
+                              </button>
                             )}
                           {/* <a href="#deleteStockactionModal" className="btn btn-sm btn-danger" data-toggle="modal" onClick={() => }><i className="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a> */}
                         </td>

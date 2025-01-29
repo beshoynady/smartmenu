@@ -877,8 +877,8 @@ data-target="#editStockactionModal"
                                   title="Edit"
                                 >
                                   &#xE254;
-                                </i>
-                              </a>
+                          </i>
+                        </button>
                             )}
                           {stockMovementPermission &&
                             stockMovementPermission.delete && (
