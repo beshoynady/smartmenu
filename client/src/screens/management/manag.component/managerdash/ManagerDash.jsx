@@ -1265,7 +1265,7 @@ const ManagerDash = () => {
                               <td>
                                 {recent.payment_status === "Pending" ? (
                                   <button
-                            data-target="paymentModal"
+                                    data-target="paymentModal"
                                     className="btn btn-primary text-light"
                                     data-toggle="modal"
                                     onClick={() => {
@@ -1273,7 +1273,7 @@ const ManagerDash = () => {
                                     }}
                                   >
                                     دفع
-                                  </a>
+                                  </button>
                                 ) : (
                                   "تم الدفع"
                                 )}

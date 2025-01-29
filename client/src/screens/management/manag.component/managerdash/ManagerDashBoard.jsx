@@ -17,10 +17,11 @@ import "@coreui/coreui/dist/css/coreui.min.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const ManagerDashBoard = () => {
-
   const getStyle = (variable) => {
-  return getComputedStyle(document.documentElement).getPropertyValue(variable);
-};
+    return getComputedStyle(document.documentElement).getPropertyValue(
+      variable
+    );
+  };
 
   return (
     <section
@@ -443,7 +444,8 @@ const ManagerDashBoard = () => {
           </CRow>
         </div>
         <div className="w-100 h-auto d-flex flex-wrap ">
-          <CChart className="col-md-6 col-12"
+          <CChart
+            className="col-md-6 col-12"
             type="bar"
             data={{
               labels: [
@@ -493,7 +495,8 @@ const ManagerDashBoard = () => {
             }}
           />
 
-          <CChart className="col-md-6 col-12"
+          <CChart
+            className="col-md-6 col-12"
             type="polarArea"
             data={{
               labels: ["Red", "Green", "Yellow", "Grey", "Blue"],

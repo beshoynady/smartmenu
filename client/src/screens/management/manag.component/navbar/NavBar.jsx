@@ -51,11 +51,9 @@ const NavBar = () => {
     BarSocket,
     GrillSocket,
     waiterSocket,
-  apiUrl,
-handleGetTokenAndConfig,
-} = useContext(dataContext);
-
- 
+    apiUrl,
+    handleGetTokenAndConfig,
+  } = useContext(dataContext);
 
   const permissionUserMassage = permissionsList?.filter(
     (permission) => permission.resource === "Messages"
@@ -191,32 +189,34 @@ handleGetTokenAndConfig,
       const parts = notification.split("-");
       const waiterId = parts[1] || null;
       const currentWaiterId = employeeLoginInfo.id;
-      console.log({employeeLoginInfo, notification, parts, waiterId, currentWaiterId});
+      console.log({
+        employeeLoginInfo,
+        notification,
+        parts,
+        waiterId,
+        currentWaiterId,
+      });
 
-        const notificationText = parts[0];
-        // Check if the waiter id matches the current user's waiter id
-        if (waiterId === currentWaiterId) {
-          // Assuming currentWaiterId is the ID of the current waiter
-          setNotifications((prevNotifications) => {
-            const updatedNotifications = [
-              ...prevNotifications,
-              notificationText,
-            ];
-            setIsRefresh(updatedNotifications.length);
+      const notificationText = parts[0];
+      // Check if the waiter id matches the current user's waiter id
+      if (waiterId === currentWaiterId) {
+        // Assuming currentWaiterId is the ID of the current waiter
+        setNotifications((prevNotifications) => {
+          const updatedNotifications = [...prevNotifications, notificationText];
+          setIsRefresh(updatedNotifications.length);
 
-            // Save notifications to localStorage
-            localStorage.setItem(
-              "notifications",
-              JSON.stringify(updatedNotifications)
-            );
-            const audio = new Audio(notificationSound);
-            audio.play().catch((error) => {
-              console.error("Error playing sound:", error);
-            });
-            return updatedNotifications;
+          // Save notifications to localStorage
+          localStorage.setItem(
+            "notifications",
+            JSON.stringify(updatedNotifications)
+          );
+          const audio = new Audio(notificationSound);
+          audio.play().catch((error) => {
+            console.error("Error playing sound:", error);
           });
-        }
-      else {
+          return updatedNotifications;
+        });
+      } else {
         setNotifications((prevNotifications) => {
           const updatedNotifications = [...prevNotifications, notification];
           // Save notifications to localStorage
@@ -243,21 +243,13 @@ handleGetTokenAndConfig,
       cashierSocket.on("neworder", handleNewOrderNotification);
       cashierSocket.on("helprequest", handleNewOrderNotification);
       cashierSocket.on("orderReady", handleNewOrderNotification);
-    } else if (
-      employeeLoginInfo.role === "chef"
-    ) {
+    } else if (employeeLoginInfo.role === "chef") {
       kitchenSocket.on("orderkitchen", handleNewOrderNotification);
-    } else if (
-      employeeLoginInfo.role === "Bartender"
-    ) {
+    } else if (employeeLoginInfo.role === "Bartender") {
       BarSocket.on("orderBar", handleNewOrderNotification);
-    } else if (
-      employeeLoginInfo.role === "Grill Chef"
-    ) {
+    } else if (employeeLoginInfo.role === "Grill Chef") {
       GrillSocket.on("orderGrill", handleNewOrderNotification);
-    } else if (
-      employeeLoginInfo.role === "waiter"
-    ) {
+    } else if (employeeLoginInfo.role === "waiter") {
       waiterSocket.on("orderReady", handleNewOrderNotification);
       waiterSocket.on("neworder", handleNewOrderNotification);
       waiterSocket.on("helprequest", handleNewOrderNotification);

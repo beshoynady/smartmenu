@@ -1325,7 +1325,7 @@ const POS = () => {
               </a>
             )}
 
-            <a
+            <button
               type="button"
               style={{ height: "60px" }}
               className="col-3 d-flex align-items-center justify-content-center text-nowrap btn bg-success"
@@ -1337,7 +1337,7 @@ const POS = () => {
               }}
             >
               دفع
-            </a>
+            </button>
             <a
               type="button"
               style={{ height: "60px" }}
@@ -1347,7 +1347,7 @@ const POS = () => {
             >
               دفع جزء
             </a>
-            <a
+            <button
               type="button"
               style={{ height: "60px" }}
               className="col-3 d-flex align-items-center justify-content-center text-nowrap btn btn-success"
@@ -1359,7 +1359,7 @@ const POS = () => {
               }}
             >
               طباعة
-            </a>
+            </button>
             <button
               type="button"
               style={{ height: "60px" }}
