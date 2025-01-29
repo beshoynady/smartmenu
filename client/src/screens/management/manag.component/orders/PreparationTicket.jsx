@@ -420,10 +420,10 @@ handleGetTokenAndConfig,
                         </td>
 
                         <td>
-                          {/* <a href="#editOrderModal" className="edit" data-toggle="modal"><i className="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a> */}
-                          <a
-                            href="#deletePreparationTicketModal"
-                            className="delete"
+                          {/* <a href="#editOrderModal" className="btn btn-sm btn-primary me-2" data-toggle="modal"><i className="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a> */}
+                           <button
+data-target="#deletePreparationTicketModal"
+                            className="btn btn-sm btn-danger"
                             data-toggle="modal"
                             onClick={() => setPreparationTicketId(Ticket._id)}
                           >
@@ -433,8 +433,8 @@ handleGetTokenAndConfig,
                               title="Delete"
                             >
                               &#xE872;
-                            </i>
-                          </a>
+                                </i>
+                              </button>
                         </td>
                       </tr>
                     );

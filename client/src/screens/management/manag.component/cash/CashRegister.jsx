@@ -5,8 +5,6 @@ import { toast } from "react-toastify";
 import "../orders/Orders.css";
 
 const CashRegister = () => {
-  
-
   const {
     permissionsList,
     setisLoading,
@@ -15,9 +13,9 @@ const CashRegister = () => {
     endPagination,
     setStartPagination,
     setEndPagination,
-  apiUrl,
-handleGetTokenAndConfig,
-} = useContext(dataContext);
+    apiUrl,
+    handleGetTokenAndConfig,
+  } = useContext(dataContext);
 
   const cashRegisterPermissions = permissionsList?.filter(
     (permission) => permission.resource === "Cash Register"
@@ -31,19 +29,23 @@ handleGetTokenAndConfig,
   const [employeeName, setemployeeName] = useState("");
   const [cashID, setcashID] = useState("");
 
-
   // Handle Axios error
   const handleAxiosError = (error, errorMessage) => {
     if (error.response) {
-      console.error('Server responded with status code:', error.response.status);
-      console.error('Error message:', error.response.data);
+      console.error(
+        "Server responded with status code:",
+        error.response.status
+      );
+      console.error("Error message:", error.response.data);
       toast.error(errorMessage);
     } else if (error.request) {
-      console.error('No response received from server.');
-      toast.error('لم يتم استقبال رد من الخادم. الرجاء التحقق من اتصالك بالإنترنت.');
+      console.error("No response received from server.");
+      toast.error(
+        "لم يتم استقبال رد من الخادم. الرجاء التحقق من اتصالك بالإنترنت."
+      );
     } else {
-      console.error('An unexpected error occurred:', error.message);
-      toast.error('حدث خطأ غير متوقع. رجاء المحاولة لاحقاً.');
+      console.error("An unexpected error occurred:", error.message);
+      toast.error("حدث خطأ غير متوقع. رجاء المحاولة لاحقاً.");
     }
   };
 
@@ -61,7 +63,10 @@ handleGetTokenAndConfig,
       }
       // console.log({ data });
     } catch (error) {
-      handleAxiosError(error, 'حدث خطأ أثناء استرجاع الموظفين. رجاء المحاولة لاحقاً.');
+      handleAxiosError(
+        error,
+        "حدث خطأ أثناء استرجاع الموظفين. رجاء المحاولة لاحقاً."
+      );
     }
   };
 
@@ -149,19 +154,22 @@ handleGetTokenAndConfig,
       toast.warn("ليس لك صلاحية لحذف حسابات الخزينه");
       return;
     }
-    
+
     try {
-      const getCashRegister =  await axios.get(
+      const getCashRegister = await axios.get(
         `${apiUrl}/api/cashregister/${cashID}`,
         config
       );
-      const cashRegisterData = getCashRegister.data
-      const balance = cashRegisterData.balance
-      if(balance > 0){
-        toast.warn('لا يمكن حذف الخزينه لان بها رصيد')
-        return
+      const cashRegisterData = getCashRegister.data;
+      const balance = cashRegisterData.balance;
+      if (balance > 0) {
+        toast.warn("لا يمكن حذف الخزينه لان بها رصيد");
+        return;
       }
-      const response = await axios.delete(`${apiUrl}/api/cashregister/${cashID}`, config);
+      const response = await axios.delete(
+        `${apiUrl}/api/cashregister/${cashID}`,
+        config
+      );
       toast.success("تم حذف حساب الخزينه بنجاح");
       getAllCashRegisters();
     } catch (err) {
@@ -179,16 +187,16 @@ handleGetTokenAndConfig,
     }
     try {
       for (const Id of selectedIds) {
-        const getCashRegister =  await axios.get(
+        const getCashRegister = await axios.get(
           `${apiUrl}/api/cashregister/${Id}`,
           config
         );
-        const cashRegisterData = getCashRegister.data
-        const balance = cashRegisterData.balance
-        if(balance>0){
-          toast.warn(`لا يمكن حذف خزينه ${cashRegisterData.name} لان بها رصيد`)
+        const cashRegisterData = getCashRegister.data;
+        const balance = cashRegisterData.balance;
+        if (balance > 0) {
+          toast.warn(`لا يمكن حذف خزينه ${cashRegisterData.name} لان بها رصيد`);
           getAllCashRegisters();
-          return
+          return;
         }
 
         await axios.delete(`${apiUrl}/api/order/${Id}`, config);
@@ -257,26 +265,26 @@ handleGetTokenAndConfig,
                 </h2>
               </div>
               <div className="col-12 col-md-6 p-0 m-0 d-flex flex-wrap aliegn-items-center justify-content-end print-hide">
-                {cashRegisterPermissions?.create &&
-                <a
-                  href="#addCashRegisterModal"
-                  className="d-flex align-items-center justify-content-center h-100 m-0 btn btn-success"
-                  data-toggle="modal"
-                >
-                  {" "}
-                  <span>اضافه خزنه</span>
-                </a>
-                }
-                {cashRegisterPermissions?.delete &&
-                <a
-                  href="#deleteListCashRegisterModal"
-                  className="d-flex align-items-center justify-content-center h-100 m-0 btn btn-danger"
-                  data-toggle="modal"
-                >
-                  {" "}
-                  <span>حذف</span>
-                </a>
-                }
+                {cashRegisterPermissions?.create && (
+                  <a
+                    href="#addCashRegisterModal"
+                    className="d-flex align-items-center justify-content-center h-100 m-0 btn btn-success"
+                    data-toggle="modal"
+                  >
+                    {" "}
+                    <span>اضافه خزنه</span>
+                  </a>
+                )}
+                {cashRegisterPermissions?.delete && (
+                  <a
+                    href="#deleteListCashRegisterModal"
+                    className="d-flex align-items-center justify-content-center h-100 m-0 btn btn-danger"
+                    data-toggle="modal"
+                  >
+                    {" "}
+                    <span>حذف</span>
+                  </a>
+                )}
               </div>
             </div>
           </div>
@@ -378,46 +386,46 @@ handleGetTokenAndConfig,
                           <td>{cashRegister.employee?.fullname}</td>
                           <td>{cashRegister.balance}</td>
                           <td>
-                            {cashRegisterPermissions?.update &&
-                            <a
-                              href="#editCashRegisterModal"
-                              className="edit"
-                              data-toggle="modal"
-                              onClick={() => {
-                                setcashID(cashRegister._id);
-                                setname(cashRegister.name);
-                                setemployee(cashRegister.employee._id);
-                                setemployeeName(
-                                  cashRegister.employee?.fullname
-                                );
-                                setbalance(cashRegister.balance);
-                              }}
-                            >
-                              <i
-                                className="material-icons"
-                                data-toggle="tooltip"
-                                title="Edit"
+                            {cashRegisterPermissions?.update && (
+                              <button
+                                data-target="#editCashRegisterModal"
+                                className="btn btn-sm btn-primary me-2"
+                                data-toggle="modal"
+                                onClick={() => {
+                                  setcashID(cashRegister._id);
+                                  setname(cashRegister.name);
+                                  setemployee(cashRegister.employee._id);
+                                  setemployeeName(
+                                    cashRegister.employee?.fullname
+                                  );
+                                  setbalance(cashRegister.balance);
+                                }}
                               >
-                                &#xE254;
-                              </i>
-                            </a>
-                            }
-                            {cashRegisterPermissions?.delete &&
-                            <a
-                              href="#deleteCashRegisterModal"
-                              className="delete"
-                              data-toggle="modal"
-                              onClick={() => setcashID(cashRegister._id)}
-                            >
-                              <i
-                                className="material-icons"
-                                data-toggle="tooltip"
-                                title="Delete"
+                                <i
+                                  className="material-icons"
+                                  data-toggle="tooltip"
+                                  title="Edit"
+                                >
+                                  &#xE254;
+                                </i>
+                              </button>
+                            )}
+                            {cashRegisterPermissions?.delete && (
+                              <button
+                                data-target="#deleteCashRegisterModal"
+                                className="btn btn-sm btn-danger"
+                                data-toggle="modal"
+                                onClick={() => setcashID(cashRegister._id)}
                               >
-                                &#xE872;
-                              </i>
-                            </a>
-                            }
+                                <i
+                                  className="material-icons"
+                                  data-toggle="tooltip"
+                                  title="Delete"
+                                >
+                                  &#xE872;
+                                </i>
+                              </button>
+                            )}
                           </td>
                         </tr>
                       );
@@ -474,7 +482,6 @@ handleGetTokenAndConfig,
           </div>
         </div>
       </div>
-
 
       <div id="addCashRegisterModal" className="modal fade">
         <div className="modal-dialog modal-lg">
@@ -543,8 +550,6 @@ handleGetTokenAndConfig,
           </div>
         </div>
       </div>
-
-
 
       <div id="editCashRegisterModal" className="modal fade">
         <div className="modal-dialog modal-lg">
@@ -616,8 +621,6 @@ handleGetTokenAndConfig,
           </div>
         </div>
       </div>
-
-
 
       <div id="deleteCashRegisterModal" className="modal fade">
         <div className="modal-dialog modal-lg">

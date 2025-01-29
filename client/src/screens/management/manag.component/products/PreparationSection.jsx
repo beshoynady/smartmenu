@@ -279,9 +279,9 @@ const PreparationSection = () => {
                             : "غير معروف"}
                         </td>
                         <td>
-                          <a
-                            href="#editPreparationSectionModal"
-                            className="edit"
+                           <button
+data-target="#editPreparationSectionModal"
+                            className="btn btn-sm btn-primary me-2"
                             data-toggle="modal"
                             onClick={() =>
                               handlePreparationSectionData(PreparationSection)
@@ -293,12 +293,12 @@ const PreparationSection = () => {
                               title="Edit"
                             >
                               &#xE254;
-                            </i>
-                          </a>
+                                </i>
+                              </button>
 
-                          <a
-                            href="#deletePreparationSectionModal"
-                            className="delete"
+                           <button
+data-target="#deletePreparationSectionModal"
+                            className="btn btn-sm btn-danger"
                             data-toggle="modal"
                             onClick={() =>
                               setPreparationSectionId(PreparationSection._id)
@@ -310,8 +310,8 @@ const PreparationSection = () => {
                               title="Delete"
                             >
                               &#xE872;
-                            </i>
-                          </a>
+                                </i>
+                              </button>
                         </td>
                       </tr>
                     );

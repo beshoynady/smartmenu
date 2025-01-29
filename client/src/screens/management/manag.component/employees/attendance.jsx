@@ -707,8 +707,8 @@ const AttendanceManagement = () => {
                         </td>
                         <td>
                           {Record.arrivalDate && !Record.departureDate ? (
-                            <a
-                              href="#departureModal"
+                             <button
+data-target="#departureModal"
                               className="edit h-100 btn btn-info"
                               data-toggle="modal"
                               onClick={() => handleEditRecord(Record)}
@@ -720,9 +720,9 @@ const AttendanceManagement = () => {
                           )}
                         </td>
                         <td className="d-flex flex-nowrap">
-                          <a
-                            href="#editRecordModal"
-                            className="edit"
+                           <button
+data-target="#editRecordModal"
+                            className="btn btn-sm btn-primary me-2"
                             data-toggle="modal"
                             onClick={() => handleEditRecord(Record)}
                           >
@@ -732,12 +732,12 @@ const AttendanceManagement = () => {
                               title="Edit"
                             >
                               &#xE254;
-                            </i>
-                          </a>
+                                </i>
+                              </button>
 
-                          <a
-                            href="#deleteRecordModal"
-                            className="delete"
+                           <button
+data-target="#deleteRecordModal"
+                            className="btn btn-sm btn-danger"
                             data-toggle="modal"
                             onClick={() => setRecordId(Record._id)}
                           >
@@ -747,8 +747,8 @@ const AttendanceManagement = () => {
                               title="Delete"
                             >
                               &#xE872;
-                            </i>
-                          </a>
+                                </i>
+                              </button>
                         </td>
                       </tr>
                     );

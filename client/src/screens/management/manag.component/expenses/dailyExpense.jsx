@@ -567,9 +567,9 @@ const DailyExpense = () => {
                           <td>{dailyexpense.paidBy?.username}</td>
                           <td>{formatDateTime(dailyexpense.date)}</td>
                           <td>
-                            <a
-                              href="#editDailyExpensesModal"
-                              className="edit"
+                             <button
+data-target="#editDailyExpensesModal"
+                              className="btn btn-sm btn-primary me-2"
                               data-toggle="modal"
                               onClick={() => {
                                 handlecashRegister(employeeLoginInfo.id);
@@ -597,10 +597,10 @@ const DailyExpense = () => {
                               >
                                 &#xE254;
                               </i>
-                            </a>
-                            <a
-                              href="#deleteDailyExpensesModal"
-                              className="delete"
+                            </button>
+                             <button
+data-target="#deleteDailyExpensesModal"
+                              className="btn btn-sm btn-danger"
                               data-toggle="modal"
                               onClick={() => {
                                 setexpenseId(dailyexpense.expenseId?._id);
@@ -620,7 +620,7 @@ const DailyExpense = () => {
                               >
                                 &#xE872;
                               </i>
-                            </a>
+                            </button>
                           </td>
                         </tr>
                       );

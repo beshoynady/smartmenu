@@ -535,9 +535,9 @@ const GrillConsumption = () => {
                         <td>{item.receivedBy?.username}</td>
                         <td>{formatDateTime(item.createdAt)}</td>
                         <td>
-                          <a
-                            href="#updategrillItemModal"
-                            className="edit"
+                           <button
+data-target="#updategrillItemModal"
+                            className="btn btn-sm btn-primary me-2"
                             data-toggle="modal"
                             onClick={() => {
                               setreceivedBy(employeeLoginInfo.id);
@@ -556,11 +556,11 @@ const GrillConsumption = () => {
                               title="Edit"
                             >
                               &#xE254;
-                            </i>
-                          </a>
-                          <a
-                            href="#deleteStockItemModal"
-                            className="delete"
+                                </i>
+                              </button>
+                           <button
+data-target="#deleteStockItemModal"
+                            className="btn btn-sm btn-danger"
                             data-toggle="modal"
                             onChange={() => setgrillItemId(item._id)}
                           >
@@ -570,8 +570,8 @@ const GrillConsumption = () => {
                               title="Delete"
                             >
                               &#xE872;
-                            </i>
-                          </a>
+                                </i>
+                              </button>
                         </td>
                       </tr>
                     );

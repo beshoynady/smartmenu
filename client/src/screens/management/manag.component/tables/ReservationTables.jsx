@@ -520,9 +520,9 @@ const ReservationTables = () => {
                         </select>
                       </td>
                       <td>
-                        <a
-                          href="#updatereservationModal"
-                          className="edit"
+                        <button
+                          data-target="#updatereservationModal"
+                          className="btn btn-sm btn-primary me-2"
                           data-toggle="modal"
                           onClick={(e) => {
                             setCustomerName(reservation.customerName);
@@ -545,7 +545,7 @@ const ReservationTables = () => {
                           >
                             &#xE254;
                           </i>
-                        </a>
+                        </button>
                       </td>
                     </tr>
                   );

@@ -1,12 +1,10 @@
-import React, { useState, useEffect,useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { dataContext } from "../../../../App";
 import "../orders/Orders.css";
 
 const MenuCategory = () => {
- 
-
   const {
     allProducts,
     setisLoading,
@@ -15,9 +13,9 @@ const MenuCategory = () => {
     endPagination,
     setStartPagination,
     setEndPagination,
-  apiUrl,
-handleGetTokenAndConfig,
-} = useContext(dataContext);
+    apiUrl,
+    handleGetTokenAndConfig,
+  } = useContext(dataContext);
 
   const [categoryName, setcategoryName] = useState("");
   const [mainCategory, setmainCategory] = useState({});
@@ -122,7 +120,6 @@ handleGetTokenAndConfig,
   };
 
   const searchByCategory = (category) => {
-
     if (category) {
       const categories = allCategory
         ? allCategory.filter(
@@ -426,9 +423,9 @@ handleGetTokenAndConfig,
                             : "غير معروف"}
                         </td>
                         <td>
-                          <a
-                            href="#editCategoryModal"
-                            className="edit"
+                          <button
+                            data-target="#editCategoryModal"
+                            className="btn btn-sm btn-primary me-2"
                             data-toggle="modal"
                             onClick={() => handleCategoryData(category)}
                           >
@@ -439,11 +436,11 @@ handleGetTokenAndConfig,
                             >
                               &#xE254;
                             </i>
-                          </a>
+                          </button>
 
-                          <a
-                            href="#deleteCategoryModal"
-                            className="delete"
+                          <button
+                            data-target="#deleteCategoryModal"
+                            className="btn btn-sm btn-danger"
                             data-toggle="modal"
                             onClick={() => setcategoryId(category._id)}
                           >
@@ -454,7 +451,7 @@ handleGetTokenAndConfig,
                             >
                               &#xE872;
                             </i>
-                          </a>
+                          </button>
                         </td>
                       </tr>
                     );

@@ -827,8 +827,8 @@ const PayRoll = () => {
                               <td>{Roll.paidBy?.username}</td>
                               {Roll.isPaid === false ? (
                                 <td>
-                                  <a
-                                    href="#paidModal"
+                                  <button
+                            data-target="paidModal"
                                     type="button"
                                     data-toggle="modal"
                                     className="btn btn-primary text-light h-100 px-2 py-3 m-0"

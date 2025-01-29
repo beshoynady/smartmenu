@@ -385,9 +385,9 @@ handleGetTokenAndConfig,
                         </td>
                         <td>{formatDateTime(user.createdAt)}</td>
                         <td>
-                          <a
-                            href="#edituserModal"
-                            className="edit"
+                           <button
+data-target="#edituserModal"
+                            className="btn btn-sm btn-primary me-2"
                             data-toggle="modal"
                           >
                             <i
@@ -399,11 +399,11 @@ handleGetTokenAndConfig,
                               }}
                             >
                               &#xE254;
-                            </i>
-                          </a>
-                          <a
-                            href="#deleteuserModal"
-                            className="delete"
+                                </i>
+                              </button>
+                           <button
+data-target="#deleteuserModal"
+                            className="btn btn-sm btn-danger"
                             data-toggle="modal"
                           >
                             <i
@@ -413,8 +413,8 @@ handleGetTokenAndConfig,
                               //    onClick={() => setuserloyeeid(user._id)}
                             >
                               &#xE872;
-                            </i>
-                          </a>
+                                </i>
+                              </button>
                         </td>
                       </tr>
                     );

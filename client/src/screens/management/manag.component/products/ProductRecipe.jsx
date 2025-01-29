@@ -891,9 +891,9 @@ const ProductRecipe = () => {
                               Number(ingredient.itemId?.costPerPart)}
                           </td>
                           <td>
-                            <a
-                              href="#editRecipeModal"
-                              className="edit"
+                             <button
+data-target="#editRecipeModal"
+                              className="btn btn-sm btn-primary me-2"
                               data-toggle="modal"
                               onClick={() => {
                                 setrecipeid(ingredient._id);
@@ -911,11 +911,11 @@ const ProductRecipe = () => {
                               >
                                 &#xE254;
                               </i>
-                            </a>
+                            </button>
 
-                            <a
-                              href="#deleteProductModal"
-                              className="delete"
+                             <button
+data-target="#deleteProductModal"
+                              className="btn btn-sm btn-danger"
                               data-toggle="modal"
                               onClick={() => {
                                 setitemId(ingredient.itemId);
@@ -928,7 +928,7 @@ const ProductRecipe = () => {
                               >
                                 &#xE872;
                               </i>
-                            </a>
+                            </button>
                           </td>
                         </tr>
                       );
@@ -976,9 +976,9 @@ const ProductRecipe = () => {
                           )}
                       </td>
                       <td>
-                        <a
-                          href="#editRecipeModal"
-                          className="edit"
+                        <button
+                              data-target="#editRecipeModal"
+                          className="btn btn-sm btn-primary me-2"
                           data-toggle="modal"
                           onClick={() => {
                             setrecipeid(dineIn._id);
@@ -996,11 +996,11 @@ const ProductRecipe = () => {
                           >
                             &#xE254;
                           </i>
-                        </a>
+                        </button>
 
-                        <a
-                          href="#deleteProductModal"
-                          className="delete"
+                        <button
+                              data-target="#deleteProductModal"
+                          className="btn btn-sm btn-danger"
                           data-toggle="modal"
                           onClick={() => {
                             setitemId(dineIn.itemId);
@@ -1059,9 +1059,9 @@ const ProductRecipe = () => {
                           )}
                       </td>
                       <td>
-                        <a
-                          href="#editRecipeModal"
-                          className="edit"
+                        <button
+                              data-target="#editRecipeModal"
+                          className="btn btn-sm btn-primary me-2"
                           data-toggle="modal"
                           onClick={() => {
                             setrecipeid(takeaway._id);
@@ -1079,11 +1079,11 @@ const ProductRecipe = () => {
                           >
                             &#xE254;
                           </i>
-                        </a>
+                        </button>
 
-                        <a
-                          href="#deleteProductModal"
-                          className="delete"
+                        <button
+                              data-target="#deleteProductModal"
+                          className="btn btn-sm btn-danger"
                           data-toggle="modal"
                           onClick={() => {
                             setitemId(takeaway.itemId);
@@ -1142,9 +1142,9 @@ const ProductRecipe = () => {
                           )}
                       </td>
                       <td>
-                        <a
-                          href="#editRecipeModal"
-                          className="edit"
+                        <button
+                              data-target="#editRecipeModal"
+                          className="btn btn-sm btn-primary me-2"
                           data-toggle="modal"
                           onClick={() => {
                             setrecipeid(delivery._id);
@@ -1162,11 +1162,11 @@ const ProductRecipe = () => {
                           >
                             &#xE254;
                           </i>
-                        </a>
+                        </button>
 
-                        <a
-                          href="#deleteProductModal"
-                          className="delete"
+                        <button
+                              data-target="#deleteProductModal"
+                          className="btn btn-sm btn-danger"
                           data-toggle="modal"
                           onClick={() => {
                             setitemId(delivery.itemId);

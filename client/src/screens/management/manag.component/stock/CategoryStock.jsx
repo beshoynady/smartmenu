@@ -5,8 +5,6 @@ import { toast } from "react-toastify";
 import "../orders/Orders.css";
 
 const CategoryStock = () => {
-  
-
   const {
     restaurantData,
     permissionsList,
@@ -23,9 +21,9 @@ const CategoryStock = () => {
     endPagination,
     setStartPagination,
     setEndPagination,
-  apiUrl,
-handleGetTokenAndConfig,
-} = useContext(dataContext);
+    apiUrl,
+    handleGetTokenAndConfig,
+  } = useContext(dataContext);
 
   const stockCategoriesPermission =
     permissionsList &&
@@ -80,7 +78,7 @@ handleGetTokenAndConfig,
         toast.warn("ليس لك صلاحية لاضافه تصنيفات المخزن");
         return;
       }
-      
+
       // Validate fields
       if (!categoryName.trim() || !categoryCode.trim()) {
         toast.error("اسم التصنيف ورمز التصنيف مطلوبان");
@@ -286,15 +284,15 @@ handleGetTokenAndConfig,
                               stockCategoriesPermission.delete) && (
                               <div className="d-flex flex-wrap align-items-center justify-content-around">
                                 {stockCategoriesPermission.update && (
-                                  <a
-                                    href="#editCategoryStockModal"
+                                  <button
+                                    data-target="#editCategoryStockModal"
                                     onClick={() => {
                                       setCategoryName(categoryStock.name);
                                       setCategoryCode(categoryStock.code);
                                       setNotes(categoryStock.notes || "");
                                       setCategoryStockId(categoryStock._id);
                                     }}
-                                    className="edit"
+                                    className="btn btn-sm btn-primary me-2"
                                     data-toggle="modal"
                                   >
                                     <i
@@ -302,17 +300,17 @@ handleGetTokenAndConfig,
                                       data-toggle="tooltip"
                                       title="Edit"
                                     >
-                                      
+                                      &#xE254;
                                     </i>
-                                  </a>
+                                  </button>
                                 )}
                                 {stockCategoriesPermission.delete && (
-                                  <a
-                                    href="#deleteCategoryStockModal"
+                                  <button
+                                    data-target="#deleteCategoryStockModal"
                                     onClick={() =>
                                       setCategoryStockId(categoryStock._id)
                                     }
-                                    className="delete"
+                                    className="btn btn-sm btn-danger"
                                     data-toggle="modal"
                                   >
                                     <i
@@ -320,9 +318,9 @@ handleGetTokenAndConfig,
                                       data-toggle="tooltip"
                                       title="Delete"
                                     >
-                                      
+                                      &#xE872;
                                     </i>
-                                  </a>
+                                  </button>
                                 )}
                               </div>
                             )}

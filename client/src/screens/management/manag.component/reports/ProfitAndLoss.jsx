@@ -214,10 +214,10 @@ const ProfitAndLoss = () => {
     //                   <td>{formatDateTime(order.payment_date)}</td>
 
     //                   <td>
-    //                     {/* <a href="#editOrderModal" className="edit" data-toggle="modal"><i className="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a> */}
+    //                     {/* <a href="#editOrderModal" className="btn btn-sm btn-primary me-2" data-toggle="modal"><i className="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a> */}
     //                     <a
     //                       href="#deleteOrderModal"
-    //                       className="delete"
+    //                       className="btn btn-sm btn-danger"
     //                       data-toggle="modal"
     //                       onClick={() => setOrderId(order._id)}
     //                     >

@@ -470,9 +470,9 @@ const EmployeeTransactions = () => {
                       </td>
                       <td>
                         {employeeTransactionsPermission.update && (
-                          <a
-                            href="#editEmployeeTransactionsModal"
-                            className="edit"
+                           <button
+data-target="#editEmployeeTransactionsModal"
+                            className="btn btn-sm btn-primary me-2"
                             data-toggle="modal"
                           >
                             <i
@@ -489,13 +489,13 @@ const EmployeeTransactions = () => {
                               }}
                             >
                               &#xE254;
-                            </i>
-                          </a>
+                                </i>
+                              </button>
                         )}
                         {employeeTransactionsPermission.delete && (
-                          <a
-                            href="#deleteEmployeeTransactionsModal"
-                            className="delete"
+                           <button
+data-target="#deleteEmployeeTransactionsModal"
+                            className="btn btn-sm btn-danger"
                             data-toggle="modal"
                           >
                             <i
@@ -507,8 +507,8 @@ const EmployeeTransactions = () => {
                               }
                             >
                               &#xE872;
-                            </i>
-                          </a>
+                                </i>
+                              </button>
                         )}
                       </td>
                     </tr>

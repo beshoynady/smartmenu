@@ -731,9 +731,10 @@ handleGetTokenAndConfig,
                           <td>{product.available ? "متاح" : "غير متاح"}</td>
                           <td>
                             {productPermission && productPermission.update && (
-                              <a
-                                href="#editProductModal"
-                                className="edit"
+                              <button
+
+data-target="#editProductModal"
+                                className="btn btn-sm btn-primary me-2"
                                 data-toggle="modal"
                                 onClick={() => {
                                   handelEditProductModal(product);
@@ -749,9 +750,10 @@ handleGetTokenAndConfig,
                               </a>
                             )}
                             {productPermission && productPermission.delete && (
-                              <a
-                                href="#deleteProductModal"
-                                className="delete"
+                              <button
+
+data-target="#deleteProductModal"
+                                className="btn btn-sm btn-danger"
                                 data-toggle="modal"
                                 onClick={() => setproductId(product._id)}
                               >
@@ -762,7 +764,7 @@ handleGetTokenAndConfig,
                                 >
                                   &#xE872;
                                 </i>
-                              </a>
+                              </button>
                             )}
                           </td>
                         </tr>

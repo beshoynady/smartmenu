@@ -366,9 +366,9 @@ const Customers = () => {
                         <td>{customer.notes}</td>
                         <td>{formatDateTime(customer.createdAt)}</td>
                         <td>
-                          <a
-                            href="#editcustomerModal"
-                            className="edit"
+                          <button
+                            data-target="#editcustomerModal"
+                            className="btn btn-sm btn-primary me-2"
                             data-toggle="modal"
                           >
                             <i
@@ -382,10 +382,10 @@ const Customers = () => {
                             >
                               &#xE254;
                             </i>
-                          </a>
-                          <a
-                            href="#deletecustomerModal"
-                            className="delete"
+                          </button>
+                          <button
+                            data-target="#deletecustomerModal"
+                            className="btn btn-sm btn-danger"
                             data-toggle="modal"
                           >
                             <i
@@ -398,7 +398,7 @@ const Customers = () => {
                             >
                               &#xE872;
                             </i>
-                          </a>
+                          </button>
                         </td>
                       </tr>
                     );

@@ -610,9 +610,9 @@ handleGetTokenAndConfig,
                           {formatDateTime(consumption.createdAt) || "غير محدد"}
                         </td>
                         <td>
-                          <a
-                            href="#updateSectionItemModal"
-                            className="edit"
+                           <button
+data-target="#updateSectionItemModal"
+                            className="btn btn-sm btn-primary me-2"
                             data-toggle="modal"
                             onClick={() => {
                               setReceivedBy(employeeLoginInfo.id);
@@ -634,11 +634,11 @@ handleGetTokenAndConfig,
                               title="Edit"
                             >
                               &#xE254;
-                            </i>
-                          </a>
-                          <a
-                            href="#deleteStockItemModal"
-                            className="delete"
+                                </i>
+                              </button>
+                           <button
+data-target="#deleteStockItemModal"
+                            className="btn btn-sm btn-danger"
                             data-toggle="modal"
                             onClick={() => setConsumptionId(consumption._id)}
                           >
@@ -648,8 +648,8 @@ handleGetTokenAndConfig,
                               title="Delete"
                             >
                               &#xE872;
-                            </i>
-                          </a>
+                                </i>
+                              </button>
                         </td>
                       </tr>
                     );

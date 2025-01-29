@@ -574,9 +574,9 @@ const Suppliers = () => {
                         <td>{formatDateTime(supplier.createdAt)}</td>
                         <td>
                           {supplierDataPermission.update && (
-                            <a
-                              href="#editSupplierModal"
-                              className="edit"
+                            <button
+                              data-target="#editSupplierModal"
+                              className="btn btn-sm btn-primary me-2"
                               data-toggle="modal"
                               onClick={() => {
                                 getOneSuppliers(supplier._id);
@@ -589,13 +589,13 @@ const Suppliers = () => {
                               >
                                 &#xE254;
                               </i>
-                            </a>
+                            </button>
                           )}
 
                           {supplierDataPermission.delete && (
-                            <a
-                              href="#deleteSupplierModal"
-                              className="delete"
+                            <button
+                              data-target="#deleteSupplierModal"
+                              className="btn btn-sm btn-danger"
                               data-toggle="modal"
                               onClick={() => setsupplierId(supplier._id)}
                             >
@@ -606,7 +606,7 @@ const Suppliers = () => {
                               >
                                 &#xE872;
                               </i>
-                            </a>
+                            </button>
                           )}
                         </td>
                       </tr>

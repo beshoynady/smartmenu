@@ -330,9 +330,9 @@ handleGetTokenAndConfig,
                       <td>{message.isSeen ? "تم المشاهده" : "لم تشاهد"}</td>
                       <td>{formatDateTime(message.createdAt)}</td>
                       <td>
-                        <a
-                          href="#showMessageModal"
-                          className="edit"
+                        <button
+                              data-target="#showMessageModal"
+                          className="btn btn-sm btn-primary me-2"
                           data-toggle="modal"
                           onClick={(e) => {
                             updateisSeenMessage(e, JSON.stringify(message));
@@ -346,9 +346,9 @@ handleGetTokenAndConfig,
                             visibility
                           </i>
                         </a>
-                        <a
-                          href="#deletemessageModal"
-                          className="delete"
+                        <button
+                              data-target="#deletemessageModal"
+                          className="btn btn-sm btn-danger"
                           data-toggle="modal"
                           onClick={() => setmessageId(message._id)}
                         >

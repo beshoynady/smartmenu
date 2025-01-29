@@ -5,8 +5,6 @@ import { toast, ToastContainer } from "react-toastify";
 import "../orders/Orders.css";
 
 const BarConsumption = () => {
-  
-
   const {
     restaurantData,
     permissionsList,
@@ -23,16 +21,15 @@ const BarConsumption = () => {
     endPagination,
     setStartPagination,
     setEndPagination,
-  apiUrl,
-handleGetTokenAndConfig,
-} = useContext(dataContext);
+    apiUrl,
+    handleGetTokenAndConfig,
+  } = useContext(dataContext);
 
   const BarUsegePermission =
     permissionsList &&
     permissionsList.filter(
       (permission) => permission.resource === "Bar Usage"
     )[0];
-
 
   const [stockItemId, setstockItemId] = useState("");
   const [stockItemName, setstockItemName] = useState("");
@@ -248,7 +245,7 @@ handleGetTokenAndConfig,
   // // Function to retrieve all category stock
   // const getAllCategoryStock = async () => {
   //   try{
-// const config = await handleGetTokenAndConfig();
+  // const config = await handleGetTokenAndConfig();
   //     const res = await axios.get(apiUrl+'/api/categoryStock/');
   //     setAllCategoryStock(res.data);
   //   } catch (error) {
@@ -540,9 +537,9 @@ handleGetTokenAndConfig,
                         <td>{item.receivedBy?.username}</td>
                         <td>{formatDateTime(item.createdAt)}</td>
                         <td>
-                          <a
-                            href="#updateBarItemModal"
-                            className="edit"
+                          <button
+                            data-target="#updateBarItemModal"
+                            className="btn btn-sm btn-primary me-2"
                             data-toggle="modal"
                             onClick={() => {
                               setreceivedBy(employeeLoginInfo.id);
@@ -562,10 +559,10 @@ handleGetTokenAndConfig,
                             >
                               &#xE254;
                             </i>
-                          </a>
-                          <a
-                            href="#deleteStockItemModal"
-                            className="delete"
+                          </button>
+                          <button
+                            data-target="#deleteStockItemModal"
+                            className="btn btn-sm btn-danger"
                             data-toggle="modal"
                             onChange={() => setBarItemId(item._id)}
                           >
@@ -576,7 +573,7 @@ handleGetTokenAndConfig,
                             >
                               &#xE872;
                             </i>
-                          </a>
+                          </button>
                         </td>
                       </tr>
                     );

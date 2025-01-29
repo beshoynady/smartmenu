@@ -1264,8 +1264,8 @@ const ManagerDash = () => {
                               </td>
                               <td>
                                 {recent.payment_status === "Pending" ? (
-                                  <a
-                                    href="#paymentModal"
+                                  <button
+                            data-target="paymentModal"
                                     className="btn btn-primary text-light"
                                     data-toggle="modal"
                                     onClick={() => {

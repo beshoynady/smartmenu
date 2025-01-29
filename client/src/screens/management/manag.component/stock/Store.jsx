@@ -336,9 +336,9 @@ handleGetTokenAndConfig,
                       <td>{formatDateTime(store.createdAt)}</td>
                       <td>
                         {storePermissions && storePermissions?.update && (
-                          <a
-                            href="#editstoreModal"
-                            className="edit"
+                           <button
+data-target="#editstoreModal"
+                            className="btn btn-sm btn-primary me-2"
                             data-toggle="modal"
                             onClick={() => {
                               setStoreId(store._id);
@@ -356,13 +356,13 @@ handleGetTokenAndConfig,
                               title="Edit"
                             >
                               &#xE254;
-                            </i>
-                          </a>
+                                </i>
+                              </button>
                         )}
                         {storePermissions && storePermissions?.delete && (
-                          <a
-                            href="#deletestoreModal"
-                            className="delete"
+                           <button
+data-target="#deletestoreModal"
+                            className="btn btn-sm btn-danger"
                             data-toggle="modal"
                             onClick={() => setStoreId(store._id)}
                           >
@@ -372,8 +372,8 @@ handleGetTokenAndConfig,
                               title="Delete"
                             >
                               &#xE872;
-                            </i>
-                          </a>
+                                </i>
+                              </button>
                         )}
                       </td>
                     </tr>

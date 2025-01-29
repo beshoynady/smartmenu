@@ -22,7 +22,10 @@ const Orders = () => {
     startPagination,
     endPagination,
     setStartPagination,
-    setEndPagination, handleGetTokenAndConfig, apiUrl } = useContext(dataContext)
+    setEndPagination,
+    handleGetTokenAndConfig,
+    apiUrl,
+  } = useContext(dataContext);
 
   const [showModal, setShowModal] = useState(false);
 
@@ -424,10 +427,10 @@ const Orders = () => {
                         <td>{formatDateTime(order.payment_date)}</td>
 
                         <td>
-                          {/* <a href="#editOrderModal" className="edit" data-toggle="modal"><i className="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a> */}
-                          <a
-                            href="#deleteOrderModal"
-                            className="delete"
+                          {/* <a href="#editOrderModal" className="btn btn-sm btn-primary me-2" data-toggle="modal"><i className="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a> */}
+                          <button
+                            data-target="#deleteOrderModal"
+                            className="btn btn-sm btn-danger"
                             data-toggle="modal"
                             onClick={() => setOrderId(order._id)}
                           >
@@ -438,7 +441,7 @@ const Orders = () => {
                             >
                               &#xE872;
                             </i>
-                          </a>
+                          </button>
                         </td>
                       </tr>
                     );

@@ -520,9 +520,9 @@ const Tables = () => {
                         </td>
                         <td>{table.tableCode}</td>
                         <td>
-                          <a
-                            href="#qrTableModal"
-                            className="edit"
+                           <button
+data-target="qrTableModal"
+                            className="btn btn-sm btn-primary me-2"
                             data-toggle="modal"
                             onClick={() => {
                               settableid(table._id);
@@ -541,9 +541,9 @@ const Tables = () => {
                           </a>
                         </td>
                         <td>
-                          <a
-                            href="#editTableModal"
-                            className="edit"
+                           <button
+data-target="#editTableModal"
+                            className="btn btn-sm btn-primary me-2"
                             data-toggle="modal"
                             onClick={() => {
                               settableid(table._id);
@@ -559,12 +559,12 @@ const Tables = () => {
                               title="Edit"
                             >
                               &#xE254;
-                            </i>
-                          </a>
+                                </i>
+                              </button>
 
-                          <a
-                            href="#deleteTableModal"
-                            className="delete"
+                           <button
+data-target="#deleteTableModal"
+                            className="btn btn-sm btn-danger"
                             data-toggle="modal"
                             onClick={() => settableid(table._id)}
                           >
@@ -574,8 +574,8 @@ const Tables = () => {
                               title="Delete"
                             >
                               &#xE872;
-                            </i>
-                          </a>
+                                </i>
+                              </button>
                         </td>
                       </tr>
                     );

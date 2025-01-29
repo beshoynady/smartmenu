@@ -403,9 +403,9 @@ const ExpenseItem = () => {
                           <td>{expense.amount}</td>
                           <td>{formatDateTime(expense.createdAt)}</td>
                           <td>
-                            <a
-                              href="#editExpensesModal"
-                              className="edit"
+                             <button
+data-target="#editExpensesModal"
+                              className="btn btn-sm btn-primary me-2"
                               data-toggle="modal"
                               onClick={() => {
                                 setexpenseId(expense._id);
@@ -421,10 +421,10 @@ const ExpenseItem = () => {
                               >
                                 &#xE254;
                               </i>
-                            </a>
-                            <a
-                              href="#deleteExpensesModal"
-                              className="delete"
+                            </button>
+                             <button
+data-target="#deleteExpensesModal"
+                              className="btn btn-sm btn-danger"
                               data-toggle="modal"
                               onClick={() => setexpenseId(expense._id)}
                             >
@@ -435,7 +435,7 @@ const ExpenseItem = () => {
                               >
                                 &#xE872;
                               </i>
-                            </a>
+                            </button>
                           </td>
                         </tr>
                       );

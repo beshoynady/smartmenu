@@ -7,7 +7,6 @@ import { useReactToPrint } from "react-to-print";
 import "../orders/Orders.css";
 
 const Employees = () => {
- 
   const [isExecuting, setIsExecuting] = useState(false);
 
   const {
@@ -20,9 +19,9 @@ const Employees = () => {
     endPagination,
     setStartPagination,
     setEndPagination,
-  apiUrl,
-handleGetTokenAndConfig,
-} = useContext(dataContext);
+    apiUrl,
+    handleGetTokenAndConfig,
+  } = useContext(dataContext);
 
   const notify = (message, type) => {
     toast[type](message);
@@ -43,7 +42,16 @@ handleGetTokenAndConfig,
     "Bartender",
   ];
 
-  const roleAr = ["مالك", "مدير", "كاشير", "ويتر", "ديليفري مان", "شيف", "شيف شوايه", "البار مان"];
+  const roleAr = [
+    "مالك",
+    "مدير",
+    "كاشير",
+    "ويتر",
+    "ديليفري مان",
+    "شيف",
+    "شيف شوايه",
+    "البار مان",
+  ];
 
   const [listOfEmployees, setListOfEmployees] = useState([]);
 
@@ -638,9 +646,9 @@ handleGetTokenAndConfig,
                           </td>
                           <td>
                             {permissionsForEmployee?.update ? (
-                              <a
-                                href="#editEmployeeModal"
-                                className="edit"
+                              <button
+                                data-target="#editEmployeeModal"
+                                className="btn btn-sm btn-primary me-2"
                                 data-toggle="modal"
                               >
                                 <i
@@ -653,14 +661,14 @@ handleGetTokenAndConfig,
                                 >
                                   &#xE254;
                                 </i>
-                              </a>
+                              </button>
                             ) : (
                               ""
                             )}
                             {permissionsForEmployee?.delete ? (
-                              <a
-                                href="#deleteEmployeeModal"
-                                className="delete"
+                              <button
+                                data-target="#deleteEmployeeModal"
+                                className="btn btn-sm btn-danger"
                                 data-toggle="modal"
                               >
                                 <i
@@ -671,7 +679,7 @@ handleGetTokenAndConfig,
                                 >
                                   &#xE872;
                                 </i>
-                              </a>
+                              </button>
                             ) : (
                               ""
                             )}
@@ -755,17 +763,17 @@ handleGetTokenAndConfig,
       <div id="addEmployeeModal" className="modal fade">
         {permissionsForEmployee?.create && (
           <div className="modal-dialog modal-lg">
-                <div className="modal-header d-flex flex-wrap align-items-center text-light bg-primary">
-                  <h4 className="modal-title">إضافة موظف</h4>
-                  <button
-                    type="button"
-                    className="close m-0 p-1"
-                    data-dismiss="modal"
-                    aria-hidden="true"
-                  >
-                    &times;
-                  </button>
-                </div>
+            <div className="modal-header d-flex flex-wrap align-items-center text-light bg-primary">
+              <h4 className="modal-title">إضافة موظف</h4>
+              <button
+                type="button"
+                className="close m-0 p-1"
+                data-dismiss="modal"
+                aria-hidden="true"
+              >
+                &times;
+              </button>
+            </div>
             <div className="modal-content shadow-lg border-0 rounded">
               <form className="text-right" onSubmit={(e) => createEmployee(e)}>
                 <div className="modal-body d-flex flex-wrap align-items-center p-3 text-right">

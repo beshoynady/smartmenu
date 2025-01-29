@@ -576,9 +576,9 @@ const StockItem = () => {
                         <td>{item.notes}</td>
                         <td>
                           {stockItemPermission?.update && (
-                            <a
-                              href="#editStockItemModal"
-                              className="edit"
+                            <button
+                              data-target="#editStockItemModal"
+                              className="btn btn-sm btn-primary me-2"
                               data-toggle="modal"
                               onClick={() => {
                                 handelEditStockItemModal(JSON.stringify(item));
@@ -591,12 +591,12 @@ const StockItem = () => {
                               >
                                 &#xE254;
                               </i>
-                            </a>
+                            </button>
                           )}
                           {stockItemPermission?.delete && (
-                            <a
-                              href="#deleteStockItemModal"
-                              className="delete"
+                            <button
+                              data-target="#deleteStockItemModal"
+                              className="btn btn-sm btn-danger"
                               data-toggle="modal"
                               onClick={() => setStockItemId(item._id)}
                             >
@@ -607,7 +607,7 @@ const StockItem = () => {
                               >
                                 &#xE872;
                               </i>
-                            </a>
+                            </button>
                           )}
                         </td>
                       </tr>

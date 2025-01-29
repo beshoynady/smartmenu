@@ -1035,8 +1035,8 @@ const Purchase = () => {
                         <td>{invoice.notes}</td>
                         <td>
                           {purchasePermission && purchasePermission.read && (
-                            <a
-                              href="#viewPurchaseModal"
+                             <button
+data-target="viewPurchaseModal"
                               data-toggle="modal"
                               onClick={() => {
                                 getInvoice(invoice._id);

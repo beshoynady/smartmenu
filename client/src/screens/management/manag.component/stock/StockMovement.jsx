@@ -862,9 +862,10 @@ const StockMovement = () => {
                         {/* <td>
                           {stockMovementPermission &&
                             stockMovementPermission.update && (
-                              <a
-                                href="#editStockactionModal"
-                                className="edit"
+                              <button
+
+data-target="#editStockactionModal"
+                                className="btn btn-sm btn-primary me-2"
                                 data-toggle="modal"
                                 onClick={() => {
                                   setِActionId(action._id);
@@ -881,9 +882,10 @@ const StockMovement = () => {
                             )}
                           {stockMovementPermission &&
                             stockMovementPermission.delete && (
-                              <a
-                                href="#deleteStockactionModal"
-                                className="delete"
+                              <button
+
+data-target="#deleteStockactionModal"
+                                className="btn btn-sm btn-danger"
                                 data-toggle="modal"
                                 onClick={() => setِActionId(action._id)}
                               >
@@ -894,7 +896,7 @@ const StockMovement = () => {
                                 >
                                   &#xE872;
                                 </i>
-                              </a>
+                              </button>
                             )}
                         </td> */}
                       </tr>
