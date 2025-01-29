@@ -62,11 +62,9 @@ const StockItem = () => {
     const isChecked = e.target.checked;
 
     if (isChecked) {
-      setStores((prevStores) => [...prevStores, selectedStoreId ]);
+      setStores((prevStores) => [...prevStores, selectedStoreId]);
     } else {
-      const removeStoreId = stores.filter(
-        (store) => store !== selectedStoreId
-      );
+      const removeStoreId = stores.filter((store) => store !== selectedStoreId);
       setStores(removeStoreId);
     }
   };
@@ -803,6 +801,18 @@ const StockItem = () => {
 
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    عدد الاجزاء
+                  </label>
+                  <input
+                    type="number"
+                    min={0}
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    required
+                    onChange={(e) => setParts(e.target.value)}
+                  />
+                </div>
+                <div className="form-group col-12 col-md-6">
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
                     الحد الأدني
                   </label>
                   <input
@@ -1013,6 +1023,18 @@ const StockItem = () => {
                     className="form-control border-primary m-0 p-2 h-auto"
                     value={ingredientUnit}
                     onChange={(e) => setIngredientUnit(e.target.value)}
+                  />
+                </div>
+                <div className="form-group col-12 col-md-6">
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    عدد الاجزاء
+                  </label>
+                  <input
+                    type="number"
+                    min={0}
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    value={parts}
+                    onChange={(e) => setParts(e.target.value)}
                   />
                 </div>
                 <div className="form-group col-12 col-md-6">
