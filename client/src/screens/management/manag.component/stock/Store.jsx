@@ -5,8 +5,6 @@ import { toast } from "react-toastify";
 import "../orders/Orders.css";
 
 const Store = () => {
-  
-
   const {
     employeeLoginInfo,
     formatDate,
@@ -18,9 +16,9 @@ const Store = () => {
     endPagination,
     setStartPagination,
     setEndPagination,
-  apiUrl,
-handleGetTokenAndConfig,
-} = useContext(dataContext);
+    apiUrl,
+    handleGetTokenAndConfig,
+  } = useContext(dataContext);
 
   const storePermissions = permissionsList?.find(
     (permission) => permission.resource === "store"
@@ -117,16 +115,15 @@ handleGetTokenAndConfig,
     }
   };
 
-
   const addStorekeeper = () => {
     setStorekeeper([...storekeeper, ""]);
   };
-  
+
   const removeStorekeeper = (index) => {
     const newStorekeepers = storekeeper.filter((_, i) => i !== index);
     setStorekeeper(newStorekeepers);
   };
-  
+
   const handleStorekeeperChange = (e, index) => {
     const newStorekeepers = [...storekeeper];
     newStorekeepers[index] = e.target.value;
@@ -336,8 +333,8 @@ handleGetTokenAndConfig,
                       <td>{formatDateTime(store.createdAt)}</td>
                       <td>
                         {storePermissions && storePermissions?.update && (
-                           <button
-data-target="#editstoreModal"
+                          <button
+                            data-target="#editstoreModal"
                             className="btn btn-sm btn-primary ml-2 "
                             data-toggle="modal"
                             onClick={() => {
@@ -356,12 +353,12 @@ data-target="#editstoreModal"
                               title="Edit"
                             >
                               &#xE254;
-                                </i>
-                              </button>
+                            </i>
+                          </button>
                         )}
                         {storePermissions && storePermissions?.delete && (
-                           <button
-data-target="#deletestoreModal"
+                          <button
+                            data-target="#deletestoreModal"
                             className="btn btn-sm btn-danger"
                             data-toggle="modal"
                             onClick={() => setStoreId(store._id)}
@@ -372,8 +369,8 @@ data-target="#deletestoreModal"
                               title="Delete"
                             >
                               &#xE872;
-                                </i>
-                              </button>
+                            </i>
+                          </button>
                         )}
                       </td>
                     </tr>
@@ -598,8 +595,8 @@ data-target="#deletestoreModal"
                     onChange={(e) => setStatus(e.target.value)}
                   >
                     <option value="active">نشط</option>
-                    <option value="inactive">مغلق</option>
-                    <option value="pending">قيد الانتظار</option>
+                    <option value="inactive">غير نشط</option>
+                    <option value="closed">مغلق</option>
                   </select>
                 </div>
               </div>
@@ -624,7 +621,7 @@ data-target="#deletestoreModal"
       </div>
 
       {/* Edit Store Modal */}
-      <div id="editstoreModal" className="modal fade" role="dialog">
+      <div id="editStoreModal" className="modal fade" role="dialog">
         <div className="modal-dialog modal-lg">
           <div className="modal-content shadow-lg border-0 rounded">
             <div className="modal-header d-flex flex-wrap align-items-center text-light bg-primary">
@@ -641,14 +638,14 @@ data-target="#deletestoreModal"
               <div className="modal-body d-flex flex-wrap align-items-center p-3 text-right">
                 <div className="form-group col-12 col-md-6">
                   <label
-                    className="form-label text-wrap text-right fw-bolder p-0 m-0"
+                    className="form-label fw-bolder"
                     htmlFor="editStoreName"
                   >
                     اسم المخزن:
                   </label>
                   <input
                     type="text"
-                    className="form-control border-primary m-0 p-2 h-auto"
+                    className="form-control border-primary"
                     id="editStoreName"
                     required
                     value={storeName}
@@ -657,14 +654,14 @@ data-target="#deletestoreModal"
                 </div>
                 <div className="form-group col-12 col-md-6">
                   <label
-                    className="form-label text-wrap text-right fw-bolder p-0 m-0"
+                    className="form-label fw-bolder"
                     htmlFor="editStoreCode"
                   >
                     رمز المخزن:
                   </label>
                   <input
                     type="text"
-                    className="form-control border-primary m-0 p-2 h-auto"
+                    className="form-control border-primary"
                     id="editStoreCode"
                     required
                     value={storeCode}
@@ -673,14 +670,14 @@ data-target="#deletestoreModal"
                 </div>
                 <div className="form-group col-12 col-md-6">
                   <label
-                    className="form-label text-wrap text-right fw-bolder p-0 m-0"
+                    className="form-label fw-bolder"
                     htmlFor="editDescription"
                   >
                     الوصف:
                   </label>
                   <input
                     type="text"
-                    className="form-control border-primary m-0 p-2 h-auto"
+                    className="form-control border-primary"
                     id="editDescription"
                     required
                     value={description}
@@ -688,15 +685,12 @@ data-target="#deletestoreModal"
                   />
                 </div>
                 <div className="form-group col-12 col-md-6">
-                  <label
-                    className="form-label text-wrap text-right fw-bolder p-0 m-0"
-                    htmlFor="editAddress"
-                  >
+                  <label className="form-label fw-bolder" htmlFor="editAddress">
                     العنوان:
                   </label>
                   <input
                     type="text"
-                    className="form-control border-primary m-0 p-2 h-auto"
+                    className="form-control border-primary"
                     id="editAddress"
                     required
                     value={address}
@@ -705,31 +699,77 @@ data-target="#deletestoreModal"
                 </div>
                 <div className="form-group col-12 col-md-6">
                   <label
-                    className="form-label text-wrap text-right fw-bolder p-0 m-0"
+                    className="form-label fw-bolder"
                     htmlFor="editStorekeeper"
                   >
                     مسؤول المخزن:
                   </label>
-                  <input
-                    type="text"
-                    className="form-control border-primary m-0 p-2 h-auto"
-                    id="editStorekeeper"
-                    required
-                    value={storekeeper}
-                    onChange={(e) => setStorekeeper(e.target.value)}
-                  />
+                  <div id="storekeeper-list">
+                    {storekeeper.length > 0 ? (
+                      storekeeper.map((keeper, index) => (
+                        <div
+                          key={index}
+                          className="d-flex justify-content-between align-items-center"
+                        >
+                          <select
+                            className="form-control border-primary"
+                            value={keeper}
+                            onChange={(e) => handleStorekeeperChange(e, index)}
+                          >
+                            <option value="">اختر</option>
+                            {listOfEmployees.map((employee, i) => (
+                              <option value={employee._id} key={i}>
+                                {employee.fullname}
+                              </option>
+                            ))}
+                          </select>
+                          <button
+                            type="button"
+                            className="btn btn-danger"
+                            onClick={() => removeStorekeeper(index)}
+                          >
+                            حذف
+                          </button>
+                        </div>
+                      ))
+                    ) : (
+                      <p>لا يوجد مسؤولين للمخزن</p>
+                    )}
+                    <button
+                      type="button"
+                      className="btn btn-info mt-2"
+                      onClick={addStorekeeper}
+                    >
+                      إضافة مسؤول آخر
+                    </button>
+                  </div>
+                </div>
+                <div className="form-group col-12 col-md-6">
+                  <label className="form-label fw-bolder" htmlFor="editStatus">
+                    الحالة:
+                  </label>
+                  <select
+                    id="editStatus"
+                    className="form-control border-primary"
+                    value={status}
+                    onChange={(e) => setStatus(e.target.value)}
+                  >
+                    <option value="active">نشط</option>
+                    <option value="inactive">غير نشط</option>
+                    <option value="closed">مغلق</option>
+                  </select>
                 </div>
               </div>
-              <div className="modal-footer flex-nowrap d-flex flex-row align-items-center justify-content-between">
+              <div className="modal-footer d-flex flex-row align-items-center justify-content-between">
                 <button
                   type="submit"
-                  className="btn btn-success col-6 h-100 px-2 py-3 m-0"
+                  className="btn btn-success col-6 h-100 px-2 py-3"
                 >
                   تعديل
                 </button>
                 <button
                   type="button"
-                  className="btn btn-danger col-6 h-100 px-2 py-3 m-0"
+                  className="btn btn-danger col-6 h-100 px-2 py-3"
                   data-dismiss="modal"
                 >
                   إغلاق
