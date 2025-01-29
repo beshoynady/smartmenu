@@ -32,11 +32,7 @@ const StockItemSchema = new mongoose.Schema(
     storageUnit: {
       type: String,
       required: [true, "Storage unit is required."],
-      enum: {
-        values: ["Kg", "Litre", "Piece", "Box", "Packet"],
-        message:
-          "Storage unit must be one of ['Kg', 'Litre', 'Piece', 'Box', 'Packet'].",
-      },
+      trim: true,
     },
     parts: {
       type: Number,
@@ -46,6 +42,7 @@ const StockItemSchema = new mongoose.Schema(
     ingredientUnit: {
       type: String,
       required: [true, "Ingredient unit is required."],
+      trim: true,
     },
     minThreshold: {
       type: Number,
