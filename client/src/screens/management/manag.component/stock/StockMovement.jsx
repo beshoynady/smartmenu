@@ -3,6 +3,8 @@ import axios from "axios";
 import { dataContext } from "../../../../App";
 import { toast } from "react-toastify";
 import "../orders/Orders.css";
+import Employees from "../employees/Employees";
+import Suppliers from "../suppliers/Suppliers";
 
 const StockMovement = () => {
   const {
@@ -20,29 +22,16 @@ const StockMovement = () => {
     filterByTime,
     filterByDateRange,
     setStartDate,
-    setEndDate, handleGetTokenAndConfig, apiUrl } = useContext(dataContext)
+    setEndDate,
+    handleGetTokenAndConfig,
+    apiUrl,
+  } = useContext(dataContext);
 
   const stockMovementPermission =
     permissionsList &&
     permissionsList.filter(
       (perission) => perission.resource === "stock Movement"
     )[0];
-
-  // const [allrecipes, setAllRecipes] = useState([]);
-
-  // const getallrecipes = async () => {
-// const config = await handleGetTokenAndConfig();
-  //   try {
-  //     const response = await axios.get(`${apiUrl}/api/recipe`, config);
-  //     if (response) {
-  //       console.log(response);
-  //       const allRecipe = await response.data;
-  //       setAllRecipes(allRecipe);
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
 
   const sourceEn = [
     "Purchase",
@@ -69,9 +58,9 @@ const StockMovement = () => {
   const [itemId, setItemId] = useState("");
   const [storeId, setStoreId] = useState("");
   const [categoryId, setCategoryId] = useState("");
-  const [costMethod, setCostMethod] = useState("");
-  const [source, setSource] = useState("");
-  const [unit, setunit] = useState("");
+  const [costMethod, setCostMethod] = useState(""); // FIFO, LIFO, Weighted Average
+  const [source, setSource] = useState(""); // Purchase, Issuance, etc.
+  const [unit, setUnit] = useState("");
   const [inbound, setInbound] = useState({
     quantity: 0,
     unitCost: 0,
@@ -88,21 +77,42 @@ const StockMovement = () => {
     totalCost: 0,
   });
   const [remainingQuantity, setRemainingQuantity] = useState(0);
-  const [sourceDate, setsourceDate] = useState(new Date());
+  const [sourceDate, setSourceDate] = useState(new Date());
   const [notes, setNotes] = useState("");
+  const [quantity, setQuantity] = useState(0); // Total quantity for the movement
+  const [costUnit, setCostUnit] = useState(0); // Cost per unit
+  const [sender, setSender] = useState(""); // Sender (optional)
+  const [receiver, setReceiver] = useState(""); // Receiver (optional)
+  const [parts, setParts] = useState(); // Related parts (optional)
+  const [expirationDate, setExpirationDate] = useState(); // Expiry date for perishable items
+  const [expirationDateEnabled, setExpirationDateEnabled] = useState(false); // Toggle for expiration date field
 
-  // Additional fields based on the provided variables
-  const [quantity, setquantity] = useState(0);
-  const [costUnit, setcostUnit] = useState(0);
-
-  const [supplier, setSupplier] = useState("");
-  const [itemName, setItemName] = useState("");
-  const [parts, setParts] = useState();
-  const [expirationDate, setExpirationDate] = useState();
-  const [expirationDateEnabled, setExpirationDateEnabled] = useState(false);
   const [actionId, setِActionId] = useState("");
   const [AllStockactions, setAllStockactions] = useState([]);
   const [AllStockactionsStore, setAllStockactionsStore] = useState([]);
+
+  const [employees, setEmployees] = useState([]);
+  const [suppliers, setSuppliers] = useState([]);
+
+  const getEmployee = async () => {
+    try {
+      const config = await handleGetTokenAndConfig();
+      const response = await axios.get(apiUrl + "/api/employee", config);
+      setEmployees(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getSupplier = async () => {
+    try {
+      const config = await handleGetTokenAndConfig();
+      const response = await axios.get(apiUrl + "/api/supplier", config);
+      setSuppliers(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const createStockAction = async (e) => {
     e.preventDefault();
@@ -114,8 +124,7 @@ const StockMovement = () => {
 
     const lastStockAction = AllStockactionsStore.filter(
       (stockAction) =>
-        stockAction.itemId?._id === itemId &&
-        stockAction.storeId?._id === storeId
+        stockAction.itemId?._id === itemId && stockAction._id === storeId
     ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
 
     console.log({ inbound, outbound, balance });
@@ -346,6 +355,8 @@ const StockMovement = () => {
       balance,
       remainingQuantity: inbound.quantity > 0 ? Number(quantity) : 0,
       sourceDate,
+      receiver,
+      sender,
       notes,
     };
     console.log({ data });
@@ -376,8 +387,8 @@ const StockMovement = () => {
       console.error("Error creating stock source:", error);
     } finally {
       getallStockaction();
-      setquantity(0);
-      setcostUnit(0);
+      setQuantity(0);
+      setCostUnit(0);
       setSource(0);
       setStoreId("");
       setCategoryId("");
@@ -394,6 +405,7 @@ const StockMovement = () => {
       balance.unitCost = 0;
       balance.totalCost = 0;
     }
+    Q;
   };
 
   const updateStockaction = async (e, employeeId) => {
@@ -538,7 +550,7 @@ const StockMovement = () => {
   const handleSelectedStore = (id) => {
     setStoreId(id);
     const selectedStockactions = AllStockactions.filter(
-      (Stockactions) => Stockactions.storeId?._id === id
+      (Stockactions) => Stockactions._id === id
     );
     if (selectedStockactions) {
       setAllStockactionsStore(selectedStockactions);
@@ -593,14 +605,14 @@ const StockMovement = () => {
     getAllStores();
     getAllCategoryStock();
     getAllCashRegisters();
-    // getallrecipes();
+    getEmployee();
+    getSupplier();
   }, []);
 
   useEffect(() => {
     const lastStockAction = AllStockactionsStore.filter(
       (stockAction) =>
-        stockAction.itemId?._id === itemId &&
-        stockAction.storeId?._id === storeId
+        stockAction.itemId?._id === itemId && stockAction._id === storeId
     ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
 
     setInbound({
@@ -841,11 +853,13 @@ const StockMovement = () => {
                       <tr key={i}>
                         <td>{i + 1}</td>
                         <td>{action.itemId?.itemName}</td>
-                        <td>{action.storeId?.storeName}</td>
+                        <td>{action.storeName}</td>
                         <td>{action.categoryId?.categoryName}</td>
                         <td>{action.costMethod}</td>
                         <td>{action.source}</td>
                         <td>{action.unit}</td>
+                        <td>{action.sender?.fullname}</td>
+                        <td>{action.receiver?.fullname}</td>
                         <td>{action.outbound?.quantity || 0}</td>
                         <td>{action.outbound?.unitCost || 0}</td>
                         <td>{action.outbound?.totalCost || 0}</td>
@@ -1005,7 +1019,6 @@ data-target="#deleteStockactionModal"
                   </select>
                 </div>
 
-                {/* اختيار التصنيف */}
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
                     التصنيف
@@ -1025,7 +1038,6 @@ data-target="#deleteStockactionModal"
                   </select>
                 </div>
 
-                {/* اختيار الصنف */}
                 <div className="form-group col-12 col-md-6">
                   <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
                     الصنف
@@ -1040,9 +1052,7 @@ data-target="#deleteStockactionModal"
                     {StockItems.filter(
                       (item) =>
                         item.stores &&
-                        item.stores?.some(
-                          (store) => store.storeId?._id === storeId
-                        ) &&
+                        item.stores?.some((store) => store._id === storeId) &&
                         item.categoryId?._id === categoryId
                     )?.map((item, i) => (
                       <option key={i} value={item._id}>
@@ -1077,6 +1087,44 @@ data-target="#deleteStockactionModal"
                   <>
                     <div className="form-group col-12 col-md-6">
                       <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                        المرسل
+                      </label>
+                      <select
+                        className="form-control border-primary m-0 p-2 h-auto"
+                        required
+                        onChange={(e) => {
+                          setSender(e.target.value);
+                        }}
+                      >
+                        <option value="">اختر العملية</option>
+                        {employees.map((employee, i) => (
+                          <option key={i} value={employee._id}>
+                            {employee.fullname}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="form-group col-12 col-md-6">
+                      <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                        المستلم
+                      </label>
+                      <select
+                        className="form-control border-primary m-0 p-2 h-auto"
+                        required
+                        onChange={(e) => {
+                          setReceiver(e.target.value);
+                        }}
+                      >
+                        <option value="">اختر العملية</option>
+                        {employees.map((employee, i) => (
+                          <option key={i} value={employee._id}>
+                            {employee.fullname}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="form-group col-12 col-md-6">
+                      <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
                         الكمية
                       </label>
                       <div className="d-flex align-items-center">
@@ -1086,7 +1134,7 @@ data-target="#deleteStockactionModal"
                           required
                           max={balance.quantity}
                           onChange={(e) => {
-                            setquantity(Number(e.target.value));
+                            setQuantity(Number(e.target.value));
                           }}
                         />
                         <input
@@ -1117,6 +1165,44 @@ data-target="#deleteStockactionModal"
                   <>
                     <div className="form-group col-12 col-md-6">
                       <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                        المرسل
+                      </label>
+                      <select
+                        className="form-control border-primary m-0 p-2 h-auto"
+                        required
+                        onChange={(e) => {
+                          setSender(e.target.value);
+                        }}
+                      >
+                        <option value="">اختر العملية</option>
+                        {suppliers.map((supplier, i) => (
+                          <option key={i} value={supplier._id}>
+                            {supplier.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="form-group col-12 col-md-6">
+                      <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                        المستلم
+                      </label>
+                      <select
+                        className="form-control border-primary m-0 p-2 h-auto"
+                        required
+                        onChange={(e) => {
+                          setReceiver(e.target.value);
+                        }}
+                      >
+                        <option value="">اختر العملية</option>
+                        {employees.map((employee, i) => (
+                          <option key={i} value={employee._id}>
+                            {employee.fullname}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="form-group col-12 col-md-6">
+                      <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
                         الكمية
                       </label>
                       <div className="d-flex align-items-center">
@@ -1125,7 +1211,7 @@ data-target="#deleteStockactionModal"
                           className="form-control border-primary flex-grow-1"
                           required
                           onChange={(e) => {
-                            setquantity(Number(e.target.value));
+                            setQuantity(Number(e.target.value));
                           }}
                         />
                       </div>
