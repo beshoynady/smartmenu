@@ -608,7 +608,7 @@ const StockMovement = () => {
   useEffect(() => {
     const lastStockAction = AllStockactionsStore.filter(
       (stockAction) =>
-        stockAction.itemId?._id === itemId && stockAction._id === storeId
+        stockAction.itemId?._id === itemId && stockAction.storeId?._id === storeId
     ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
 
     setInbound({
@@ -628,7 +628,7 @@ const StockMovement = () => {
         ? Number(lastStockAction.balance?.totalCost)
         : 0,
     });
-  }, [quantity, source, itemId, AllStockactions, costUnit]);
+  }, [source, itemId, AllStockactions, costUnit]);
 
   return (
     <div className="w-100 px-3 d-flex align-itmes-center justify-content-start">
@@ -917,6 +917,7 @@ data-target="#deleteStockactionModal"
                 })}
             </tbody>
           </table>
+
           <div className="clearfix">
             <div className="hint-text text-dark">
               عرض{" "}
