@@ -3,8 +3,6 @@ import axios from "axios";
 import { dataContext } from "../../../../App";
 import { toast } from "react-toastify";
 import "../orders/Orders.css";
-import Employees from "../employees/Employees";
-import Suppliers from "../suppliers/Suppliers";
 
 const StockMovement = () => {
   const {
@@ -405,47 +403,46 @@ const StockMovement = () => {
       balance.unitCost = 0;
       balance.totalCost = 0;
     }
-    Q;
   };
 
-  const updateStockaction = async (e, employeeId) => {
-    e.preventDefault();
+  // const updateStockaction = async (e, employeeId) => {
+  //   e.preventDefault();
 
-    const config = await handleGetTokenAndConfig();
-    if (stockMovementPermission && !stockMovementPermission.update) {
-      toast.warn("ليس لك صلاحية لتعديل حركه المخزن");
-      return;
-    }
+  //   const config = await handleGetTokenAndConfig();
+  //   if (stockMovementPermission && !stockMovementPermission.update) {
+  //     toast.warn("ليس لك صلاحية لتعديل حركه المخزن");
+  //     return;
+  //   }
 
-    setisLoading(true);
-    const data = {
-      itemId,
-      storeId,
-      categoryId,
-      costMethod,
-      source,
-      unit,
-      inbound,
-      outbound,
-      balance,
-      remainingQuantity,
-      sourceDate,
-      notes,
-    };
+  //   setisLoading(true);
+  //   const data = {
+  //     itemId,
+  //     storeId,
+  //     categoryId,
+  //     costMethod,
+  //     source,
+  //     unit,
+  //     inbound,
+  //     outbound,
+  //     balance,
+  //     remainingQuantity,
+  //     sourceDate,
+  //     notes,
+  //   };
 
-    try {
-      const response = await axios.put(
-        `${apiUrl}/api/stockmovement/${actionId}`,
-        data,
-        config
-      );
-      toast.success("تم تحديث حركة المخزون بنجاح");
-      return response.data;
-    } catch (error) {
-      toast.error("فشل تحديث حركة المخزون!");
-      console.error("Error updating stock source:", error);
-    }
-  };
+  //   try {
+  //     const response = await axios.put(
+  //       `${apiUrl}/api/stockmovement/${actionId}`,
+  //       data,
+  //       config
+  //     );
+  //     toast.success("تم تحديث حركة المخزون بنجاح");
+  //     return response.data;
+  //   } catch (error) {
+  //     toast.error("فشل تحديث حركة المخزون!");
+  //     console.error("Error updating stock source:", error);
+  //   }
+  // };
 
   const getallStockaction = async () => {
     try {
@@ -539,10 +536,9 @@ const StockMovement = () => {
     const selectedItem = StockItems.find((item) => item._id === e.target.value);
     console.log({ selectedItem });
     if (selectedItem) {
-      const { _id, itemName, storageUnit, parts, costMethod } = selectedItem;
+      const { _id, storageUnit, parts, costMethod } = selectedItem;
       setItemId(_id);
-      setItemName(itemName);
-      setunit(storageUnit);
+      setUnit(storageUnit);
       setParts(parts);
       setCostMethod(costMethod);
     }
@@ -1226,7 +1222,7 @@ data-target="#deleteStockactionModal"
                           className="form-control border-primary flex-grow-1"
                           required
                           onChange={(e) => {
-                            setcostUnit(e.target.value);
+                            setCostUnit(e.target.value);
                           }}
                         />
                         <input
