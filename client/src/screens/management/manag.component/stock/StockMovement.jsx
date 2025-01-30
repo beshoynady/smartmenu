@@ -822,6 +822,8 @@ const StockMovement = () => {
                 <th rowspan="2">طريقه حساب التكلفه</th>
                 <th rowspan="2">مصدر الحركة</th>
                 <th rowspan="2">الوحدة</th>
+                <th rowspan="2">المرسل</th>
+                <th rowspan="2">المستلم</th>
                 <th colspan="3">صادر</th>
                 <th colspan="3">وارد</th>
                 <th colspan="3">الرصيد</th>
@@ -849,7 +851,7 @@ const StockMovement = () => {
                       <tr key={i}>
                         <td>{i + 1}</td>
                         <td>{action.itemId?.itemName}</td>
-                        <td>{action.storeName}</td>
+                        <td>{action.storeId?.storeName}</td>
                         <td>{action.categoryId?.categoryName}</td>
                         <td>{action.costMethod}</td>
                         <td>{action.source}</td>
@@ -1092,7 +1094,7 @@ data-target="#deleteStockactionModal"
                           setSender(e.target.value);
                         }}
                       >
-                        <option value="">اختر العملية</option>
+                        <option value="">اختر المرسل</option>
                         {employees.map((employee, i) => (
                           <option key={i} value={employee._id}>
                             {employee.fullname}
@@ -1111,7 +1113,7 @@ data-target="#deleteStockactionModal"
                           setReceiver(e.target.value);
                         }}
                       >
-                        <option value="">اختر العملية</option>
+                        <option value="">اختر المستلم</option>
                         {employees.map((employee, i) => (
                           <option key={i} value={employee._id}>
                             {employee.fullname}
@@ -1170,7 +1172,7 @@ data-target="#deleteStockactionModal"
                           setSender(e.target.value);
                         }}
                       >
-                        <option value="">اختر العملية</option>
+                        <option value="">اختر المورد</option>
                         {suppliers.map((supplier, i) => (
                           <option key={i} value={supplier._id}>
                             {supplier.name}
@@ -1189,7 +1191,7 @@ data-target="#deleteStockactionModal"
                           setReceiver(e.target.value);
                         }}
                       >
-                        <option value="">اختر العملية</option>
+                        <option value="">اختر المستلم</option>
                         {employees.map((employee, i) => (
                           <option key={i} value={employee._id}>
                             {employee.fullname}
