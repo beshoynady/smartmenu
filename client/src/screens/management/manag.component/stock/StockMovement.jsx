@@ -544,9 +544,13 @@ const StockMovement = () => {
     }
   };
 
-
+  const [storeKeepers, setstoreKeepers] = useState([]);
   const handleSelectedStore = (id) => {
     setStoreId(id);
+    const store = allStores.find((store) => store._id === id);
+    if (store) {
+      setstoreKeepers(store.storeKeepers);
+    }
     const selectedStockactions = AllStockactions.filter(
       (Stockactions) => Stockactions.storeId?._id === id
     );
@@ -610,7 +614,8 @@ const StockMovement = () => {
   useEffect(() => {
     const lastStockAction = AllStockactionsStore.filter(
       (stockAction) =>
-        stockAction.itemId?._id === itemId && stockAction.storeId?._id === storeId
+        stockAction.itemId?._id === itemId &&
+        stockAction.storeId?._id === storeId
     ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
 
     setInbound({
@@ -861,24 +866,23 @@ const StockMovement = () => {
                         <td>{action.sender?.fullname}</td>
                         <td>{action.receiver?.fullname}</td>
                         <td>{action.outbound?.quantity || 0}</td>
-                        <td>{action.outbound?.unitCost || 0}</td>
-                        <td>{action.outbound?.totalCost || 0}</td>
+                        <td>{action.outbound?.unitCost.toFixed(2) || 0}</td>
+                        <td>{action.outbound?.totalCost.toFixed(2) || 0}</td>
                         <td>{action.inbound?.quantity || 0}</td>
-                        <td>{action.inbound?.unitCost || 0}</td>
-                        <td>{action.inbound?.totalCost || 0}</td>
+                        <td>{action.inbound?.unitCost.toFixed(2) || 0}</td>
+                        <td>{action.inbound?.totalCost.toFixed(2) || 0}</td>
                         <td>{action.balance?.quantity || 0}</td>
                         <td>
                           {action.balance?.unitCost?.toFixed(2) || "0.00"}
                         </td>
-                        <td>{action.balance?.totalCost || 0}</td>
+                        <td>{action.balance?.totalCost.toFixed(2) || 0}</td>
                         <td>{formatDateTime(action.createdAt)}</td>
                         <td>{action.createdBy?.fullname}</td>
-                        {/* <td>
+                        <td>
                           {stockMovementPermission &&
                             stockMovementPermission.update && (
                               <button
-
-data-target="#editStockactionModal"
+                                data-target="#editStockactionModal"
                                 className="btn btn-sm btn-primary ml-2 "
                                 data-toggle="modal"
                                 onClick={() => {
@@ -891,14 +895,13 @@ data-target="#editStockactionModal"
                                   title="Edit"
                                 >
                                   &#xE254;
-                          </i>
-                        </button>
+                                </i>
+                              </button>
                             )}
                           {stockMovementPermission &&
                             stockMovementPermission.delete && (
                               <button
-
-data-target="#deleteStockactionModal"
+                                data-target="#deleteStockactionModal"
                                 className="btn btn-sm btn-danger"
                                 data-toggle="modal"
                                 onClick={() => setِActionId(action._id)}
@@ -912,7 +915,7 @@ data-target="#deleteStockactionModal"
                                 </i>
                               </button>
                             )}
-                        </td> */}
+                        </td>
                       </tr>
                     );
                   }
@@ -1082,9 +1085,13 @@ data-target="#deleteStockactionModal"
                   </select>
                 </div>
 
-                {["Issuance", "ReturnIssuance", "Wastage", "Damaged"].includes(
-                  source
-                ) ? (
+                {[
+                  "OpeningBalance",
+                  "Issuance",
+                  "ReturnIssuance",
+                  "Wastage",
+                  "Damaged",
+                ].includes(source) ? (
                   <>
                     <div className="form-group col-12 col-md-6">
                       <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
@@ -1117,9 +1124,9 @@ data-target="#deleteStockactionModal"
                         }}
                       >
                         <option value="">اختر المستلم</option>
-                        {employees.map((employee, i) => (
-                          <option key={i} value={employee._id}>
-                            {employee.fullname}
+                        {storeKeepers.map((storeKeeper, i) => (
+                          <option key={i} value={storeKeeper._id}>
+                            {storeKeeper.fullname}
                           </option>
                         ))}
                       </select>
@@ -1160,9 +1167,7 @@ data-target="#deleteStockactionModal"
                       </div>
                     </div>
                   </>
-                ) : ["OpeningBalance", "Purchase", "ReturnPurchase"].includes(
-                    source
-                  ) ? (
+                ) : ["Purchase"].includes(source) ? (
                   <>
                     <div className="form-group col-12 col-md-6">
                       <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
@@ -1176,11 +1181,17 @@ data-target="#deleteStockactionModal"
                         }}
                       >
                         <option value="">اختر المورد</option>
-                        {suppliers.map((supplier, i) => (
-                          <option key={i} value={supplier._id}>
-                            {supplier.name}
-                          </option>
-                        ))}
+                        {suppliers
+                          .filter((supplier) =>
+                            supplier.itemsSupplied?.some(
+                              (itemSupplied) => itemSupplied._id === itemId
+                            )
+                          )
+                          .map((supplier, i) => (
+                            <option key={i} value={supplier._id}>
+                              {supplier.name}
+                            </option>
+                          ))}
                       </select>
                     </div>
                     <div className="form-group col-12 col-md-6">
@@ -1195,13 +1206,97 @@ data-target="#deleteStockactionModal"
                         }}
                       >
                         <option value="">اختر المستلم</option>
-                        {employees.map((employee, i) => (
-                          <option key={i} value={employee._id}>
-                            {employee.fullname}
+                        {storeKeepers.map((storeKeeper, i) => (
+                          <option key={i} value={storeKeeper._id}>
+                            {storeKeeper.fullname}
                           </option>
                         ))}
                       </select>
                     </div>
+                    <div className="form-group col-12 col-md-6">
+                      <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                        الكمية
+                      </label>
+                      <div className="d-flex align-items-center">
+                        <input
+                          type="number"
+                          className="form-control border-primary flex-grow-1"
+                          required
+                          onChange={(e) => {
+                            setQuantity(Number(e.target.value));
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <div className="form-group col-12 col-md-6">
+                      <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                        تكلفه الوحده
+                      </label>
+                      <div className="d-flex align-items-center">
+                        <input
+                          type="number"
+                          className="form-control border-primary flex-grow-1"
+                          required
+                          onChange={(e) => {
+                            setCostUnit(e.target.value);
+                          }}
+                        />
+                        <input
+                          type="text"
+                          className="form-control border-primary ms-2"
+                          defaultValue={unit}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                  </>
+                ) : ["ReturnPurchase"].includes(source) ? (
+                  <>
+                    <div className="form-group col-12 col-md-6">
+                      <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                        المرسل
+                      </label>
+                      <select
+                        className="form-control border-primary m-0 p-2 h-auto"
+                        required
+                        onChange={(e) => {
+                          setReceiver(e.target.value);
+                        }}
+                      >
+                        <option value="">اختر المرسل</option>
+                        {storeKeepers.map((storeKeeper, i) => (
+                          <option key={i} value={storeKeeper._id}>
+                            {storeKeeper.fullname}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="form-group col-12 col-md-6">
+                      <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                        المستلم
+                      </label>
+                      <select
+                        className="form-control border-primary m-0 p-2 h-auto"
+                        required
+                        onChange={(e) => {
+                          setSender(e.target.value);
+                        }}
+                      >
+                        <option value="">اختر المورد</option>
+                        {suppliers
+                          .filter((supplier) =>
+                            supplier.itemsSupplied?.some(
+                              (itemSupplied) => itemSupplied._id === itemId
+                            )
+                          )
+                          .map((supplier, i) => (
+                            <option key={i} value={supplier._id}>
+                              {supplier.name}
+                            </option>
+                          ))}
+                      </select>
+                    </div>
+
                     <div className="form-group col-12 col-md-6">
                       <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
                         الكمية
