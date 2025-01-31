@@ -543,10 +543,12 @@ const StockMovement = () => {
       setCostMethod(costMethod);
     }
   };
+
+
   const handleSelectedStore = (id) => {
     setStoreId(id);
     const selectedStockactions = AllStockactions.filter(
-      (Stockactions) => Stockactions._id === id
+      (Stockactions) => Stockactions.storeId?._id === id
     );
     if (selectedStockactions) {
       setAllStockactionsStore(selectedStockactions);
