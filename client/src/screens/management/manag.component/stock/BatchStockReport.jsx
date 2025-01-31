@@ -13,7 +13,7 @@ const BatchStockReport = () => {
     formatDateTime,
     formatDate,
     isLoading,
-    setisLoading,
+    setIsLoading,
     EditPagination,
     startPagination,
     endPagination,

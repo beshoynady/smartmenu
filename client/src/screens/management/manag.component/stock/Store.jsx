@@ -10,7 +10,7 @@ const Store = () => {
     formatDate,
     formatDateTime,
     permissionsList,
-    setisLoading,
+    setIsLoading,
     EditPagination,
     startPagination,
     endPagination,

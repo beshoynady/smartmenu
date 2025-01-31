@@ -1,10 +1,10 @@
 const express = require("express");
 const {
-  createStockAction,
-  updateStockAction,
-  getOneStockAction,
-  getAllStockActions,
-  deleteStockAction,
+  createStockMovement,
+  updateStockMovement,
+  getOneStockMovement,
+  getAllStockMovements,
+  deleteStockMovement,
 } = require("../controllers/StockMovement.controller");
 
 const {authenticateToken} = require("../utlits/authenticate");
@@ -12,16 +12,16 @@ const checkSubscription = require("../utlits/checkSubscription");
 
 const router = express.Router();
 
-// Routes for stock actions
+// Routes for stock Movements
 router
   .route("/")
-  .post(authenticateToken, checkSubscription, createStockAction) // Create a new stock action
-  .get(authenticateToken, checkSubscription, getAllStockActions); // Get all stock actions
+  .post(authenticateToken, checkSubscription, createStockMovement) // Create a new stock Movement
+  .get(authenticateToken, checkSubscription, getAllStockMovements); // Get all stock Movements
 
 router
-  .route("/:actionId")
-  .get(authenticateToken, checkSubscription, getOneStockAction) // Get a single stock action by ID
-  .put(authenticateToken, checkSubscription, updateStockAction) // Update a stock action by ID
-  .delete(authenticateToken, checkSubscription, deleteStockAction); // Delete a stock action by ID
+  .route("/:MovementId")
+  .get(authenticateToken, checkSubscription, getOneStockMovement) // Get a single stock Movement by ID
+  .put(authenticateToken, checkSubscription, updateStockMovement) // Update a stock Movement by ID
+  .delete(authenticateToken, checkSubscription, deleteStockMovement); // Delete a stock Movement by ID
 
 module.exports = router;

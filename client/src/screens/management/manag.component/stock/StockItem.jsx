@@ -15,7 +15,7 @@ const StockItem = () => {
     employeeLoginInfo,
     formatDate,
     formatDateTime,
-    setisLoading,
+    setIsLoading,
     EditPagination,
     startPagination,
     endPagination,
@@ -123,7 +123,7 @@ const StockItem = () => {
     }
 
     try {
-      setisLoading(true);
+      setIsLoading(true);
       console.log({ stores });
 
       const response = await axios.post(
@@ -153,7 +153,7 @@ const StockItem = () => {
         } else {
           toast.error("فشل في إنشاء عنصر المخزون: " + response.data.error);
         }
-        setisLoading(false);
+        setIsLoading(false);
         return;
       }
 
@@ -164,7 +164,7 @@ const StockItem = () => {
       resetFields();
     } catch (error) {
       console.log(error);
-      setisLoading(false);
+      setIsLoading(false);
       toast.error("فشل في إنشاء عنصر المخزون");
     }
   };
@@ -202,7 +202,7 @@ const StockItem = () => {
       return;
     }
 
-    setisLoading(true);
+    setIsLoading(true);
     try {
       const response = await axios.put(
         `${apiUrl}/api/stockitem/${stockItemId}`,
@@ -235,7 +235,7 @@ const StockItem = () => {
       toast.error("فشل في تحديث عنصر المخزون");
     } finally {
       resetFields();
-      setisLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -247,7 +247,7 @@ const StockItem = () => {
       toast.warn("ليس لك صلاحية لحذف عنصر من المخزن");
       return;
     }
-    setisLoading(true);
+    setIsLoading(true);
     try {
       const response = await axios.delete(
         `${apiUrl}/api/stockitem/${stockItemId}`,
@@ -260,10 +260,10 @@ const StockItem = () => {
         // Notify on success
         toast.success("تم حذف عنصر المخزون بنجاح");
       }
-      setisLoading(false);
+      setIsLoading(false);
     } catch (error) {
       console.log(error);
-      setisLoading(false);
+      setIsLoading(false);
       // Notify on error
       toast.error("فشل في حذف عنصر المخزون");
     }
@@ -278,7 +278,7 @@ const StockItem = () => {
       toast.warn("ليس لك صلاحية لعرض عناصر المخزن");
       return;
     }
-    setisLoading(true);
+    setIsLoading(true);
     try {
       const response = await axios.get(apiUrl + "/api/stockitem/", config);
 
@@ -292,10 +292,10 @@ const StockItem = () => {
       console.log({ stockItems });
       // Notify on success
       toast.success("تم استرداد عناصر المخزون بنجاح");
-      setisLoading(false);
+      setIsLoading(false);
     } catch (error) {
       console.error(error);
-      setisLoading(false);
+      setIsLoading(false);
       // Notify on error
       toast.error("فشل في استرداد عناصر المخزون");
     }
@@ -305,15 +305,15 @@ const StockItem = () => {
   // Function to retrieve all category stock
   const getAllCategoryStock = async () => {
     const config = await handleGetTokenAndConfig();
-    setisLoading(true);
+    setIsLoading(true);
     try {
       const response = await axios.get(apiUrl + "/api/categoryStock/", config);
       setAllCategoryStock(response.data.reverse());
-      setisLoading(false);
+      setIsLoading(false);
     } catch (error) {
       console.error("Error fetching category stock:", error);
       toast.error("حدث خطأ اثناء جلب بيانات التصنيفات ! اعد تحميل الصفحة");
-      setisLoading(false);
+      setIsLoading(false);
     }
   };
 

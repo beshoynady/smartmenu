@@ -11,7 +11,7 @@ const StockMovement = () => {
     formatDateTime,
     formatDate,
     isLoading,
-    setisLoading,
+    setIsLoading,
     EditPagination,
     startPagination,
     endPagination,
@@ -28,7 +28,7 @@ const StockMovement = () => {
   const stockMovementPermission =
     permissionsList &&
     permissionsList.filter(
-      (perission) => perission.resource === "stock Movement"
+      (permission) => permission.resource === "stock Movement"
     )[0];
 
   const sourceEn = [
@@ -76,7 +76,7 @@ const StockMovement = () => {
   });
   const [remainingQuantity, setRemainingQuantity] = useState(0);
   const [sourceDate, setSourceDate] = useState(new Date());
-  const [notes, setNotes] = useState("");
+  const [description, setDescription] = useState("");
   const [quantity, setQuantity] = useState(0); // Total quantity for the movement
   const [costUnit, setCostUnit] = useState(0); // Cost per unit
   const [sender, setSender] = useState(""); // Sender (optional)
@@ -84,35 +84,9 @@ const StockMovement = () => {
   const [parts, setParts] = useState(); // Related parts (optional)
   const [expirationDate, setExpirationDate] = useState(); // Expiry date for perishable items
   const [expirationDateEnabled, setExpirationDateEnabled] = useState(false); // Toggle for expiration date field
+  const [MovementId, setMovementId] = useState("");
 
-  const [actionId, setِActionId] = useState("");
-  const [AllStockactions, setAllStockactions] = useState([]);
-  const [AllStockactionsStore, setAllStockactionsStore] = useState([]);
-
-  const [employees, setEmployees] = useState([]);
-  const [suppliers, setSuppliers] = useState([]);
-
-  const getEmployee = async () => {
-    try {
-      const config = await handleGetTokenAndConfig();
-      const response = await axios.get(apiUrl + "/api/employee", config);
-      setEmployees(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const getSupplier = async () => {
-    try {
-      const config = await handleGetTokenAndConfig();
-      const response = await axios.get(apiUrl + "/api/supplier", config);
-      setSuppliers(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const createStockAction = async (e) => {
+  const createStockMovement = async (e) => {
     e.preventDefault();
     const config = await handleGetTokenAndConfig();
     if (stockMovementPermission && !stockMovementPermission.create) {
@@ -120,22 +94,22 @@ const StockMovement = () => {
       return;
     }
 
-    const lastStockAction = AllStockactionsStore.filter(
-      (stockAction) =>
-        stockAction.itemId?._id === itemId && stockAction._id === storeId
+    const lastStockMovement = AllStockMovementsStore.filter(
+      (stockMovement) =>
+        stockMovement.itemId?._id === itemId && stockMovement._id === storeId
     ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
 
     console.log({ inbound, outbound, balance });
     if (source === "Issuance" || source === "Wastage" || source === "Damaged") {
       if (costMethod === "FIFO") {
-        const batches = AllStockactionsStore.filter((stockAction) => {
-          const isValidAction =
-            stockAction && stockAction.itemId && stockAction.itemId._id;
+        const batches = AllStockMovementsStore.filter((stockMovement) => {
+          const isValidMovement =
+            stockMovement && stockMovement.itemId && stockMovement.itemId._id;
           const isMatchingItem =
-            isValidAction && stockAction.itemId._id === itemId;
+            isValidMovement && stockMovement.itemId._id === itemId;
           const isInboundPositive =
-            stockAction.inbound && stockAction.inbound.quantity > 0;
-          const hasRemainingQuantity = stockAction.remainingQuantity > 0;
+            stockMovement.inbound && stockMovement.inbound.quantity > 0;
+          const hasRemainingQuantity = stockMovement.remainingQuantity > 0;
 
           // التحقق من جميع الشروط المطلوبة
           return isMatchingItem && isInboundPositive && hasRemainingQuantity;
@@ -180,11 +154,11 @@ const StockMovement = () => {
           }
         }
       } else if (costMethod === "LIFO") {
-        const batches = AllStockactionsStore.filter(
-          (stockAction) =>
-            stockAction.itemId?._id === itemId &&
-            stockAction.inbound?.quantity > 0 &&
-            stockAction.remainingQuantity > 0
+        const batches = AllStockMovementsStore.filter(
+          (stockMovement) =>
+            stockMovement.itemId?._id === itemId &&
+            stockMovement.inbound?.quantity > 0 &&
+            stockMovement.remainingQuantity > 0
         ).sort((a, b) => new Date(b.movementDate) - new Date(a.movementDate));
 
         let totalQuantity = quantity;
@@ -222,14 +196,14 @@ const StockMovement = () => {
           }
         }
       } else if (costMethod === "Weighted Average") {
-        const batches = AllStockactionsStore.filter((stockAction) => {
-          const isValidAction =
-            stockAction && stockAction.itemId && stockAction.itemId._id;
+        const batches = AllStockMovementsStore.filter((stockMovement) => {
+          const isValidMovement =
+            stockMovement && stockMovement.itemId && stockMovement.itemId._id;
           const isMatchingItem =
-            isValidAction && stockAction.itemId._id === itemId;
+            isValidMovement && stockMovement.itemId._id === itemId;
           const isInboundPositive =
-            stockAction.inbound && stockAction.inbound.quantity > 0;
-          const hasRemainingQuantity = stockAction.remainingQuantity > 0;
+            stockMovement.inbound && stockMovement.inbound.quantity > 0;
+          const hasRemainingQuantity = stockMovement.remainingQuantity > 0;
 
           return isMatchingItem && isInboundPositive && hasRemainingQuantity;
         }).sort((a, b) => new Date(a.movementDate) - new Date(b.movementDate));
@@ -301,7 +275,7 @@ const StockMovement = () => {
       }
     } else if (source === "ReturnIssuance") {
       inbound.quantity = quantity;
-      inbound.unitCost = lastStockAction ? lastStockAction.unitCost : 0;
+      inbound.unitCost = lastStockMovement ? lastStockMovement.unitCost : 0;
       inbound.totalCost = inbound.quantity * inbound.unitCost;
 
       balance.quantity += quantity;
@@ -355,7 +329,7 @@ const StockMovement = () => {
       sourceDate,
       receiver,
       sender,
-      notes,
+      description,
     };
     console.log({ data });
 
@@ -384,7 +358,7 @@ const StockMovement = () => {
       toast.error("فشل تسجيل حركة المخزون!");
       console.error("Error creating stock source:", error);
     } finally {
-      getallStockaction();
+      getallStockMovement();
       setQuantity(0);
       setCostUnit(0);
       setSource(0);
@@ -405,7 +379,7 @@ const StockMovement = () => {
     }
   };
 
-  // const updateStockaction = async (e, employeeId) => {
+  // const updateStockMovement = async (e, employeeId) => {
   //   e.preventDefault();
 
   //   const config = await handleGetTokenAndConfig();
@@ -414,7 +388,7 @@ const StockMovement = () => {
   //     return;
   //   }
 
-  //   setisLoading(true);
+  //   setIsLoading(true);
   //   const data = {
   //     itemId,
   //     storeId,
@@ -427,12 +401,12 @@ const StockMovement = () => {
   //     balance,
   //     remainingQuantity,
   //     sourceDate,
-  //     notes,
+  //     description,
   //   };
 
   //   try {
   //     const response = await axios.put(
-  //       `${apiUrl}/api/stockmovement/${actionId}`,
+  //       `${apiUrl}/api/stockmovement/${MovementId}`,
   //       data,
   //       config
   //     );
@@ -444,51 +418,53 @@ const StockMovement = () => {
   //   }
   // };
 
-  const getallStockaction = async () => {
-    try {
-      const config = await handleGetTokenAndConfig();
-      const response = await axios.get(apiUrl + "/api/stockmovement/", config);
-      console.log(response.data);
-      const Stockactions = await response.data;
-      setAllStockactions(Stockactions.reverse());
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const deleteStockaction = async (e) => {
+  const deleteStockMovement = async (e) => {
     e.preventDefault();
     const config = await handleGetTokenAndConfig();
     if (stockMovementPermission && !stockMovementPermission.delete) {
       toast.warn("ليس لك صلاحية لحذف حركه المخزن");
       return;
     }
-    // setisLoading(true);
+    // setIsLoading(true);
     try {
-      // Delete the selected stock action
+      // Delete the selected stock Movement
       const response = await axios.delete(
-        `${apiUrl}/api/stockmovement/${actionId}`,
+        `${apiUrl}/api/stockmovement/${MovementId}`,
         config
       );
       console.log(response);
 
       if (response) {
-        // Update the stock actions list after successful deletion
-        getallStockaction();
-        // setisLoading(false);
+        // Update the stock Movements list after successful deletion
+        getallStockMovement();
+        // setIsLoading(false);
         // Toast notification for successful deletion
         toast.success("تم حذف حركه المخزن بنجاح");
       }
     } catch (error) {
-      // setisLoading(false);
+      // setIsLoading(false);
       console.log(error);
       // Toast notification for error
       toast.error("فشل حذف حركه المخزن ! حاول مره اخري ");
     } finally {
-      // setisLoading(false);
+      // setIsLoading(false);
     }
   };
 
+  const [AllStockMovements, setAllStockMovements] = useState([]);
+  const [AllStockMovementsStore, setAllStockMovementsStore] = useState([]);
+
+  const getallStockMovement = async () => {
+    try {
+      const config = await handleGetTokenAndConfig();
+      const response = await axios.get(apiUrl + "/api/stockmovement/", config);
+      console.log(response.data);
+      const StockMovements = await response.data;
+      setAllStockMovements(StockMovements.reverse());
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const [allStores, setAllStores] = useState([]);
 
   const getAllStores = async () => {
@@ -531,6 +507,40 @@ const StockMovement = () => {
     }
   };
 
+  const [employees, setEmployees] = useState([]);
+  const [suppliers, setSuppliers] = useState([]);
+
+  const getEmployee = async () => {
+    try {
+      const config = await handleGetTokenAndConfig();
+      const response = await axios.get(apiUrl + "/api/employee", config);
+      setEmployees(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getSupplier = async () => {
+    try {
+      const config = await handleGetTokenAndConfig();
+      const response = await axios.get(apiUrl + "/api/supplier", config);
+      setSuppliers(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const [AllCashRegisters, setAllCashRegisters] = useState([]);
+  const getAllCashRegisters = async () => {
+    const config = await handleGetTokenAndConfig();
+    try {
+      const response = await axios.get(apiUrl + "/api/cashregister", config);
+      setAllCashRegisters(response.data.reverse());
+    } catch (err) {
+      toast.error("Error fetching cash registers");
+    }
+  };
+
   // Fetch all cash registers
   const handleSelectedItem = (e) => {
     const selectedItem = StockItems.find((item) => item._id === e.target.value);
@@ -551,58 +561,47 @@ const StockMovement = () => {
     if (store) {
       setstoreKeepers(store.storeKeepers);
     }
-    const selectedStockactions = AllStockactions.filter(
-      (Stockactions) => Stockactions.storeId?._id === id
+    const selectedStockMovements = AllStockMovements.filter(
+      (StockMovements) => StockMovements.storeId?._id === id
     );
-    if (selectedStockactions) {
-      setAllStockactionsStore(selectedStockactions);
+    if (selectedStockMovements) {
+      setAllStockMovementsStore(selectedStockMovements);
     }
   };
 
-  const [AllCashRegisters, setAllCashRegisters] = useState([]);
-  const getAllCashRegisters = async () => {
-    const config = await handleGetTokenAndConfig();
-    try {
-      const response = await axios.get(apiUrl + "/api/cashregister", config);
-      setAllCashRegisters(response.data.reverse());
-    } catch (err) {
-      toast.error("Error fetching cash registers");
-    }
-  };
-
-  const searchByitem = (item) => {
+  const searchByItem = (item) => {
     if (!item) {
-      getallStockaction();
+      getallStockMovement();
       return;
     }
-    const items = AllStockactions.filter(
-      (action) => action.itemId.itemName.startsWith(item) === true
+    const items = AllStockMovements.filter(
+      (Movement) => Movement.itemId.itemName.startsWith(item) === true
     );
-    setAllStockactions(items);
+    setAllStockMovements(items);
   };
   const searchByStore = (storeId) => {
     if (!storeId) {
-      getallStockaction();
+      getallStockMovement();
       return;
     }
-    const items = AllStockactions.filter(
-      (Stockactions) => Stockactions.store?._id === storeId
+    const items = AllStockMovements.filter(
+      (StockMovements) => StockMovements.store?._id === storeId
     );
-    setAllStockactions(items);
+    setAllStockMovements(items);
   };
-  const searchByaction = (action) => {
-    if (!action) {
-      getallStockaction();
+  const searchByMovement = (Movement) => {
+    if (!Movement) {
+      getallStockMovement();
       return;
     }
-    const items = AllStockactions.filter(
-      (Stockactions) => Stockactions.source === action
+    const items = AllStockMovements.filter(
+      (StockMovements) => StockMovements.source === Movement
     );
-    setAllStockactions(items);
+    setAllStockMovements(items);
   };
 
   useEffect(() => {
-    getallStockaction();
+    getallStockMovement();
     getStockItems();
     getAllStores();
     getAllCategoryStock();
@@ -612,10 +611,10 @@ const StockMovement = () => {
   }, []);
 
   useEffect(() => {
-    const lastStockAction = AllStockactionsStore.filter(
-      (stockAction) =>
-        stockAction.itemId?._id === itemId &&
-        stockAction.storeId?._id === storeId
+    const lastStockMovement = AllStockMovementsStore.filter(
+      (stockMovement) =>
+        stockMovement.itemId?._id === itemId &&
+        stockMovement.storeId?._id === storeId
     ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
 
     setInbound({
@@ -629,13 +628,17 @@ const StockMovement = () => {
       totalCost: 0,
     });
     setBalance({
-      quantity: lastStockAction ? Number(lastStockAction.balance?.quantity) : 0,
-      unitCost: lastStockAction ? Number(lastStockAction.balance?.unitCost) : 0,
-      totalCost: lastStockAction
-        ? Number(lastStockAction.balance?.totalCost)
+      quantity: lastStockMovement
+        ? Number(lastStockMovement.balance?.quantity)
+        : 0,
+      unitCost: lastStockMovement
+        ? Number(lastStockMovement.balance?.unitCost)
+        : 0,
+      totalCost: lastStockMovement
+        ? Number(lastStockMovement.balance?.totalCost)
         : 0,
     });
-  }, [source, itemId, AllStockactions, costUnit]);
+  }, [source, itemId, AllStockMovements, costUnit]);
 
   return (
     <div className="w-100 px-3 d-flex align-itmes-center justify-content-start">
@@ -651,7 +654,7 @@ const StockMovement = () => {
               <div className="col-12 col-md-6 p-0 m-0 d-flex flex-wrap aliegn-items-center justify-content-end print-hide">
                 {stockMovementPermission && stockMovementPermission.create && (
                   <a
-                    href="#addStockactionModal"
+                    href="#addStockMovementModal"
                     className="d-flex align-items-center justify-content-center h-100 m-0 btn btn-success"
                     data-toggle="modal"
                   >
@@ -661,7 +664,7 @@ const StockMovement = () => {
                 {/* {stockMovementPermission &&
                   stockMovementPermission.delete && (
                     <a
-                      href="#deleteStockactionModal"
+                      href="#deleteStockMovementModal"
                       className="d-flex align-items-center justify-content-center h-100 m-0 btn btn-danger"
                       data-toggle="modal"
                     >
@@ -722,7 +725,7 @@ const StockMovement = () => {
                 </label>
                 <select
                   class="form-control border-primary m-0 p-2 h-auto"
-                  onChange={(e) => searchByaction(e.target.value)}
+                  onChange={(e) => searchByMovement(e.target.value)}
                 >
                   <option value={""}>الكل</option>
                   {sourceEn.map((source, i) => {
@@ -742,7 +745,7 @@ const StockMovement = () => {
                 <input
                   type="text"
                   class="form-control border-primary m-0 p-2 h-auto"
-                  onChange={(e) => searchByitem(e.target.value)}
+                  onChange={(e) => searchByItem(e.target.value)}
                 />
               </div>
 
@@ -754,8 +757,8 @@ const StockMovement = () => {
                   <select
                     className="form-control border-primary m-0 p-2 h-auto"
                     onChange={(e) =>
-                      setAllStockactions(
-                        filterByTime(e.target.value, AllStockactions)
+                      setAllStockMovements(
+                        filterByTime(e.target.value, AllStockMovements)
                       )
                     }
                   >
@@ -801,7 +804,9 @@ const StockMovement = () => {
                       type="button"
                       className="btn btn-primary h-100 p-2 "
                       onClick={() =>
-                        setAllStockactions(filterByDateRange(AllStockactions))
+                        setAllStockMovements(
+                          filterByDateRange(AllStockMovements)
+                        )
                       }
                     >
                       <i className="fa fa-search"></i>
@@ -809,7 +814,7 @@ const StockMovement = () => {
                     <button
                       type="button"
                       className="btn btn-warning h-100 p-2"
-                      onClick={getallStockaction}
+                      onClick={getallStockMovement}
                     >
                       استعادة
                     </button>
@@ -828,6 +833,7 @@ const StockMovement = () => {
                 <th rowspan="2">التصنيف</th>
                 <th rowspan="2">طريقه حساب التكلفه</th>
                 <th rowspan="2">مصدر الحركة</th>
+                <th rowspan="2">البيان</th>
                 <th rowspan="2">الوحدة</th>
                 <th rowspan="2">المرسل</th>
                 <th rowspan="2">المستلم</th>
@@ -851,42 +857,43 @@ const StockMovement = () => {
               </tr>
             </thead>
             <tbody>
-              {AllStockactions &&
-                AllStockactions.map((action, i) => {
+              {AllStockMovements &&
+                AllStockMovements.map((Movement, i) => {
                   if (i >= startPagination && i < endPagination) {
                     return (
                       <tr key={i}>
                         <td>{i + 1}</td>
-                        <td>{action.itemId?.itemName}</td>
-                        <td>{action.storeId?.storeName}</td>
-                        <td>{action.categoryId?.categoryName}</td>
-                        <td>{action.costMethod}</td>
-                        <td>{action.source}</td>
-                        <td>{action.unit}</td>
-                        <td>{action.sender?.fullname}</td>
-                        <td>{action.receiver?.fullname}</td>
-                        <td>{action.outbound?.quantity || 0}</td>
-                        <td>{action.outbound?.unitCost.toFixed(2) || 0}</td>
-                        <td>{action.outbound?.totalCost.toFixed(2) || 0}</td>
-                        <td>{action.inbound?.quantity || 0}</td>
-                        <td>{action.inbound?.unitCost.toFixed(2) || 0}</td>
-                        <td>{action.inbound?.totalCost.toFixed(2) || 0}</td>
-                        <td>{action.balance?.quantity || 0}</td>
+                        <td>{Movement.itemId?.itemName}</td>
+                        <td>{Movement.storeId?.storeName}</td>
+                        <td>{Movement.categoryId?.categoryName}</td>
+                        <td>{Movement.costMethod}</td>
+                        <td>{Movement.source}</td>
+                        <td>{Movement.description}</td>
+                        <td>{Movement.unit}</td>
+                        <td>{Movement.sender?.fullname}</td>
+                        <td>{Movement.receiver?.fullname}</td>
+                        <td>{Movement.outbound?.quantity || 0}</td>
+                        <td>{Movement.outbound?.unitCost.toFixed(2) || 0}</td>
+                        <td>{Movement.outbound?.totalCost.toFixed(2) || 0}</td>
+                        <td>{Movement.inbound?.quantity || 0}</td>
+                        <td>{Movement.inbound?.unitCost.toFixed(2) || 0}</td>
+                        <td>{Movement.inbound?.totalCost.toFixed(2) || 0}</td>
+                        <td>{Movement.balance?.quantity || 0}</td>
                         <td>
-                          {action.balance?.unitCost?.toFixed(2) || "0.00"}
+                          {Movement.balance?.unitCost?.toFixed(2) || "0.00"}
                         </td>
-                        <td>{action.balance?.totalCost.toFixed(2) || 0}</td>
-                        <td>{formatDateTime(action.createdAt)}</td>
-                        <td>{action.createdBy?.fullname}</td>
+                        <td>{Movement.balance?.totalCost.toFixed(2) || 0}</td>
+                        <td>{formatDateTime(Movement.createdAt)}</td>
+                        <td>{Movement.createdBy?.fullname}</td>
                         <td>
                           {stockMovementPermission &&
                             stockMovementPermission.update && (
                               <button
-                                data-target="#editStockactionModal"
+                                data-target="#editStockMovementModal"
                                 className="btn btn-sm btn-primary ml-2 "
                                 data-toggle="modal"
                                 onClick={() => {
-                                  setِActionId(action._id);
+                                  setMovementId(Movement._id);
                                 }}
                               >
                                 <i
@@ -901,10 +908,10 @@ const StockMovement = () => {
                           {stockMovementPermission &&
                             stockMovementPermission.delete && (
                               <button
-                                data-target="#deleteStockactionModal"
+                                data-target="#deleteStockMovementModal"
                                 className="btn btn-sm btn-danger"
                                 data-toggle="modal"
-                                onClick={() => setِActionId(action._id)}
+                                onClick={() => setِMovementId(Movement._id)}
                               >
                                 <i
                                   className="material-icons"
@@ -923,15 +930,15 @@ const StockMovement = () => {
             </tbody>
           </table>
 
-          <div className="clearfix">
+          <div className="clMarfix">
             <div className="hint-text text-dark">
               عرض{" "}
               <b>
-                {AllStockactions.length > endPagination
+                {AllStockmovements.length > endPagination
                   ? endPagination
-                  : AllStockactions.length}
+                  : AllStockmovements.length}
               </b>{" "}
-              من <b>{AllStockactions.length}</b> عنصر
+              من <b>{AllStockmovements.length}</b> عنصر
             </div>
             <ul className="pagination">
               <li onClick={EditPagination} className="page-item disabled">
@@ -990,10 +997,10 @@ const StockMovement = () => {
         </div>
       </div>
 
-      <div id="addStockactionModal" className="modal fade">
+      <div id="addStockMovementModal" className="modaM fade">
         <div className="modal-dialog modal-lg">
           <div className="modal-content shadow-lg border-0 rounded">
-            <form onSubmit={createStockAction}>
+            <form onSubmit={createStockMovement}>
               <div className="modal-header d-flex flex-wrap align-items-center text-light bg-primary">
                 <h4 className="modal-title">تسجيل حركة بالمخزن</h4>
                 <button
@@ -1083,6 +1090,19 @@ const StockMovement = () => {
                       </option>
                     ))}
                   </select>
+                </div>
+
+                <div className="form-group col-12">
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    وصف الحركة
+                  </label>
+                  <textarea
+                    className="form-control border-primary"
+                    required
+                    onChange={(e) => setDescription(e.target.value)}
+                    value={description}
+                    rows="3"
+                  />
                 </div>
 
                 {[
@@ -1249,6 +1269,35 @@ const StockMovement = () => {
                         />
                       </div>
                     </div>
+                    <div className="form-group col-12 col-md-6">
+                      <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                        متابعه تاريخ الصلاحيه
+                      </label>
+                      <div className="d-flex align-items-center">
+                        <input
+                          type="checkbox"
+                          className="form-check-input"
+                          checked={expirationDateEnabled}
+                          onChange={() =>
+                            setExpirationDateEnabled(!expirationDateEnabled)
+                          }
+                        />
+                      </div>
+                    </div>
+
+                    {expirationDateEnabled && (
+                      <div className="form-group col-12 col-md-6">
+                        <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                          تاريخ انتهاء الصلاحية
+                        </label>
+                        <input
+                          type="date"
+                          className="form-control border-primary"
+                          value={expirationDate}
+                          onChange={(e) => setExpirationDate(e.target.value)}
+                        />
+                      </div>
+                    )}
                   </>
                 ) : ["ReturnPurchase"].includes(source) ? (
                   <>

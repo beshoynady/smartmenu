@@ -6,7 +6,7 @@ import "../orders/Orders.css";
 
 const ReservationTables = () => {
   const {
-    setisLoading,
+    setIsLoading,
     EditPagination,
     startPagination,
     endPagination,
@@ -81,7 +81,7 @@ const ReservationTables = () => {
         toast.error("رجاء اختيار الحجز بشكل صحيح");
         return;
       }
-      // setisLoading(true)
+      // setIsLoading(true)
 
       const filterReservationsByTable = allReservations.filter(
         (reservation) =>
@@ -139,12 +139,12 @@ const ReservationTables = () => {
     } catch (error) {
       toast.error("حدث خطأاثناء تعديل الحجز ! حاول مرة اخري");
     } finally {
-      setisLoading(false);
+      setIsLoading(false);
     }
   };
 
   const confirmReservation = async (id, status) => {
-    // setisLoading(true)
+    // setIsLoading(true)
     try {
       if (!id) {
         toast.error("رجاء اختيار الحجز بشكل صحيح");
@@ -169,12 +169,12 @@ const ReservationTables = () => {
     } catch (error) {
       toast.error("حدث خطأاثناء تاكيد الحجز ! حاول مرة اخري");
     } finally {
-      setisLoading(false);
+      setIsLoading(false);
     }
   };
 
   const deleteReservation = async (id) => {
-    // setisLoading(true)
+    // setIsLoading(true)
     try {
       if (!id) {
         toast.error("رجاء اختيار الحجز بشكل صحيح");
@@ -191,7 +191,7 @@ const ReservationTables = () => {
     } catch (error) {
       toast.error("حدث خطاء عملية الحذف !حاول مره اخري");
     } finally {
-      setisLoading(false);
+      setIsLoading(false);
     }
   };
 

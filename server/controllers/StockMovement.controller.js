@@ -1,7 +1,7 @@
 const StockMovementModel = require("../models/StockMovement.model");
 
-// Controller function to create a new stock movement action
-const createStockAction = async (req, res, next) => {
+// Controller function to create a new stock movement movement
+const createStockMovement = async (req, res, next) => {
   try {
     // Destructure the relevant fields from the request body
     const {
@@ -16,16 +16,14 @@ const createStockAction = async (req, res, next) => {
       balance,
       remainingQuantity = 0,
       movementDate,
-      notes = "",
+      description , // Changed notes to description
       expirationDate,
-      // sender, // Added sender
-      // receiver, // Added receiver
+      sender, // Added sender
+      receiver, // Added receiver
     } = req.body;
 
     const createdBy = req.employee?.id;
-    const receiver = req.employee?.id;
-    const sender = req.employee?.id;
-
+    
     // Validate required fields
     if (
       !itemId ||
@@ -34,8 +32,9 @@ const createStockAction = async (req, res, next) => {
       !costMethod ||
       !source ||
       !balance ||
-      !sender || // Validate sender
-      !receiver // Validate receiver
+      !sender ||
+      !receiver || 
+      !description 
     ) {
       return res.status(400).json({ message: "Missing required fields" });
     }
@@ -46,28 +45,29 @@ const createStockAction = async (req, res, next) => {
       return res.status(400).json({ message: "Invalid cost method" });
     }
 
-    // Create a new stock movement action using the provided data
-    const newStockAction = await StockMovementModel.create({
+    // Create a new stock movement movement using the provided data
+    const newStockMovement = await StockMovementModel.create({
       itemId,
       storeId,
       categoryId,
       costMethod,
       source,
+      description, 
       unit,
       inbound,
       outbound,
       balance,
       remainingQuantity,
       movementDate,
-      createdBy,
       notes,
       expirationDate,
       sender,
       receiver, // Include sender and receiver
+      createdBy,
     });
 
-    // Respond with the created stock movement action
-    res.status(201).json(newStockAction);
+    // Respond with the created stock movement movement
+    res.status(201).json(newStockMovement);
   } catch (error) {
     // Log and handle any errors during the creation process
     console.error("Error creating stock movement:", error);
@@ -75,8 +75,8 @@ const createStockAction = async (req, res, next) => {
   }
 };
 
-// Controller function to update an existing stock movement action
-const updateStockAction = async (req, res, next) => {
+// Controller function to update an existing stock movement movement
+const updateStockMovement = async (req, res, next) => {
   try {
     const {
       itemId,
@@ -96,16 +96,16 @@ const updateStockAction = async (req, res, next) => {
       receiver, // Added receiver
     } = req.body;
     const updatedBy = req.employee.id;
-    const actionId = req.params.actionId;
+    const movementId = req.params.movementId;
 
-    const findAction = await StockMovementModel.findById(actionId);
-    if (!findAction) {
-      return res.status(400).json({ message: "Action not found" });
+    const findMovement = await StockMovementModel.findById(movementId);
+    if (!findMovement) {
+      return res.status(400).json({ message: "movement not found" });
     }
 
-    // Find and update the stock movement action by ID
-    const updatedAction = await StockMovementModel.findByIdAndUpdate(
-      actionId,
+    // Find and update the stock movement movement by ID
+    const updatedMovement = await StockMovementModel.findByIdAndUpdate(
+      movementId,
       {
         $set: {
           itemId,
@@ -129,12 +129,12 @@ const updateStockAction = async (req, res, next) => {
       { new: true } // Return the updated document
     );
 
-    if (!updatedAction) {
-      return res.status(404).json({ message: "Action not found" });
+    if (!updatedMovement) {
+      return res.status(404).json({ message: "movement not found" });
     }
 
-    // Respond with the updated stock movement action
-    res.status(200).json(updatedAction);
+    // Respond with the updated stock movement movement
+    res.status(200).json(updatedMovement);
   } catch (error) {
     // Handle any errors during the update process
     console.error("Error updating stock movement:", error);
@@ -142,10 +142,10 @@ const updateStockAction = async (req, res, next) => {
   }
 };
 
-// Controller function to get all stock movement actions
-const getAllStockActions = async (req, res, next) => {
+// Controller function to get all stock movement movements
+const getAllStockMovements = async (req, res, next) => {
   try {
-    const allActions = await StockMovementModel.find({})
+    const allMovements = await StockMovementModel.find({})
       .populate("itemId")
       .populate("storeId")
       .populate("categoryId")
@@ -153,10 +153,10 @@ const getAllStockActions = async (req, res, next) => {
       .populate("sender") // Populate sender
       .populate("receiver"); // Populate receiver
 
-    if (allActions.length > 0) {
-      res.status(200).json(allActions);
+    if (allMovements.length > 0) {
+      res.status(200).json(allMovements);
     } else {
-      res.status(404).json({ message: "No stock actions found" });
+      res.status(404).json({ message: "No stock movements found" });
     }
   } catch (error) {
     // Handle any errors during the retrieval process
@@ -165,11 +165,11 @@ const getAllStockActions = async (req, res, next) => {
   }
 };
 
-// Controller function to get a single stock movement action by ID
-const getOneStockAction = async (req, res, next) => {
+// Controller function to get a single stock movement movement by ID
+const getOneStockMovement = async (req, res, next) => {
   try {
-    const actionId = req.params.actionId;
-    const action = await StockMovementModel.findById(actionId)
+    const movementId = req.params.movementId;
+    const movement = await StockMovementModel.findById(movementId)
       .populate("itemId")
       .populate("storeId")
       .populate("categoryId")
@@ -177,11 +177,11 @@ const getOneStockAction = async (req, res, next) => {
       .populate("sender") // Populate sender
       .populate("receiver"); // Populate receiver
 
-    if (!action) {
-      return res.status(404).json({ message: "Action not found" });
+    if (!movement) {
+      return res.status(404).json({ message: "movement not found" });
     }
 
-    res.status(200).json(action);
+    res.status(200).json(movement);
   } catch (error) {
     // Handle any errors during the retrieval process
     console.error("Error retrieving stock movement:", error);
@@ -189,18 +189,18 @@ const getOneStockAction = async (req, res, next) => {
   }
 };
 
-// Controller function to delete a stock movement action by ID
-const deleteStockAction = async (req, res, next) => {
+// Controller function to delete a stock movement movement by ID
+const deleteStockMovement = async (req, res, next) => {
   try {
-    const actionId = req.params.actionId;
-    const deletedAction = await StockMovementModel.findByIdAndDelete(actionId);
+    const movementId = req.params.movementId;
+    const deletedMovement = await StockMovementModel.findByIdAndDelete(movementId);
 
-    if (!deletedAction) {
-      return res.status(404).json({ message: "Action not found" });
+    if (!deletedMovement) {
+      return res.status(404).json({ message: "movement not found" });
     }
 
-    // Respond with the deleted action
-    res.status(200).json(deletedAction);
+    // Respond with the deleted movement
+    res.status(200).json(deletedMovement);
   } catch (error) {
     // Handle any errors during the deletion process
     console.error("Error deleting stock movement:", error);
@@ -209,9 +209,9 @@ const deleteStockAction = async (req, res, next) => {
 };
 
 module.exports = {
-  createStockAction,
-  updateStockAction,
-  getOneStockAction,
-  getAllStockActions,
-  deleteStockAction,
+  createStockMovement,
+  updateStockMovement,
+  getOneStockMovement,
+  getAllStockMovements,
+  deleteStockMovement,
 };

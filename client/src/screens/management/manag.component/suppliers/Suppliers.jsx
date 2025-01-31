@@ -9,7 +9,7 @@ const Suppliers = () => {
     permissionsList,
     employeeLoginInfo,
     formatDateTime,
-    setisLoading,
+    setIsLoading,
     EditPagination,
     startPagination,
     endPagination,

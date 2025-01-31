@@ -7,7 +7,7 @@ import "../orders/Orders.css";
 const CashRegister = () => {
   const {
     permissionsList,
-    setisLoading,
+    setIsLoading,
     EditPagination,
     startPagination,
     endPagination,

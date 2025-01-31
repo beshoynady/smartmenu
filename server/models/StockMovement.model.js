@@ -48,6 +48,12 @@ const StockMovementSchema = new mongoose.Schema(
       ],
       required: true,
     },
+    description: {
+      type: String,
+      trim: true,
+      required: true,
+      
+    },
     inbound: {
       quantity: {
         type: Number,
@@ -131,10 +137,7 @@ const StockMovementSchema = new mongoose.Schema(
       type: ObjectId,
       ref: "Employee",
     },
-    notes: {
-      type: String,
-      trim: true,
-    },
+
   },
   {
     timestamps: true,

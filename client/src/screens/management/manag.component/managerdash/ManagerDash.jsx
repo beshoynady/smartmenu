@@ -22,7 +22,7 @@ const ManagerDash = () => {
     restaurantData,
     employeeLoginInfo,
     formatDate,
-    setisLoading,
+    setIsLoading,
     EditPagination,
     startPagination,
     endPagination,

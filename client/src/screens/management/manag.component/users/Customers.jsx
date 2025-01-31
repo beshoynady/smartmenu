@@ -13,7 +13,7 @@ const Customers = () => {
     restaurantData,
     formatDateTime,
     permissionsList,
-    setisLoading,
+    setIsLoading,
     formatDate,
     formatTime,
     EditPagination,
@@ -46,7 +46,7 @@ const Customers = () => {
   }, []);
 
   const getAllCustomers = async () => {
-    // setisLoading(true);
+    // setIsLoading(true);
     try {
       const config = await handleGetTokenAndConfig();
 
@@ -58,7 +58,7 @@ const Customers = () => {
       console.error("Error fetching customers:", error);
       toast.error("حدث خطأ أثناء جلب العملاء.");
     } finally {
-      // setisLoading(false);
+      // setIsLoading(false);
     }
   };
 

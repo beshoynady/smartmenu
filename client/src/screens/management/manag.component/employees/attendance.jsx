@@ -13,7 +13,7 @@ const AttendanceManagement = () => {
     restaurantData,
     formatDateTime,
     permissionsList,
-    setisLoading,
+    setIsLoading,
     formatDate,
     formatTime,
     EditPagination,

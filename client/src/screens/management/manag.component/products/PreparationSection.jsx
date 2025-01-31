@@ -7,7 +7,7 @@ import "../orders/Orders.css";
 const PreparationSection = () => {
   const {
     allProducts,
-    setisLoading,
+    setIsLoading,
     EditPagination,
     startPagination,
     endPagination,
@@ -372,7 +372,7 @@ data-target="#deletePreparationSectionModal"
       <div id="addPreparationSectionModal" className="modal fade">
         <div className="modal-dialog modal-lg">
           <div className="modal-content shadow-lg border-0 rounded ">
-            <form onSubmit={(e) => createPreparationSection(e, setisLoading)}>
+            <form onSubmit={(e) => createPreparationSection(e, setIsLoading)}>
               <div className="modal-header d-flex flex-wrap align-items-center text-light bg-primary">
                 <h4 className="modal-title">اضافه قسم اعداد</h4>
                 <button

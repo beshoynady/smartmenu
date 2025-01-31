@@ -13,7 +13,7 @@ const Employees = () => {
     permissionsList,
     restaurantData,
     formatDateTime,
-    setisLoading,
+    setIsLoading,
     EditPagination,
     startPagination,
     endPagination,

@@ -16,7 +16,7 @@ const EmployeeTransactions = () => {
     employeeLoginInfo,
     formatDateTime,
     allEmployees,
-    setisLoading,
+    setIsLoading,
     EditPagination,
     startPagination,
     endPagination,
@@ -44,7 +44,7 @@ const EmployeeTransactions = () => {
   const addEmployeeTransactions = async (e) => {
     e.preventDefault();
     const config = await handleGetTokenAndConfig();
-    setisLoading(true);
+    setIsLoading(true);
     try {
       if (
         employeeTransactionsPermission &&
@@ -74,14 +74,14 @@ const EmployeeTransactions = () => {
       console.log(error);
       toast.error("حدث خطاء اثناء اضافه معامله للموظف");
     } finally {
-      setisLoading(false);
+      setIsLoading(false);
     }
   };
 
   const updateEmployeeTransactions = async (e) => {
     e.preventDefault();
     const config = await handleGetTokenAndConfig();
-    setisLoading(true);
+    setIsLoading(true);
     try {
       if (
         employeeTransactionsPermission &&
@@ -110,14 +110,14 @@ const EmployeeTransactions = () => {
       console.log(error);
       toast.error("An error occurred while updating the transaction");
     } finally {
-      setisLoading(false);
+      setIsLoading(false);
     }
   };
 
   const deleteEmployeeTransactions = async (e) => {
     e.preventDefault();
     const config = await handleGetTokenAndConfig();
-    setisLoading(true);
+    setIsLoading(true);
     try {
       if (
         employeeTransactionsPermission &&
@@ -138,13 +138,13 @@ const EmployeeTransactions = () => {
       console.log(error);
       toast.error("An error occurred while deleting the transaction");
     } finally {
-      setisLoading(false);
+      setIsLoading(false);
     }
   };
 
   const getEmployeeTransactions = async () => {
     const config = await handleGetTokenAndConfig();
-    setisLoading(true);
+    setIsLoading(true);
     try {
       if (
         employeeTransactionsPermission &&
@@ -163,7 +163,7 @@ const EmployeeTransactions = () => {
     } catch (error) {
       console.log(error);
     } finally {
-      setisLoading(false);
+      setIsLoading(false);
     }
   };
 

@@ -13,7 +13,7 @@ const CustomerMessage = () => {
     restaurantData,
     formatDateTime,
     permissionsList,
-    setisLoading,
+    setIsLoading,
     formatDate,
     formatTime,
     EditPagination,

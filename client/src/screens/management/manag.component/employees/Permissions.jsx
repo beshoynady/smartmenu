@@ -8,7 +8,7 @@ const PermissionsComponent = () => {
   const {
     employeeLoginInfo,
     formatDateTime,
-    setisLoading,
+    setIsLoading,
     EditPagination,
     startPagination,
     endPagination,
@@ -389,7 +389,7 @@ const PermissionsComponent = () => {
     <dataContext.Consumer>
       {({
         restaurantData,
-        setisLoading,
+        setIsLoading,
         EditPagination,
         startPagination,
         endPagination,

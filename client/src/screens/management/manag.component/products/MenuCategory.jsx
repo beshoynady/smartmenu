@@ -7,7 +7,7 @@ import "../orders/Orders.css";
 const MenuCategory = () => {
   const {
     allProducts,
-    setisLoading,
+    setIsLoading,
     EditPagination,
     startPagination,
     endPagination,
@@ -511,7 +511,7 @@ const MenuCategory = () => {
       <div id="addCategoryModal" className="modal fade">
         <div className="modal-dialog modal-lg">
           <div className="modal-content shadow-lg border-0 rounded ">
-            <form onSubmit={(e) => createCategory(e, setisLoading)}>
+            <form onSubmit={(e) => createCategory(e, setIsLoading)}>
               <div className="modal-header d-flex flex-wrap align-items-center text-light bg-primary">
                 <h4 className="modal-title">اضافه تصنيف</h4>
                 <button

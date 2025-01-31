@@ -11,7 +11,7 @@ import pos from "../../../../image/pos.jpg";
 const Login = () => {
   const {
     getUserInfoFromToken,
-    setisLoading, handleGetTokenAndConfig, apiUrl } = useContext(dataContext)
+    setIsLoading, handleGetTokenAndConfig, apiUrl } = useContext(dataContext)
 
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
@@ -31,12 +31,12 @@ const Login = () => {
       toast.error("حدث خطأ في الشبكة.");
       setShowCreateButton(true);
     } finally {
-      setisLoading(false);
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    setisLoading(true);
+    setIsLoading(true);
     checkIfEmployeesExist();
   }, []);
 

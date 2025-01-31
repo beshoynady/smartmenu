@@ -7,7 +7,7 @@ import "../orders/Orders.css";
 const PayRoll = () => {
   const {
     permissionsList,
-    setisLoading,
+    setIsLoading,
     EditPagination,
     employeeLoginInfo,
     endPagination,

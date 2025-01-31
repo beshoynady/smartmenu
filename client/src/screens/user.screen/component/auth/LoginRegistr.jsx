@@ -14,7 +14,7 @@ const LoginRegistr = (props) => {
     restaurantData,
     formatDateTime,
     permissionsList,
-    setisLoading,
+    setIsLoading,
     formatDate,
     formatTime,
     EditPagination,

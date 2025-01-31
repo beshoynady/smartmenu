@@ -14,7 +14,7 @@ const CashMovement = () => {
     filterByTime,
     employeeLoginInfo,
     formatDate,
-    setisLoading,
+    setIsLoading,
     EditPagination,
     startPagination,
     endPagination,

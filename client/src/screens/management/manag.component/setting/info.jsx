@@ -14,7 +14,7 @@ const Info = () => {
     employeeLoginInfo,
     formatDate,
     formatDateTime,
-    setisLoading,
+    setIsLoading,
     EditPagination,
     startPagination,
     endPagination,
