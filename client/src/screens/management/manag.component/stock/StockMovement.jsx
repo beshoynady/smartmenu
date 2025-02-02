@@ -32,29 +32,29 @@ const StockMovement = () => {
     )[0];
 
   const sourceEn = [
-    "Purchase",           // مشتريات
-    "ReturnPurchase",     // إرجاع مشتريات
-    "Issuance",           // صرف
-    "ReturnIssuance",     // إرجاع منصرف
-    "Wastage",            // هدر
-    "Damaged",            // تالف
-    "Transfer",           // تحويل
-    "ReturnTransfer",     // إرجاع تحويل
-    "StockAdjustment",    // تعديل المخزون
-    "OpeningBalance",     // رصيد افتتاحي
+    "Purchase", // مشتريات
+    "ReturnPurchase", // إرجاع مشتريات
+    "Issuance", // صرف
+    "ReturnIssuance", // إرجاع منصرف
+    "Wastage", // هدر
+    "Damaged", // تالف
+    "Transfer", // تحويل
+    "ReturnTransfer", // إرجاع تحويل
+    "StockAdjustment", // تعديل المخزون
+    "OpeningBalance", // رصيد افتتاحي
   ];
 
   const sourceAr = [
-    "مشتريات",            // Purchase
-    "إرجاع مشتريات",      // ReturnPurchase
-    "صرف",                // Issuance
-    "إرجاع منصرف",        // ReturnIssuance
-    "هدر",                // Wastage
-    "تالف",               // Damaged
-    "تحويل",              // Transfer
-    "إرجاع تحويل",        // ReturnTransfer
-    "تعديل المخزون",      // StockAdjustment
-    "رصيد افتتاحي",       // OpeningBalance
+    "مشتريات", // Purchase
+    "إرجاع مشتريات", // ReturnPurchase
+    "صرف", // Issuance
+    "إرجاع منصرف", // ReturnIssuance
+    "هدر", // Wastage
+    "تالف", // Damaged
+    "تحويل", // Transfer
+    "إرجاع تحويل", // ReturnTransfer
+    "تعديل المخزون", // StockAdjustment
+    "رصيد افتتاحي", // OpeningBalance
   ];
 
   const [itemId, setItemId] = useState("");
@@ -433,7 +433,8 @@ const StockMovement = () => {
       return;
     }
 
-    const lastMovement = AllStockMovementsStore[AllStockMovementsStore.length - 1];
+    const lastMovement =
+      AllStockMovementsStore[AllStockMovementsStore.length - 1];
 
     if (!lastMovement || lastMovement._id !== MovementId) {
       toast.error("لا يمكن حذف هذه الحركه لأنها ليست آخر حركة في المخزن");
@@ -443,7 +444,10 @@ const StockMovement = () => {
 
     try {
       // حذف آخر حركة فقط
-      const response = await axios.delete(`${apiUrl}/api/stockmovement/${MovementId}`, config);
+      const response = await axios.delete(
+        `${apiUrl}/api/stockmovement/${MovementId}`,
+        config
+      );
       console.log(response);
 
       if (response) {
@@ -457,7 +461,6 @@ const StockMovement = () => {
       setIsLoading(false);
     }
   };
-
 
   const [AllStockMovements, setAllStockMovements] = useState([]);
   const [AllStockMovementsStore, setAllStockMovementsStore] = useState([]);
@@ -574,7 +577,7 @@ const StockMovement = () => {
     ).reverse();
     if (selectedStockMovements) {
       setAllStockMovements(selectedStockMovements);
-      setAllStockMovementsStore(selectedStockMovements.sort( (a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
+      setAllStockMovementsStore(selectedStockMovements);
     }
   };
 
@@ -594,13 +597,17 @@ const StockMovement = () => {
       getallStockMovement();
       return;
     }
-    const items = AllStockMovements.filter(
-      (StockMovements) => StockMovements.storeId?._id === storeId
-    );
-    setAllStockMovements(items);
-    setAllStockMovementsStore(items);
-  };
 
+    const items = AllStockMovements.filter(
+      (movement) => movement.storeId?._id === storeId
+    );
+    const sortedItems = items
+      .slice()
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    setAllStockMovements(sortedItems);
+    setAllStockMovementsStore(sortedItems);
+  };
 
   const searchByMovement = (Movement) => {
     if (!Movement) {
@@ -674,7 +681,6 @@ const StockMovement = () => {
                     <span>انشاء حركه مخزن</span>
                   </a>
                 )}
-               
               </div>
             </div>
           </div>
@@ -909,26 +915,28 @@ const StockMovement = () => {
                                 </i>
                               </button>
                             )} */}
-                          {stockMovementPermission &&
-                            stockMovementPermission.delete &&
-                            AllStockMovementsStore&&
-                            AllStockMovementsStore[AllStockMovementsStore.length - 1]?._id === Movement._id&&
-                            (
-                              <button
-                                data-target="#deleteStockMovementModal"
-                                className="btn btn-sm btn-danger"
-                                data-toggle="modal"
-                                onClick={() => setMovementId(Movement._id)}
-                              >
-                                <i
-                                  className="material-icons"
-                                  data-toggle="tooltip"
-                                  title="Delete"
+                          <td>
+                            {stockMovementPermission &&
+                              stockMovementPermission.delete &&
+                              AllStockMovementsStore.length > 0 &&
+                              AllStockMovementsStore[0]?._id ===
+                                Movement._id && (
+                                <button
+                                  data-target="#deleteStockMovementModal"
+                                  className="btn btn-sm btn-danger"
+                                  data-toggle="modal"
+                                  onClick={() => setMovementId(Movement._id)}
                                 >
-                                  &#xE872;
-                                </i>
-                              </button>
-                            )}
+                                  <i
+                                    className="material-icons"
+                                    data-toggle="tooltip"
+                                    title="Delete"
+                                  >
+                                    &#xE872;
+                                  </i>
+                                </button>
+                              )}
+                          </td>
                         </td>
                       </tr>
                     );
