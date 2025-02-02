@@ -588,6 +588,7 @@ const StockMovement = () => {
     );
     setAllStockMovements(items);
   };
+  
   const searchByStore = (storeId) => {
     if (!storeId) {
       getallStockMovement();
@@ -712,7 +713,7 @@ const StockMovement = () => {
                   {allStores.map((store, i) => {
                     return (
                       <option key={i} value={store._id}>
-                        {store.name}
+                        {store.storeName}
                       </option>
                     );
                   })}
