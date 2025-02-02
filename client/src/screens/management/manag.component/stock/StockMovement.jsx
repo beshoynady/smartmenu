@@ -850,7 +850,7 @@ const StockMovement = () => {
                 <th colspan="3">الرصيد</th>
                 <th rowspan="2">تاريخ الحركة</th>
                 <th rowspan="2">أضيف بواسطة</th>
-                <th rowspan="2">إجراءات</th>
+                {/* <th rowspan="2">إجراءات</th> */}
               </tr>
               <tr>
                 <th>الكمية</th>
@@ -913,7 +913,7 @@ const StockMovement = () => {
                                 </i>
                               </button>
                             )} */}
-                          {stockMovementPermission &&
+                          {/* {stockMovementPermission &&
                             stockMovementPermission.delete &&
                             AllStockMovementsStore&&
                             AllStockMovementsStore[AllStockMovementsStore.length - 1] === Movement._id&&
@@ -932,7 +932,7 @@ const StockMovement = () => {
                                   &#xE872;
                                 </i>
                               </button>
-                            )}
+                            )} */}
                         </td>
                       </tr>
                     );
