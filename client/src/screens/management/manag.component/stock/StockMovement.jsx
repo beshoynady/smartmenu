@@ -1020,7 +1020,7 @@ const StockMovement = () => {
                     onChange={(e) => handleSelectedStore(e.target.value)}
                   >
                     <option value="">اختر المخزن</option>
-                    {allStores.map((store, i) => (
+                    {allStores&&allStores.map((store, i) => (
                       <option key={i} value={store._id}>
                         {store.storeName}
                       </option>
@@ -1039,7 +1039,7 @@ const StockMovement = () => {
                     }}
                   >
                     <option value="">اختر التصنيف</option>
-                    {allCategoryStock.map((category, i) => (
+                    {allCategoryStock&&allCategoryStock.map((category, i) => (
                       <option key={i} value={category._id}>
                         {category.categoryName}
                       </option>
@@ -1058,7 +1058,7 @@ const StockMovement = () => {
                     }}
                   >
                     <option value="">اختر الصنف</option>
-                    {StockItems.filter(
+                    {StockItems&&StockItems.filter(
                       (item) =>
                         item.stores &&
                         item.stores?.some((store) => store._id === storeId) &&
@@ -1123,7 +1123,7 @@ const StockMovement = () => {
                         }}
                       >
                         <option value="">اختر المرسل</option>
-                        {employees.map((employee, i) => (
+                        {employees&&employees.map((employee, i) => (
                           <option key={i} value={employee._id}>
                             {employee.fullname}
                           </option>
@@ -1142,7 +1142,7 @@ const StockMovement = () => {
                         }}
                       >
                         <option value="">اختر المستلم</option>
-                        {storeKeepers.map((storeKeeper, i) => (
+                        {storeKeepers&&storeKeepers.map((storeKeeper, i) => (
                           <option key={i} value={storeKeeper._id}>
                             {storeKeeper.fullname}
                           </option>
@@ -1199,7 +1199,7 @@ const StockMovement = () => {
                         }}
                       >
                         <option value="">اختر المورد</option>
-                        {suppliers
+                        {suppliers&&suppliers
                           .filter((supplier) =>
                             supplier.itemsSupplied?.some(
                               (itemSupplied) => itemSupplied._id === itemId
@@ -1224,7 +1224,7 @@ const StockMovement = () => {
                         }}
                       >
                         <option value="">اختر المستلم</option>
-                        {storeKeepers.map((storeKeeper, i) => (
+                        {storeKeepers&&storeKeepers.map((storeKeeper, i) => (
                           <option key={i} value={storeKeeper._id}>
                             {storeKeeper.fullname}
                           </option>
@@ -1311,7 +1311,7 @@ const StockMovement = () => {
                         }}
                       >
                         <option value="">اختر المرسل</option>
-                        {storeKeepers.map((storeKeeper, i) => (
+                        {storeKeepers&&storeKeepers.map((storeKeeper, i) => (
                           <option key={i} value={storeKeeper._id}>
                             {storeKeeper.fullname}
                           </option>
@@ -1330,7 +1330,7 @@ const StockMovement = () => {
                         }}
                       >
                         <option value="">اختر المورد</option>
-                        {suppliers
+                        {suppliers&&suppliers
                           .filter((supplier) =>
                             supplier.itemsSupplied?.some(
                               (itemSupplied) => itemSupplied._id === itemId
