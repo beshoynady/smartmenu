@@ -588,7 +588,7 @@ const StockMovement = () => {
     );
     setAllStockMovements(items);
   };
-  
+
   const searchByStore = (storeId) => {
     if (!storeId) {
       getallStockMovement();
@@ -598,7 +598,10 @@ const StockMovement = () => {
       (StockMovements) => StockMovements.store?._id === storeId
     );
     setAllStockMovements(items);
+    setAllStockMovementsStore(items);
   };
+
+
   const searchByMovement = (Movement) => {
     if (!Movement) {
       getallStockMovement();
