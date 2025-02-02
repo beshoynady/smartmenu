@@ -571,10 +571,10 @@ const StockMovement = () => {
     }
     const selectedStockMovements = AllStockMovements.filter(
       (StockMovements) => StockMovements.storeIdId?._id === id
-    );
+    ).reverse();
     if (selectedStockMovements) {
       setAllStockMovements(selectedStockMovements);
-      setAllStockMovementsStore(selectedStockMovements);
+      setAllStockMovementsStore(selectedStockMovements.sort( (a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
     }
   };
 
