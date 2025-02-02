@@ -1103,9 +1103,113 @@ const StockMovement = () => {
                   />
                 </div>
 
-                {[
-                  "OpeningBalance",
-                  "Issuance",
+                {["OpeningBalance"].includes(source) ? (
+                  <>
+                    <div className="form-group col-12 col-md-6">
+                      <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                        المرسل
+                      </label>
+                      <select
+                        className="form-control border-primary m-0 p-2 h-auto"
+                        required
+                        onChange={(e) => {
+                          setSender(e.target.value);
+                        }}
+                      >
+                        <option value="">اختر المرسل</option>
+                        {storeKeepers&&storeKeepers.map((storeKeeper, i) => (
+                          <option key={i} value={storeKeeper._id}>
+                            {storeKeeper.fullname}
+                            </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="form-group col-12 col-md-6">
+                      <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                        المستلم
+                      </label>
+                      <select
+                        className="form-control border-primary m-0 p-2 h-auto"
+                        required
+                        onChange={(e) => {
+                          setReceiver(e.target.value);
+                        }}
+                      >
+                        <option value="">اختر المستلم</option>
+                        {storeKeepers&&storeKeepers.map((storeKeeper, i) => (
+                          <option key={i} value={storeKeeper._id}>
+                            {storeKeeper.fullname}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="form-group col-12 col-md-6">
+                      <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                        الكمية
+                      </label>
+                      <div className="d-flex align-items-center">
+                        <input
+                          type="number"
+                          className="form-control border-primary flex-grow-1"
+                          required
+                          onChange={(e) => {
+                            setQuantity(Number(e.target.value));
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <div className="form-group col-12 col-md-6">
+                      <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                        تكلفه الوحده
+                      </label>
+                      <div className="d-flex align-items-center">
+                        <input
+                          type="number"
+                          className="form-control border-primary flex-grow-1"
+                          required
+                          onChange={(e) => {
+                            setCostUnit(e.target.value);
+                          }}
+                        />
+                        <input
+                          type="text"
+                          className="form-control border-primary ms-2"
+                          defaultValue={unit}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                    <div className="form-group col-12 col-md-6">
+                      <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                        متابعه تاريخ الصلاحيه
+                      </label>
+                      <div className="d-flex align-items-center">
+                        <input
+                          type="checkbox"
+                          className="form-check-input"
+                          checked={expirationDateEnabled}
+                          onChange={() =>
+                            setExpirationDateEnabled(!expirationDateEnabled)
+                          }
+                        />
+                      </div>
+                    </div>
+
+                    {expirationDateEnabled && (
+                      <div className="form-group col-12 col-md-6">
+                        <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                          تاريخ انتهاء الصلاحية
+                        </label>
+                        <input
+                          type="date"
+                          className="form-control border-primary"
+                          value={expirationDate}
+                          onChange={(e) => setExpirationDate(e.target.value)}
+                        />
+                      </div>
+                    )}
+                  </>
+                ) :["Issuance",
                   "ReturnIssuance",
                   "Wastage",
                   "Damaged",
