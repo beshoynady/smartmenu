@@ -915,8 +915,8 @@ const StockMovement = () => {
                             )} */}
                           {stockMovementPermission &&
                             stockMovementPermission.delete &&
-                            AllStockMovemerntsStore&&
-                            AllStockMovementsStore[AllStockMovementsStore.length - 1] === Monvement._id&&
+                            AllStockMovementsStore&&
+                            AllStockMovementsStore[AllStockMovementsStore.length - 1] === Movement._id&&
                             (
                               <button
                                 data-target="#deleteStockMovementModal"
@@ -945,11 +945,11 @@ const StockMovement = () => {
             <div className="hint-text text-dark">
               عرض{" "}
               <b>
-                {AllStockmovements.length > endPagination
+                {AllStockMovements.length > endPagination
                   ? endPagination
-                  : AllStockmovements.length}
+                  : AllStockMovements.length}
               </b>{" "}
-              من <b>{AllStockmovements.length}</b> عنصر
+              من <b>{AllStockMovements.length}</b> عنصر
             </div>
             <ul className="pagination">
               <li onClick={EditPagination} className="page-item disabled">
