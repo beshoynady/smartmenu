@@ -575,7 +575,7 @@ const StockMovement = () => {
     setStoreId(id);
     const store = allStores.find((store) => store._id === id);
     if (store) {
-      setstoreKeepers(store.storeKeepers);
+      setstoreKeepers(store.storekeeper);
     }
     const selectedStockMovements = AllStockMovements.filter(
       (StockMovements) => StockMovements.storeIdId?._id === id
