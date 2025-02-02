@@ -32,25 +32,29 @@ const StockMovement = () => {
     )[0];
 
   const sourceEn = [
-    "Purchase",
-    "ReturnPurchase",
-    "Issuance",
-    "ReturnIssuance",
-    "Wastage",
-    "Damaged",
-    "stockAdjustment",
-    "OpeningBalance",
+    "Purchase",           // مشتريات
+    "ReturnPurchase",     // إرجاع مشتريات
+    "Issuance",           // صرف
+    "ReturnIssuance",     // إرجاع منصرف
+    "Wastage",            // هدر
+    "Damaged",            // تالف
+    "Transfer",           // تحويل
+    "ReturnTransfer",     // إرجاع تحويل
+    "StockAdjustment",    // تعديل المخزون
+    "OpeningBalance",     // رصيد افتتاحي
   ];
 
   const sourceAr = [
-    "مشتريات",
-    "إرجاع مشتريات",
-    "صرف",
-    "إرجاع منصرف",
-    "هدر",
-    "تالف",
-    "تعديل المخزون",
-    "رصيد افتتاحي",
+    "مشتريات",            // Purchase
+    "إرجاع مشتريات",      // ReturnPurchase
+    "صرف",                // Issuance
+    "إرجاع منصرف",        // ReturnIssuance
+    "هدر",                // Wastage
+    "تالف",               // Damaged
+    "تحويل",              // Transfer
+    "إرجاع تحويل",        // ReturnTransfer
+    "تعديل المخزون",      // StockAdjustment
+    "رصيد افتتاحي",       // OpeningBalance
   ];
 
   const [itemId, setItemId] = useState("");
@@ -420,36 +424,40 @@ const StockMovement = () => {
 
   const deleteStockMovement = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+
     const config = await handleGetTokenAndConfig();
     if (stockMovementPermission && !stockMovementPermission.delete) {
       toast.warn("ليس لك صلاحية لحذف حركه المخزن");
+      setIsLoading(false);
       return;
     }
-    // setIsLoading(true);
+
+    const lastMovement = AllStockMovementsStore[AllStockMovementsStore.length - 1];
+
+    if (!lastMovement || lastMovement._id !== MovementId) {
+      toast.error("لا يمكن حذف هذه الحركه لأنها ليست آخر حركة في المخزن");
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      // Delete the selected stock Movement
-      const response = await axios.delete(
-        `${apiUrl}/api/stockmovement/${MovementId}`,
-        config
-      );
+      // حذف آخر حركة فقط
+      const response = await axios.delete(`${apiUrl}/api/stockmovement/${MovementId}`, config);
       console.log(response);
 
       if (response) {
-        // Update the stock Movements list after successful deletion
         getallStockMovement();
-        // setIsLoading(false);
-        // Toast notification for successful deletion
         toast.success("تم حذف حركه المخزن بنجاح");
       }
     } catch (error) {
-      // setIsLoading(false);
       console.log(error);
-      // Toast notification for error
-      toast.error("فشل حذف حركه المخزن ! حاول مره اخري ");
+      toast.error("فشل حذف حركه المخزن! حاول مرة أخرى");
     } finally {
-      // setIsLoading(false);
+      setIsLoading(false);
     }
   };
+
 
   const [AllStockMovements, setAllStockMovements] = useState([]);
   const [AllStockMovementsStore, setAllStockMovementsStore] = useState([]);
@@ -886,7 +894,7 @@ const StockMovement = () => {
                         <td>{formatDateTime(Movement.createdAt)}</td>
                         <td>{Movement.createdBy?.fullname}</td>
                         <td>
-                          {stockMovementPermission &&
+                          {/* {stockMovementPermission &&
                             stockMovementPermission.update && (
                               <button
                                 data-target="#editStockMovementModal"
@@ -904,14 +912,16 @@ const StockMovement = () => {
                                   &#xE254;
                                 </i>
                               </button>
-                            )}
+                            )} */}
                           {stockMovementPermission &&
-                            stockMovementPermission.delete && (
+                            stockMovementPermission.delete &&
+                            AllStockMovementsStore[AllStockMovementsStore.length - 1] === MovementId &&
+                            (
                               <button
                                 data-target="#deleteStockMovementModal"
                                 className="btn btn-sm btn-danger"
                                 data-toggle="modal"
-                                onClick={() => setِMovementId(Movement._id)}
+                                onClick={() => setMovementId(Movement._id)}
                               >
                                 <i
                                   className="material-icons"
@@ -1401,6 +1411,49 @@ const StockMovement = () => {
                   type="submit"
                   className="btn btn-success col-6 h-100 px-2 py-3 m-0"
                   value="اضافة"
+                />
+                <input
+                  type="button"
+                  className="btn btn-danger col-6 h-100 px-2 py-3 m-0"
+                  data-dismiss="modal"
+                  value="إغلاق"
+                />
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div id="deleteStockMovementModal" className="modal fade">
+        <div className="modal-dialog modal-lg">
+          <div className="modal-content shadow-lg border-0 rounded ">
+            <form onSubmit={deleteStockMovement}>
+              <div className="modal-header d-flex flex-wrap align-items-center text-light bg-primary">
+                <h4 className="modal-title">حذف اخر سجل</h4>
+                <button
+                  type="button"
+                  className="close m-0 p-1"
+                  data-dismiss="modal"
+                  aria-hidden="true"
+                >
+                  &times;
+                </button>
+              </div>
+              <div className="modal-body text-center">
+                <p className="text-right text-dark fs-3 fw-800 mb-2">
+                  هل أنت متأكد من حذف هذا السجل؟
+                </p>
+                <p className="text-warning text-center mt-3">
+                  <small>لا يمكن الرجوع في هذا الإجراء.</small>
+                </p>
+              </div>
+              <div className="modal-footer d-flex flex-nowrap align-items-center justify-content-between m-0 p-1">
+                <input
+                  type="submit"
+                  className="btn btn-warning col-6 h-100 px-2 py-3 m-0"
+                  value="حذف"
                 />
                 <input
                   type="button"
