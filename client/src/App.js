@@ -70,12 +70,7 @@ const MenuCategory = React.lazy(() =>
 const PreparationScreen = React.lazy(() =>
   import("./screens/management/manag.component/kitchen/PreparationScreen.jsx")
 );
-const Bar = React.lazy(() =>
-  import("./screens/management/manag.component/kitchen/Bar")
-);
-const Grill = React.lazy(() =>
-  import("./screens/management/manag.component/kitchen/Grill")
-);
+
 const Waiter = React.lazy(() =>
   import("./screens/management/manag.component/waiter/Waiter")
 );
@@ -115,12 +110,7 @@ const BatchStockReport = React.lazy(() =>
 const SectionConsumption = React.lazy(() =>
   import("./screens/management/manag.component/stock/SectionConsumption.jsx")
 );
-const BarConsumption = React.lazy(() =>
-  import("./screens/management/manag.component/stock/BarConsumption.jsx")
-);
-const GrillConsumption = React.lazy(() =>
-  import("./screens/management/manag.component/stock/GrillConsumption.jsx")
-);
+
 const ExpenseItem = React.lazy(() =>
   import("./screens/management/manag.component/expenses/Expense")
 );
@@ -2603,22 +2593,7 @@ function App() {
                 </Suspense>
               }
             />
-            <Route
-              path="grill"
-              element={
-                <Suspense fallback={<LoadingPage />}>
-                  <Grill />
-                </Suspense>
-              }
-            />
-            <Route
-              path="bar"
-              element={
-                <Suspense fallback={<LoadingPage />}>
-                  <Bar />
-                </Suspense>
-              }
-            />
+            
             <Route
               path="waiter"
               element={
@@ -2723,22 +2698,7 @@ function App() {
                 </Suspense>
               }
             />
-            <Route
-              path="barconsumption"
-              element={
-                <Suspense fallback={<LoadingPage />}>
-                  <BarConsumption />
-                </Suspense>
-              }
-            />
-            <Route
-              path="grillconsumption"
-              element={
-                <Suspense fallback={<LoadingPage />}>
-                  <GrillConsumption />
-                </Suspense>
-              }
-            />
+            
             <Route
               path="expense"
               element={
