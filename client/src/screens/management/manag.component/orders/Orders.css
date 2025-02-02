@@ -8,10 +8,13 @@
 }
 
 .table-responsive {
+  width: 100% !important;
   margin: 10px 0;
 }
 
 .table-wrapper {
+  width: 100%;
+  max-width: 100%;
   background: #fff;
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -82,6 +85,7 @@
   padding: 5px;
   min-width: 75px;
 }
+
 .table-filter .form-control {
   max-width: max-content;
   min-width: 100%;
@@ -90,6 +94,7 @@
   font-weight: 800;
   color: #000000;
 }
+
 .table-filter .btn {
   width: 70px;
 }
@@ -119,7 +124,9 @@ table.table td {
   font-weight: 800;
   text-wrap: nowrap;
 }
-table.table th:first-child, td:first-child {
+
+table.table th:first-child,
+td:first-child {
   position: sticky;
   left: 0;
   background-color: white;
@@ -247,11 +254,13 @@ table.table .avatar {
 }
 
 @media (max-width: 576px) {
+
   .modal .modal-header,
   .modal .modal-body,
   .modal .modal-footer {
     padding: 10px;
   }
+
   /* .modal .modal-dialog { */
   /* width: 90%;
       max-width: 90%; */

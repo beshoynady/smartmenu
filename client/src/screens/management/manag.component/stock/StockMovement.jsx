@@ -669,16 +669,7 @@ const StockMovement = () => {
                     <span>انشاء حركه مخزن</span>
                   </a>
                 )}
-                {/* {stockMovementPermission &&
-                  stockMovementPermission.delete && (
-                    <a
-                      href="#deleteStockMovementModal"
-                      className="d-flex align-items-center justify-content-center h-100 m-0 btn btn-danger"
-                      data-toggle="modal"
-                    >
-                      <span>حذف</span>
-                    </a>
-                  )} */}
+               
               </div>
             </div>
           </div>
@@ -850,7 +841,7 @@ const StockMovement = () => {
                 <th colspan="3">الرصيد</th>
                 <th rowspan="2">تاريخ الحركة</th>
                 <th rowspan="2">أضيف بواسطة</th>
-                {/* <th rowspan="2">إجراءات</th> */}
+                <th rowspan="2">إجراءات</th>
               </tr>
               <tr>
                 <th>الكمية</th>
@@ -913,7 +904,7 @@ const StockMovement = () => {
                                 </i>
                               </button>
                             )} */}
-                          {/* {stockMovementPermission &&
+                          {stockMovementPermission &&
                             stockMovementPermission.delete &&
                             AllStockMovementsStore&&
                             AllStockMovementsStore[AllStockMovementsStore.length - 1] === Movement._id&&
@@ -932,7 +923,7 @@ const StockMovement = () => {
                                   &#xE872;
                                 </i>
                               </button>
-                            )} */}
+                            )}
                         </td>
                       </tr>
                     );
@@ -1425,9 +1416,7 @@ const StockMovement = () => {
         </div>
       </div>
 
-
-
-      {/* <div id="deleteStockMovementModal" className="modal fade">
+      <div id="deleteStockMovementModal" className="modal fade">
         <div className="modal-dialog modal-lg">
           <div className="modal-content shadow-lg border-0 rounded ">
             <form onSubmit={deleteStockMovement}>
@@ -1466,7 +1455,7 @@ const StockMovement = () => {
             </form>
           </div>
         </div>
-      </div> */}
+      </div>
     </div>
   );
 };
