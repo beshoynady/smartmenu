@@ -427,14 +427,18 @@ const StockMovement = () => {
     setIsLoading(true);
 
     const config = await handleGetTokenAndConfig();
+
     if (stockMovementPermission && !stockMovementPermission.delete) {
       toast.warn("ليس لك صلاحية لحذف حركه المخزن");
       setIsLoading(false);
       return;
     }
 
-    const lastMovement =
-      AllStockMovementsStore[AllStockMovementsStore.length - 1];
+    const allSortedMovements = [...AllStockMovements].sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+    ); // Sort all movements by date
+
+    const lastMovement = allSortedMovements[0]; // Get the last movement
 
     if (!lastMovement || lastMovement._id !== MovementId) {
       toast.error("لا يمكن حذف هذه الحركه لأنها ليست آخر حركة في المخزن");
@@ -443,16 +447,17 @@ const StockMovement = () => {
     }
 
     try {
-      // حذف آخر حركة فقط
+      // حذف الحركة الأخيرة فقط
       const response = await axios.delete(
         `${apiUrl}/api/stockmovement/${MovementId}`,
         config
       );
-      console.log(response);
 
-      if (response) {
-        getallStockMovement();
+      if (response.status === 200) {
         toast.success("تم حذف حركه المخزن بنجاح");
+
+        // تحديث القائمة بعد الحذف
+        getallStockMovement();
       }
     } catch (error) {
       console.log(error);
@@ -896,47 +901,25 @@ const StockMovement = () => {
                         <td>{formatDateTime(Movement.createdAt)}</td>
                         <td>{Movement.createdBy?.fullname}</td>
                         <td>
-                          {/* {stockMovementPermission &&
-                            stockMovementPermission.update && (
+                          {stockMovementPermission &&
+                            stockMovementPermission.delete &&
+                            AllStockMovementsStore.length > 0 &&
+                            AllStockMovementsStore[0]?._id === Movement._id && (
                               <button
-                                data-target="#editStockMovementModal"
-                                className="btn btn-sm btn-primary ml-2 "
+                                data-target="#deleteStockMovementModal"
+                                className="btn btn-sm btn-danger"
                                 data-toggle="modal"
-                                onClick={() => {
-                                  setMovementId(Movement._id);
-                                }}
+                                onClick={() => setMovementId(Movement._id)}
                               >
                                 <i
                                   className="material-icons"
                                   data-toggle="tooltip"
-                                  title="Edit"
+                                  title="Delete"
                                 >
-                                  &#xE254;
+                                  &#xE872;
                                 </i>
                               </button>
-                            )} */}
-                          <td>
-                            {stockMovementPermission &&
-                              stockMovementPermission.delete &&
-                              AllStockMovementsStore.length > 0 &&
-                              AllStockMovementsStore[0]?._id ===
-                                Movement._id && (
-                                <button
-                                  data-target="#deleteStockMovementModal"
-                                  className="btn btn-sm btn-danger"
-                                  data-toggle="modal"
-                                  onClick={() => setMovementId(Movement._id)}
-                                >
-                                  <i
-                                    className="material-icons"
-                                    data-toggle="tooltip"
-                                    title="Delete"
-                                  >
-                                    &#xE872;
-                                  </i>
-                                </button>
-                              )}
-                          </td>
+                            )}
                         </td>
                       </tr>
                     );
