@@ -1427,7 +1427,7 @@ const StockMovement = () => {
 
 
 
-      <div id="deleteStockMovementModal" className="modal fade">
+      {/* <div id="deleteStockMovementModal" className="modal fade">
         <div className="modal-dialog modal-lg">
           <div className="modal-content shadow-lg border-0 rounded ">
             <form onSubmit={deleteStockMovement}>
@@ -1466,7 +1466,7 @@ const StockMovement = () => {
             </form>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
