@@ -570,7 +570,7 @@ const StockMovement = () => {
       setstoreKeepers(store.storeKeepers);
     }
     const selectedStockMovements = AllStockMovements.filter(
-      (StockMovements) => StockMovements.storeId?._id === id
+      (StockMovements) => StockMovements.storeIdId?._id === id
     );
     if (selectedStockMovements) {
       setAllStockMovements(selectedStockMovements);
@@ -595,7 +595,7 @@ const StockMovement = () => {
       return;
     }
     const items = AllStockMovements.filter(
-      (StockMovements) => StockMovements.store?._id === storeId
+      (StockMovements) => StockMovements.storeId?._id === storeId
     );
     setAllStockMovements(items);
     setAllStockMovementsStore(items);
