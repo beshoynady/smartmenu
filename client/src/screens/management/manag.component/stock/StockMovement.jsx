@@ -573,6 +573,7 @@ const StockMovement = () => {
       (StockMovements) => StockMovements.storeId?._id === id
     );
     if (selectedStockMovements) {
+      setAllStockMovements(selectedStockMovements);
       setAllStockMovementsStore(selectedStockMovements);
     }
   };
@@ -999,7 +1000,7 @@ const StockMovement = () => {
         </div>
       </div>
 
-      <div id="addStockMovementModal" className="modaM fade">
+      <div id="addStockMovementModal" className="modal fade">
         <div className="modal-dialog modal-lg">
           <div className="modal-content shadow-lg border-0 rounded">
             <form onSubmit={createStockMovement}>
