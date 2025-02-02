@@ -912,7 +912,7 @@ const StockMovement = () => {
                           {stockMovementPermission &&
                             stockMovementPermission.delete &&
                             AllStockMovementsStore&&
-                            AllStockMovementsStore[AllStockMovementsStore.length - 1]._id === Movement._id&&
+                            AllStockMovementsStore[AllStockMovementsStore.length - 1]?._id === Movement._id&&
                             (
                               <button
                                 data-target="#deleteStockMovementModal"
