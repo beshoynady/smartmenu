@@ -666,10 +666,7 @@ const StockMovement = () => {
 
   useEffect(async () => {
     const config = await handleGetTokenAndConfig();
-    if (stockItemPermission && !stockItemPermission.update) {
-      toast.warn("ليس لك صلاحية لتعديل عناصر المخزن");
-      return;
-    }
+
     const allStockMovementsByStoreResponse = await axios.get(
       `${apiUrl}/api/stockmovement/allmovementstore/${storeId}`,
       config
