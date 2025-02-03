@@ -101,8 +101,8 @@ const StockMovement = () => {
       return;
     }
     try {
-      const allStockMovementsByStoreResponse = await axios.get(`${apiUrl}/allmovementstore/${storeId}`);
-      const lastStockMovementResponse = await axios.get(`${apiUrl}/lastmovement/${storeId}`);
+      const allStockMovementsByStoreResponse = await axios.get(`${apiUrl}/api/stockmovement/allmovementstore/${storeId}`);
+      const lastStockMovementResponse = await axios.get(`${apiUrl}/api/stockmovement/lastmovement/${storeId}`);
   
       const allStockMovementsByStore = allStockMovementsByStoreResponse.data || [];
       const lastStockMovement = lastStockMovementResponse.data || null;
