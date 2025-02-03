@@ -97,16 +97,14 @@ const StockMovement = () => {
       toast.warn("ليس لك صلاحية لانشاء حركه المخزن");
       return;
     }
-
-    const lastStockMovement = AllStockMovementsStore.filter(
-      (stockMovement) =>
-        stockMovement.itemId?._id === itemId && stockMovement._id === storeId
-    ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
+    const allStockMovementsByStore =  await get(`${apiUrl}/allmovementstore/${storeId}`)
+    const lastStockMovement = await get(`${apiUrl}/lastmovement/${storeId}`)
+    console.log({allStockMovementsByStore, lastStockMovement})
 
     console.log({ inbound, outbound, balance });
     if (source === "Issuance" || source === "Wastage" || source === "Damaged") {
       if (costMethod === "FIFO") {
-        const batches = AllStockMovementsStore.filter((stockMovement) => {
+        const batches = allStockMovementsByStore.filter((stockMovement) => {
           const isValidMovement =
             stockMovement && stockMovement.itemId && stockMovement.itemId._id;
           const isMatchingItem =
@@ -158,7 +156,7 @@ const StockMovement = () => {
           }
         }
       } else if (costMethod === "LIFO") {
-        const batches = AllStockMovementsStore.filter(
+        const batches = allStockMovementsByStore.filter(
           (stockMovement) =>
             stockMovement.itemId?._id === itemId &&
             stockMovement.inbound?.quantity > 0 &&
@@ -200,7 +198,7 @@ const StockMovement = () => {
           }
         }
       } else if (costMethod === "Weighted Average") {
-        const batches = AllStockMovementsStore.filter((stockMovement) => {
+        const batches = allStockMovementsByStore.filter((stockMovement) => {
           const isValidMovement =
             stockMovement && stockMovement.itemId && stockMovement.itemId._id;
           const isMatchingItem =
@@ -221,7 +219,7 @@ const StockMovement = () => {
           0
         );
 
-        const weightedAverageCost = totalCostInStock / totalQuantityInStock;
+        const weightedAverageCost = totalQuantityInStock > 0 ? totalCostInStock / totalQuantityInStock : 0;
 
         outbound.quantity = quantity;
         outbound.unitCost = weightedAverageCost;

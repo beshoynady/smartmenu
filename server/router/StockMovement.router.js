@@ -4,6 +4,8 @@ const {
   updateStockMovement,
   getOneStockMovement,
   getAllStockMovements,
+  getAllStockMovementByStore,
+  getLastStockMovementStore,
   deleteStockMovement,
 } = require("../controllers/StockMovement.controller");
 
@@ -24,4 +26,6 @@ router
   .put(authenticateToken, checkSubscription, updateStockMovement) // Update a stock Movement by ID
   .delete(authenticateToken, checkSubscription, deleteStockMovement); // Delete a stock Movement by ID
 
+router.route("/lastmovement/:storeId").get(authenticateToken, checkSubscription, getLastStockMovementStore)
+router.route("/allmovementstore/:storeId").get(authenticateToken, checkSubscription, getAllStockMovementByStore)
 module.exports = router;

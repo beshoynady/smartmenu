@@ -189,6 +189,47 @@ const getOneStockMovement = async (req, res, next) => {
   }
 };
 
+const getAllStockMovementByStore = async(req, res ,next)=>{
+  try {
+    const {storeId} = req.params
+    const AllStockMovementByStore = await StockMovementModel.find({storeId})
+    .sort({createdAt: -1})
+    .populate("itemId")
+      .populate("storeId")
+      .populate("categoryId")
+      .populate("createdBy")
+      .populate("sender" ) // Populate sender
+      .populate("receiver"); // Populate receiver
+
+      if(!AllStockMovementByStore){
+        return res.status(404).json({ message: "No stock movement found for this store" });
+      }
+      res.status(200).json(AllStockMovementByStore)
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+const getLastStockMovementStore = async(req, res ,next)=>{
+  try {
+    const {storeId} = req.params
+    const lastMovement = await StockMovementModel.findOne({storeId})
+    .sort({createdAt: -1})
+    .populate("itemId")
+      .populate("storeId")
+      .populate("categoryId")
+      .populate("createdBy")
+      .populate("sender" ) // Populate sender
+      .populate("receiver"); // Populate receiver
+
+      if(!lastMovement){
+        return res.status(404).json({ message: "No stock movement found for this store" });
+      }
+      res.status(200).json(lastMovement)
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
 // Controller function to delete a stock movement movement by ID
 const deleteStockMovement = async (req, res, next) => {
   try {
@@ -213,5 +254,7 @@ module.exports = {
   updateStockMovement,
   getOneStockMovement,
   getAllStockMovements,
+  getAllStockMovementByStore,
+  getLastStockMovementStore,
   deleteStockMovement,
 };
