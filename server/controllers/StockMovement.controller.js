@@ -59,7 +59,6 @@ const createStockMovement = async (req, res, next) => {
       balance,
       remainingQuantity,
       movementDate,
-      notes,
       expirationDate,
       sender,
       receiver, // Include sender and receiver
@@ -153,7 +152,10 @@ const getAllStockMovements = async (req, res, next) => {
       .populate("sender") // Populate sender
       .populate("receiver"); // Populate receiver
 
-      res.status(200).json(allMovements || []);
+      if (!allMovements) {
+        return res.status(200).json([]);
+      }
+      res.status(200).json(allMovements);
     
   } catch (error) {
     // Handle any errors during the retrieval process
@@ -198,11 +200,15 @@ const getAllStockMovementByStore = async (req, res, next) => {
       .populate("sender") // Populate sender
       .populate("receiver"); // Populate receiver
 
-    res.status(200).json(allStockMovementByStore || []); // إرجاع مصفوفة فارغة إذا لم تكن هناك بيانات
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+      if (!allStockMovementByStore) {
+        return res.status(200).json([]);
+      }
+  
+      res.status(200).json(allStockMovementByStore);
+    } catch (error) {
+      res.status(500).json({message: error.message });
+    }
+  };
 
 
 
@@ -218,14 +224,16 @@ const getLastStockMovementStore = async(req, res ,next)=>{
       .populate("sender" ) // Populate sender
       .populate("receiver"); // Populate receiver
 
-      if(!lastMovement){
-        return res.status(404).json({ message: "No stock movement found for this store" });
+      if (!lastMovement) {
+        return res.status(200).json([]);
       }
-      res.status(200).json(lastMovement || {})
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-}
+  
+      res.status(200).json(lastMovement);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
+
 
 // Controller function to delete a stock movement movement by ID
 const deleteStockMovement = async (req, res, next) => {
