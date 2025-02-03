@@ -97,8 +97,8 @@ const StockMovement = () => {
       toast.warn("ليس لك صلاحية لانشاء حركه المخزن");
       return;
     }
-    const allStockMovementsByStore =  await get(`${apiUrl}/allmovementstore/${storeId}`)
-    const lastStockMovement = await get(`${apiUrl}/lastmovement/${storeId}`)
+    const allStockMovementsByStore =  await axios.get(`${apiUrl}/allmovementstore/${storeId}`)
+    const lastStockMovement = await axios.get(`${apiUrl}/lastmovement/${storeId}`)
     console.log({allStockMovementsByStore, lastStockMovement})
 
     console.log({ inbound, outbound, balance });
@@ -433,7 +433,7 @@ const StockMovement = () => {
     }
 
 
-    const lastMovement =  await get(`${apiUrl}/lastmovement/${storeId}`)  // Get the last movement
+    const lastMovement =  await axios.get(`${apiUrl}/lastmovement/${storeId}`)  // Get the last movement
 
     if (!lastMovement || lastMovement._id !== movementId) {
       toast.error("لا يمكن حذف هذه الحركه لأنها ليست آخر حركة في المخزن");
