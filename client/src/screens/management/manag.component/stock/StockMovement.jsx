@@ -667,40 +667,44 @@ const StockMovement = () => {
   useEffect(async () => {
     const config = await handleGetTokenAndConfig();
 
-    const allStockMovementsByStoreResponse = await axios.get(
-      `${apiUrl}/api/stockmovement/allmovementstore/${storeId}`,
-      config
-    );
+    if(stockId && itemId){
+      const allStockMovementsByStoreResponse = await axios.get(
+        `${apiUrl}/api/stockmovement/allmovementstore/${storeId}`,
+        config
+      );
+  
+      const allStockMovementsByStore =
+        allStockMovementsByStoreResponse.data || [];
 
-    const allStockMovementsByStore =
-      allStockMovementsByStoreResponse.data || [];
-    const lastStockMovement = allStockMovementsByStore
-      ?.filter((movement) => movement.itemId?._id === itemId)
-      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
-    console.log({ lastStockMovement });
+      const lastStockMovement = allStockMovementsByStore&&allStockMovementsByStore
+        ?.filter((movement) => movement.itemId?._id === itemId)
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
 
-    setInbound({
-      quantity: 0,
-      unitCost: 0,
-      totalCost: 0,
-    });
-    setOutbound({
-      quantity: 0,
-      unitCost: 0,
-      totalCost: 0,
-    });
-    setBalance({
-      quantity: lastStockMovement
-        ? Number(lastStockMovement.balance?.quantity)
-        : 0,
-      unitCost: lastStockMovement
-        ? Number(lastStockMovement.balance?.unitCost)
-        : 0,
-      totalCost: lastStockMovement
-        ? Number(lastStockMovement.balance?.totalCost)
-        : 0,
-    });
-  }, [quantity, source, itemId, AllStockMovements, costUnit]);
+      console.log({ lastStockMovement });
+  
+      setInbound({
+        quantity: 0,
+        unitCost: 0,
+        totalCost: 0,
+      });
+      setOutbound({
+        quantity: 0,
+        unitCost: 0,
+        totalCost: 0,
+      });
+      setBalance({
+        quantity: lastStockMovement
+          ? Number(lastStockMovement.balance?.quantity)
+          : 0,
+        unitCost: lastStockMovement
+          ? Number(lastStockMovement.balance?.unitCost)
+          : 0,
+        totalCost: lastStockMovement
+          ? Number(lastStockMovement.balance?.totalCost)
+          : 0,
+      });
+    }
+  }, [stckId, itemId, quantity, source, itemId, AllStockMovements, costUnit]);
 
   return (
     <div className="w-100 px-3 d-flex align-itmes-center justify-content-start">
