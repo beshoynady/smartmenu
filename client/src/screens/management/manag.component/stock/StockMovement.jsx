@@ -704,7 +704,7 @@ const StockMovement = () => {
           : 0,
       });
     }
-  }, [stckId, itemId, quantity, source, itemId, AllStockMovements, costUnit]);
+  }, [storeId, itemId, quantity, source, itemId, AllStockMovements, costUnit]);
 
   return (
     <div className="w-100 px-3 d-flex align-itmes-center justify-content-start">
