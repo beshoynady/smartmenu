@@ -667,7 +667,7 @@ const StockMovement = () => {
   useEffect(async () => {
     const config = await handleGetTokenAndConfig();
 
-    if(stockId && itemId){
+    if(storeId && itemId){
       const allStockMovementsByStoreResponse = await axios.get(
         `${apiUrl}/api/stockmovement/allmovementstore/${storeId}`,
         config
