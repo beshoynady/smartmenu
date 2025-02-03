@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext,useCallback } from "react";
 import axios from "axios";
 import { dataContext } from "../../../../App";
 import { toast } from "react-toastify";
@@ -664,47 +664,46 @@ const StockMovement = () => {
     getSupplier();
   }, []);
 
-  useEffect(async () => {
-    const config = await handleGetTokenAndConfig();
 
-    if(storeId && itemId){
-      const allStockMovementsByStoreResponse = await axios.get(
+
+  const fetchStockMovements = useCallback(async () => {
+    if (!storeId || !itemId) return;
+  
+    try {
+      const config = await handleGetTokenAndConfig();
+      
+      const { data: allStockMovementsByStore = [] } = await axios.get(
         `${apiUrl}/api/stockmovement/allmovementstore/${storeId}`,
         config
       );
   
-      const allStockMovementsByStore =
-        allStockMovementsByStoreResponse.data || [];
-
-      const lastStockMovement = allStockMovementsByStore&&allStockMovementsByStore
-        ?.filter((movement) => movement.itemId?._id === itemId)
+      const lastStockMovement = allStockMovementsByStore
+        .filter((movement) => movement.itemId?._id === itemId)
         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
-
+  
       console.log({ lastStockMovement });
   
-      setInbound({
-        quantity: 0,
-        unitCost: 0,
-        totalCost: 0,
-      });
-      setOutbound({
-        quantity: 0,
-        unitCost: 0,
-        totalCost: 0,
-      });
-      setBalance({
-        quantity: lastStockMovement
-          ? Number(lastStockMovement.balance?.quantity)
-          : 0,
-        unitCost: lastStockMovement
-          ? Number(lastStockMovement.balance?.unitCost)
-          : 0,
-        totalCost: lastStockMovement
-          ? Number(lastStockMovement.balance?.totalCost)
-          : 0,
-      });
+      setInbound({ quantity: 0, unitCost: 0, totalCost: 0 });
+      setOutbound({ quantity: 0, unitCost: 0, totalCost: 0 });
+  
+      if (lastStockMovement) {
+        setBalance({
+          quantity: Number(lastStockMovement.balance?.quantity) || 0,
+          unitCost: Number(lastStockMovement.balance?.unitCost) || 0,
+          totalCost: Number(lastStockMovement.balance?.totalCost) || 0,
+        });
+      } else {
+        setBalance({ quantity: 0, unitCost: 0, totalCost: 0 });
+      }
+    } catch (error) {
+      console.error("Error fetching stock movements:", error);
     }
-  }, [storeId, itemId, quantity, source, itemId, AllStockMovements, costUnit]);
+  }, [storeId, itemId]);
+  
+  useEffect(() => {
+    fetchStockMovements();
+  }, [fetchStockMovements, quantity, source, costUnit]);
+
 
   return (
     <div className="w-100 px-3 d-flex align-itmes-center justify-content-start">
