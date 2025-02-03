@@ -153,11 +153,8 @@ const getAllStockMovements = async (req, res, next) => {
       .populate("sender") // Populate sender
       .populate("receiver"); // Populate receiver
 
-    if (allMovements.length > 0) {
-      res.status(200).json(allMovements);
-    } else {
-      res.status(404).json({ message: "No stock movements found" });
-    }
+      res.status(200).json(allMovements || []);
+    
   } catch (error) {
     // Handle any errors during the retrieval process
     console.error("Error retrieving stock movements:", error);
@@ -189,26 +186,26 @@ const getOneStockMovement = async (req, res, next) => {
   }
 };
 
-const getAllStockMovementByStore = async(req, res ,next)=>{
+const getAllStockMovementByStore = async (req, res, next) => {
   try {
-    const {storeId} = req.params
-    const AllStockMovementByStore = await StockMovementModel.find({storeId})
-    .sort({createdAt: -1})
-    .populate("itemId")
+    const { storeId } = req.params;
+    const allStockMovementByStore = await StockMovementModel.find({ storeId })
+      .sort({ createdAt: -1 })
+      .populate("itemId")
       .populate("storeId")
       .populate("categoryId")
       .populate("createdBy")
-      .populate("sender" ) // Populate sender
+      .populate("sender") // Populate sender
       .populate("receiver"); // Populate receiver
 
-      if(!AllStockMovementByStore){
-        return res.status(404).json({ message: "No stock movement found for this store" });
-      }
-      res.status(200).json(AllStockMovementByStore)
+    res.status(200).json(allStockMovementByStore || []); // إرجاع مصفوفة فارغة إذا لم تكن هناك بيانات
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-}
+};
+
+
+
 const getLastStockMovementStore = async(req, res ,next)=>{
   try {
     const {storeId} = req.params
@@ -224,7 +221,7 @@ const getLastStockMovementStore = async(req, res ,next)=>{
       if(!lastMovement){
         return res.status(404).json({ message: "No stock movement found for this store" });
       }
-      res.status(200).json(lastMovement)
+      res.status(200).json(lastMovement || {})
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

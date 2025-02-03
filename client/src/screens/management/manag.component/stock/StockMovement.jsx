@@ -90,6 +90,9 @@ const StockMovement = () => {
   const [expirationDateEnabled, setExpirationDateEnabled] = useState(false); // Toggle for expiration date field
   const [movementId, setMovementId] = useState("");
 
+
+
+
   const createStockMovement = async (e) => {
     e.preventDefault();
     const config = await handleGetTokenAndConfig();
@@ -97,12 +100,17 @@ const StockMovement = () => {
       toast.warn("ليس لك صلاحية لانشاء حركه المخزن");
       return;
     }
-    const allStockMovementsByStore =  await axios.get(`${apiUrl}/allmovementstore/${storeId}`)
-    const lastStockMovement = await axios.get(`${apiUrl}/lastmovement/${storeId}`)
-    console.log({allStockMovementsByStore, lastStockMovement})
-
-    console.log({ inbound, outbound, balance });
-    if (source === "Issuance" || source === "Wastage" || source === "Damaged") {
+    try {
+      const allStockMovementsByStoreResponse = await axios.get(`${apiUrl}/allmovementstore/${storeId}`);
+      const lastStockMovementResponse = await axios.get(`${apiUrl}/lastmovement/${storeId}`);
+  
+      const allStockMovementsByStore = allStockMovementsByStoreResponse.data || [];
+      const lastStockMovement = lastStockMovementResponse.data || null;
+  
+      console.log({ allStockMovementsByStore, lastStockMovement });
+      console.log({ inbound, outbound, balance });
+      
+      if (source === "Issuance" || source === "Wastage" || source === "Damaged") {
       if (costMethod === "FIFO") {
         const batches = allStockMovementsByStore.filter((stockMovement) => {
           const isValidMovement =
@@ -335,7 +343,6 @@ const StockMovement = () => {
     };
     console.log({ data });
 
-    try {
       const response = await axios.post(
         `${apiUrl}/api/stockmovement`,
         data,
