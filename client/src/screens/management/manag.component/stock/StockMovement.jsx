@@ -88,7 +88,7 @@ const StockMovement = () => {
   const [parts, setParts] = useState(); // Related parts (optional)
   const [expirationDate, setExpirationDate] = useState(); // Expiry date for perishable items
   const [expirationDateEnabled, setExpirationDateEnabled] = useState(false); // Toggle for expiration date field
-  const [MovementId, setMovementId] = useState("");
+  const [movementId, setMovementId] = useState("");
 
   const createStockMovement = async (e) => {
     e.preventDefault();
@@ -410,7 +410,7 @@ const StockMovement = () => {
 
   //   try {
   //     const response = await axios.put(
-  //       `${apiUrl}/api/stockmovement/${MovementId}`,
+  //       `${apiUrl}/api/stockmovement/${movementId}`,
   //       data,
   //       config
   //     );
@@ -440,7 +440,7 @@ const StockMovement = () => {
 
     const lastMovement = allSortedMovements[0]; // Get the last movement
 
-    if (!lastMovement || lastMovement._id !== MovementId) {
+    if (!lastMovement || lastMovement._id !== movementId) {
       toast.error("لا يمكن حذف هذه الحركه لأنها ليست آخر حركة في المخزن");
       setIsLoading(false);
       return;
@@ -449,7 +449,7 @@ const StockMovement = () => {
     try {
       // حذف الحركة الأخيرة فقط
       const response = await axios.delete(
-        `${apiUrl}/api/stockmovement/${MovementId}`,
+        `${apiUrl}/api/stockmovement/${movementId}`,
         config
       );
 

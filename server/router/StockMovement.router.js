@@ -19,7 +19,7 @@ router
   .get(authenticateToken, checkSubscription, getAllStockMovements); // Get all stock Movements
 
 router
-  .route("/:MovementId")
+  .route("/:movementId")
   .get(authenticateToken, checkSubscription, getOneStockMovement) // Get a single stock Movement by ID
   .put(authenticateToken, checkSubscription, updateStockMovement) // Update a stock Movement by ID
   .delete(authenticateToken, checkSubscription, deleteStockMovement); // Delete a stock Movement by ID
