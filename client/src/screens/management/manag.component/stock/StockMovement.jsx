@@ -432,11 +432,8 @@ const StockMovement = () => {
       return;
     }
 
-    const allSortedMovements = [...AllStockMovements].sort(
-      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-    ); // Sort all movements by date
 
-    const lastMovement = allSortedMovements[0]; // Get the last movement
+    const lastMovement =  await get(`${apiUrl}/lastmovement/${storeId}`)  // Get the last movement
 
     if (!lastMovement || lastMovement._id !== movementId) {
       toast.error("لا يمكن حذف هذه الحركه لأنها ليست آخر حركة في المخزن");
@@ -453,14 +450,12 @@ const StockMovement = () => {
 
       if (response.status === 200) {
         toast.success("تم حذف حركه المخزن بنجاح");
-
-        // تحديث القائمة بعد الحذف
-        getallStockMovement();
       }
     } catch (error) {
       console.log(error);
       toast.error("فشل حذف حركه المخزن! حاول مرة أخرى");
     } finally {
+      getallStockMovement();
       setIsLoading(false);
     }
   };
