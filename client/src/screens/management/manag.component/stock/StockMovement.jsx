@@ -90,9 +90,6 @@ const StockMovement = () => {
   const [expirationDateEnabled, setExpirationDateEnabled] = useState(false); // Toggle for expiration date field
   const [movementId, setMovementId] = useState("");
 
-
-
-
   const createStockMovement = async (e) => {
     e.preventDefault();
     const config = await handleGetTokenAndConfig();
@@ -101,247 +98,281 @@ const StockMovement = () => {
       return;
     }
     try {
-      const allStockMovementsByStoreResponse = await axios.get(`${apiUrl}/api/stockmovement/allmovementstore/${storeId}`);
-      const lastStockMovementResponse = await axios.get(`${apiUrl}/api/stockmovement/lastmovement/${storeId}`);
-  
-      const allStockMovementsByStore = allStockMovementsByStoreResponse.data || [];
+      const allStockMovementsByStoreResponse = await axios.get(
+        `${apiUrl}/api/stockmovement/allmovementstore/${storeId}`,
+        config
+      );
+      const lastStockMovementResponse = await axios.get(
+        `${apiUrl}/api/stockmovement/lastmovement/${storeId}`,
+        config
+      );
+
+      const allStockMovementsByStore =
+        allStockMovementsByStoreResponse.data || [];
       const lastStockMovement = lastStockMovementResponse.data || null;
-  
+
       console.log({ allStockMovementsByStore, lastStockMovement });
       console.log({ inbound, outbound, balance });
-      
-      if (source === "Issuance" || source === "Wastage" || source === "Damaged") {
-      if (costMethod === "FIFO") {
-        const batches = allStockMovementsByStore.filter((stockMovement) => {
-          const isValidMovement =
-            stockMovement && stockMovement.itemId && stockMovement.itemId._id;
-          const isMatchingItem =
-            isValidMovement && stockMovement.itemId._id === itemId;
-          const isInboundPositive =
-            stockMovement.inbound && stockMovement.inbound.quantity > 0;
-          const hasRemainingQuantity = stockMovement.remainingQuantity > 0;
 
-          // التحقق من جميع الشروط المطلوبة
-          return isMatchingItem && isInboundPositive && hasRemainingQuantity;
-        }).sort((a, b) => new Date(a.movementDate) - new Date(b.movementDate));
+      if (
+        source === "Issuance" ||
+        source === "Wastage" ||
+        source === "Damaged"
+      ) {
+        if (costMethod === "FIFO") {
+          const batches = allStockMovementsByStore
+            .filter((stockMovement) => {
+              const isValidMovement =
+                stockMovement &&
+                stockMovement.itemId &&
+                stockMovement.itemId._id;
+              const isMatchingItem =
+                isValidMovement && stockMovement.itemId._id === itemId;
+              const isInboundPositive =
+                stockMovement.inbound && stockMovement.inbound.quantity > 0;
+              const hasRemainingQuantity = stockMovement.remainingQuantity > 0;
 
-        console.log({ batches });
-
-        let totalQuantity = Number(quantity);
-        let totalCost = 0;
-        console.log({ totalQuantity, totalCost });
-
-        for (const batch of batches) {
-          if (totalQuantity > 0) {
-            const availableQuantity = batch.remainingQuantity;
-            const quantityToUse = Math.min(totalQuantity, availableQuantity);
-            const costForThisBatch = quantityToUse * batch.inbound?.unitCost;
-
-            totalQuantity -= quantityToUse;
-            totalCost += costForThisBatch;
-
-            batch.remainingQuantity -= quantityToUse;
-
-            // إرسال التحديث إلى قاعدة البيانات
-            const updateBatch = await axios.put(
-              `${apiUrl}/api/stockmovement/${batch._id}`,
-              {
-                remainingQuantity: batch.remainingQuantity,
-              },
-              config
+              // التحقق من جميع الشروط المطلوبة
+              return (
+                isMatchingItem && isInboundPositive && hasRemainingQuantity
+              );
+            })
+            .sort(
+              (a, b) => new Date(a.movementDate) - new Date(b.movementDate)
             );
 
-            console.log({ updateBatch, quantityToUse });
+          console.log({ batches });
 
-            outbound.quantity += quantityToUse;
-            outbound.unitCost = totalCost / (quantity - totalQuantity);
-            outbound.totalCost = totalCost;
+          let totalQuantity = Number(quantity);
+          let totalCost = 0;
+          console.log({ totalQuantity, totalCost });
 
-            balance.quantity -= quantityToUse;
-            balance.totalCost -= costForThisBatch;
+          for (const batch of batches) {
+            if (totalQuantity > 0) {
+              const availableQuantity = batch.remainingQuantity;
+              const quantityToUse = Math.min(totalQuantity, availableQuantity);
+              const costForThisBatch = quantityToUse * batch.inbound?.unitCost;
 
-            if (totalQuantity <= 0) break;
+              totalQuantity -= quantityToUse;
+              totalCost += costForThisBatch;
+
+              batch.remainingQuantity -= quantityToUse;
+
+              // إرسال التحديث إلى قاعدة البيانات
+              const updateBatch = await axios.put(
+                `${apiUrl}/api/stockmovement/${batch._id}`,
+                {
+                  remainingQuantity: batch.remainingQuantity,
+                },
+                config
+              );
+
+              console.log({ updateBatch, quantityToUse });
+
+              outbound.quantity += quantityToUse;
+              outbound.unitCost = totalCost / (quantity - totalQuantity);
+              outbound.totalCost = totalCost;
+
+              balance.quantity -= quantityToUse;
+              balance.totalCost -= costForThisBatch;
+
+              if (totalQuantity <= 0) break;
+            }
           }
-        }
-      } else if (costMethod === "LIFO") {
-        const batches = allStockMovementsByStore.filter(
-          (stockMovement) =>
-            stockMovement.itemId?._id === itemId &&
-            stockMovement.inbound?.quantity > 0 &&
-            stockMovement.remainingQuantity > 0
-        ).sort((a, b) => new Date(b.movementDate) - new Date(a.movementDate));
-
-        let totalQuantity = quantity;
-        let totalCost = 0;
-
-        for (const batch of batches) {
-          if (totalQuantity > 0) {
-            const availableQuantity = batch.remainingQuantity;
-            const quantityToUse = Math.min(totalQuantity, availableQuantity);
-            const costForThisBatch = quantityToUse * batch.inbound.unitCost;
-
-            totalQuantity -= quantityToUse;
-            totalCost += costForThisBatch;
-
-            // تحديث الرصيد المتبقي في الدُفعة
-            batch.remainingQuantity -= quantityToUse;
-            const updateBatch = await axios.put(
-              `${apiUrl}/api/stockmovement/${batch._id}`,
-              {
-                remainingQuantity: batch.remainingQuantity,
-              },
-              config
+        } else if (costMethod === "LIFO") {
+          const batches = allStockMovementsByStore
+            .filter(
+              (stockMovement) =>
+                stockMovement.itemId?._id === itemId &&
+                stockMovement.inbound?.quantity > 0 &&
+                stockMovement.remainingQuantity > 0
+            )
+            .sort(
+              (a, b) => new Date(b.movementDate) - new Date(a.movementDate)
             );
-            console.log({ updateBatch });
-            // تحديث حركة الصادر
-            outbound.quantity += quantityToUse;
-            outbound.unitCost = totalCost / (quantity - totalQuantity);
-            outbound.totalCost = totalCost;
 
-            // تحديث الرصيد بعد الصادر
-            balance.quantity -= quantityToUse;
-            balance.totalCost -= costForThisBatch;
+          let totalQuantity = quantity;
+          let totalCost = 0;
 
-            if (totalQuantity <= 0) break;
+          for (const batch of batches) {
+            if (totalQuantity > 0) {
+              const availableQuantity = batch.remainingQuantity;
+              const quantityToUse = Math.min(totalQuantity, availableQuantity);
+              const costForThisBatch = quantityToUse * batch.inbound.unitCost;
+
+              totalQuantity -= quantityToUse;
+              totalCost += costForThisBatch;
+
+              // تحديث الرصيد المتبقي في الدُفعة
+              batch.remainingQuantity -= quantityToUse;
+              const updateBatch = await axios.put(
+                `${apiUrl}/api/stockmovement/${batch._id}`,
+                {
+                  remainingQuantity: batch.remainingQuantity,
+                },
+                config
+              );
+              console.log({ updateBatch });
+              // تحديث حركة الصادر
+              outbound.quantity += quantityToUse;
+              outbound.unitCost = totalCost / (quantity - totalQuantity);
+              outbound.totalCost = totalCost;
+
+              // تحديث الرصيد بعد الصادر
+              balance.quantity -= quantityToUse;
+              balance.totalCost -= costForThisBatch;
+
+              if (totalQuantity <= 0) break;
+            }
+          }
+        } else if (costMethod === "Weighted Average") {
+          const batches = allStockMovementsByStore
+            .filter((stockMovement) => {
+              const isValidMovement =
+                stockMovement &&
+                stockMovement.itemId &&
+                stockMovement.itemId._id;
+              const isMatchingItem =
+                isValidMovement && stockMovement.itemId._id === itemId;
+              const isInboundPositive =
+                stockMovement.inbound && stockMovement.inbound.quantity > 0;
+              const hasRemainingQuantity = stockMovement.remainingQuantity > 0;
+
+              return (
+                isMatchingItem && isInboundPositive && hasRemainingQuantity
+              );
+            })
+            .sort(
+              (a, b) => new Date(a.movementDate) - new Date(b.movementDate)
+            );
+
+          const totalQuantityInStock = batches.reduce(
+            (acc, curr) => acc + curr.remainingQuantity,
+            0
+          );
+          const totalCostInStock = batches.reduce(
+            (acc, curr) => acc + curr.remainingQuantity * curr.inbound.unitCost,
+            0
+          );
+
+          const weightedAverageCost =
+            totalQuantityInStock > 0
+              ? totalCostInStock / totalQuantityInStock
+              : 0;
+
+          outbound.quantity = quantity;
+          outbound.unitCost = weightedAverageCost;
+          outbound.totalCost = outbound.quantity * outbound.unitCost;
+
+          balance.quantity -= quantity;
+          balance.totalCost -= outbound.totalCost;
+
+          let totalQuantity = Number(quantity);
+          let totalCost = 0;
+
+          for (const batch of batches) {
+            if (totalQuantity > 0) {
+              const availableQuantity = batch.remainingQuantity;
+              const quantityToUse = Math.min(totalQuantity, availableQuantity);
+              const costForThisBatch = quantityToUse * batch.inbound.unitCost;
+
+              totalQuantity -= quantityToUse;
+              totalCost += costForThisBatch;
+
+              batch.remainingQuantity -= quantityToUse;
+
+              const updateBatch = await axios.put(
+                `${apiUrl}/api/stockmovement/${batch._id}`,
+                {
+                  remainingQuantity: batch.remainingQuantity,
+                },
+                config
+              );
+              console.log({ updateBatch });
+              if (totalQuantity <= 0) break;
+            }
+          }
+
+          if (balance.quantity < 0) {
+            throw new Error(
+              "Insufficient stock to fulfill the issuance request."
+            );
           }
         }
-      } else if (costMethod === "Weighted Average") {
-        const batches = allStockMovementsByStore.filter((stockMovement) => {
-          const isValidMovement =
-            stockMovement && stockMovement.itemId && stockMovement.itemId._id;
-          const isMatchingItem =
-            isValidMovement && stockMovement.itemId._id === itemId;
-          const isInboundPositive =
-            stockMovement.inbound && stockMovement.inbound.quantity > 0;
-          const hasRemainingQuantity = stockMovement.remainingQuantity > 0;
 
-          return isMatchingItem && isInboundPositive && hasRemainingQuantity;
-        }).sort((a, b) => new Date(a.movementDate) - new Date(b.movementDate));
+        if (source === "Issuance") {
+          const costPerPart = outbound.unitCost;
+          console.log({ costPerPart });
+          const updateCostPerPart = await axios.put(
+            `${apiUrl}/api/stockitem/${itemId}`,
+            {
+              costPerPart,
+            },
+            config
+          );
+          if (updateCostPerPart) {
+            toast.info("تم تعديل تكلفه الوحده");
+          }
+        }
+      } else if (source === "ReturnIssuance") {
+        inbound.quantity = quantity;
+        inbound.unitCost = lastStockMovement ? lastStockMovement.unitCost : 0;
+        inbound.totalCost = inbound.quantity * inbound.unitCost;
 
-        const totalQuantityInStock = batches.reduce(
-          (acc, curr) => acc + curr.remainingQuantity,
-          0
-        );
-        const totalCostInStock = batches.reduce(
-          (acc, curr) => acc + curr.remainingQuantity * curr.inbound.unitCost,
-          0
-        );
+        balance.quantity += quantity;
+        balance.totalCost += inbound.totalCost;
+      } else if (source === "Purchase") {
+        inbound.quantity = quantity;
+        inbound.unitCost = costUnit;
+        inbound.totalCost = quantity * costUnit;
 
-        const weightedAverageCost = totalQuantityInStock > 0 ? totalCostInStock / totalQuantityInStock : 0;
+        balance.quantity += Number(quantity);
+        balance.unitCost =
+          (balance.totalCost + inbound.totalCost) / balance.quantity;
+        balance.totalCost += inbound.totalCost;
+        setRemainingQuantity(quantity);
+      } else if (source === "OpeningBalance") {
+        setRemainingQuantity(quantity);
 
+        inbound.quantity = quantity;
+        inbound.unitCost = costUnit;
+        inbound.totalCost = quantity * inbound.unitCost;
+
+        balance.quantity = quantity;
+        balance.unitCost = costUnit;
+        balance.totalCost = inbound.totalCost;
+      } else if (source === "ReturnPurchase") {
         outbound.quantity = quantity;
-        outbound.unitCost = weightedAverageCost;
-        outbound.totalCost = outbound.quantity * outbound.unitCost;
+        outbound.unitCost = costUnit;
+        outbound.totalCost = quantity * outbound.unitCost;
 
         balance.quantity -= quantity;
         balance.totalCost -= outbound.totalCost;
 
-        let totalQuantity = Number(quantity);
-        let totalCost = 0;
-
-        for (const batch of batches) {
-          if (totalQuantity > 0) {
-            const availableQuantity = batch.remainingQuantity;
-            const quantityToUse = Math.min(totalQuantity, availableQuantity);
-            const costForThisBatch = quantityToUse * batch.inbound.unitCost;
-
-            totalQuantity -= quantityToUse;
-            totalCost += costForThisBatch;
-
-            batch.remainingQuantity -= quantityToUse;
-
-            const updateBatch = await axios.put(
-              `${apiUrl}/api/stockmovement/${batch._id}`,
-              {
-                remainingQuantity: batch.remainingQuantity,
-              },
-              config
-            );
-            console.log({ updateBatch });
-            if (totalQuantity <= 0) break;
-          }
-        }
-
         if (balance.quantity < 0) {
           throw new Error(
-            "Insufficient stock to fulfill the issuance request."
+            "Invalid operation: Return quantity exceeds current balance."
           );
         }
       }
 
-      if (source === "Issuance") {
-        const costPerPart = outbound.unitCost;
-        console.log({ costPerPart });
-        const updateCostPerPart = await axios.put(
-          `${apiUrl}/api/stockitem/${itemId}`,
-          {
-            costPerPart,
-          },
-          config
-        );
-        if (updateCostPerPart) {
-          toast.info("تم تعديل تكلفه الوحده");
-        }
-      }
-    } else if (source === "ReturnIssuance") {
-      inbound.quantity = quantity;
-      inbound.unitCost = lastStockMovement ? lastStockMovement.unitCost : 0;
-      inbound.totalCost = inbound.quantity * inbound.unitCost;
-
-      balance.quantity += quantity;
-      balance.totalCost += inbound.totalCost;
-    } else if (source === "Purchase") {
-      inbound.quantity = quantity;
-      inbound.unitCost = costUnit;
-      inbound.totalCost = quantity * costUnit;
-
-      balance.quantity += Number(quantity);
-      balance.unitCost =
-        (balance.totalCost + inbound.totalCost) / balance.quantity;
-      balance.totalCost += inbound.totalCost;
-      setRemainingQuantity(quantity);
-    } else if (source === "OpeningBalance") {
-      setRemainingQuantity(quantity);
-
-      inbound.quantity = quantity;
-      inbound.unitCost = costUnit;
-      inbound.totalCost = quantity * inbound.unitCost;
-
-      balance.quantity = quantity;
-      balance.unitCost = costUnit;
-      balance.totalCost = inbound.totalCost;
-    } else if (source === "ReturnPurchase") {
-      outbound.quantity = quantity;
-      outbound.unitCost = costUnit;
-      outbound.totalCost = quantity * outbound.unitCost;
-
-      balance.quantity -= quantity;
-      balance.totalCost -= outbound.totalCost;
-
-      if (balance.quantity < 0) {
-        throw new Error(
-          "Invalid operation: Return quantity exceeds current balance."
-        );
-      }
-    }
-
-    const data = {
-      itemId,
-      storeId,
-      categoryId,
-      costMethod,
-      source,
-      unit,
-      inbound,
-      outbound,
-      balance,
-      remainingQuantity: inbound.quantity > 0 ? Number(quantity) : 0,
-      sourceDate,
-      receiver,
-      sender,
-      description,
-    };
-    console.log({ data });
+      const data = {
+        itemId,
+        storeId,
+        categoryId,
+        costMethod,
+        source,
+        unit,
+        inbound,
+        outbound,
+        balance,
+        remainingQuantity: inbound.quantity > 0 ? Number(quantity) : 0,
+        sourceDate,
+        receiver,
+        sender,
+        description,
+      };
+      console.log({ data });
 
       const response = await axios.post(
         `${apiUrl}/api/stockmovement`,
@@ -439,8 +470,7 @@ const StockMovement = () => {
       return;
     }
 
-
-    const lastMovement =  await axios.get(`${apiUrl}/lastmovement/${storeId}`)  // Get the last movement
+    const lastMovement = await axios.get(`${apiUrl}/lastmovement/${storeId}`); // Get the last movement
 
     if (!lastMovement || lastMovement._id !== movementId) {
       toast.error("لا يمكن حذف هذه الحركه لأنها ليست آخر حركة في المخزن");
@@ -1020,11 +1050,12 @@ const StockMovement = () => {
                     onChange={(e) => handleSelectedStore(e.target.value)}
                   >
                     <option value="">اختر المخزن</option>
-                    {allStores&&allStores.map((store, i) => (
-                      <option key={i} value={store._id}>
-                        {store.storeName}
-                      </option>
-                    ))}
+                    {allStores &&
+                      allStores.map((store, i) => (
+                        <option key={i} value={store._id}>
+                          {store.storeName}
+                        </option>
+                      ))}
                   </select>
                 </div>
 
@@ -1039,11 +1070,12 @@ const StockMovement = () => {
                     }}
                   >
                     <option value="">اختر التصنيف</option>
-                    {allCategoryStock&&allCategoryStock.map((category, i) => (
-                      <option key={i} value={category._id}>
-                        {category.categoryName}
-                      </option>
-                    ))}
+                    {allCategoryStock &&
+                      allCategoryStock.map((category, i) => (
+                        <option key={i} value={category._id}>
+                          {category.categoryName}
+                        </option>
+                      ))}
                   </select>
                 </div>
 
@@ -1058,16 +1090,17 @@ const StockMovement = () => {
                     }}
                   >
                     <option value="">اختر الصنف</option>
-                    {StockItems&&StockItems.filter(
-                      (item) =>
-                        item.stores &&
-                        item.stores?.some((store) => store._id === storeId) &&
-                        item.categoryId?._id === categoryId
-                    )?.map((item, i) => (
-                      <option key={i} value={item._id}>
-                        {item.itemName}
-                      </option>
-                    ))}
+                    {StockItems &&
+                      StockItems.filter(
+                        (item) =>
+                          item.stores &&
+                          item.stores?.some((store) => store._id === storeId) &&
+                          item.categoryId?._id === categoryId
+                      )?.map((item, i) => (
+                        <option key={i} value={item._id}>
+                          {item.itemName}
+                        </option>
+                      ))}
                   </select>
                 </div>
 
@@ -1117,11 +1150,12 @@ const StockMovement = () => {
                         }}
                       >
                         <option value="">اختر المرسل</option>
-                        {storeKeepers&&storeKeepers.map((storeKeeper, i) => (
-                          <option key={i} value={storeKeeper._id}>
-                            {storeKeeper.fullname}
+                        {storeKeepers &&
+                          storeKeepers.map((storeKeeper, i) => (
+                            <option key={i} value={storeKeeper._id}>
+                              {storeKeeper.fullname}
                             </option>
-                        ))}
+                          ))}
                       </select>
                     </div>
                     <div className="form-group col-12 col-md-6">
@@ -1136,11 +1170,12 @@ const StockMovement = () => {
                         }}
                       >
                         <option value="">اختر المستلم</option>
-                        {storeKeepers&&storeKeepers.map((storeKeeper, i) => (
-                          <option key={i} value={storeKeeper._id}>
-                            {storeKeeper.fullname}
-                          </option>
-                        ))}
+                        {storeKeepers &&
+                          storeKeepers.map((storeKeeper, i) => (
+                            <option key={i} value={storeKeeper._id}>
+                              {storeKeeper.fullname}
+                            </option>
+                          ))}
                       </select>
                     </div>
                     <div className="form-group col-12 col-md-6">
@@ -1209,11 +1244,12 @@ const StockMovement = () => {
                       </div>
                     )}
                   </>
-                ) :["Issuance",
-                  "ReturnIssuance",
-                  "Wastage",
-                  "Damaged",
-                ].includes(source) ? (
+                ) : [
+                    "Issuance",
+                    "ReturnIssuance",
+                    "Wastage",
+                    "Damaged",
+                  ].includes(source) ? (
                   <>
                     <div className="form-group col-12 col-md-6">
                       <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
@@ -1227,11 +1263,12 @@ const StockMovement = () => {
                         }}
                       >
                         <option value="">اختر المرسل</option>
-                        {employees&&employees.map((employee, i) => (
-                          <option key={i} value={employee._id}>
-                            {employee.fullname}
-                          </option>
-                        ))}
+                        {employees &&
+                          employees.map((employee, i) => (
+                            <option key={i} value={employee._id}>
+                              {employee.fullname}
+                            </option>
+                          ))}
                       </select>
                     </div>
                     <div className="form-group col-12 col-md-6">
@@ -1246,11 +1283,12 @@ const StockMovement = () => {
                         }}
                       >
                         <option value="">اختر المستلم</option>
-                        {storeKeepers&&storeKeepers.map((storeKeeper, i) => (
-                          <option key={i} value={storeKeeper._id}>
-                            {storeKeeper.fullname}
-                          </option>
-                        ))}
+                        {storeKeepers &&
+                          storeKeepers.map((storeKeeper, i) => (
+                            <option key={i} value={storeKeeper._id}>
+                              {storeKeeper.fullname}
+                            </option>
+                          ))}
                       </select>
                     </div>
                     <div className="form-group col-12 col-md-6">
@@ -1303,17 +1341,18 @@ const StockMovement = () => {
                         }}
                       >
                         <option value="">اختر المورد</option>
-                        {suppliers&&suppliers
-                          .filter((supplier) =>
-                            supplier.itemsSupplied?.some(
-                              (itemSupplied) => itemSupplied._id === itemId
+                        {suppliers &&
+                          suppliers
+                            .filter((supplier) =>
+                              supplier.itemsSupplied?.some(
+                                (itemSupplied) => itemSupplied._id === itemId
+                              )
                             )
-                          )
-                          .map((supplier, i) => (
-                            <option key={i} value={supplier._id}>
-                              {supplier.name}
-                            </option>
-                          ))}
+                            .map((supplier, i) => (
+                              <option key={i} value={supplier._id}>
+                                {supplier.name}
+                              </option>
+                            ))}
                       </select>
                     </div>
                     <div className="form-group col-12 col-md-6">
@@ -1328,11 +1367,12 @@ const StockMovement = () => {
                         }}
                       >
                         <option value="">اختر المستلم</option>
-                        {storeKeepers&&storeKeepers.map((storeKeeper, i) => (
-                          <option key={i} value={storeKeeper._id}>
-                            {storeKeeper.fullname}
-                          </option>
-                        ))}
+                        {storeKeepers &&
+                          storeKeepers.map((storeKeeper, i) => (
+                            <option key={i} value={storeKeeper._id}>
+                              {storeKeeper.fullname}
+                            </option>
+                          ))}
                       </select>
                     </div>
                     <div className="form-group col-12 col-md-6">
@@ -1415,11 +1455,12 @@ const StockMovement = () => {
                         }}
                       >
                         <option value="">اختر المرسل</option>
-                        {storeKeepers&&storeKeepers.map((storeKeeper, i) => (
-                          <option key={i} value={storeKeeper._id}>
-                            {storeKeeper.fullname}
-                          </option>
-                        ))}
+                        {storeKeepers &&
+                          storeKeepers.map((storeKeeper, i) => (
+                            <option key={i} value={storeKeeper._id}>
+                              {storeKeeper.fullname}
+                            </option>
+                          ))}
                       </select>
                     </div>
                     <div className="form-group col-12 col-md-6">
@@ -1434,17 +1475,18 @@ const StockMovement = () => {
                         }}
                       >
                         <option value="">اختر المورد</option>
-                        {suppliers&&suppliers
-                          .filter((supplier) =>
-                            supplier.itemsSupplied?.some(
-                              (itemSupplied) => itemSupplied._id === itemId
+                        {suppliers &&
+                          suppliers
+                            .filter((supplier) =>
+                              supplier.itemsSupplied?.some(
+                                (itemSupplied) => itemSupplied._id === itemId
+                              )
                             )
-                          )
-                          .map((supplier, i) => (
-                            <option key={i} value={supplier._id}>
-                              {supplier.name}
-                            </option>
-                          ))}
+                            .map((supplier, i) => (
+                              <option key={i} value={supplier._id}>
+                                {supplier.name}
+                              </option>
+                            ))}
                       </select>
                     </div>
 
