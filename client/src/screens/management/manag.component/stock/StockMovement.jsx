@@ -102,14 +102,13 @@ const StockMovement = () => {
         `${apiUrl}/api/stockmovement/allmovementstore/${storeId}`,
         config
       );
-      const lastStockMovementResponse = await axios.get(
-        `${apiUrl}/api/stockmovement/lastmovement/${storeId}`,
-        config
-      );
 
       const allStockMovementsByStore =
         allStockMovementsByStoreResponse.data || [];
-      const lastStockMovement = lastStockMovementResponse.data || null;
+        
+      const lastStockMovement = allStockMovementsByStore
+        ?.filter((movement) => movement.itemId?._id === itemId)
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
 
       console.log({ allStockMovementsByStore, lastStockMovement });
       console.log({ inbound, outbound, balance });
@@ -665,12 +664,19 @@ const StockMovement = () => {
     getSupplier();
   }, []);
 
-  useEffect(() => {
-    const lastStockMovement = AllStockMovementsStore.filter(
-      (stockMovement) =>
-        stockMovement.itemId?._id === itemId &&
-        stockMovement.storeId?._id === storeId
-    ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
+  useEffect(async () => {
+
+    const allStockMovementsByStoreResponse = await axios.get(
+      `${apiUrl}/api/stockmovement/allmovementstore/${storeId}`,
+      config
+    );
+
+    const allStockMovementsByStore =
+      allStockMovementsByStoreResponse.data || [];
+    const lastStockMovement = allStockMovementsByStore
+      ?.filter((movement) => movement.itemId?._id === itemId)
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
+      console.log({ lastStockMovement });
 
     setInbound({
       quantity: 0,
@@ -693,7 +699,7 @@ const StockMovement = () => {
         ? Number(lastStockMovement.balance?.totalCost)
         : 0,
     });
-  }, [source, itemId, AllStockMovements, costUnit]);
+  }, [quantity, source, itemId, AllStockMovements, costUnit]);
 
   return (
     <div className="w-100 px-3 d-flex align-itmes-center justify-content-start">
