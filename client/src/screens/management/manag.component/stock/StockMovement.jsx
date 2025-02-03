@@ -105,7 +105,7 @@ const StockMovement = () => {
 
       const allStockMovementsByStore =
         allStockMovementsByStoreResponse.data || [];
-        
+
       const lastStockMovement = allStockMovementsByStore
         ?.filter((movement) => movement.itemId?._id === itemId)
         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
@@ -665,7 +665,11 @@ const StockMovement = () => {
   }, []);
 
   useEffect(async () => {
-
+    const config = await handleGetTokenAndConfig();
+    if (stockItemPermission && !stockItemPermission.update) {
+      toast.warn("ليس لك صلاحية لتعديل عناصر المخزن");
+      return;
+    }
     const allStockMovementsByStoreResponse = await axios.get(
       `${apiUrl}/api/stockmovement/allmovementstore/${storeId}`,
       config
@@ -676,7 +680,7 @@ const StockMovement = () => {
     const lastStockMovement = allStockMovementsByStore
       ?.filter((movement) => movement.itemId?._id === itemId)
       .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
-      console.log({ lastStockMovement });
+    console.log({ lastStockMovement });
 
     setInbound({
       quantity: 0,
