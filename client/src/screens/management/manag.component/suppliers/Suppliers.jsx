@@ -612,7 +612,7 @@ const Suppliers = () => {
                                 .join(" - ")
                             : "لا يوجد"}
                         </td>
-                        <td>{supplier.whatsapp}</td>
+                        <td>{supplier.whatsapp?supplier.whatsapp:"لا يوجد"}</td>
                         <td>{supplier.email ? supplier.email : "لا يوجد"}</td>
                         <td>
                           {supplier.financialInfo
@@ -631,7 +631,7 @@ const Suppliers = () => {
                         <td>{supplier.createdBy?.fullname}</td>
                         <td>{formatDateTime(supplier.createdAt)}</td>
                         <td>
-                          {supplierDataPermission.update && (
+                          {supplierDataPermission&&supplierDataPermission.update && (
                             <button
                               data-target="#editSupplierModal"
                               className="btn btn-sm btn-primary ml-2 "
@@ -650,7 +650,7 @@ const Suppliers = () => {
                             </button>
                           )}
 
-                          {supplierDataPermission.delete && (
+                          {supplierDataPermission&&supplierDataPermission.delete && (
                             <button
                               data-target="#deleteSupplierModal"
                               className="btn btn-sm btn-danger"
