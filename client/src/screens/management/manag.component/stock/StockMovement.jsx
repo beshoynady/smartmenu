@@ -79,7 +79,7 @@ const StockMovement = () => {
     totalCost: 0,
   });
   const [remainingQuantity, setRemainingQuantity] = useState(0);
-  const [sourceDate, setSourceDate] = useState(new Date());
+  const [movementDate, setmovementDate] = useState(new Date());
   const [description, setDescription] = useState("");
   const [quantity, setQuantity] = useState(0); // Total quantity for the movement
   const [costUnit, setCostUnit] = useState(0); // Cost per unit
@@ -245,8 +245,6 @@ const StockMovement = () => {
               (a, b) => new Date(a.movementDate) - new Date(b.movementDate)
             );
 
-
-
           const totalQuantityInStock = batches.reduce(
             (acc, curr) => acc + curr.remainingQuantity,
             0
@@ -261,7 +259,12 @@ const StockMovement = () => {
             totalQuantityInStock > 0
               ? totalCostInStock / totalQuantityInStock
               : 0;
-          console.log({batches, totalQuantityInStock, totalCostInStock, weightedAverageCost})
+          console.log({
+            batches,
+            totalQuantityInStock,
+            totalCostInStock,
+            weightedAverageCost,
+          });
 
           outbound.quantity = quantity;
           outbound.unitCost = weightedAverageCost;
@@ -318,14 +321,15 @@ const StockMovement = () => {
         }
       } else if (source === "ReturnIssuance") {
         inbound.quantity = quantity;
-        inbound.unitCost = lastStockMovementByItem ? lastStockMovementByItem.unitCost : 0;
+        inbound.unitCost = lastStockMovementByItem
+          ? lastStockMovementByItem.unitCost
+          : 0;
         inbound.totalCost = inbound.quantity * inbound.unitCost;
 
         balance.quantity += quantity;
         balance.totalCost += inbound.totalCost;
         balance.unitCost =
-        (balance.totalCost + inbound.totalCost) / balance.quantity;
-        
+          (balance.totalCost + inbound.totalCost) / balance.quantity;
       } else if (source === "Purchase") {
         inbound.quantity = quantity;
         inbound.unitCost = costUnit;
@@ -354,7 +358,7 @@ const StockMovement = () => {
         balance.quantity -= quantity;
         balance.totalCost -= outbound.totalCost;
         balance.unitCost =
-        (balance.totalCost - outbound.totalCost) / balance.quantity;
+          (balance.totalCost - outbound.totalCost) / balance.quantity;
         if (balance.quantity < 0) {
           throw new Error(
             "Invalid operation: Return quantity exceeds current balance."
@@ -373,7 +377,7 @@ const StockMovement = () => {
         outbound,
         balance,
         remainingQuantity: inbound.quantity > 0 ? Number(quantity) : 0,
-        sourceDate,
+        movementDate,
         receiver,
         sender,
         description,
@@ -446,7 +450,7 @@ const StockMovement = () => {
   //     outbound,
   //     balance,
   //     remainingQuantity,
-  //     sourceDate,
+  //     movementDate,
   //     description,
   //   };
 
@@ -921,8 +925,16 @@ const StockMovement = () => {
                         <td>{Movement.source}</td>
                         <td>{Movement.description}</td>
                         <td>{Movement.unit}</td>
-                        <td>{Movement.sender?.fullname}</td>
-                        <td>{Movement.receiver?.fullname}</td>
+                        <td>
+                          {Movement.sender?.fullname
+                            ? Movement.sender?.fullname
+                            : Movement.sender?.name}
+                        </td>
+                        <td>
+                          {Movement.sender?.fullname
+                            ? Movement.sender?.fullname
+                            : Movement.sender?.name}
+                        </td>
                         <td>{Movement.outbound?.quantity || 0}</td>
                         <td>{Movement.outbound?.unitCost.toFixed(2) || 0}</td>
                         <td>{Movement.outbound?.totalCost.toFixed(2) || 0}</td>
@@ -1250,12 +1262,85 @@ const StockMovement = () => {
                       </div>
                     )}
                   </>
-                ) : [
-                    "Issuance",
-                    "ReturnIssuance",
-                    "Wastage",
-                    "Damaged",
-                  ].includes(source) ? (
+                ) : ["Issuance", "Wastage", "Damaged"].includes(source) ? (
+                  <>
+                    <div className="form-group col-12 col-md-6">
+                      <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                        المرسل
+                      </label>
+                      <select
+                        className="form-control border-primary m-0 p-2 h-auto"
+                        required
+                        onChange={(e) => {
+                          setSender(e.target.value);
+                        }}
+                      >
+                        <option value="">اختر المرسل</option>
+                        {storeKeepers &&
+                          storeKeepers.map((storeKeeper, i) => (
+                            <option key={i} value={storeKeeper._id}>
+                              {storeKeeper.fullname}
+                            </option>
+                          ))}
+                      </select>
+                    </div>
+                    <div className="form-group col-12 col-md-6">
+                      <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                        المستلم
+                      </label>
+                      <select
+                        className="form-control border-primary m-0 p-2 h-auto"
+                        required
+                        onChange={(e) => {
+                          setReceiver(e.target.value);
+                        }}
+                      >
+                        <option value="">اختر المستلم</option>
+                        {employees &&
+                          employees.map((employee, i) => (
+                            <option key={i} value={employee._id}>
+                              {employee.fullname}
+                            </option>
+                          ))}
+                      </select>
+                    </div>
+                    <div className="form-group col-12 col-md-6">
+                      <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                        الكمية
+                      </label>
+                      <div className="d-flex align-items-center">
+                        <input
+                          type="number"
+                          className="form-control border-primary flex-grow-1"
+                          required
+                          max={balance.quantity}
+                          onChange={(e) => {
+                            setQuantity(Number(e.target.value));
+                          }}
+                        />
+                        <input
+                          type="text"
+                          className="form-control border-primary ms-2"
+                          defaultValue={unit}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                    <div className="form-group col-12 col-md-6">
+                      <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                        طريقه حساب تكلفه الوجده
+                      </label>
+                      <div className="d-flex align-items-center">
+                        <input
+                          type="text"
+                          className="form-control border-primary flex-grow-1"
+                          readOnly
+                          value={costMethod}
+                        />
+                      </div>
+                    </div>
+                  </>
+                ) : ["ReturnIssuance"].includes(source) ? (
                   <>
                     <div className="form-group col-12 col-md-6">
                       <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
@@ -1539,10 +1624,10 @@ const StockMovement = () => {
                     التاريخ
                   </label>
                   <input
-                    type="text"
+                    type="date"
                     className="form-control border-primary m-0 p-2 h-auto"
                     Value={formatDate(new Date())}
-                    readOnly
+                    onChange={(e) => setmovementDate(e.target.value)}
                   />
                 </div>
               </div>
