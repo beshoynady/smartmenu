@@ -430,7 +430,6 @@ const Suppliers = () => {
     const phoneRegex = /^\+(?:[0-9] ?){6,14}[0-9]$/; 
   
     if (!phoneRegex.test(phone)) {
-
       toast.error(`⚠️ 201000000000+ يجب ادخال ${type}بهذا الشكل `, {
         position: "top-right",
         autoClose: 3000,
