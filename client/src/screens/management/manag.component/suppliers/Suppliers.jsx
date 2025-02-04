@@ -426,6 +426,7 @@ const Suppliers = () => {
     }
   };
 
+  // validate phone number
   const validatePhone = (phone , type) => {
     const phoneRegex = /^\+(?:[0-9] ?){6,14}[0-9]$/; 
   
