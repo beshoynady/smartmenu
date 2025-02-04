@@ -93,121 +93,273 @@ const StockMovement = () => {
   const createStockMovement = async (e) => {
     e.preventDefault();
     const config = await handleGetTokenAndConfig();
-
     if (stockMovementPermission && !stockMovementPermission.create) {
-      toast.warn("You do not have permission to create stock movement");
+      toast.warn("ليس لك صلاحية لانشاء حركه المخزن");
       return;
     }
-
     try {
-      // Fetch all movements related to the store
-      const { data: allStockMovementsByStore = [] } = await axios.get(
+      const allStockMovementsByStoreResponse = await axios.get(
         `${apiUrl}/api/stockmovement/allmovementstore/${storeId}`,
         config
       );
 
-      // Get last stock movement for the specific item
-      const lastStockMovement = allStockMovementsByStore
-        .filter((movement) => movement.itemId?._id === itemId)
+      const allStockMovementsByStore =
+        allStockMovementsByStoreResponse.data || [];
+
+      const lastStockMovementByItem = allStockMovementsByStore
+        ?.filter((movement) => movement.itemId?._id === itemId)
         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
 
-      let updatedInbound = { quantity: 0, unitCost: 0, totalCost: 0 };
-      let updatedOutbound = { quantity: 0, unitCost: 0, totalCost: 0 };
-      let updatedBalance = lastStockMovement
-        ? { ...lastStockMovement.balance }
-        : { quantity: 0, unitCost: 0, totalCost: 0 };
+      console.log({ allStockMovementsByStore, lastStockMovementByItem });
+      console.log({ inbound, outbound, balance });
 
-      let totalQuantity = Number(quantity);
-      let totalCost = 0;
+      if (
+        source === "Issuance" ||
+        source === "Wastage" ||
+        source === "Damaged"
+      ) {
+        if (costMethod === "FIFO") {
+          const batches = allStockMovementsByStore
+            .filter((stockMovement) => {
+              const isValidMovement =
+                stockMovement &&
+                stockMovement.itemId &&
+                stockMovement.itemId._id;
+              const isMatchingItem =
+                isValidMovement && stockMovement.itemId._id === itemId;
+              const isInboundPositive =
+                stockMovement.inbound && stockMovement.inbound.quantity > 0;
+              const hasRemainingQuantity = stockMovement.remainingQuantity > 0;
 
-      if (["Issuance", "Wastage", "Damaged"].includes(source)) {
-        const batches = allStockMovementsByStore
-          .filter(
-            (movement) =>
-              movement.itemId?._id === itemId &&
-              movement.inbound?.quantity > 0 &&
-              movement.remainingQuantity > 0
-          )
-          .sort((a, b) =>
-            costMethod === "FIFO"
-              ? new Date(a.movementDate) - new Date(b.movementDate)
-              : new Date(b.movementDate) - new Date(a.movementDate)
-          );
-
-        for (const batch of batches) {
-          if (totalQuantity > 0) {
-            const availableQuantity = batch.remainingQuantity;
-            const quantityToUse = Math.min(totalQuantity, availableQuantity);
-            const costForThisBatch = quantityToUse * batch.inbound.unitCost;
-
-            totalQuantity -= quantityToUse;
-            totalCost += costForThisBatch;
-            batch.remainingQuantity -= quantityToUse;
-
-            await axios.put(
-              `${apiUrl}/api/stockmovement/${batch._id}`,
-              {
-                remainingQuantity: batch.remainingQuantity,
-              },
-              config
+              // التحقق من جميع الشروط المطلوبة
+              return (
+                isMatchingItem && isInboundPositive && hasRemainingQuantity
+              );
+            })
+            .sort(
+              (a, b) => new Date(a.movementDate) - new Date(b.movementDate)
             );
-          }
-          if (totalQuantity <= 0) break;
-        }
 
-        if (costMethod === "Weighted Average") {
+          console.log({ batches });
+
+          let totalQuantity = Number(quantity);
+          let totalCost = 0;
+          console.log({ totalQuantity, totalCost });
+
+          for (const batch of batches) {
+            if (totalQuantity > 0) {
+              const availableQuantity = batch.remainingQuantity;
+              const quantityToUse = Math.min(totalQuantity, availableQuantity);
+              const costForThisBatch = quantityToUse * batch.inbound?.unitCost;
+
+              totalQuantity -= quantityToUse;
+              totalCost += costForThisBatch;
+
+              batch.remainingQuantity -= quantityToUse;
+
+              // إرسال التحديث إلى قاعدة البيانات
+              const updateBatch = await axios.put(
+                `${apiUrl}/api/stockmovement/${batch._id}`,
+                {
+                  remainingQuantity: batch.remainingQuantity,
+                },
+                config
+              );
+
+              console.log({ updateBatch, quantityToUse });
+
+              outbound.quantity += quantityToUse;
+              outbound.unitCost = totalCost / (quantity - totalQuantity);
+              outbound.totalCost = totalCost;
+
+              balance.quantity -= quantityToUse;
+              balance.totalCost -= costForThisBatch;
+
+              if (totalQuantity <= 0) break;
+            }
+          }
+        } else if (costMethod === "LIFO") {
+          const batches = allStockMovementsByStore
+            .filter(
+              (stockMovement) =>
+                stockMovement.itemId?._id === itemId &&
+                stockMovement.inbound?.quantity > 0 &&
+                stockMovement.remainingQuantity > 0
+            )
+            .sort(
+              (a, b) => new Date(b.movementDate) - new Date(a.movementDate)
+            );
+
+          let totalQuantity = quantity;
+          let totalCost = 0;
+
+          for (const batch of batches) {
+            if (totalQuantity > 0) {
+              const availableQuantity = batch.remainingQuantity;
+              const quantityToUse = Math.min(totalQuantity, availableQuantity);
+              const costForThisBatch = quantityToUse * batch.inbound.unitCost;
+
+              totalQuantity -= quantityToUse;
+              totalCost += costForThisBatch;
+
+              // تحديث الرصيد المتبقي في الدُفعة
+              batch.remainingQuantity -= quantityToUse;
+              const updateBatch = await axios.put(
+                `${apiUrl}/api/stockmovement/${batch._id}`,
+                {
+                  remainingQuantity: batch.remainingQuantity,
+                },
+                config
+              );
+              console.log({ updateBatch });
+              // تحديث حركة الصادر
+              outbound.quantity += quantityToUse;
+              outbound.unitCost = totalCost / (quantity - totalQuantity);
+              outbound.totalCost = totalCost;
+
+              // تحديث الرصيد بعد الصادر
+              balance.quantity -= quantityToUse;
+              balance.totalCost -= costForThisBatch;
+
+              if (totalQuantity <= 0) break;
+            }
+          }
+        } else if (costMethod === "Weighted Average") {
+          const batches = allStockMovementsByStore
+            .filter((stockMovement) => {
+              const isValidMovement =
+                stockMovement &&
+                stockMovement.itemId &&
+                stockMovement.itemId._id;
+              const isMatchingItem =
+                isValidMovement && stockMovement.itemId._id === itemId;
+              const isInboundPositive =
+                stockMovement.inbound && stockMovement.inbound.quantity > 0;
+              const hasRemainingQuantity = stockMovement.remainingQuantity > 0;
+
+              return (
+                isMatchingItem && isInboundPositive && hasRemainingQuantity
+              );
+            })
+            .sort(
+              (a, b) => new Date(a.movementDate) - new Date(b.movementDate)
+            );
+
+
+
           const totalQuantityInStock = batches.reduce(
             (acc, curr) => acc + curr.remainingQuantity,
             0
           );
+
           const totalCostInStock = batches.reduce(
             (acc, curr) => acc + curr.remainingQuantity * curr.inbound.unitCost,
             0
           );
+
           const weightedAverageCost =
             totalQuantityInStock > 0
               ? totalCostInStock / totalQuantityInStock
               : 0;
-          totalCost = weightedAverageCost * quantity;
+          console.log({batches, totalQuantityInStock, totalCostInStock, weightedAverageCost})
+
+          outbound.quantity = quantity;
+          outbound.unitCost = weightedAverageCost;
+          outbound.totalCost = outbound.quantity * outbound.unitCost;
+
+          balance.quantity -= quantity;
+          balance.totalCost -= outbound.totalCost;
+
+          let totalQuantity = Number(quantity);
+          let totalCost = 0;
+
+          for (const batch of batches) {
+            if (totalQuantity > 0) {
+              const availableQuantity = batch.remainingQuantity;
+              const quantityToUse = Math.min(totalQuantity, availableQuantity);
+              const costForThisBatch = quantityToUse * batch.inbound.unitCost;
+
+              totalQuantity -= quantityToUse;
+              totalCost += costForThisBatch;
+
+              batch.remainingQuantity -= quantityToUse;
+
+              const updateBatch = await axios.put(
+                `${apiUrl}/api/stockmovement/${batch._id}`,
+                {
+                  remainingQuantity: batch.remainingQuantity,
+                },
+                config
+              );
+              console.log({ updateBatch });
+              if (totalQuantity <= 0) break;
+            }
+          }
+
+          if (balance.quantity < 0) {
+            throw new Error(
+              "Insufficient stock to fulfill the issuance request."
+            );
+          }
         }
-
-        updatedOutbound = {
-          quantity: quantity,
-          unitCost: totalCost / quantity,
-          totalCost: totalCost,
-        };
-
-        updatedBalance.quantity -= quantity;
-        updatedBalance.totalCost -= totalCost;
+        if (source === "Issuance") {
+          const costPerPart = outbound.unitCost;
+          console.log({ costPerPart });
+          const updateCostPerPart = await axios.put(
+            `${apiUrl}/api/stockitem/${itemId}`,
+            {
+              costPerPart,
+            },
+            config
+          );
+          if (updateCostPerPart) {
+            toast.info("تم تعديل تكلفه الوحده");
+          }
+        }
       } else if (source === "ReturnIssuance") {
-        updatedInbound = {
-          quantity: quantity,
-          unitCost: lastStockMovement ? lastStockMovement.unitCost : 0,
-          totalCost:
-            quantity * (lastStockMovement ? lastStockMovement.unitCost : 0),
-        };
-        updatedBalance.quantity += quantity;
-        updatedBalance.totalCost += updatedInbound.totalCost;
-      } else if (["Purchase", "OpeningBalance"].includes(source)) {
-        updatedInbound = {
-          quantity: quantity,
-          unitCost: costUnit,
-          totalCost: quantity * costUnit,
-        };
-        updatedBalance.quantity += quantity;
-        updatedBalance.totalCost += updatedInbound.totalCost;
-      } else if (source === "ReturnPurchase") {
-        updatedOutbound = {
-          quantity: quantity,
-          unitCost: costUnit,
-          totalCost: quantity * costUnit,
-        };
-        updatedBalance.quantity -= quantity;
-        updatedBalance.totalCost -= updatedOutbound.totalCost;
-      }
+        inbound.quantity = quantity;
+        inbound.unitCost = lastStockMovementByItem ? lastStockMovementByItem.unitCost : 0;
+        inbound.totalCost = inbound.quantity * inbound.unitCost;
 
-      if (updatedBalance.quantity < 0) {
-        throw new Error("Invalid operation: Stock balance cannot be negative.");
+        balance.quantity += quantity;
+        balance.totalCost += inbound.totalCost;
+        balance.unitCost =
+        (balance.totalCost + inbound.totalCost) / balance.quantity;
+        
+      } else if (source === "Purchase") {
+        inbound.quantity = quantity;
+        inbound.unitCost = costUnit;
+        inbound.totalCost = quantity * costUnit;
+
+        balance.quantity += Number(quantity);
+        balance.unitCost =
+          (balance.totalCost + inbound.totalCost) / balance.quantity;
+        balance.totalCost += inbound.totalCost;
+        setRemainingQuantity(quantity);
+      } else if (source === "OpeningBalance") {
+        setRemainingQuantity(quantity);
+
+        inbound.quantity = quantity;
+        inbound.unitCost = costUnit;
+        inbound.totalCost = quantity * inbound.unitCost;
+
+        balance.quantity = quantity;
+        balance.unitCost = costUnit;
+        balance.totalCost = inbound.totalCost;
+      } else if (source === "ReturnPurchase") {
+        outbound.quantity = quantity;
+        outbound.unitCost = costUnit;
+        outbound.totalCost = quantity * outbound.unitCost;
+
+        balance.quantity -= quantity;
+        balance.totalCost -= outbound.totalCost;
+        balance.unitCost =
+        (balance.totalCost - outbound.totalCost) / balance.quantity;
+        if (balance.quantity < 0) {
+          throw new Error(
+            "Invalid operation: Return quantity exceeds current balance."
+          );
+        }
       }
 
       const data = {
@@ -217,15 +369,16 @@ const StockMovement = () => {
         costMethod,
         source,
         unit,
-        inbound: updatedInbound,
-        outbound: updatedOutbound,
-        balance: updatedBalance,
-        remainingQuantity: updatedInbound.quantity > 0 ? Number(quantity) : 0,
+        inbound,
+        outbound,
+        balance,
+        remainingQuantity: inbound.quantity > 0 ? Number(quantity) : 0,
         sourceDate,
         receiver,
         sender,
         description,
       };
+      console.log({ data });
 
       const response = await axios.post(
         `${apiUrl}/api/stockmovement`,
@@ -233,16 +386,28 @@ const StockMovement = () => {
         config
       );
       if (response) {
-        toast.success("Stock movement recorded successfully");
+        if (outbound.unitCost > 0) {
+          const addCostOfUnit = await axios.put(
+            `${apiUrl}/api/stockitem/${itemId}`,
+            {
+              costPerPart: Number(outbound.unitCost) / Number(parts),
+            },
+            config
+          );
+          if (addCostOfUnit) {
+            toast.success("تم تعديل تكلفه الصرف");
+          }
+        }
+        toast.success("تم تسجيل حركة المخزون بنجاح");
       }
     } catch (error) {
-      toast.error("Failed to record stock movement!");
-      console.error("Error creating stock movement:", error);
+      toast.error("فشل تسجيل حركة المخزون!");
+      console.error("Error creating stock source:", error);
     } finally {
       getallStockMovement();
       setQuantity(0);
       setCostUnit(0);
-      setSource("");
+      setSource(0);
       setStoreId("");
       setCategoryId("");
       setCostMethod("");
@@ -509,20 +674,20 @@ const StockMovement = () => {
         config
       );
 
-      const lastStockMovement = allStockMovementsByStore
+      const lastStockMovementByItem = allStockMovementsByStore
         .filter((movement) => movement.itemId?._id === itemId)
         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
 
-      console.log({ lastStockMovement });
+      console.log({ lastStockMovementByItem });
 
       setInbound({ quantity: 0, unitCost: 0, totalCost: 0 });
       setOutbound({ quantity: 0, unitCost: 0, totalCost: 0 });
 
-      if (lastStockMovement) {
+      if (lastStockMovementByItem) {
         setBalance({
-          quantity: Number(lastStockMovement.balance?.quantity) || 0,
-          unitCost: Number(lastStockMovement.balance?.unitCost) || 0,
-          totalCost: Number(lastStockMovement.balance?.totalCost) || 0,
+          quantity: Number(lastStockMovementByItem.balance?.quantity) || 0,
+          unitCost: Number(lastStockMovementByItem.balance?.unitCost) || 0,
+          totalCost: Number(lastStockMovementByItem.balance?.totalCost) || 0,
         });
       } else {
         setBalance({ quantity: 0, unitCost: 0, totalCost: 0 });
