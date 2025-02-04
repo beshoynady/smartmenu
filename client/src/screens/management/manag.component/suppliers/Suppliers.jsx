@@ -106,9 +106,11 @@ const Suppliers = () => {
     setCurrentBalance(0);
     setItemsSupplied(["اضف خامة"]);
     setPaymentType("");
-    setFinancialInfo([{ paymentMethodName: "", accountNumber: "", currency: "" }]);
+    setFinancialInfo([
+      { paymentMethodName: "", accountNumber: "", currency: "" },
+    ]);
     setnotes("");
-  }
+  };
 
   // Function to create a Supplier
   const createSupplier = async (e) => {
@@ -127,7 +129,9 @@ const Suppliers = () => {
     const supplierData = {
       name,
       responsiblePerson,
-      contact: { phone, whatsapp, email },
+      phone,
+      whatsapp,
+      email,
       address,
       paymentType,
       itemsSupplied,
@@ -145,12 +149,12 @@ const Suppliers = () => {
       );
 
       if (response && response.status === 201) {
-        const supplierId = response.data?._id;
-        if (itemsSupplied.length > 0) {
-          await addSupplierToStockItem(supplierId);
-        } else {
-          toast.warn("انت لم تضيف لهذا المورد مواد المخزن");
-        }
+        // const supplierId = response.data?._id;
+        // if (itemsSupplied.length > 0) {
+        //   await addSupplierToStockItem(supplierId);
+        // } else {
+        //   toast.warn("انت لم تضيف لهذا المورد مواد المخزن");
+        // }
         // إذا كان هناك رصيد ابتدائي، يتم تسجيل معاملة الرصيد
         if (currentBalance > 0) {
           await createOpeningBalanceTransaction(supplierId, currentBalance);
@@ -193,7 +197,6 @@ const Suppliers = () => {
         config
       );
 
-      console.error({ response });
       if (response && response.status === 201) {
         toast.success("تم تسجيل معاملة الرصيد الافتتاحي بنجاح");
       } else {
@@ -205,37 +208,37 @@ const Suppliers = () => {
     }
   };
 
-  const addSupplierToStockItem = async (supplierId) => {
-    const config = await handleGetTokenAndConfig();
+  // const addSupplierToStockItem = async (supplierId) => {
+  //   const config = await handleGetTokenAndConfig();
 
-    if (itemsSupplied) {
-      for (const item of itemsSupplied) {
-        const oldSupplier = AllStockItems.find(
-          (i) => i._id === item
-        )?.suppliers;
-        const suppliers = oldSupplier
-          ? [...oldSupplier, supplierId]
-          : [supplierId];
-        // console.log({ itemsSupplied, oldSupplier, suppliers });
-        try {
-          const response = await axios.put(
-            `${apiUrl}/api/stockitem/${item}`,
-            { suppliers },
-            config
-          );
-          console.log({ itemsSupplied, suppliers, response });
-          if (response) {
-            toast.success("تم تحديث عنصر المخزون بنجاح");
-          }
-          // Notify on success
-        } catch (error) {
-          // Notify on error
-          console.log({ error });
-          toast.error("فشل في تحديث عنصر المخزون");
-        }
-      }
-    }
-  };
+  //   if (itemsSupplied) {
+  //     for (const item of itemsSupplied) {
+  //       const oldSupplier = AllStockItems.find(
+  //         (i) => i._id === item
+  //       )?.suppliers;
+  //       const suppliers = oldSupplier
+  //         ? [...oldSupplier, supplierId]
+  //         : [supplierId];
+  //       // console.log({ itemsSupplied, oldSupplier, suppliers });
+  //       try {
+  //         const response = await axios.put(
+  //           `${apiUrl}/api/stockitem/${item}`,
+  //           { suppliers },
+  //           config
+  //         );
+  //         console.log({ itemsSupplied, suppliers, response });
+  //         if (response) {
+  //           toast.success("تم تحديث عنصر المخزون بنجاح");
+  //         }
+  //         // Notify on success
+  //       } catch (error) {
+  //         // Notify on error
+  //         console.log({ error });
+  //         toast.error("فشل في تحديث عنصر المخزون");
+  //       }
+  //     }
+  //   }
+  // };
 
   //Function to edit a Supplier item
 
@@ -254,7 +257,9 @@ const Suppliers = () => {
       const updatedSupplierData = {
         name,
         responsiblePerson,
-        contact: { phone, whatsapp, email },
+        phone,
+        whatsapp,
+        email,
         address,
         paymentType,
         itemsSupplied,
@@ -272,7 +277,7 @@ const Suppliers = () => {
         // Notify on success
         toast.success("تم تحديث المورد بنجاح");
         getAllSuppliers();
-        empityData()
+        empityData();
       }
     } catch (error) {
       console.log(error);
@@ -362,9 +367,9 @@ const Suppliers = () => {
         setName(supplier.name);
         setResponsiblePerson(supplier.responsiblePerson);
         setAddress(supplier.address);
-        setphone(supplier.contact.phone);
-        setwhatsapp(supplier.contact.whatsapp);
-        setemail(supplier.contact.email);
+        setphone(supplier.phone);
+        setwhatsapp(supplier.whatsapp);
+        setemail(supplier.email);
         setCurrentBalance(supplier.currentBalance);
         setItemsSupplied(supplier.itemsSupplied);
         setPaymentType(supplier.paymentType);
@@ -584,14 +589,13 @@ const Suppliers = () => {
             </thead>
             <tbody>
               {AllSuppliers &&
-                AllSuppliers.map((supplier, i) => {
+                AllSuppliers.map((supplier, i) => { 
                   if ((i >= startPagination) & (i < endPagination)) {
                     return (
                       <tr key={i}>
                         <td>{i + 1}</td>
                         <td>{supplier.name}</td>
                         <td>{supplier.responsiblePerson}</td>
-
                         <td>
                           {supplier.itemsSupplied.length > 0
                             ? supplier.itemsSupplied
@@ -602,14 +606,14 @@ const Suppliers = () => {
                         <td>{supplier.currentBalance}</td>
                         <td>{supplier.address}</td>
                         <td>
-                          {supplier.contact?.phone.length > 0
-                            ? supplier.contact.phone
+                          {supplier.phone.length > 0
+                            ? supplier.phone
                                 .map((phone) => `${phone}`)
                                 .join(" - ")
                             : "لا يوجد"}
                         </td>
-                        <td>{supplier.contact.whatsapp}</td>
-                        <td>{supplier.contact.email}</td>
+                        <td>{supplier.whatsapp}</td>
+                        <td>{supplier.email ? supplier.email : "لا يوجد"}</td>
                         <td>
                           {supplier.financialInfo
                             ? supplier.financialInfo

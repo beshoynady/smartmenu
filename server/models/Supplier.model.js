@@ -22,34 +22,32 @@ const SupplierSchema = new Schema(
       maxlength: 255,
     },
     // Supplier contact information
-    contact: {
-      phone: [
-        {
-          type: String,
-          trim: true,
-          required: true,
-          validate: {
-            validator: (v) => /^\+(?:[0-9] ?){6,14}[0-9]$/.test(v),
-            message: "Please enter a valid phone number",
-          },
-        },
-      ],
-      whatsapp: {
+    phone: [
+      {
         type: String,
         trim: true,
+        required: true,
         validate: {
-          validator: (v) => !v || /^\+(?:[0-9] ?){6,14}[0-9]$/.test(v),
-          message: "Please enter a valid WhatsApp number",
+          validator: (v) => /^\+(?:[0-9] ?){6,14}[0-9]$/.test(v),
+          message: "Please enter a valid phone number",
         },
       },
-      email: {
-        type: String,
-        lowercase: true,
-        trim: true,
-        validate: {
-          validator: (v) => !v || /\S+@\S+\.\S+/.test(v),
-          message: "Please enter a valid email address",
-        },
+    ],
+    whatsapp: {
+      type: String,
+      trim: true,
+      validate: {
+        validator: (v) => !v || /^\+(?:[0-9] ?){6,14}[0-9]$/.test(v),
+        message: "Please enter a valid WhatsApp number",
+      },
+    },
+    email: {
+      type: String,
+      lowercase: true,
+      trim: true,
+      validate: {
+        validator: (v) => !v || /\S+@\S+\.\S+/.test(v),
+        message: "Please enter a valid email address",
       },
     },
     // Supplier address

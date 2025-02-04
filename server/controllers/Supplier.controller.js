@@ -6,7 +6,9 @@ const createSupplier = async (req, res) => {
     const {
       name,
       responsiblePerson,
-      contact,
+      phone,
+      whatsapp,
+      email,
       address,
       paymentType,
       itemsSupplied,
@@ -31,7 +33,9 @@ const createSupplier = async (req, res) => {
     const supplier = await SupplierModel.create({
       name,
       responsiblePerson,
-      contact,
+      phone,
+      whatsapp,
+      email,
       address,
       paymentType,
       itemsSupplied,
@@ -99,7 +103,9 @@ const updateSupplierById = async (req, res) => {
     const {
       name,
       responsiblePerson,
-      contact,
+      phone,
+      whatsapp,
+      email,
       address,
       paymentType,
       itemsSupplied,
@@ -118,7 +124,9 @@ const updateSupplierById = async (req, res) => {
       {
         name,
         responsiblePerson,
-        contact,
+        phone,
+        whatsapp,
+        email,
         address,
         paymentType,
         itemsSupplied,
