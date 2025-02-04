@@ -96,6 +96,20 @@ const Suppliers = () => {
     setFinancialInfo(financialInfoList);
   };
 
+  const empityData = () => {
+    setName("");
+    setResponsiblePerson("");
+    setAddress("");
+    setphone(["رقم الموبايل"]);
+    setwhatsapp("");
+    setemail("");
+    setCurrentBalance(0);
+    setItemsSupplied(["اضف خامة"]);
+    setPaymentType("");
+    setFinancialInfo([{ paymentMethodName: "", accountNumber: "", currency: "" }]);
+    setnotes("");
+  }
+
   // Function to create a Supplier
   const createSupplier = async (e) => {
     e.preventDefault();
@@ -107,8 +121,8 @@ const Suppliers = () => {
       return;
     }
 
-    whatsapp??validatePhone(whatsapp , "الواتس اب");
-    phone??phone.forEach((number) => validatePhone(number , "الموبايل"));
+    if (whatsapp && !validatePhone(whatsapp, "الواتس اب")) return;
+    if (phone.some((number) => !validatePhone(number, "الموبايل"))) return;
 
     const supplierData = {
       name,
@@ -145,6 +159,7 @@ const Suppliers = () => {
         // إخطار بنجاح العملية
         toast.success("تم إنشاء المورد بنجاح");
         getAllSuppliers();
+        empityData();
       } else {
         throw new Error("فشل في إنشاء المورد");
       }
@@ -233,10 +248,9 @@ const Suppliers = () => {
         return;
       }
 
-      whatsapp??validatePhone(whatsapp , "الواتس اب");
-      phone??phone.forEach((number) => validatePhone(number , "الموبايل"));
+      if (whatsapp && !validatePhone(whatsapp, "الواتس اب")) return;
+      if (phone.some((number) => !validatePhone(number, "الموبايل"))) return;
 
-      
       const updatedSupplierData = {
         name,
         responsiblePerson,
@@ -258,6 +272,7 @@ const Suppliers = () => {
         // Notify on success
         toast.success("تم تحديث المورد بنجاح");
         getAllSuppliers();
+        empityData()
       }
     } catch (error) {
       console.log(error);
@@ -427,11 +442,11 @@ const Suppliers = () => {
   };
 
   // validate phone number
-  const validatePhone = (phone , type) => {
-    const phoneRegex = /^\+(?:[0-9] ?){6,14}[0-9]$/; 
-  
+  const validatePhone = (phone, type) => {
+    const phoneRegex = /^\+(?:[0-9] ?){6,14}[0-9]$/;
+
     if (!phoneRegex.test(phone)) {
-      toast.error(`⚠️ 201000000000+ يجب ادخال ${type}بهذا الشكل `, {
+      toast.error(`⚠️ يجب إدخال ${type} بهذا الشكل: +201000000000`, {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: false,
@@ -440,9 +455,10 @@ const Suppliers = () => {
         draggable: true,
         theme: "colored",
       });
-      return
+      return false;
     }
-    
+
+    return true;
   };
 
   useEffect(() => {
