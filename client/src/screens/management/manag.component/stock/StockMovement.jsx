@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext,useCallback } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import axios from "axios";
 import { dataContext } from "../../../../App";
 import { toast } from "react-toastify";
@@ -298,7 +298,6 @@ const StockMovement = () => {
             );
           }
         }
-
         if (source === "Issuance") {
           const costPerPart = outbound.unitCost;
           console.log({ costPerPart });
@@ -469,16 +468,7 @@ const StockMovement = () => {
       return;
     }
 
-    const lastMovement = await axios.get(`${apiUrl}/lastmovement/${storeId}`); // Get the last movement
-
-    if (!lastMovement || lastMovement._id !== movementId) {
-      toast.error("لا يمكن حذف هذه الحركه لأنها ليست آخر حركة في المخزن");
-      setIsLoading(false);
-      return;
-    }
-
     try {
-      // حذف الحركة الأخيرة فقط
       const response = await axios.delete(
         `${apiUrl}/api/stockmovement/${movementId}`,
         config
@@ -486,12 +476,12 @@ const StockMovement = () => {
 
       if (response.status === 200) {
         toast.success("تم حذف حركه المخزن بنجاح");
+        getallStockMovement();
       }
     } catch (error) {
       console.log(error);
       toast.error("فشل حذف حركه المخزن! حاول مرة أخرى");
     } finally {
-      getallStockMovement();
       setIsLoading(false);
     }
   };
@@ -510,6 +500,7 @@ const StockMovement = () => {
       console.log(error);
     }
   };
+
   const [allStores, setAllStores] = useState([]);
 
   const getAllStores = async () => {
@@ -664,28 +655,26 @@ const StockMovement = () => {
     getSupplier();
   }, []);
 
-
-
   const fetchStockMovements = useCallback(async () => {
     if (!storeId || !itemId) return;
-  
+
     try {
       const config = await handleGetTokenAndConfig();
-      
+
       const { data: allStockMovementsByStore = [] } = await axios.get(
         `${apiUrl}/api/stockmovement/allmovementstore/${storeId}`,
         config
       );
-  
+
       const lastStockMovement = allStockMovementsByStore
         .filter((movement) => movement.itemId?._id === itemId)
         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
-  
+
       console.log({ lastStockMovement });
-  
+
       setInbound({ quantity: 0, unitCost: 0, totalCost: 0 });
       setOutbound({ quantity: 0, unitCost: 0, totalCost: 0 });
-  
+
       if (lastStockMovement) {
         setBalance({
           quantity: Number(lastStockMovement.balance?.quantity) || 0,
@@ -699,11 +688,10 @@ const StockMovement = () => {
       console.error("Error fetching stock movements:", error);
     }
   }, [storeId, itemId]);
-  
+
   useEffect(() => {
     fetchStockMovements();
   }, [fetchStockMovements, quantity, source, costUnit]);
-
 
   return (
     <div className="w-100 px-3 d-flex align-itmes-center justify-content-start">
