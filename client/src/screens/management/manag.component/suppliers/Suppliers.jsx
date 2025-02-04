@@ -115,6 +115,7 @@ const Suppliers = () => {
   // Function to create a Supplier
   const createSupplier = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     const config = await handleGetTokenAndConfig();
 
     // تحقق من الصلاحيات قبل المتابعة
@@ -149,13 +150,6 @@ const Suppliers = () => {
       );
 
       if (response && response.status === 201) {
-        // const supplierId = response.data?._id;
-        // if (itemsSupplied.length > 0) {
-        //   await addSupplierToStockItem(supplierId);
-        // } else {
-        //   toast.warn("انت لم تضيف لهذا المورد مواد المخزن");
-        // }
-        // إذا كان هناك رصيد ابتدائي، يتم تسجيل معاملة الرصيد
         if (currentBalance > 0) {
           await createOpeningBalanceTransaction(supplierId, currentBalance);
         }
@@ -170,6 +164,8 @@ const Suppliers = () => {
     } catch (error) {
       console.error(error);
       toast.error("فشل في إنشاء المورد");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -244,6 +240,7 @@ const Suppliers = () => {
 
   const updateSupplier = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     const config = await handleGetTokenAndConfig();
     try {
       if (supplierDataPermission && !supplierDataPermission.update) {
@@ -284,6 +281,8 @@ const Suppliers = () => {
 
       // Notify on error
       toast.error("فشل في تحديث المورد");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -589,7 +588,7 @@ const Suppliers = () => {
             </thead>
             <tbody>
               {AllSuppliers &&
-                AllSuppliers.map((supplier, i) => { 
+                AllSuppliers.map((supplier, i) => {
                   if ((i >= startPagination) & (i < endPagination)) {
                     return (
                       <tr key={i}>
@@ -612,7 +611,9 @@ const Suppliers = () => {
                                 .join(" - ")
                             : "لا يوجد"}
                         </td>
-                        <td>{supplier.whatsapp?supplier.whatsapp:"لا يوجد"}</td>
+                        <td>
+                          {supplier.whatsapp ? supplier.whatsapp : "لا يوجد"}
+                        </td>
                         <td>{supplier.email ? supplier.email : "لا يوجد"}</td>
                         <td>
                           {supplier.financialInfo
@@ -631,41 +632,43 @@ const Suppliers = () => {
                         <td>{supplier.createdBy?.fullname}</td>
                         <td>{formatDateTime(supplier.createdAt)}</td>
                         <td>
-                          {supplierDataPermission&&supplierDataPermission.update && (
-                            <button
-                              data-target="#editSupplierModal"
-                              className="btn btn-sm btn-primary ml-2 "
-                              data-toggle="modal"
-                              onClick={() => {
-                                getOneSuppliers(supplier._id);
-                              }}
-                            >
-                              <i
-                                className="material-icons"
-                                data-toggle="tooltip"
-                                title="Edit"
+                          {supplierDataPermission &&
+                            supplierDataPermission.update && (
+                              <button
+                                data-target="#editSupplierModal"
+                                className="btn btn-sm btn-primary ml-2 "
+                                data-toggle="modal"
+                                onClick={() => {
+                                  getOneSuppliers(supplier._id);
+                                }}
                               >
-                                &#xE254;
-                              </i>
-                            </button>
-                          )}
+                                <i
+                                  className="material-icons"
+                                  data-toggle="tooltip"
+                                  title="Edit"
+                                >
+                                  &#xE254;
+                                </i>
+                              </button>
+                            )}
 
-                          {supplierDataPermission&&supplierDataPermission.delete && (
-                            <button
-                              data-target="#deleteSupplierModal"
-                              className="btn btn-sm btn-danger"
-                              data-toggle="modal"
-                              onClick={() => setsupplierId(supplier._id)}
-                            >
-                              <i
-                                className="material-icons"
-                                data-toggle="tooltip"
-                                title="Delete"
+                          {supplierDataPermission &&
+                            supplierDataPermission.delete && (
+                              <button
+                                data-target="#deleteSupplierModal"
+                                className="btn btn-sm btn-danger"
+                                data-toggle="modal"
+                                onClick={() => setsupplierId(supplier._id)}
                               >
-                                &#xE872;
-                              </i>
-                            </button>
-                          )}
+                                <i
+                                  className="material-icons"
+                                  data-toggle="tooltip"
+                                  title="Delete"
+                                >
+                                  &#xE872;
+                                </i>
+                              </button>
+                            )}
                         </td>
                       </tr>
                     );
