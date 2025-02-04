@@ -27,6 +27,7 @@ const Suppliers = () => {
 
   const [supplierId, setsupplierId] = useState("");
   const [name, setName] = useState("");
+  const [responsiblePerson, setResponsiblePerson] = useState("");
 
   const [phone, setphone] = useState(["رقم الموبايل"]);
 
@@ -71,8 +72,11 @@ const Suppliers = () => {
   const [notes, setnotes] = useState("");
 
   const [paymentType, setPaymentType] = useState("");
+
+  const currencyList = ["EGP", "USD", "EUR", "GBP", "SAR", "AED", "KWD"];
+
   const [financialInfo, setFinancialInfo] = useState([
-    { paymentMethodName: "", accountNumber: "" },
+    { paymentMethodName: "", accountNumber: "", currency: "EGP" },
   ]);
   const handleAddfinancialInfo = () => {
     setFinancialInfo([
@@ -105,6 +109,7 @@ const Suppliers = () => {
     // إعداد بيانات المورد
     const supplierData = {
       name,
+      responsiblePerson,
       contact: { phone, whatsapp, email },
       address,
       paymentType,
@@ -146,7 +151,6 @@ const Suppliers = () => {
     }
   };
 
-  // دالة فرعية لإنشاء معاملة رصيد افتتاحي
   const createOpeningBalanceTransaction = async (
     supplierId,
     currentBalance
@@ -227,6 +231,7 @@ const Suppliers = () => {
       }
       const updatedSupplierData = {
         name,
+        responsiblePerson,
         contact: { phone, whatsapp, email },
         address,
         paymentType,
@@ -332,6 +337,7 @@ const Suppliers = () => {
       if (supplier) {
         setsupplierId(supplier._id);
         setName(supplier.name);
+        setResponsiblePerson(supplier.responsiblePerson);
         setAddress(supplier.address);
         setphone(supplier.contact.phone);
         setwhatsapp(supplier.contact.whatsapp);
@@ -518,6 +524,7 @@ const Suppliers = () => {
               <tr>
                 <th>م</th>
                 <th>الاسم</th>
+                <th>المسؤل</th>
                 <th>الاصناف</th>
                 <th>الرصيد الحالي</th>
                 <th>العنوان</th>
@@ -540,32 +547,36 @@ const Suppliers = () => {
                       <tr key={i}>
                         <td>{i + 1}</td>
                         <td>{supplier.name}</td>
+                        <td>{supplier.responsiblePerson}</td>
+
                         <td>
                           {supplier.itemsSupplied.length > 0
-                            ? supplier.itemsSupplied.map(
-                                (item) => `${item.itemName} - `
-                              )
+                            ? supplier.itemsSupplied
+                                .map((item) => `${item.itemName}`)
+                                .join(" - ")
                             : "لا يوجد"}
                         </td>
                         <td>{supplier.currentBalance}</td>
                         <td>{supplier.address}</td>
                         <td>
                           {supplier.contact?.phone.length > 0
-                            ? supplier.contact.phone.map(
-                                (phone) => `${phone} - `
-                              )
+                            ? supplier.contact.phone
+                                .map((phone) => `${phone}`)
+                                .join(" - ")
                             : "لا يوجد"}
                         </td>
                         <td>{supplier.contact.whatsapp}</td>
                         <td>{supplier.contact.email}</td>
                         <td>
                           {supplier.financialInfo
-                            ? supplier.financialInfo.map(
-                                (
-                                  financialInfo
-                                ) => `[${financialInfo.paymentMethodName}
-                                : ${financialInfo.accountNumber}]`
-                              )
+                            ? supplier.financialInfo
+                                .map(
+                                  (
+                                    financialInfo
+                                  ) => `[${financialInfo.paymentMethodName}
+                                : ${financialInfo.accountNumber} : ${financialInfo.currency}]`
+                                )
+                                .join(" - ")
                             : "لا يوجد"}
                         </td>
                         <td>{supplier.paymentType}</td>
@@ -707,6 +718,17 @@ const Suppliers = () => {
                     className="form-control border-primary m-0 p-2 h-auto"
                     required
                     onChange={(e) => setName(e.target.value)}
+                  />
+                </div>
+                <div className="form-group w-100 h-auto px-3 d-flex flex-wrap align-itmes-center justify-content-start col-12  col-md-6 ">
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    اسم المسؤل
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    required
+                    onChange={(e) => setResponsiblePerson(e.target.value)}
                   />
                 </div>
 
@@ -865,6 +887,24 @@ const Suppliers = () => {
                           )
                         }
                       />
+                      <select
+                        className="form-control border-primary"
+                        value={info.currency}
+                        onChange={(e) =>
+                          handleNewFinancialInfo(
+                            index,
+                            "currency",
+                            e.target.value
+                          )
+                        }
+                      >
+                        <option value="">اختر العملة</option>
+                        {currencyList.map((currency) => (
+                          <option key={currency} value={currency}>
+                            {currency}
+                          </option>
+                        ))}
+                      </select>
                       <button
                         type="button"
                         className="btn col-2 btn-danger h-100 btn btn-sm"
@@ -936,6 +976,18 @@ const Suppliers = () => {
                     defaultValue={name}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
+                  />
+                </div>
+                <div className="form-group w-100 h-auto px-3 d-flex flex-wrap align-itmes-center justify-content-start col-12  col-md-6 ">
+                  <label className="form-label text-wrap text-right fw-bolder p-0 m-0">
+                    اسم المسؤل
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control border-primary m-0 p-2 h-auto"
+                    defaultValue={responsiblePerson}
+                    value={responsiblePerson}
+                    onChange={(e) => setResponsiblePerson(e.target.value)}
                   />
                 </div>
 
@@ -1086,6 +1138,24 @@ const Suppliers = () => {
                           )
                         }
                       />
+                      <select
+                        className="form-control border-primary"
+                        defaultValue={info.currency}
+                        onChange={(e) =>
+                          handleNewFinancialInfo(
+                            index,
+                            "currency",
+                            e.target.value
+                          )
+                        }
+                      >
+                        <option value="">اختر العملة</option>
+                        {currencyList.map((currency) => (
+                          <option key={currency} value={currency}>
+                            {currency}
+                          </option>
+                        ))}
+                      </select>
                       <button
                         type="button"
                         className="btn col-2 btn-danger h-100 btn btn-sm"
