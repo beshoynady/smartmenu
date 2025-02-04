@@ -47,6 +47,7 @@ const Suppliers = () => {
   };
 
   const [whatsapp, setwhatsapp] = useState("");
+
   const [email, setemail] = useState("");
 
   const [address, setAddress] = useState("");
@@ -106,7 +107,9 @@ const Suppliers = () => {
       return;
     }
 
-    // إعداد بيانات المورد
+    whatsapp??validatePhone(whatsapp , "الواتس اب");
+    phone??phone.forEach((number) => validatePhone(number , "الموبايل"));
+
     const supplierData = {
       name,
       responsiblePerson,
@@ -229,6 +232,11 @@ const Suppliers = () => {
         toast.warn("ليس لك صلاحية لتعديل حساب الموردين");
         return;
       }
+
+      whatsapp??validatePhone(whatsapp , "الواتس اب");
+      phone??phone.forEach((number) => validatePhone(number , "الموبايل"));
+
+      
       const updatedSupplierData = {
         name,
         responsiblePerson,
@@ -416,6 +424,25 @@ const Suppliers = () => {
     } else {
       setAllSuppliers([]); // Clear the list or show empty state
     }
+  };
+
+  const validatePhone = (phone , type) => {
+    const phoneRegex = /^\+(?:[0-9] ?){6,14}[0-9]$/; 
+  
+    if (!phoneRegex.test(phone)) {
+
+      toast.error(`⚠️ 201000000000+ يجب ادخال ${type}بهذا الشكل `, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "colored",
+      });
+      return
+    }
+    
   };
 
   useEffect(() => {
