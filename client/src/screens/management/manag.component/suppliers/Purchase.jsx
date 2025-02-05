@@ -83,21 +83,6 @@ const Purchase = () => {
     }
   };
 
-  const [allrecipes, setAllRecipes] = useState([]);
-
-  const getallrecipes = async () => {
-    const config = await handleGetTokenAndConfig();
-    try {
-      const response = await axios.get(`${apiUrl}/api/recipe`, config);
-      console.log(response);
-      const allRecipe = await response.data;
-      setAllRecipes(allRecipe);
-      console.log(allRecipe);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const [StockItems, setStockItems] = useState([]);
   const getaStockItems = async () => {
     const config = await handleGetTokenAndConfig();
@@ -112,138 +97,85 @@ const Purchase = () => {
     }
   };
 
-  const Stockmovement = ["Purchase", "ReturnPurchase"];
-
   const [storeId, setstoreId] = useState(0);
 
   const createStockAction = async (item) => {
-    const config = await handleGetTokenAndConfig();
     try {
-      const itemId = item.itemId;
-      const quantity = item.quantity;
-      const salesTaxAdditionalCostDiscount =
-        Number(salesTax) + Number(additionalCost) - Number(discount);
-      const addcost =
-        (item.cost / totalAmount) * salesTaxAdditionalCostDiscount;
-      const totalCost = item.cost + addcost;
-      const unitCost = Number(item.price) + addcost / quantity;
-      const expirationDate = item.expirationDate;
-      const source = "Purchase";
-      const stockItem = StockItems.filter((item) => item._id === itemId)[0];
+        const config = await handleGetTokenAndConfig();
+        const { itemId, quantity, expirationDate } = item;
 
-      const unit = stockItem.storageUnit;
-      const categoryId = stockItem.categoryId?._id;
-      const costMethod = stockItem.costMethod;
+        if (!storeId || !itemId || !quantity) {
+            toast.error("برجاء اختيار المخزن والصنف وتحديد الكمية");
+            return;
+        }
 
-      const lastStockAction = AllStockactions.filter(
-        (stockAction) =>
-          stockAction.itemId?._id === itemId &&
-          stockAction.storeId?._id === storeId
-      ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
+        // حساب التكلفة بدون additionalCost
+        const salesTaxDiscount = Number(salesTax) - Number(discount);
+        const addcost = (item.cost / totalAmount) * salesTaxDiscount;
+        const totalCost = item.cost + addcost;
+        const unitCost = Number(item.price) + addcost / quantity;
 
-      const inbound = {
-        quantity: Number(quantity),
-        unitCost: Number(unitCost),
-        totalCost: Number(totalCost),
-      };
-      const balance = {
-        quantity: lastStockAction.balance?.quantity + Number(quantity),
-        totalCost: lastStockAction.balance?.unitCost + Number(totalCost),
-        unitCost: lastStockAction.balance?.unitCost + Number(unitCost),
-      };
-      const remainingQuantity = quantity;
-      // Create a new stock action
+        // جلب بيانات الصنف من المخزون
+        const stockItem = StockItems.find((i) => i._id === itemId);
+        if (!stockItem) {
+            toast.error("الصنف غير موجود في المخزون");
+            return;
+        }
 
-      console.log({
-        salesTaxAdditionalCostDiscount,
-        addcost,
-        itemId,
-        storeId,
-        categoryId,
-        costMethod,
-        source,
-        unit,
-        inbound,
-        balance,
-        remainingQuantity,
-        sourceDate: invoiceDate,
-        expirationDate,
-        notes,
-      });
-      const response = await axios.post(
-        apiUrl + "/api/stockmovement/",
-        {
-          itemId,
-          storeId,
-          categoryId,
-          costMethod,
-          source,
-          unit,
-          inbound,
-          balance,
-          remainingQuantity,
-          sourceDate: invoiceDate,
-          expirationDate,
-          notes,
-        },
-        config
-      );
+        const { storageUnit: unit, categoryId, costMethod } = stockItem;
 
-      console.log(response);
+        // جلب آخر حركة مخزون للصنف في المخزن
+        const { data: allStockMovementsByStore = [] } = await axios.get(
+            `${apiUrl}/api/stockmovement/allmovementstore/${storeId}`,
+            config
+        );
 
-      // for (const recipe of allrecipes) {
-      //   const recipeid = recipe._id;
-      //   const productname = recipe.productId?.name;
-      //   const arrayingredients = recipe.ingredients;
+        const lastStockMovementByItem = allStockMovementsByStore
+            .filter((movement) => movement.itemId?._id === itemId)
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0] || { balance: { quantity: 0, totalCost: 0, unitCost: 0 } };
 
-      //   const newIngredients = arrayingredients.map((ingredient) => {
-      //     // console.log({ingredient, costPerPart, amount : ingredient.amount})
-      //     if (ingredient.itemId === itemId) {
-      //       const costofitem = costPerPart;
-      //       const unit = ingredient.unit;
-      //       const amount = ingredient.amount;
-      //       const totalcostofitem = amount * costPerPart;
-      //       return {
-      //         itemId,
-      //         name: itemName,
-      //         amount,
-      //         costofitem,
-      //         unit,
-      //         totalcostofitem,
-      //       };
-      //     } else {
-      //       return ingredient;
-      //     }
-      //   });
-      //   console.log({ newIngredients });
-      //   const totalcost = newIngredients.reduce((acc, curr) => {
-      //     return acc + (curr.totalcostofitem || 0);
-      //   }, 0);
-      //   // Update the product with the modified recipe and total cost
-      //   const updateRecipe = await axios.put(
-      //     `${apiUrl}/api/recipe/${recipeid}`,
-      //     { ingredients: newIngredients, totalcost },
-      //     config
-      //   );
+        // حساب الحركة الجديدة
+        const inbound = {
+            quantity: Number(quantity),
+            unitCost: Number(unitCost),
+            totalCost: Number(totalCost),
+        };
 
-      //   console.log({ updateRecipe });
+        const balance = {
+            quantity: lastStockMovementByItem.balance.quantity + Number(quantity),
+            totalCost: lastStockMovementByItem.balance.totalCost + Number(totalCost),
+            unitCost: (lastStockMovementByItem.balance.totalCost + Number(totalCost)) / 
+                      (lastStockMovementByItem.balance.quantity + Number(quantity)),
+        };
 
-      //   // Toast for successful update based on recipe change
-      //   toast.success(`تم تحديث وصفة  ${productname}`);
-      // }
+        // إنشاء حركة المخزون الجديدة
+        const response = await axios.post(`${apiUrl}/api/stockmovement/`, {
+            itemId,
+            storeId,
+            categoryId,
+            costMethod,
+            source: "Purchase",
+            unit,
+            inbound,
+            balance,
+            remainingQuantity: quantity,
+            sourceDate: invoiceDate,
+            expirationDate,
+            description: notes,
+        }, config);
 
-      // Update the stock actions list and stock items
-      getallStockaction();
-      getaStockItems();
+        console.log("Stock movement created:", response.data);
 
-      // Toast notification for successful creation
-      toast.success("تم تسجيل حركه المخزن بنجاح");
+        // تحديث البيانات في الواجهة
+        getallStockaction();
+        getaStockItems();
+        toast.success("تم تسجيل حركة المخزن بنجاح");
     } catch (error) {
-      console.log(error);
-      // Toast notification for error
-      toast.error("فشل تسجيل حركه المخزن ! حاول مره اخري");
+        console.error("خطأ في تسجيل حركة المخزن:", error);
+        toast.error("فشل تسجيل حركة المخزن! حاول مرة أخرى");
     }
-  };
+};
+
 
   const [previousBalance, setPreviousBalance] = useState(0);
 
@@ -366,6 +298,7 @@ const Purchase = () => {
     setItems(updatedItems);
     clacTotalAmount();
   };
+
   const handleItemId = (id, index) => {
     const stockitem = StockItems.filter((item) => item._id === id)[0];
     const updatedItems = [...items];
@@ -384,6 +317,7 @@ const Purchase = () => {
     setItems(updatedItems);
     clacTotalAmount();
   };
+
   const handlePrice = (price, index) => {
     const updatedItems = [...items];
     updatedItems[index].price = Number(price);
@@ -393,6 +327,7 @@ const Purchase = () => {
     setItems(updatedItems);
     clacTotalAmount();
   };
+
   const handleExpirationDate = (date, index) => {
     const updatedItems = [...items];
     updatedItems[index].expirationDate = new Date(date);
@@ -414,7 +349,6 @@ const Purchase = () => {
   const [netAmount, setNetAmount] = useState(0);
 
   const calcNetAmount = () => {
-    // let total = Number(totalAmount) + Number(additionalCost) + Number(salesTax) - Number(discount)
     let total = Number(totalAmount) + Number(salesTax) - Number(discount);
     setNetAmount(total);
     setBalanceDue(total);
@@ -467,13 +401,14 @@ const Purchase = () => {
   const [cashRegister, setCashRegister] = useState();
   const [CashRegisterBalance, setCashRegisterBalance] = useState(0);
   const handleCashRegister = (id) => {
-    console.log({ id });
+    // console.log({ id });
     const filterCashRegister = AllCashRegisters.filter(
       (CashRegister) => CashRegister.employee._id === id
     );
-    console.log({ id, filterCashRegister });
+    // console.log({ id, filterCashRegister });
     setlistCashRegister(filterCashRegister);
   };
+
   const selectCashRegister = (id) => {
     const cashRegisterSelected = listCashRegister.find(
       (register) => register._id === id
@@ -484,7 +419,7 @@ const Purchase = () => {
 
   const [paymentMethod, setPaymentMethod] = useState("");
   const handlePaymentMethod = (Method, employeeId) => {
-    console.log({ Method, employeeId });
+    // console.log({ Method, employeeId });
     setPaymentMethod(Method);
     handleCashRegister(employeeId);
   };
@@ -549,7 +484,7 @@ const Purchase = () => {
         config
       );
       console.log({ response });
-      if (response.status === 201) {
+      if (response.status === 201 && storeId) {
         items.forEach((item) => {
           createStockAction(item);
         });
@@ -1040,13 +975,14 @@ const Purchase = () => {
                           {purchasePermission && purchasePermission.read && (
                             <button
                               data-target="viewPurchaseModal"
+                              className="btn btn-sm btn-primary"
                               data-toggle="modal"
                               onClick={() => {
                                 getInvoice(invoice._id);
                               }}
                             >
                               <i
-                                className="material-icons text-primary fs-2"
+                                className="material-icons text-succes fs-2"
                                 data-toggle="tooltip"
                                 title="مشاهدة المشتريات"
                               >
@@ -1440,17 +1376,6 @@ const Purchase = () => {
                             placeholder="الملاحظات"
                             onChange={(e) => setNotes(e.target.value)}
                             style={{ height: "auto" }}
-                          />
-                        </div>
-                        <div className="input-group mb-3 d-flex align-items-center justify-content-between flex-nowrap">
-                          <span className="input-group-text" htmlFor="gstInput">
-                            تكلفه اضافية
-                          </span>
-                          <input
-                            type="number"
-                            className="form-control text-end"
-                            id="gstInput"
-                            onChange={(e) => setAdditionalCost(e.target.value)}
                           />
                         </div>
                       </div>
