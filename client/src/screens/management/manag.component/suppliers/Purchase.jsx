@@ -109,13 +109,11 @@ const Purchase = () => {
             return;
         }
 
-        // حساب التكلفة بدون additionalCost
         const salesTaxDiscount = Number(salesTax) - Number(discount);
         const addcost = (item.cost / totalAmount) * salesTaxDiscount;
         const totalCost = item.cost + addcost;
         const unitCost = Number(item.price) + addcost / quantity;
 
-        // جلب بيانات الصنف من المخزون
         const stockItem = StockItems.find((i) => i._id === itemId);
         if (!stockItem) {
             toast.error("الصنف غير موجود في المخزون");
@@ -124,7 +122,6 @@ const Purchase = () => {
 
         const { storageUnit: unit, categoryId, costMethod } = stockItem;
 
-        // جلب آخر حركة مخزون للصنف في المخزن
         const { data: allStockMovementsByStore = [] } = await axios.get(
             `${apiUrl}/api/stockmovement/allmovementstore/${storeId}`,
             config
@@ -134,7 +131,6 @@ const Purchase = () => {
             .filter((movement) => movement.itemId?._id === itemId)
             .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0] || { balance: { quantity: 0, totalCost: 0, unitCost: 0 } };
 
-        // حساب الحركة الجديدة
         const inbound = {
             quantity: Number(quantity),
             unitCost: Number(unitCost),
