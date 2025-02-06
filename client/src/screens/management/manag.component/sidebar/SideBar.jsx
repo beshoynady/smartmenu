@@ -6,8 +6,6 @@ import { Link } from "react-router-dom";
 import "./SideBar.css";
 
 const SideBar = () => {
- 
-
   const arrowRefs = {
     arrowsetting: useRef(),
     arrowmenue: useRef(),
@@ -152,49 +150,6 @@ const SideBar = () => {
                     </ul>
                   </li>
                 )}
-                {/* bar */}
-                {/* {(isProgrammer ||
-                  role === "chef" ||
-                  role === "manager" ||
-                  role === "owner") && (
-                  <li className="list">
-                    <Link to="bar">
-                      <span className="material-symbols-outlined list-icon ml-2">
-                        liquor
-                      </span>
-
-                      <span className="linkname">البار</span>
-                    </Link>
-                    <ul className="submenu blank">
-                      <li className="list">
-                        <Link to="bar" className="linkname">
-                          البار
-                        </Link>
-                      </li>
-                    </ul>
-                  </li>
-                )} */}
-                {/* Grill */}
-                {/* {(isProgrammer ||
-                  role === "chef" ||
-                  role === "manager" ||
-                  role === "owner") && (
-                  <li className="list">
-                    <Link to="grill">
-                      <span className="material-symbols-outlined list-icon ml-2">
-                        outdoor_grill
-                      </span>
-                      <span className="linkname">الشوايه</span>
-                    </Link>
-                    <ul className="submenu blank">
-                      <li className="list">
-                        <Link to="grill" className="linkname">
-                          الشوايه
-                        </Link>
-                      </li>
-                    </ul>
-                  </li>
-                )} */}
 
                 {/* Waiter */}
                 {(isProgrammer ||
@@ -489,7 +444,7 @@ const SideBar = () => {
                   permissionsList?.filter(
                     (permission) =>
                       permission.resource === "stock Item" ||
-                      permission.resource === "Kitchen Usage"
+                      permission.resource === "Section Consumption"
                   )[0]?.read) && (
                   <li
                     className="list"
@@ -552,26 +507,10 @@ const SideBar = () => {
                       {(isProgrammer ||
                         permissionsList?.filter(
                           (permission) =>
-                            permission.resource === "Kitchen Usage"
+                            permission.resource === "Section Consumption"
                         )[0]?.read) && (
                         <li className="list">
                           <Link to="SectionConsumption">الاستهلاك اليومي</Link>
-                        </li>
-                      )}
-                      {(isProgrammer ||
-                        permissionsList?.filter(
-                          (permission) => permission.resource === "Grill Usage"
-                        )[0]?.read) && (
-                        <li className="list">
-                          <Link to="grillconsumption">استهلاك الشوايه</Link>
-                        </li>
-                      )}
-                      {(isProgrammer ||
-                        permissionsList?.filter(
-                          (permission) => permission.resource === "Bar Usage"
-                        )[0]?.read) && (
-                        <li className="list">
-                          <Link to="Barconsumption">استهلاك البار</Link>
                         </li>
                       )}
                     </ul>
@@ -732,7 +671,7 @@ const SideBar = () => {
                         {(isProgrammer || permissionsList?.filter(permission => permission.resource === 'stock Movement')[0]?.read) && (
                           <li className="list"><Link to="StockMovement">إدارة المخزون</Link></li>
                         )}
-                        {(isProgrammer || permissionsList?.filter(permission => permission.resource === 'Kitchen Usage')[0]?.read) && (
+                        {(isProgrammer || permissionsList?.filter(permission => permission.resource === 'Section Consumption')[0]?.read) && (
                           <li className="list"><Link to="kitchenconsumption">استهلاك المطبخ</Link></li>
                         )} */}
                 {/* </ul>

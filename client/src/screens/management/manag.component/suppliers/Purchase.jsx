@@ -704,7 +704,6 @@ const Purchase = () => {
     getallStockaction();
     getaStockItems();
     getAllCashRegisters();
-    // getallrecipes();
     getAllSuppliers();
     getAllStores();
   }, []);
