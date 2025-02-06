@@ -64,7 +64,6 @@ const purchaseInvoiceSchema = new mongoose.Schema(
     paymentMethod: {
       type: String,
       default: "",
-      required: true,
     },
     cashRegister: {
       type: mongoose.Schema.Types.ObjectId,
